@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_restful import Api
 from flask_jwt_extended import JWTManager
+from flask_cors import CORS
 from models.user import UserModel
 from resources.user import UserRegister, User, UserLogin
 from resources.property import Properties, Property
@@ -12,6 +13,8 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['PROPAGATE_EXCEPTIONS'] = True
 app.secret_key = 'dwellingly' #Replace with Random Hash
+#allow cross-origin (CORS)
+CORS(app)
 
 api = Api(app)
 
