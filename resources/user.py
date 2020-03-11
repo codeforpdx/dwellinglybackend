@@ -28,10 +28,21 @@ class User(Resource):
 
     @classmethod
     def get(cls, user_id):
+        print('DBG: userid: ' + str(user_id))
         user = UserModel.find_by_id(user_id)
+        print("DBG: User: " + user.username)
+        print("DBG: Email: " + user.email)
+        print("DBG: Role: " + user.role)
+        print("DBG: JSON")
+        print (user.json())
+        
         if not user:
-            return {"Message": "User not found"}, 404
-        return user.json()        
+            return {'message': 'User Not Found'}, 404
+        
+        return {'id': str(user.id),
+            'username': user.username,
+            'email': user.email,
+            'role': user.role}, 200
     
     @classmethod
     def delete(cls, user_id):

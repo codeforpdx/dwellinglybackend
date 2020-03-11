@@ -26,11 +26,12 @@ class UserModel(db.Model):
 
     @classmethod
     def json(self):
+        string_id = str(self.id)
         return {
-            "id": self.id,
-            "username": self.username,
-            "email": self.email,
-            "role": self.role
+            'id': string_id,
+            'username': self.username,
+            'email': self.email,
+            'role': self.role
         }
 
     @classmethod

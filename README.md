@@ -5,7 +5,7 @@ NOTE: no database setup here. Backend uses list-based live data
 # Setup Python on  your system
 [Link to Guide](https://realpython.com/installing-python/ "Setup Python")
 # Run 
-virturalenv env 
+virtualenv env 
 # Run
 source env/bin/activate
 # Run
