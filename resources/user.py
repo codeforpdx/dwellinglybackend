@@ -28,22 +28,20 @@ class User(Resource):
 
     @classmethod
     def get(cls, user_id):
-        print('DBG: userid: ' + str(user_id))
+        # print("DBG: JSON")
+        # print (user.json())
         user = UserModel.find_by_id(user_id)
-        print("DBG: User: " + user.username)
-        print("DBG: Email: " + user.email)
-        print("DBG: Role: " + user.role)
-        print("DBG: JSON")
-        print (user.json())
-        
+
         if not user:
             return {'message': 'User Not Found'}, 404
-        
+
+        # hard coded return as .json() is not compatiable with user model and sqlalchemy
         return {'id': str(user.id),
             'username': user.username,
             'email': user.email,
             'role': user.role}, 200
-    
+        
+
     @classmethod
     def delete(cls, user_id):
         user = UserModel.find_by_id(user_id)
@@ -51,6 +49,11 @@ class User(Resource):
             return {"Message", "Unable to delete User"}, 404 
         user.delete_from_db()
         return {"Message": "User deleted"}, 200
+
+#pull all users - for debugging purposes disable before production
+class Users(Resource):
+     def get(self):
+        return {'Users': [user.json() for user in UserModel.query.all()]}
 
 class UserLogin(Resource):
     parser = reqparse.RequestParser()
