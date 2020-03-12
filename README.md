@@ -6,12 +6,12 @@ NOTE: no database setup here. Backend uses list-based live data
 3. Install virtualenv onto system (if not already installed)
     Mac + Linux: python3 -m venv env
     Windows: py -m venv env
-4. Create virtual environment
-    virtualenv env 
-5. Activate the virtual environment 
-    source env/bin/activate
-6. Install dependencies
+4. Install dependencies while in main directory of dwellinglybackend forked copy
     pip install --no-cache-dir -r requirements.txt
+5. Create virtual environment
+    virtualenv env 
+6. Activate the virtual environment 
+    source env/bin/activate
 7. Run the flask environment 
     pipenv run flask run 
 
