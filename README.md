@@ -1,22 +1,21 @@
-
-How to set up Dwelling Flask Testing Backend. 
+Set up Dwelling Flask Testing Backend (for the first time)
 NOTE: no database setup here. Backend uses list-based live data 
 
-# Setup Python on  your system
-[Link to Guide](https://realpython.com/installing-python/ "Setup Python")
-# Run 
-virtualenv env 
-# Run
-source env/bin/activate
-# Run
-    pipenv run flask run 
-# Run 
-    pip install --no-cache-dir -r requirements.txt
-# Run
+1. Fork the backend and clone a copy ( https://help.github.com/en/github/getting-started-with-github/fork-a-repo )
+2. Install Python ( https://realpython.com/installing-python/ )
+3. Install virtualenv onto system (if not already installed)
+    Mac + Linux: python3 -m venv env
+    Windows: py -m venv env
+4. Install dependencies while in main directory of dwellinglybackend forked copy
+    pip3 install --no-cache-dir -r requirements.txt
+5. Create virtual environment
+    virtualenv env 
+6. Activate the virtual environment 
+    source env/bin/activate
+7. Run the flask environment 
     pipenv run flask run 
 
-# Postman  Collection link
-https://www.getpostman.com/collections/a86a292798c7895425e2
+Queries can be made with the Postman Collection link ( https://www.getpostman.com/collections/a86a292798c7895425e2 )
 
 ###This Backend Uses JWT for authorization 
 Authorization header format:
