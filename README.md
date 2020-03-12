@@ -7,7 +7,7 @@ NOTE: no database setup here. Backend uses list-based live data
     Mac + Linux: python3 -m venv env
     Windows: py -m venv env
 4. Install dependencies while in main directory of dwellinglybackend forked copy
-    pip install --no-cache-dir -r requirements.txt
+    pip3 install --no-cache-dir -r requirements.txt
 5. Create virtual environment
     virtualenv env 
 6. Activate the virtual environment 
