@@ -17,6 +17,9 @@ NOTE: no database setup here. Backend uses list-based live data
 
 Queries can be made with the Postman Collection link ( https://www.getpostman.com/collections/a86a292798c7895425e2 )
 
+###This Backend Uses JWT for authorization 
+Authorization header format:
+Authorization Bearer JWT access token
 
 ###Established Endpoints
 

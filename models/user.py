@@ -10,7 +10,7 @@ class UserModel(db.Model):
     username = db.Column(db.String(80))
     password = db.Column(db.String(80))
 
-    def __init__(self, username, password, role, email):
+    def __init__(self, username, password, email, role):
         self.username = username
         self.password = password
         self.email = email
@@ -25,13 +25,22 @@ class UserModel(db.Model):
         db.session.commit()
 
     @classmethod
-    def json(self):
+    # def json(self): 
+    #     return {
+    #         'id': self.id,
+    #         'username': self.username,
+    #         'email': self.email,
+    #         'role': self.role
+    #     }
+
+    def json(user): 
+        print('DBG: Userid: '+ str(user.id))
+        print('DBG: UserNAme: '+ user.username)
+        print(user)
         return {
-            "id": self.id,
-            "username": self.username,
-            "email": self.email,
-            "role": self.role
+            'id': user.id
         }
+
 
     @classmethod
     def find_by_username(cls, username):
