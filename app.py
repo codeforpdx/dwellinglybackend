@@ -27,7 +27,8 @@ def create_tables():
 jwt = JWTManager(app) # /authorization 
 
 @jwt.user_claims_loader
-def role_loader(identity):
+#check if user role == admin
+def role_loader(identity): #idenity = user.id in JWT
     user = UserModel.find_by_id(identity)
     if user.role == 'admin':
         return{'is_admin': True}
