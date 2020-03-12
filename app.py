@@ -27,7 +27,8 @@ def create_tables():
 jwt = JWTManager(app) # /authorization 
 
 @jwt.user_claims_loader
-def role_loader(identity):
+#check if user role == admin
+def role_loader(identity): #idenity = user.id in JWT
     user = UserModel.find_by_id(identity)
     if user.role == 'admin':
         return{'is_admin': True}
@@ -39,6 +40,7 @@ api.add_resource(Property,'/properties/<string:name>')
 api.add_resource(Properties,'/properties')
 api.add_resource(User, '/user/<int:user_id>')
 api.add_resource(UserLogin, '/login')
+
 
 if __name__ == '__main__':
     # db.init_app(app) 

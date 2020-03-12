@@ -25,8 +25,13 @@ class Properties(Resource):
     def get(self):
         return {'properties': [property.json() for property in PropertyModel.query.all()]}
     
-    # @jwt_required()
+    @jwt_required
     def post(self):
+        #check if is_admin exist if not discontinue function
+        claims = get_jwt_claims() 
+        if not claims['is_admin']:
+            return {'Message', "Admin Access Required"}, 401
+
         data = Properties.parser.parse_args()
 
         if PropertyModel.find_by_name(data["name"]):
@@ -50,24 +55,35 @@ class Property(Resource):
     parser.add_argument('zipcode')
     parser.add_argument('state')
 
-    # @jwt_required()
+    @jwt_required()
     def get(self, name):
+        claims = get_jwt_claims() 
+        if not claims['is_admin']:
+            return {'Message', "Admin Access Required"}, 401
         rentalProperty = PropertyModel.find_by_name(name)
 
         if rentalProperty:
             return rentalProperty.json()
         return {'message': 'Property not found'}, 404
     
-    # @jwt_required()
+    @jwt_required()
     def delete(self, name):
+        claims = get_jwt_claims() 
+        if not claims['is_admin']:
+            return {'Message', "Admin Access Required"}, 401
+
         property = PropertyModel.find_by_name(name)
         if property:
             property.delete_from_db()
             return {'message': 'Property deleted.'}
         return {'message': 'Property not found.'}, 404
 
-    # @jwt_required()
+    @jwt_required()
     def put(self, name):
+        claims = get_jwt_claims() 
+        if not claims['is_admin']:
+            return {'Message', "Admin Access Required"}, 401
+
         data = Properties.parser.parse_args()
         rentalProperty = PropertyModel.find_by_name(name)
 
