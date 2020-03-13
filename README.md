@@ -4,7 +4,7 @@ NOTE: Database is SQLite3 via SQLAlchemy
 + Github Repo: {https://github.com/codeforpdx/dwellinglybackend}
 + Live Server: {https://dwellinglyapi.herokuapp.com/ } 
 
-### To Start Server
+###To Start Server
 
 1. Fork the backend and clone a copy ( https://help.github.com/en/github/getting-started-with-github/fork-a-repo )
 2. Install Python ( https://realpython.com/installing-python/ )
@@ -76,7 +76,7 @@ Authorization Bearer < JWT access token >
 | GET    | `/properties/:id`    | Gets a single property     |
 | PATCH  | `/properties/:id`    | Updates a single property  |
 | PUT    | `/properties/:id`    | Archives a single property | not implemented yet
-| DELETE | `/properties/:id`  | Deletes a single property  |
+| DELETE | `/properties/:id`    | Deletes a single property  |
 
 
 ```javascript
