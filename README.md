@@ -3,9 +3,8 @@ NOTE: Database is SQLite3 via SQLAlchemy
 
 + Github Repo: {https://github.com/codeforpdx/dwellinglybackend}
 + Live Server: {https://dwellinglyapi.herokuapp.com/ } 
-+ Postman Collection: {https://www.postman.com/collections/a86a292798c7895425e2}
 
-###To Start Server
+### To Start Server
 
 1. Fork the backend and clone a copy ( https://help.github.com/en/github/getting-started-with-github/fork-a-repo )
 2. Install Python ( https://realpython.com/installing-python/ )
@@ -23,9 +22,6 @@ NOTE: Database is SQLite3 via SQLAlchemy
 
 Queries can be made with the Postman Collection link ( https://www.getpostman.com/collections/a86a292798c7895425e2 )
 
-###This Backend Uses JWT for authorization 
-Authorization header format:
-Authorization Bearer JWT access token
 
 ###Enpoints
 
@@ -53,6 +49,13 @@ go to
 | POST   | `/login     `   | Login a single user         |
 | DELETE | `/users/:uid`   | Deletes a single user       |
 
+
+###This Backend Uses JWT for authorization 
+
+Authorization header format:
+```javascript
+Authorization Bearer < JWT access token >
+```
 
 ```javascript
   {
