@@ -4,7 +4,7 @@ NOTE: Database is SQLite3 via SQLAlchemy
 + Github Repo: {https://github.com/codeforpdx/dwellinglybackend}
 + Live Server: {https://dwellinglyapi.herokuapp.com/ } 
 
-###To Start Server
+### To Start Server
 
 1. Fork the backend and clone a copy ( https://help.github.com/en/github/getting-started-with-github/fork-a-repo )
 2. Install Python ( https://realpython.com/installing-python/ )
