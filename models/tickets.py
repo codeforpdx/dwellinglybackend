@@ -4,7 +4,7 @@ from models.property import PropertyModel
 
 # | method | route                | action                     |
 # | :----- | :------------------- | :------------------------- |
-# | POST   | `v1/properties/`     | Creates a new property     |
+# | POST   | `/tickets/`          | Creates a new property     |
 # | GET    | `v1/properties/`   | Gets all properties        |
 # | GET    | `v1/property/:name`  | Gets a single property     |
 # | PUT    | `v1/property/:name`  | Updates a single property  |

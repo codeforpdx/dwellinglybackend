@@ -1,5 +1,11 @@
 Set up Dwelling Flask Testing Backend (for the first time)
-NOTE: no database setup here. Backend uses list-based live data 
+NOTE: Database is SQLite3 via SQLAlchemy 
+
++ Github Repo: {https://github.com/codeforpdx/dwellinglybackend}
++ Live Server: {https://dwellinglyapi.herokuapp.com/ } 
++ Postman Collection: {https://www.postman.com/collections/a86a292798c7895425e2}
+
+###To Start Server
 
 1. Fork the backend and clone a copy ( https://help.github.com/en/github/getting-started-with-github/fork-a-repo )
 2. Install Python ( https://realpython.com/installing-python/ )
@@ -21,34 +27,40 @@ Queries can be made with the Postman Collection link ( https://www.getpostman.co
 Authorization header format:
 Authorization Bearer JWT access token
 
-###Established Endpoints
+###Enpoints
 
-#### ENDPOINT: USERS
+How to contribute to this project. 
+1. Set your origin to https://github.com/codeforpdx/dwellinglybackend.git
+2. The Main Branch is Development 
+```console
+~$: git pull origin development 
+```
+3. Branch from Development 
+```console
+~$ git checkout -b <name of branch>
+```
+go to 
 
-| method | route           | action                 |
-| :----- | :-------------- | :--------------------- |
-| POST   | `v1/users/`     | Creates a new user     |
-| GET    | `v1/users/`     | Gets all users         |
-| GET    | `v1/users/:uid` | Gets a single user     |
-| PATCH  | `v1/users/:uid` | Updates a single user  |
-| PUT    | `v1/users/:uid` | Archives a single user |
-| DELETE | `v1/users/:uid` | Deletes a single user  |
+
+#### ENDPOINT: USER Model
+
+| method | route           | action                      |
+| :----- | :-------------- | :-------------------------- |
+| POST   | `/register/`    | Creates a new user          |
+| GET    | `/users/`       | Gets all users (dev only)   |
+| GET    | `/users/:uid`   | Gets a single user          |
+| PATCH  | `/users/:uid`   | Updates a single user       |
+| POST   | `/login     `   | Login a single user         |
+| DELETE | `/users/:uid`   | Deletes a single user       |
 
 
 ```javascript
   {
-        "name": "Default User",
-        "password": "userPassword",
         "username": "defaultUser",
+        "password": "userPassword",
         "email": "user1@dwellingly.com",
         "archived": "false",
-        "uid": "user0",
-        "phone":'555-555-5555',
-        "role": {
-                    "isAdmin": "true",
-                    "isPropertyManager": "false",
-                    "isStaff": "false"
-                }
+        "role": "admin"
         }
 ```
 
@@ -56,12 +68,12 @@ Authorization Bearer JWT access token
 
 | method | route                | action                     |
 | :----- | :------------------- | :------------------------- |
-| POST   | `v1/properties/`     | Creates a new property     |
-| GET    | `v1/properties/`     | Gets all properties        |
-| GET    | `v1/properties/:uid` | Gets a single property     |
-| PATCH  | `v1/properties/:uid` | Updates a single property  |
-| PUT    | `v1/properties/:uid` | Archives a single property |
-| DELETE | `v1/properties/:uid` | Deletes a single property  |
+| POST   | `/properties/`       | Creates a new property     |
+| GET    | `/properties/`       | Gets all properties        |
+| GET    | `/properties/:id`    | Gets a single property     |
+| PATCH  | `/properties/:id`    | Updates a single property  |
+| PUT    | `/properties/:id`    | Archives a single property | not implemented yet
+| DELETE | `v1/properties/:id`  | Deletes a single property  |
 
 
 ```javascript
@@ -71,6 +83,7 @@ Authorization Bearer JWT access token
     "address": "1654 NE 18th Ave.",
     "zipCode": "97218",
     "city": "Portland",
-    "state": "OR"
+    "state": "OR",
+    "archived": False
   },
 ```
