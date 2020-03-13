@@ -73,7 +73,7 @@ go to
 | GET    | `/properties/:id`    | Gets a single property     |
 | PATCH  | `/properties/:id`    | Updates a single property  |
 | PUT    | `/properties/:id`    | Archives a single property | not implemented yet
-| DELETE | `v1/properties/:id`  | Deletes a single property  |
+| DELETE | `/properties/:id`  | Deletes a single property  |
 
 
 ```javascript
