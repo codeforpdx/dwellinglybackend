@@ -29,6 +29,7 @@ class Properties(Resource):
     def post(self):
         #check if is_admin exist if not discontinue function
         claims = get_jwt_claims() 
+        
         if not claims['is_admin']:
             return {'Message', "Admin Access Required"}, 401
 
@@ -58,8 +59,10 @@ class Property(Resource):
     @jwt_required
     def get(self, name):
         claims = get_jwt_claims() 
+
         if not claims['is_admin']:
             return {'Message', "Admin Access Required"}, 401
+
         rentalProperty = PropertyModel.find_by_name(name)
 
         if rentalProperty:
@@ -69,6 +72,7 @@ class Property(Resource):
     @jwt_required
     def delete(self, name):
         claims = get_jwt_claims() 
+
         if not claims['is_admin']:
             return {'Message', "Admin Access Required"}, 401
 
@@ -80,7 +84,9 @@ class Property(Resource):
 
     @jwt_required
     def put(self, name):
+
         claims = get_jwt_claims() 
+
         if not claims['is_admin']:
             return {'Message', "Admin Access Required"}, 401
 
