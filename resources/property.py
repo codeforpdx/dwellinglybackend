@@ -55,7 +55,7 @@ class Property(Resource):
     parser.add_argument('zipcode')
     parser.add_argument('state')
 
-    @jwt_required()
+    @jwt_required
     def get(self, name):
         claims = get_jwt_claims() 
         if not claims['is_admin']:
@@ -66,7 +66,7 @@ class Property(Resource):
             return rentalProperty.json()
         return {'message': 'Property not found'}, 404
     
-    @jwt_required()
+    @jwt_required
     def delete(self, name):
         claims = get_jwt_claims() 
         if not claims['is_admin']:
@@ -78,7 +78,7 @@ class Property(Resource):
             return {'message': 'Property deleted.'}
         return {'message': 'Property not found.'}, 404
 
-    @jwt_required()
+    @jwt_required
     def put(self, name):
         claims = get_jwt_claims() 
         if not claims['is_admin']:
