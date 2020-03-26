@@ -9,21 +9,30 @@ NOTE: Database is SQLite3 via SQLAlchemy
 1. Fork the backend and clone a copy ( https://help.github.com/en/github/getting-started-with-github/fork-a-repo )
 2. Install Python ( https://realpython.com/installing-python/ )
 3. Install virtualenv onto system (if not already installed)
-    Mac + Linux: python3 -m venv env
-    Windows: py -m venv env
+
+    - Mac + Linux: `python3 -m venv env`
+    - Windows: `python -m venv env`
+
 4. Install dependencies while in main directory of dwellinglybackend forked copy
-    pip3 install --no-cache-dir -r requirements.txt
-5. Create virtual environment
-    virtualenv env 
+
+    - `pip3 install --no-cache-dir -r requirements.txt`
+
+5. Create virtual environment: `virtualenv env`
+
+    - To install virtualenv: `pip install --user virtualenv`
+
 6. Activate the virtual environment 
-    source env/bin/activate
-7. Run the flask environment 
-    pipenv run flask run 
+
+    - Mac + Linux: `source env/bin/activate`
+    - Windows: `source env/Scripts/activate`
+    
+7. Run the flask environment: `pipenv run flask run`
+
+    - To install virtualenv: `pip3 install pipenv`
 
 Queries can be made with the Postman Collection link ( https://www.getpostman.com/collections/a86a292798c7895425e2 )
 
-
-###Enpoints
+###Endpoints
 
 How to contribute to this project. 
 1. Set your origin to https://github.com/codeforpdx/dwellinglybackend.git
