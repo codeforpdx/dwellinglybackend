@@ -22,7 +22,15 @@ class PropertyModel(db.Model):
         if(archived): self.archived = True
 
     def json(self):
-        return {'id': self.id, 'name':self.name, 'address': self.address, 'city': self.city, 'state': self.state, 'archived': self.archived}
+        return {
+            'id': self.id, 
+            'name':self.name, 
+            'address': self.address, 
+            'city': self.city, 
+            'state': self.state, 
+            'zipcode': self.zipcode, 
+            'archived': self.archived
+        }
     
     @classmethod
     def find_by_name(cls, name):
