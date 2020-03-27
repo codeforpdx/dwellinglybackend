@@ -21,6 +21,7 @@ class Properties(Resource):
     parser.add_argument('city')
     parser.add_argument('zipcode')
     parser.add_argument('state')
+    parser.add_argument('archived')
     
     def get(self):
         return {'properties': [property.json() for property in PropertyModel.query.all()]}
