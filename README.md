@@ -26,9 +26,13 @@ NOTE: Database is SQLite3 via SQLAlchemy
     - Mac + Linux: `source env/bin/activate`
     - Windows: `source env/Scripts/activate`
     
-7. Run the flask environment: `pipenv run flask run`
+7. Start the server using the flask environment:
 
-    - To install virtualenv: `pip3 install pipenv`
+    - Run: `pipenv run flask run`
+    - Run + restart the server on changes:  `pipenv run flask run --restart`
+    - To install pipenv: `pip install --user pipenv`
+
+Step 7 must be repeated each time you reopen the project
 
 Queries can be made with the Postman Collection link ( https://www.getpostman.com/collections/a86a292798c7895425e2 )
 
