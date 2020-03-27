@@ -17,8 +17,9 @@ NOTE: Database is SQLite3 via SQLAlchemy
 
     - `pip3 install --no-cache-dir -r requirements.txt`
 
-5. Create virtual environment: `virtualenv env`
+5. Create virtual environment: 
 
+    - `virtualenv env`
     - To install virtualenv: `pip install --user virtualenv`
 
 6. Activate the virtual environment 
@@ -26,13 +27,11 @@ NOTE: Database is SQLite3 via SQLAlchemy
     - Mac + Linux: `source env/bin/activate`
     - Windows: `source env/Scripts/activate`
     
-7. Start the server using the flask environment:
+7. Start the server using the flask environment (required every time the project is re-opened):
 
     - Run: `pipenv run flask run`
-    - Run + restart the server on changes:  `pipenv run flask run --restart`
+    - Run + restart the server on changes:  `pipenv run flask run --reload`
     - To install pipenv: `pip install --user pipenv`
-
-Step 7 must be repeated each time you reopen the project
 
 Queries can be made with the Postman Collection link ( https://www.getpostman.com/collections/a86a292798c7895425e2 )
 
