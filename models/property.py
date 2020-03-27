@@ -9,17 +9,20 @@ class PropertyModel(db.Model):
     city = db.Column(db.String(50))
     state = db.Column(db.String(50))
     zipcode = db.Column(db.String(20))
+    archived = db.Column(db.Boolean)
 
 
-    def __init__(self, name, address, city, state, zipcode):
+    def __init__(self, name, address, city, state, zipcode, archived):
         self.name = name
         self.address = address
         self.city = city
         self.state = state
         self.zipcode = zipcode
+        self.archived = False
+        if(archived): self.archived = True
 
     def json(self):
-        return {'id': self.id, 'name':self.name, 'address': self.address, 'city': self.city, 'state': self.state}
+        return {'id': self.id, 'name':self.name, 'address': self.address, 'city': self.city, 'state': self.state, 'archived': self.archived}
     
     @classmethod
     def find_by_name(cls, name):
