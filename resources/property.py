@@ -56,6 +56,7 @@ class Property(Resource):
     parser.add_argument('city')
     parser.add_argument('zipcode')
     parser.add_argument('state')
+    parser.add_argument('archived')
 
     @jwt_required
     def get(self, name):
@@ -109,6 +110,12 @@ class Property(Resource):
         
         if(data.state):
             rentalProperty.state = data.state
+        
+        #the reported purpose of this route is toggling the "archived" status
+        #but an explicit value of "archive" in the request body will override
+        rentalProperty.archived = not rentalProperty.archived
+        if(data.archived == True or data.archived == False):
+            rentalProperty.archived = data.archived
         
         try:
             rentalProperty.save_to_db()
