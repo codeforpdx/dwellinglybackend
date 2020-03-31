@@ -4,7 +4,7 @@ from flask_jwt_extended import JWTManager
 from flask_cors import CORS
 from models.user import UserModel
 from resources.user import UserRegister, User, UserLogin
-from resources.property import Properties, Property
+from resources.property import Properties, Property, ArchiveProperty
 from db import db
 
 app = Flask(__name__)
@@ -38,6 +38,7 @@ def role_loader(identity): #idenity = user.id in JWT
 api.add_resource(UserRegister, '/register')
 api.add_resource(Property,'/properties/<string:name>')
 api.add_resource(Properties,'/properties')
+api.add_resource(ArchiveProperty,'/properties/archive/<int:id>')
 api.add_resource(User, '/user/<int:user_id>')
 api.add_resource(UserLogin, '/login')
 
