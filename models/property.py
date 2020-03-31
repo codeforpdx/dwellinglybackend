@@ -19,7 +19,6 @@ class PropertyModel(db.Model):
         self.state = state
         self.zipcode = zipcode
         self.archived = False
-        if(archived): self.archived = True
 
     def json(self):
         return {
