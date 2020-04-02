@@ -26,10 +26,7 @@ class UserRegister(Resource):
 
 class User(Resource):
 
-    @classmethod
-    def get(cls, user_id):
-        # print("DBG: JSON")
-        # print (user.json())
+    def get(self, user_id):
         user = UserModel.find_by_id(user_id)
 
         if not user:
@@ -42,8 +39,8 @@ class User(Resource):
             'role': user.role}, 200
         
 
-    @classmethod
-    def delete(cls, user_id):
+    def delete(self, user_id):
+
         user = UserModel.find_by_id(user_id)
         if not user:
             return {"Message", "Unable to delete User"}, 404 
