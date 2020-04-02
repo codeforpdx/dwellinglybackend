@@ -62,7 +62,7 @@ class ArchiveProperty(Resource):
         if(not property):
             return{'Message': 'Property cannot be archived'}, 400
         
-        property.archived = True
+        property.archived = not property.archived
         try:
             property.save_to_db()
         except:
