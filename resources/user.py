@@ -37,10 +37,13 @@ class User(Resource):
             return {'message': 'User Not Found'}, 404
 
         # hard coded return as .json() is not compatiable with user model and sqlalchemy
-        return {'id': str(user.id),
+        return {
+            'id': str(user.id),
             'username': user.username,
             'email': user.email,
-            'role': user.role}, 200
+            'role': user.role,
+            'archived': user.archived
+        }, 200
         
 
     @classmethod
