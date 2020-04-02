@@ -1,7 +1,8 @@
 from flask_restful import Resource, reqparse
 from models.user import UserModel
+from models.revoked_tokens import RevokedTokensModel
 from werkzeug.security import safe_str_cmp
-from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt_claims
+from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt_claims, get_raw_jwt
 
 
 #TODO Incorporate JWT Claims for Admin privledges
@@ -78,6 +79,12 @@ class ArchiveUser(Resource):
             user.save_to_db()
         except:
             return {'Message': 'An Error Has Occured'}, 500
+
+        if user.archived:
+            # invalidate access token
+            jti = get_raw_jwt()['jti']
+            revokedToken = RevokedTokensModel(jti=jti)
+            revokedToken.save_to_db()
 
         return user.json(), 201
 
