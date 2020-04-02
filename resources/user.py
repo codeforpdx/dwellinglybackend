@@ -91,6 +91,9 @@ class UserLogin(Resource):
 
         user = UserModel.find_by_username(data['username'])
 
+        if user.archived:
+            return {"message": "Not a valid user"}, 403
+
         if user and safe_str_cmp(user.password, data['password']):
             access_token = create_access_token(identity=user.id, fresh=True) 
             refresh_token = create_refresh_token(user.id)
