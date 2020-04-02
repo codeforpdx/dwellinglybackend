@@ -73,7 +73,7 @@ class ArchiveUser(Resource):
         if(not user):
             return{'Message': 'User cannot be archived'}, 400
 
-        user.archived = True
+        user.archived = not user.archived
         try:
             user.save_to_db()
         except:
