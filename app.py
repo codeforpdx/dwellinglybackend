@@ -3,6 +3,7 @@ from flask_restful import Api
 from flask_jwt_extended import JWTManager
 from flask_cors import CORS
 from models.user import UserModel
+from models.revoked_tokens import RevokedTokensModel
 from resources.user import UserRegister, User, UserLogin, ArchiveUser
 from resources.property import Properties, Property
 from db import db
@@ -12,6 +13,9 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['PROPAGATE_EXCEPTIONS'] = True
+# Enable blacklisting and specify what kind of tokens to check against the blacklist
+app.config['JWT_BLACKLIST_ENABLED'] = True
+app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = ['access', 'refresh']
 app.secret_key = 'dwellingly' #Replace with Random Hash
 #allow cross-origin (CORS)
 CORS(app)
@@ -34,6 +38,13 @@ def role_loader(identity): #idenity = user.id in JWT
         return{'is_admin': True}
     return {'is_admin': False}
     
+# checking if the token's jti (jwt id) is in the set of revoked tokens
+# this check is applied globally (to all routes that require jwt)
+@jwt.token_in_blacklist_loader
+def check_if_token_in_blacklist(decrypted_token):
+    jti = decrypted_token['jti']
+    return RevokedTokensModel.is_jti_blacklisted(jti)
+
 
 api.add_resource(UserRegister, '/register')
 api.add_resource(Property,'/properties/<string:name>')
