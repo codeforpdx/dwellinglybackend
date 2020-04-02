@@ -56,7 +56,7 @@ class User(Resource):
 
 #pull all users - for debugging purposes disable before production
 class Users(Resource):
-     def get(self):
+    def get(self):
         return {'Users': [user.json() for user in UserModel.query.all()]}
 
 class ArchiveUser(Resource):
