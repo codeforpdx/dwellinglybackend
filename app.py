@@ -3,9 +3,8 @@ from flask_restful import Api
 from flask_jwt_extended import JWTManager
 from flask_cors import CORS
 from models.user import UserModel
-
 from models.revoked_tokens import RevokedTokensModel
-from resources.user import UserRegister, User, UserLogin, ArchiveUser
+from resources.user import UserRegister, User, UserLogin, ArchiveUser, UsersRole
 from resources.property import Properties, Property, ArchiveProperty
 from db import db
 
@@ -52,6 +51,7 @@ api.add_resource(Property,'/properties/<string:name>')
 api.add_resource(Properties,'/properties')
 api.add_resource(ArchiveProperty,'/properties/archive/<int:id>')
 api.add_resource(User, '/user/<int:user_id>')
+api.add_resource(UsersRole, '/users/role')
 api.add_resource(ArchiveUser, '/user/archive/<int:user_id>')
 api.add_resource(UserLogin, '/login')
 

@@ -6,6 +6,7 @@ from flask_jwt_extended import create_access_token, create_refresh_token, jwt_re
 
 
 
+
 class UserRegister(Resource):
     parser = reqparse.RequestParser()
     parser.add_argument('username',type=str,required=True,help="This field cannot be blank.")
@@ -121,3 +122,18 @@ class UserLogin(Resource):
             }, 200
 
         return {"message": "Invalid Credentials!"}, 401       
+
+class UsersRole(Resource):
+    parser = reqparse.RequestParser()
+    parser.add_argument('userrole',type=str,required=True,help="This field cannot be blank.")
+
+    @jwt_required
+    def post(self):
+        #check if is_admin exist if not discontinue function
+        claims = get_jwt_claims() 
+        if not claims['is_admin']:
+            return {'Message', "Admin Access Required"}, 401
+
+        data = UsersRole.parser.parse_args()
+        users = UserModel.find_by_role(data['userrole'])
+        return {'users': [user.json() for user in users]}
