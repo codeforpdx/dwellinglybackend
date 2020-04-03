@@ -49,3 +49,7 @@ class UserModel(db.Model):
     @classmethod
     def find_by_id(cls, _id):
         return cls.query.filter_by(id=_id).first()
+
+    @classmethod
+    def find_by_role(cls, role):
+        return cls.query.filter_by(role=role).all()
