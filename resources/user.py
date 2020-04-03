@@ -1,7 +1,9 @@
 from flask_restful import Resource, reqparse
 from models.user import UserModel
+from models.revoked_tokens import RevokedTokensModel
 from werkzeug.security import safe_str_cmp
-from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt_claims
+from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt_claims, get_raw_jwt
+
 
 
 class UserRegister(Resource):
@@ -10,6 +12,7 @@ class UserRegister(Resource):
     parser.add_argument('email',type=str,required=True,help="This field cannot be blank.")
     parser.add_argument('password', type=str, required=True, help="This field cannot be blank.")
     parser.add_argument('role',type=str,required=True,help="This field cannot be blank.")
+    parser.add_argument('archived',type=str,required=False,help="This field is not required.")
     
     def post(self):
         data = UserRegister.parser.parse_args()
@@ -17,7 +20,7 @@ class UserRegister(Resource):
         if UserModel.find_by_username(data['username']):
             return {"message": "A user with that username already exists"}, 400
 
-        user = UserModel(data['username'], data['password'],data['email'],data['role'])
+        user = UserModel(data['username'], data['password'],data['email'],data['role'],data['archived'])
         user.save_to_db()
 
         return {"message": "User created successfully."}, 201
@@ -36,10 +39,13 @@ class User(Resource):
             return {'message': 'User Not Found'}, 404
 
         # hard coded return as .json() is not compatiable with user model and sqlalchemy
-        return {'id': str(user.id),
+        return {
+            'id': str(user.id),
             'username': user.username,
             'email': user.email,
-            'role': user.role}, 200
+            'role': user.role,
+            'archived': user.archived
+        }, 200
         
 
     @jwt_required
@@ -63,8 +69,35 @@ class Users(Resource):
         claims = get_jwt_claims() 
         if not claims['is_admin']:
             return {'Message', "Admin Access Required"}, 401
-
         return {'Users': [user.json() for user in UserModel.query.all()]}
+
+class ArchiveUser(Resource):
+
+    @jwt_required
+    def post(self, user_id):
+        #check if is_admin exist if not discontinue function
+        claims = get_jwt_claims() 
+
+        if not claims['is_admin']:
+            return {'Message', "Admin Access Required"}, 401
+
+        user = UserModel.find_by_id(user_id)
+        if(not user):
+            return{'Message': 'User cannot be archived'}, 400
+
+        user.archived = not user.archived
+        try:
+            user.save_to_db()
+        except:
+            return {'Message': 'An Error Has Occured'}, 500
+
+        if user.archived:
+            # invalidate access token
+            jti = get_raw_jwt()['jti']
+            revokedToken = RevokedTokensModel(jti=jti)
+            revokedToken.save_to_db()
+
+        return user.json(), 201
 
 class UserLogin(Resource):
     parser = reqparse.RequestParser()
@@ -75,6 +108,9 @@ class UserLogin(Resource):
         data = UserLogin.parser.parse_args()
 
         user = UserModel.find_by_username(data['username'])
+
+        if user and user.archived:
+            return {"message": "Not a valid user"}, 403
 
         if user and safe_str_cmp(user.password, data['password']):
             access_token = create_access_token(identity=user.id, fresh=True) 

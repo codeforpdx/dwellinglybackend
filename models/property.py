@@ -19,7 +19,6 @@ class PropertyModel(db.Model):
         self.state = state
         self.zipcode = zipcode
         self.archived = False
-        if(archived): self.archived = True
 
     def json(self):
         return {
@@ -36,6 +35,7 @@ class PropertyModel(db.Model):
     def find_by_name(cls, name):
         return cls.query.filter_by(name=name).first()
 
+    @classmethod
     def find_by_id(cls, id):
         return cls.query.filter_by(id=id).first() #SELECT * FROM property WHERE id = id LIMIT 1
     
