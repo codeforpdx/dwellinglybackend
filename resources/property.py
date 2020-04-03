@@ -48,6 +48,28 @@ class Properties(Resource):
 
         return rentalproperty.json(), 201
 
+class ArchiveProperty(Resource):
+
+    @jwt_required
+    def post(self, id):
+        #check if is_admin exist if not discontinue function
+        claims = get_jwt_claims() 
+        
+        if not claims['is_admin']:
+            return {'Message', "Admin Access Required"}, 401
+
+        property = PropertyModel.find_by_id(id)
+        if(not property):
+            return{'Message': 'Property cannot be archived'}, 400
+        
+        property.archived = not property.archived
+        try:
+            property.save_to_db()
+        except:
+            return {'Message': 'An Error Has Occured'}, 500
+
+        return property.json(), 201
+
 # single property/name
 class Property(Resource):
     parser = reqparse.RequestParser()
