@@ -9,12 +9,14 @@ class UserModel(db.Model):
     role = db.Column(db.String(20))
     username = db.Column(db.String(80))
     password = db.Column(db.String(80))
+    archived = db.Column(db.Boolean)
 
-    def __init__(self, username, password, email, role):
+    def __init__(self, username, password, email, role, archived):
         self.username = username
         self.password = password
         self.email = email
         self.role = role
+        self.archived = False
 
     def save_to_db(self):
         db.session.add(self)
@@ -24,23 +26,16 @@ class UserModel(db.Model):
         db.session.delete(self)
         db.session.commit()
 
-    @classmethod
-    # def json(self): 
-    #     return {
-    #         'id': self.id,
-    #         'username': self.username,
-    #         'email': self.email,
-    #         'role': self.role
-    #     }
-
-    def json(user): 
-        print('DBG: Userid: '+ str(user.id))
-        print('DBG: UserNAme: '+ user.username)
-        print(user)
+    def json(self): 
+        print('DBG: Userid: '+ str(self.id))
+        print('DBG: UserName: '+ self.username)
         return {
-            'id': user.id
+            'id': self.id,
+            'username': self.username,
+            'email': self.email,
+            'role': self.role,
+            'archived': self.archived
         }
-
 
     @classmethod
     def find_by_username(cls, username):
