@@ -28,6 +28,7 @@ class UserRegister(Resource):
 
 class User(Resource):
 
+    @jwt_required
     def get(self, user_id):
         #check if is_admin exist if not discontinue function
         claims = get_jwt_claims()         
