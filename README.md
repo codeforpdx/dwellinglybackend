@@ -52,14 +52,15 @@ go to
 
 #### ENDPOINT: USER Model
 
-| method | route           | action                      |
-| :----- | :-------------- | :-------------------------- |
-| POST   | `/register/`    | Creates a new user          |
-| GET    | `/users/`       | Gets all users (dev only)   |
-| GET    | `/users/:uid`   | Gets a single user          |
-| PATCH  | `/users/:uid`   | Updates a single user       |
-| POST   | `/login     `   | Login a single user         |
-| DELETE | `/users/:uid`   | Deletes a single user       |
+| method | route                  | action                               |
+| :----- | :--------------------- | :----------------------------------- |
+| POST   | `/register/`           | Creates a new user                   |
+| GET    | `/users/`              | Gets all users (dev only)            |
+| GET    | `/users/:uid`          | Gets a single user (admin only)      |  
+| PATCH  | `/users/:uid`          | Updates a single user                |  not implemented yet
+| POST   | `/login     `          | Login a single user                  |
+| POST   | `/user/archive/:uid`   | Archives a single user (admin only)  |
+| DELETE | `/users/:uid`          | Deletes a single user (admin only)   |
 
 
 ###This Backend Uses JWT for authorization 
@@ -81,14 +82,15 @@ Authorization Bearer < JWT access token >
 
 #### ENDPOINT: PROPERTIES
 
-| method | route                | action                     |
-| :----- | :------------------- | :------------------------- |
-| POST   | `/properties/`       | Creates a new property     |
-| GET    | `/properties/`       | Gets all properties        |
-| GET    | `/properties/:id`    | Gets a single property     |
-| PATCH  | `/properties/:id`    | Updates a single property  |
-| PUT    | `/properties/:id`    | Archives a single property | not implemented yet
-| DELETE | `/properties/:id`    | Deletes a single property  |
+| method | route                        | action                                   |
+| :----- | :--------------------------- | :--------------------------------------- |
+| POST   | `/properties/`               | Creates a new property (admin only)      |
+| GET    | `/properties/`               | Gets all properties                      |
+| GET    | `/properties/:id`            | Gets a single property (admin only)      |
+| PATCH  | `/properties/:id`            | Updates a single property                | not implemented
+| PUT    | `/properties/:id`            | Updates a single property (admin only)   | 
+| DELETE | `/properties/:id`            | Deletes a single property (admin only)   |
+| POST   | `/properties/archive/:id`    | Archives a single property (admin only)  |
 
 
 ```javascript
