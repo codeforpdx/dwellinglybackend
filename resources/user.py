@@ -42,7 +42,8 @@ class User(Resource):
         # hard coded return as .json() is not compatiable with user model and sqlalchemy
         return {
             'id': str(user.id),
-            'username': user.username,
+            'firstName': user.firstName,
+            'lastName': user.lastName,
             'email': user.email,
             'role': user.role,
             'archived': user.archived
