@@ -32,7 +32,7 @@ class User(Resource):
         #check if is_admin exist if not discontinue function
         claims = get_jwt_claims()         
         if not claims['is_admin']:
-            return {'Message', "Admin Access Required"}, 401
+            return {'message': 'Admin Access Required'}, 401
 
         user = UserModel.find_by_id(user_id)
 
