@@ -33,11 +33,14 @@ jwt = JWTManager(app) # /authorization
 
 @jwt.user_claims_loader
 #check if user role == admin
-def role_loader(identity): #idenity = user.id in JWT
+def role_loader(identity): #identity = user.id in JWT
     user = UserModel.find_by_id(identity)
-    if user.role == 'admin':
-        return{'is_admin': True}
-    return {'is_admin': False}
+    return {
+        'email': user.email,
+        'firstName': user.firstName,
+        'lastName': user.lastName,
+        'is_admin': (user.role == 'admin')
+    }
     
 # checking if the token's jti (jwt id) is in the set of revoked tokens
 # this check is applied globally (to all routes that require jwt)
