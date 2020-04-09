@@ -70,15 +70,35 @@ Authorization header format:
 Authorization Bearer < JWT access token >
 ```
 
+###The database is seeded with 3 default users
+
 ```javascript
-  {
-        "username": "defaultUser",
-        "password": "userPassword",
+    [{
         "email": "user1@dwellingly.com",
+        "password": "1234",
+        "firstName": "user1",
+        "lastName": "tester",
         "archived": "false",
         "role": "admin"
-        }
+    },
+    {
+        "email": "user2@dwellingly.com",
+        "password": "1234",
+        "firstName": "user2",
+        "lastName": "tester",
+        "archived": "false",
+        "role": "admin"
+    },
+    {
+        "email": "user3@dwellingly.com",
+        "password": "1234",
+        "firstName": "user3",
+        "lastName": "tester",
+        "archived": "false",
+        "role": "admin"
+    }]
 ```
+
 
 #### ENDPOINT: PROPERTIES
 
