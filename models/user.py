@@ -7,14 +7,16 @@ class UserModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(100))
     role = db.Column(db.String(20))
-    username = db.Column(db.String(80))
+    firstName = db.Column(db.String(80))
+    lastName = db.Column(db.String(80))
     password = db.Column(db.String(80))
     archived = db.Column(db.Boolean)
 
-    def __init__(self, username, password, email, role, archived):
-        self.username = username
-        self.password = password
+    def __init__(self, firstName, lastName, email, password, role, archived):
+        self.firstName = firstName
+        self.lastName = lastName
         self.email = email
+        self.password = password
         self.role = role
         self.archived = False
 
@@ -27,19 +29,18 @@ class UserModel(db.Model):
         db.session.commit()
 
     def json(self): 
-        print('DBG: Userid: '+ str(self.id))
-        print('DBG: UserName: '+ self.username)
         return {
             'id': self.id,
-            'username': self.username,
+            'firstName': self.firstName,
+            'lastName': self.lastName,
             'email': self.email,
             'role': self.role,
             'archived': self.archived
         }
 
     @classmethod
-    def find_by_username(cls, username):
-        return cls.query.filter_by(username=username).first()
+    def find_by_email(cls, email):
+        return cls.query.filter_by(email=email).first()
 
     @classmethod
     def find_by_id(cls, _id):
