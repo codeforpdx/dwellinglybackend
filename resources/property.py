@@ -32,12 +32,12 @@ class Properties(Resource):
         claims = get_jwt_claims() 
         
         if not claims['is_admin']:
-            return {'Message', "Admin Access Required"}, 401
+            return {'message': "Admin Access Required"}, 401
 
         data = Properties.parser.parse_args()
 
         if PropertyModel.find_by_name(data["name"]):
-            return { 'Message': 'A property with this name already exists'}, 401
+            return { 'message': 'A property with this name already exists'}, 401
 
         rentalproperty = PropertyModel(**data) 
 
@@ -56,17 +56,17 @@ class ArchiveProperty(Resource):
         claims = get_jwt_claims() 
         
         if not claims['is_admin']:
-            return {'Message', "Admin Access Required"}, 401
+            return {'message': "Admin Access Required"}, 401
 
         property = PropertyModel.find_by_id(id)
         if(not property):
-            return{'Message': 'Property cannot be archived'}, 400
+            return{'message': 'Property cannot be archived'}, 400
         
         property.archived = not property.archived
         try:
             property.save_to_db()
         except:
-            return {'Message': 'An Error Has Occured'}, 500
+            return {'message': 'An Error Has Occured'}, 500
 
         return property.json(), 201
 
@@ -85,7 +85,7 @@ class Property(Resource):
         claims = get_jwt_claims() 
 
         if not claims['is_admin']:
-            return {'Message', "Admin Access Required"}, 401
+            return {'message': "Admin Access Required"}, 401
 
         rentalProperty = PropertyModel.find_by_name(name)
 
@@ -98,7 +98,7 @@ class Property(Resource):
         claims = get_jwt_claims() 
 
         if not claims['is_admin']:
-            return {'Message', "Admin Access Required"}, 401
+            return {'message': "Admin Access Required"}, 401
 
         property = PropertyModel.find_by_name(name)
         if property:
@@ -112,7 +112,7 @@ class Property(Resource):
         claims = get_jwt_claims() 
 
         if not claims['is_admin']:
-            return {'Message', "Admin Access Required"}, 401
+            return {'message': "Admin Access Required"}, 401
 
         data = Properties.parser.parse_args()
         rentalProperty = PropertyModel.find_by_name(name)

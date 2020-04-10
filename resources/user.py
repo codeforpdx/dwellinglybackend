@@ -55,7 +55,7 @@ class User(Resource):
         #check if is_admin exists - if not discontinue function
         claims = get_jwt_claims()         
         if not claims['is_admin']:
-            return {'Message', "Admin Access Required"}, 401
+            return {'message': "Admin Access Required"}, 401
 
         user = UserModel.find_by_id(user_id)
         if not user:
@@ -70,7 +70,7 @@ class Users(Resource):
         #check if is_admin exists - if not discontinue function
         claims = get_jwt_claims() 
         if not claims['is_admin']:
-            return {'Message', "Admin Access Required"}, 401
+            return {'message': "Admin Access Required"}, 401
         return {'Users': [user.json() for user in UserModel.query.all()]}
 
 class ArchiveUser(Resource):
@@ -81,7 +81,7 @@ class ArchiveUser(Resource):
         claims = get_jwt_claims() 
 
         if not claims['is_admin']:
-            return {'Message', "Admin Access Required"}, 401
+            return {'message': "Admin Access Required"}, 401
 
         user = UserModel.find_by_id(user_id)
         if(not user):
@@ -133,7 +133,7 @@ class UsersRole(Resource):
         #check if is_admin exist if not discontinue function
         claims = get_jwt_claims() 
         if not claims['is_admin']:
-            return {'Message', "Admin Access Required"}, 401
+            return {'message': "Admin Access Required"}, 401
 
         data = UsersRole.parser.parse_args()
         users = UserModel.find_by_role(data['userrole'])
