@@ -19,6 +19,8 @@ app.config['JWT_BLACKLIST_ENABLED'] = True
 app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = ['access', 'refresh']
 app.secret_key = 'dwellingly' #Replace with Random Hash
 #allow cross-origin (CORS)
+app.config['JWT_ACCESS_TOKEN_EXPIRES'] = False
+app.config['JWT_REFRESH_TOKEN_EXPIRES'] = False
 CORS(app)
 
 api = Api(app)
