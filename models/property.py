@@ -10,7 +10,7 @@ class PropertyModel(db.Model):
     state = db.Column(db.String(50))
     zipcode = db.Column(db.String(20))
     tenants = db.Column(db.Integer)
-    dateAdded = db.Column(db.Date)
+    dateAdded = db.Column(db.String(50))
     archived = db.Column(db.Boolean)
 
 
@@ -20,6 +20,8 @@ class PropertyModel(db.Model):
         self.city = city
         self.state = state
         self.zipcode = zipcode
+        self.tenants = tenants
+        self.dateAdded = dateAdded
         self.archived = False
 
     def json(self):
