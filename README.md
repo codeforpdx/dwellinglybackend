@@ -124,3 +124,17 @@ Authorization Bearer < JWT access token >
     "archived": False
   },
 ```
+#### ENDPOINT: EMAIL
+
+| method | route                | action                     |
+| :----- | :------------------- | :------------------------- |
+| POST   | `/user/message`      | Send Message to a user     |
+
+
+#### Example Request
+```javascript
+     {
+    "userid": 1,
+    "title": "Test email title",
+    "body": "Dwellingly Test email body"
+  },

@@ -6,10 +6,10 @@ from models.user import UserModel
 from models.revoked_tokens import RevokedTokensModel
 from resources.user import UserRegister, User, UserLogin, ArchiveUser, UsersRole
 from resources.property import Properties, Property, ArchiveProperty
-from db import db
 from flask_mail import Mail
 from resources.email import Email
 import os
+from db import db
 
 app = Flask(__name__)
 #config DataBase
@@ -28,8 +28,9 @@ app.config['MAIL_PORT'] = 465
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
 app.config['MAIL_DEBUG'] = True #same as app
-app.config['MAIL_USERNAME'] = os.environ['EMAIL_USER']
-app.config['MAIL_PASSWORD'] = os.environ['EMAIL_PASSWORD']
+app.config['MAIL_USERNAME'] = "dwellingly@gmail.com" #not active
+app.config['MAIL_PASSWORD'] = "1234567thisisnotreal"
+# app.config['MAIL_PASSWORD'] = os.environ['EMAIL_PASSWORD']
 # app.config['MAIL_DEFAULT_SENDER'] = 'noreply@dwellingly.com'
 app.config['MAIL_MAX_EMAILS'] = 3
 app.config['MAIL_SUPPRESS_SEND'] = False #same as testing 
@@ -51,6 +52,7 @@ def create_tables():
 jwt = JWTManager(app) # /authorization 
 
 mail = Mail(app) #init Mail
+
 
 @jwt.user_claims_loader
 #check if user role == admin
@@ -83,5 +85,5 @@ api.add_resource(Email, '/user/message')
 
 
 if __name__ == '__main__':
-    # db.init_app(app) 
+    db.init_app(app) 
     app.run(port=5000, debug=True)
