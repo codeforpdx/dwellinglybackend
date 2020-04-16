@@ -30,6 +30,7 @@ app.config['MAIL_USE_SSL'] = True
 app.config['MAIL_DEBUG'] = True #same as app
 app.config['MAIL_USERNAME'] = "dwellingly@gmail.com" #not active
 app.config['MAIL_PASSWORD'] = "1234567thisisnotreal"
+# app.config['MAIL_USERNAME'] = os.environ['EMAIL_USERNAME'] 
 # app.config['MAIL_PASSWORD'] = os.environ['EMAIL_PASSWORD']
 # app.config['MAIL_DEFAULT_SENDER'] = 'noreply@dwellingly.com'
 app.config['MAIL_MAX_EMAILS'] = 3
