@@ -20,7 +20,7 @@ NOTE: Database is SQLite3 via SQLAlchemy
 5. Create virtual environment: 
 
     - `virtualenv env`
-    - To install virtualenv: `pip install --user virtualenv`
+    - To install virtualenv: `pip3 install --user virtualenv`
 
 6. Activate the virtual environment 
 
@@ -31,7 +31,7 @@ NOTE: Database is SQLite3 via SQLAlchemy
 
     - Run: `pipenv run flask run`
     - Run + restart the server on changes:  `pipenv run flask run --reload`
-    - To install pipenv: `pip install --user pipenv`
+    - To install pipenv: `pip3 install --user pipenv`
 
 Queries can be made with the Postman Collection link ( https://www.getpostman.com/collections/a86a292798c7895425e2 )
 
