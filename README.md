@@ -74,7 +74,7 @@ Authorization Bearer < JWT access token >
 
 ```javascript
     [{
-        "email": "user1@dwellingly.com",
+        "email": "user1@dwellingly.org",
         "password": "1234",
         "firstName": "user1",
         "lastName": "tester",
@@ -82,7 +82,7 @@ Authorization Bearer < JWT access token >
         "role": "admin"
     },
     {
-        "email": "user2@dwellingly.com",
+        "email": "user2@dwellingly.org",
         "password": "1234",
         "firstName": "user2",
         "lastName": "tester",
@@ -90,7 +90,7 @@ Authorization Bearer < JWT access token >
         "role": "admin"
     },
     {
-        "email": "user3@dwellingly.com",
+        "email": "user3@dwellingly.org",
         "password": "1234",
         "firstName": "user3",
         "lastName": "tester",
