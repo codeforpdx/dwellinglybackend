@@ -11,13 +11,13 @@ class Email(Resource):
     parser.add_argument('title') 
     parser.add_argument('body') 
 
-    # @jwt_required
+    @jwt_required
     def post(self):
-        #check if is_admin exist if not discontinue function
-        # claims = get_jwt_claims() 
+        check if is_admin exist if not discontinue function
+        claims = get_jwt_claims() 
         
-        # if not claims['is_admin']:
-        #     return {'Message', "Admin Access Required"}, 401
+        if not claims['is_admin']:
+            return {'Message', "Admin Access Required"}, 401
 
         data = Email.parser.parse_args()
 
