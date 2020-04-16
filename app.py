@@ -1,11 +1,11 @@
 from flask import Flask
 from flask_restful import Api
-from flask_jwt_extended import JWTManager
+from flask_jwt_extended import JWTManager, jwt_refresh_token_required, create_access_token, get_jwt_identity
 from flask_cors import CORS
 from models.user import UserModel
 from models.property import PropertyModel
 from models.revoked_tokens import RevokedTokensModel
-from resources.user import UserRegister, User, UserLogin, ArchiveUser, UsersRole
+from resources.user import UserRegister, User, UserLogin, ArchiveUser, UsersRole, UserAccessRefresh
 from resources.property import Properties, Property, ArchiveProperty
 from db import db
 
@@ -88,7 +88,7 @@ api.add_resource(User, '/user/<int:user_id>')
 api.add_resource(UsersRole, '/users/role')
 api.add_resource(ArchiveUser, '/user/archive/<int:user_id>')
 api.add_resource(UserLogin, '/login')
-
+api.add_resource(UserAccessRefresh, '/refresh')
 
 if __name__ == '__main__':
     # db.init_app(app) 
