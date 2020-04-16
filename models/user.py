@@ -17,7 +17,7 @@ class UserModel(db.Model):
         self.lastName = lastName
         self.email = email
         self.password = password
-        self.role = role
+        self.role = role if role else 'pending'
         self.archived = False
 
     def save_to_db(self):
