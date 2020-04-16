@@ -29,9 +29,8 @@ class Properties(Resource):
     parser.add_argument('archived')
     
     def get(self):
-        # result = db.session.query(PropertyModel.name, PropertyModel.address, PropertyModel.tenants, PropertyModel.dateAdded, UserModel.firstName, UserModel.lastName).join(UserModel).all()
         # print(dict(zip(row.keys(), row)) for row in result)
-        return {'properties': [property._asdict() for property in db.session.query(PropertyModel.name, PropertyModel.address, PropertyModel.tenants, PropertyModel.dateAdded, UserModel.firstName, UserModel.lastName).join(UserModel).all()]}
+        return {'properties': [property._asdict() for property in db.session.query(PropertyModel.id, PropertyModel.name, PropertyModel.address, PropertyModel.tenants, PropertyModel.dateAdded, UserModel.fullName.label('propertyManager')).join(UserModel).all()]}
     
     @jwt_required
     def post(self):
