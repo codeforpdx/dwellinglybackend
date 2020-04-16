@@ -13,7 +13,7 @@ class Email(Resource):
 
     @jwt_required
     def post(self):
-        check if is_admin exist if not discontinue function
+        # check if is_admin exist if not discontinue function
         claims = get_jwt_claims() 
         
         if not claims['is_admin']:
