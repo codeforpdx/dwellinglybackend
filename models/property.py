@@ -1,4 +1,5 @@
 from db import db
+from models.user import UserModel
 
 class PropertyModel(db.Model):
     __tablename__ = "properties"
@@ -9,17 +10,19 @@ class PropertyModel(db.Model):
     city = db.Column(db.String(50))
     state = db.Column(db.String(50))
     zipcode = db.Column(db.String(20))
-    tenants = db.Column(db.Integer)
+    propertyManager = db.Column(db.Integer(), db.ForeignKey('users.id'))
+    tenants = db.Column(db.Integer())
     dateAdded = db.Column(db.String(50))
     archived = db.Column(db.Boolean)
 
 
-    def __init__(self, name, address, city, state, zipcode, tenants, dateAdded, archived):
+    def __init__(self, name, address, city, state, zipcode, propertyManager, tenants, dateAdded, archived):
         self.name = name
         self.address = address
         self.city = city
         self.state = state
         self.zipcode = zipcode
+        self.propertyManager = propertyManager
         self.tenants = tenants
         self.dateAdded = dateAdded
         self.archived = False
@@ -32,6 +35,7 @@ class PropertyModel(db.Model):
             'city': self.city, 
             'state': self.state, 
             'zipcode': self.zipcode,
+            'propertyManager': self.propertyManager,
             'tenants': self.tenants,
             'dateAdded': self.dateAdded,
             'archived': self.archived
