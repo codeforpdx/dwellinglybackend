@@ -2,7 +2,7 @@ from flask_restful import Resource, reqparse
 from models.user import UserModel
 from models.revoked_tokens import RevokedTokensModel
 from werkzeug.security import safe_str_cmp
-from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt_claims, get_raw_jwt
+from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt_claims, get_raw_jwt, get_jwt_identity, jwt_refresh_token_required
 
 
 class UserRegister(Resource):
@@ -138,3 +138,19 @@ class UsersRole(Resource):
         data = UsersRole.parser.parse_args()
         users = UserModel.find_by_role(data['userrole'])
         return {'users': [user.json() for user in users]}
+
+# This endpoint allows the app to use a refresh token to get a new access token 
+class UserAccessRefresh(Resource):
+    
+    # The jwt_refresh_token_required decorator insures a valid refresh
+    # token is present in the request before calling this endpoint. We
+    # can use the get_jwt_identity() function to get the identity of
+    # the refresh token, and use the create_access_token() function again
+    # to make a new access token for this identity.
+    @jwt_refresh_token_required
+    def post(self):
+        current_user = get_jwt_identity()
+        ret = {
+            'access_token': create_access_token(identity=current_user)
+        }
+        return ret, 200
