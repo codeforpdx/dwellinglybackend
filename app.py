@@ -6,6 +6,9 @@ from models.user import UserModel
 from models.revoked_tokens import RevokedTokensModel
 from resources.user import UserRegister, User, UserLogin, ArchiveUser, UsersRole, UserAccessRefresh
 from resources.property import Properties, Property, ArchiveProperty
+from flask_mail import Mail
+from resources.email import Email
+import os
 from db import db
 
 app = Flask(__name__)
@@ -18,6 +21,22 @@ app.config['JWT_AUTH_USERNAME_KEY'] = 'email'
 app.config['JWT_BLACKLIST_ENABLED'] = True
 app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = ['access', 'refresh']
 app.secret_key = 'dwellingly' #Replace with Random Hash
+
+#configure mail server
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 465
+app.config['MAIL_USE_TLS'] = False
+app.config['MAIL_USE_SSL'] = True
+app.config['MAIL_DEBUG'] = True #same as app
+app.config['MAIL_USERNAME'] = "dwellingly@gmail.com" #not active
+app.config['MAIL_PASSWORD'] = "1234567thisisnotreal"
+# app.config['MAIL_USERNAME'] = os.environ['EMAIL_USERNAME'] 
+# app.config['MAIL_PASSWORD'] = os.environ['EMAIL_PASSWORD']
+# app.config['MAIL_DEFAULT_SENDER'] = 'noreply@dwellingly.com'
+app.config['MAIL_MAX_EMAILS'] = 3
+app.config['MAIL_SUPPRESS_SEND'] = False #same as testing 
+app.config['MAIL_ASCII_ATTACHMENTS'] = False
+
 #allow cross-origin (CORS)
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = False
 app.config['JWT_REFRESH_TOKEN_EXPIRES'] = False
@@ -32,6 +51,9 @@ def create_tables():
     db.create_all()
 
 jwt = JWTManager(app) # /authorization 
+
+mail = Mail(app) #init Mail
+
 
 @jwt.user_claims_loader
 #check if user role == admin
@@ -53,15 +75,17 @@ def check_if_token_in_blacklist(decrypted_token):
 
 
 api.add_resource(UserRegister, '/register')
-api.add_resource(Property,'/properties/<string:name>')
+api.add_resource(Property,'/properties/<string:name>') #TODO change to ID
 api.add_resource(Properties,'/properties')
 api.add_resource(ArchiveProperty,'/properties/archive/<int:id>')
 api.add_resource(User, '/user/<int:user_id>')
 api.add_resource(UsersRole, '/users/role')
 api.add_resource(ArchiveUser, '/user/archive/<int:user_id>')
 api.add_resource(UserLogin, '/login')
+api.add_resource(Email, '/user/message')
 api.add_resource(UserAccessRefresh, '/refresh')
 
+
 if __name__ == '__main__':
-    # db.init_app(app) 
+    db.init_app(app) 
     app.run(port=5000, debug=True)
