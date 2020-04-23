@@ -14,7 +14,7 @@ class Email(Resource):
     @jwt_required
     def post(self):
         # check if is_admin exist if not discontinue function
-        claims = get_jwt_claims() 
+        claims = get_jwt_claims()
         
         if not claims['is_admin']:
             return {'Message', "Admin Access Required"}, 401
