@@ -27,7 +27,13 @@ NOTE: Database is SQLite3 via SQLAlchemy
     - Mac + Linux: `source env/bin/activate`
     - Windows: `source env/Scripts/activate`
     
-7. Start the server using the flask environment (required every time the project is re-opened):
+7. Seed the database
+
+    - Run: `python seed_db.py`
+      - To re-seed the database from scratch, delete data.db before running the script
+    - Look for the file data.db to be created in the root directory
+
+8. Start the server using the flask environment (required every time the project is re-opened):
 
     - Run: `pipenv run flask run`
     - Run + restart the server on changes:  `pipenv run flask run --reload`
