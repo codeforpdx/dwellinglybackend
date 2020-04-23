@@ -12,71 +12,53 @@ from resources.email import Email
 import os
 from db import db
 
-app = Flask(__name__)
-#config DataBase
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['PROPAGATE_EXCEPTIONS'] = True
-app.config['JWT_AUTH_USERNAME_KEY'] = 'email'
-# Enable blacklisting and specify what kind of tokens to check against the blacklist
-app.config['JWT_BLACKLIST_ENABLED'] = True
-app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = ['access', 'refresh']
-app.secret_key = 'dwellingly' #Replace with Random Hash
+def create_app():
+    app = Flask(__name__)
 
-#configure mail server
-app.config['MAIL_SERVER'] = 'smtp.gmail.com'
-app.config['MAIL_PORT'] = 465
-app.config['MAIL_USE_TLS'] = False
-app.config['MAIL_USE_SSL'] = True
-app.config['MAIL_DEBUG'] = True #same as app
-app.config['MAIL_USERNAME'] = "dwellingly@gmail.com" #not active
-app.config['MAIL_PASSWORD'] = "1234567thisisnotreal"
-# app.config['MAIL_USERNAME'] = os.environ['EMAIL_USERNAME'] 
-# app.config['MAIL_PASSWORD'] = os.environ['EMAIL_PASSWORD']
-# app.config['MAIL_DEFAULT_SENDER'] = 'noreply@dwellingly.com'
-app.config['MAIL_MAX_EMAILS'] = 3
-app.config['MAIL_SUPPRESS_SEND'] = False #same as testing 
-app.config['MAIL_ASCII_ATTACHMENTS'] = False
+    #config DataBase
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db'
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    app.config['PROPAGATE_EXCEPTIONS'] = True
+    app.secret_key = 'dwellingly' #Replace with Random Hash
+    app.config['JWT_AUTH_USERNAME_KEY'] = 'email'
 
-#allow cross-origin (CORS)
-app.config['JWT_ACCESS_TOKEN_EXPIRES'] = False
-app.config['JWT_REFRESH_TOKEN_EXPIRES'] = False
-CORS(app)
+    # During development, it makes sense to allow permanent token validity
+    # Replace these configs before production release. 
+    app.config['JWT_ACCESS_TOKEN_EXPIRES'] = False
+    app.config['JWT_REFRESH_TOKEN_EXPIRES'] = False
 
+    # Enable blacklisting and specify what kind of tokens to check against the blacklist
+    app.config['JWT_BLACKLIST_ENABLED'] = True
+    app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = ['access', 'refresh']
+
+    #configure mail server
+    app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+    app.config['MAIL_PORT'] = 465
+    app.config['MAIL_USE_TLS'] = False
+    app.config['MAIL_USE_SSL'] = True
+    app.config['MAIL_DEBUG'] = True #same as app
+    app.config['MAIL_USERNAME'] = "dwellingly@gmail.com" #not active
+    app.config['MAIL_PASSWORD'] = "1234567thisisnotreal"
+    # app.config['MAIL_USERNAME'] = os.environ['EMAIL_USERNAME'] 
+    # app.config['MAIL_PASSWORD'] = os.environ['EMAIL_PASSWORD']
+    # app.config['MAIL_DEFAULT_SENDER'] = 'noreply@dwellingly.com'
+    app.config['MAIL_MAX_EMAILS'] = 3
+    app.config['MAIL_SUPPRESS_SEND'] = False #same as testing 
+    app.config['MAIL_ASCII_ATTACHMENTS'] = False
+
+    #allow cross-origin (CORS)
+    CORS(app)
+
+    db.init_app(app) #need to solve this 
+    return app
+
+
+app = create_app()
 api = Api(app)
 
-db.init_app(app) #need to solve this 
-
-@app.before_first_request
-def create_tables():
-    db.create_all()
-    # seedData()
-
-def seedData():
-    user = UserModel(email="user1@dwellingly.org", role="admin", firstName="user1", lastName="tester", password="1234", archived=0)
-    db.session.add(user)
-    user = UserModel(email="user2@dwellingly.org", role="admin", firstName="user2", lastName="tester", password="1234", archived=0)
-    db.session.add(user)
-    user = UserModel(email="user3@dwellingly.org", role="admin", firstName="user3", lastName="tester", password="1234", archived=0)
-    db.session.add(user)
-    user = UserModel(email="MisterSir@dwellingly.org", role="property-manager", firstName="Mr.", lastName="Sir", password="1234", archived=0)
-    db.session.add(user)
-    user = UserModel(email="user3@dwellingly.org", role="property-manager", firstName="Gray", lastName="Pouponn", password="1234", archived=0)
-    db.session.add(user)
-
-    newProperty = PropertyModel(name="test1", address="123 NE FLanders St", city="Portland", state="OR", zipcode="97207", propertyManager=5, tenants=3, dateAdded="2020-04-12", archived=0)
-    db.session.add(newProperty)
-    newProperty = PropertyModel(name="Meerkat Manor", address="Privet Drive", city="Portland", state="OR", zipcode="97207", propertyManager=4, tenants=6, dateAdded="2020-04-12", archived=0)
-    db.session.add(newProperty)
-    newProperty = PropertyModel(name="The Reginald", address="Aristocrat Avenue", city="Portland", state="OR", zipcode="97207", propertyManager=5, tenants=4, dateAdded="2020-04-12", archived=0)
-    db.session.add(newProperty)
-
-
-
-    revokedToken = RevokedTokensModel(jti="855c5cb8-c871-4a61-b3d8-90249f979601")
-    db.session.add(revokedToken)
-
-    db.session.commit()
+# @app.before_first_request
+# def create_tables():
+#     db.create_all()
 
 jwt = JWTManager(app) # /authorization 
 
@@ -115,5 +97,5 @@ api.add_resource(UserAccessRefresh, '/refresh')
 
 
 if __name__ == '__main__':
-    db.init_app(app) 
+    # db.init_app(app) 
     app.run(port=5000, debug=True)
