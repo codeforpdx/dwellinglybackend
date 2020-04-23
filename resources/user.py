@@ -11,7 +11,7 @@ class UserRegister(Resource):
     parser.add_argument('lastName',type=str,required=True,help="This field cannot be blank.")
     parser.add_argument('email',type=str,required=True,help="This field cannot be blank.")
     parser.add_argument('password', type=str, required=True, help="This field cannot be blank.")
-    parser.add_argument('role',type=str,required=True,help="This field cannot be blank.")
+    parser.add_argument('role',type=str,required=False,help="This field is not required.")
     parser.add_argument('archived',type=str,required=False,help="This field is not required.")
     
     def post(self):
