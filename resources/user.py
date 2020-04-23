@@ -26,7 +26,6 @@ class UserRegister(Resource):
         return {"message": "User created successfully."}, 201
 
 class User(Resource):
-
     @jwt_required
     def get(self, user_id):
         #check if is_admin exist if not discontinue function
@@ -49,6 +48,28 @@ class User(Resource):
             'archived': user.archived
         }, 200
         
+    @jwt_required
+    def patch(self,user_id):
+        #check if is_admin exists - if not discontinue function
+        claims = get_jwt_claims()         
+        if not claims['is_admin']:
+            return {'message': "Admin Access Required"}, 401
+
+        parser = reqparse.RequestParser()
+        parser.add_argument('role',type=str,required=True,help="This field cannot be blank.")
+
+        user = UserModel.find_by_id(user_id)
+        if not user:
+            return {"Message": "Unable to update user"}
+
+        data = parser.parse_args()
+        user.role = data['role']
+        try:
+            user.save_to_db()
+        except:
+            return {'Message': 'An Error Has Occured'}, 500
+
+        return user.json(), 201
 
     @jwt_required
     def delete(self, user_id):
