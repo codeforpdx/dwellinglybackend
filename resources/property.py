@@ -1,7 +1,9 @@
+import json
 from flask_restful import Resource, reqparse
 from flask_jwt_extended import jwt_required, get_jwt_claims
 from db import db
 from models.property import PropertyModel
+from models.user import UserModel
 
 # | method | route                | action                     |
 # | :----- | :------------------- | :------------------------- |
@@ -21,10 +23,14 @@ class Properties(Resource):
     parser.add_argument('city')
     parser.add_argument('zipcode')
     parser.add_argument('state')
+    parser.add_argument('propertyManager')
+    parser.add_argument('tenants')
+    parser.add_argument('dateAdded')
     parser.add_argument('archived')
     
     def get(self):
-        return {'properties': [property.json() for property in PropertyModel.query.all()]}
+        # print(dict(zip(row.keys(), row)) for row in result)
+        return {'properties': [property._asdict() for property in db.session.query(PropertyModel.id, PropertyModel.name, PropertyModel.address, PropertyModel.tenants, PropertyModel.dateAdded, UserModel.fullName.label('propertyManager')).join(UserModel).all()]}
     
     @jwt_required
     def post(self):
@@ -78,6 +84,9 @@ class Property(Resource):
     parser.add_argument('city')
     parser.add_argument('zipcode')
     parser.add_argument('state')
+    parser.add_argument('propertyManager')
+    parser.add_argument('tenants')
+    parser.add_argument('dateAdded')
     parser.add_argument('archived')
 
     @jwt_required
@@ -132,6 +141,15 @@ class Property(Resource):
         
         if(data.state):
             rentalProperty.state = data.state
+
+        if(data.propertyManager):
+            rentalProperty.propertyManager = data.propertyManager
+
+        if(data.tenants):
+            rentalProperty.tenants = data.tenants
+
+        if(data.dateAdded):
+            rentalProperty.dateAdded = data.dateAdded
         
         #the reported purpose of this route is toggling the "archived" status
         #but an explicit value of "archive" in the request body will override

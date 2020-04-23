@@ -1,19 +1,19 @@
 from db import db
 
-#basically a hash table to connect landlords, tenents, and properties
+#basically a hash table to connect landlords, tenants, and properties
 #hold off on implementation as it might redundent
 
-class TenentModel(db.Model):
-    __tablename__ = "tenents"
+class TenantModel(db.Model):
+    __tablename__ = "tenants"
 
     id = db.Column(db.Integer, primary_key=True)
-    tenentID = db.Column(db.Integer, db.ForeignKey('users.id'))
+    tenantID = db.Column(db.Integer, db.ForeignKey('users.id'))
     propertyID = db.Column(db.Integer, db.ForeignKey('property.id'))
     landlordID = db.Column(db.Integer, db.ForeignKey('users.id'))
 
-    def __init__(self, tenentID, propertyID, landlordID):
+    def __init__(self, tenantID, propertyID, landlordID):
         self.id = id
-        self.tenentID = tenentID
+        self.tenantID = tenantID
         self.propertyID = propertyID
         self.landlordID = landlordID
 
@@ -24,8 +24,8 @@ class TenentModel(db.Model):
     def find_by_id(cls, id):
         return cls.query.filter_by(id=id).first() #SELECT * FROM property WHERE id = id LIMIT 1
     
-    def find_by_tenent(cls, id):
-        return cls.query.filter_by(tenentID = id).first()
+    def find_by_tenant(cls, id):
+        return cls.query.filter_by(tenantID = id).first()
     
     def find_by_property(cls, id):
         return cls.query.filter_by(propertyID = id).all()

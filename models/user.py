@@ -8,6 +8,7 @@ class UserModel(db.Model):
     role = db.Column(db.String(20))
     firstName = db.Column(db.String(80))
     lastName = db.Column(db.String(80))
+    fullName = db.column_property(firstName + ' ' + lastName)
     password = db.Column(db.String(80))
     archived = db.Column(db.Boolean)
 
