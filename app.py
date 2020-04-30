@@ -57,8 +57,21 @@ app = create_app()
 api = Api(app)
 
 @app.before_first_request
-def create_tables():
-    db.create_all()
+def check_for_admins():
+    errorMsg = (
+    "\n\n=-=-=-=-=-=-=-=\n"
+    "WARNING! Database unusable. Did you forget to run the seed_db.py script? `python seed_db.py`"
+    "\n=-=-=-=-=-=-=-=\n\n"
+    )
+
+    assert (os.path.isfile('./data.db')), errorMsg
+    try:
+        admins = UserModel.find_by_role('admin')
+    except:
+        print(errorMsg)
+    else:
+        if(not len(admins)):
+            print(errorMsg)
 
 jwt = JWTManager(app) # /authorization 
 
