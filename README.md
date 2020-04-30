@@ -1,8 +1,12 @@
+*Looking for the [Dwellingly App front end?](https://github.com/codeforpdx/dwellingly-app)*
+
+## Dwellingly App Backend
+
 Set up Dwelling Flask Testing Backend (for the first time)
 NOTE: Database is SQLite3 via SQLAlchemy 
 
-+ Github Repo: {https://github.com/codeforpdx/dwellinglybackend}
-+ Live Server: {https://dwellinglyapi.herokuapp.com/ } 
++ Github Repo: { https://github.com/codeforpdx/dwellinglybackend }
++ Live Server: {https://dwellinglyapi.herokuapp.com/} 
 
 ### To Start Server
 
@@ -63,14 +67,14 @@ go to
 | DELETE | `/users/:uid`          | Deletes a single user (admin only)   |
 
 
-###This Backend Uses JWT for authorization 
+### This Backend Uses JWT for authorization 
 
 Authorization header format:
 ```javascript
 Authorization Bearer < JWT access token >
 ```
 
-###The database is seeded with 3 default users
+### The database is seeded with 3 default users
 
 ```javascript
     [{
