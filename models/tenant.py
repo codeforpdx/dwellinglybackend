@@ -1,32 +1,44 @@
+from sqlalchemy.orm import relationship
 from db import db
-
-#basically a hash table to connect landlords, tenants, and properties
-#hold off on implementation as it might redundent
+from models.user import UserModel
 
 class TenantModel(db.Model):
     __tablename__ = "tenants"
 
     id = db.Column(db.Integer, primary_key=True)
-    tenantID = db.Column(db.Integer, db.ForeignKey('users.id'))
+    firstName = db.Column(db.String(100))
+    lastName = db.Column(db.String(100))
+    phone = db.Column(db.String(20))
     propertyID = db.Column(db.Integer, db.ForeignKey('property.id'))
-    landlordID = db.Column(db.Integer, db.ForeignKey('users.id'))
+    staffIDs = departments = relationship(
+        UserModel,
+        secondary='tenant_staff_link'
+    )
+    # leaseID = db.Column(db.Integer, db.ForeignKey('lease.id'))
 
-    def __init__(self, tenantID, propertyID, landlordID):
+
+    def __init__(self, firstName, lastName, phone, propertyID):
         self.id = id
-        self.tenantID = tenantID
+        self.firstName = firstName
+        self.lastName = lastName
+        self.phone = phone
         self.propertyID = propertyID
-        self.landlordID = landlordID
 
     def json(self):
-        return {'id': self.id, 'name':self.name, 'address': self.address, 'city': self.city, 'state': self.state}
+        return {
+            'id': self.id, 
+            'firstName':self.firstName, 
+            'lastName':self.lastName, 
+            'phone': self.phone, 
+            'propertyID': self.propertyID,
+            'staffIDs': self.staffIDs
+        }
     
     @classmethod
     def find_by_id(cls, id):
         return cls.query.filter_by(id=id).first() #SELECT * FROM property WHERE id = id LIMIT 1
-    
-    def find_by_tenant(cls, id):
-        return cls.query.filter_by(tenantID = id).first()
-    
+
+    @classmethod
     def find_by_property(cls, id):
         return cls.query.filter_by(propertyID = id).all()
 
