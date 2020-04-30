@@ -6,7 +6,7 @@ NOTE: Database is SQLite3 via SQLAlchemy
 
 ### To Start Server
 
-1. Fork the backend and clone a copy ( https://help.github.com/en/github/getting-started-with-github/fork-a-repo )
+1. Clone the repo (`git clone https://github.com/codeforpdx/dwellinglybackend.git`)
 2. Install Python ( https://realpython.com/installing-python/ )
 3. Install virtualenv onto system (if not already installed)
 
