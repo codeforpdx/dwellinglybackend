@@ -11,27 +11,37 @@ NOTE: Database is SQLite3 via SQLAlchemy
 ### To Start Server
 
 1. Clone the repo (`git clone https://github.com/codeforpdx/dwellinglybackend.git`)
+
 2. Install Python ( https://realpython.com/installing-python/ )
-3. Install virtualenv onto system (if not already installed)
+
+3. Install Python Wheels
+
+    - `pip install wheel`
+
+4. Install virtualenv onto system (if not already installed)
 
     - Mac + Linux: `python3 -m venv env`
     - Windows: `python -m venv env`
 
-4. Install dependencies while in main directory of dwellinglybackend forked copy
+5. Install dependencies while in main directory of dwellinglybackend forked copy
 
     - `pip3 install --no-cache-dir -r requirements.txt`
 
-5. Create virtual environment: 
+6. Create virtual environment: 
 
     - `virtualenv env`
     - To install virtualenv: `pip3 install --user virtualenv`
 
-6. Activate the virtual environment 
+7. Activate the virtual environment 
 
     - Mac + Linux: `source env/bin/activate`
     - Windows: `source env/Scripts/activate`
+
+8. Start the server using the flask environment
+
+    - `flask run`
     
-7. Start the server using the flask environment (required every time the project is re-opened):
+9. For subsequent startups, start the server using the flask environment (required every time the project is re-opened):
 
     - Run: `pipenv run flask run`
     - Run + restart the server on changes:  `pipenv run flask run --reload`
