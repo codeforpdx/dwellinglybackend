@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_restful import Resource, reqparse
 from flask_mail import Message
-from flask_jwt_extended import jwt_required, get_jwt_claims
+from resources.admin_required import admin_required
 import app
 from models.user import UserModel
 
@@ -11,14 +11,8 @@ class Email(Resource):
     parser.add_argument('title') 
     parser.add_argument('body') 
 
-    @jwt_required
+    @admin_required
     def post(self):
-        # check if is_admin exist if not discontinue function
-        claims = get_jwt_claims()
-        
-        if not claims['is_admin']:
-            return {'Message', "Admin Access Required"}, 401
-
         data = Email.parser.parse_args()
 
         if not data.userid or not data.title or not data.body:
@@ -36,9 +30,4 @@ class Email(Resource):
 
         app.mail.send(message)
         return {"Message": "Message Sent"}
-
-
-
-
-        
 
