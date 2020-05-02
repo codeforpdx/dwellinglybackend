@@ -19,7 +19,7 @@ class Tenants(Resource):
     parser.add_argument('phone',type=str,required=True,help="This field cannot be blank.")
     parser.add_argument('propertyID',required=False,help="This field can be provided at a later time.")
     
-    
+
     def get(self, tenant_id=None):
         # The get all endpoint is useful for development. Disable before production??
         if not tenant_id:
@@ -67,7 +67,6 @@ class Tenants(Resource):
         parser_for_put.replace_argument('firstName',required=False)
         parser_for_put.replace_argument('lastName',required=False)
         parser_for_put.replace_argument('phone',required=False)
-        parser_for_put.replace_argument('propertyID',required=False)
         data = parser_for_put.parse_args()
 
         tenantEntry = TenantModel.find_by_id(tenant_id)
@@ -76,14 +75,11 @@ class Tenants(Resource):
 
         #variable statements allow for only updated fields to be transmitted 
         if(data.firstName):
-            tenantEntry.firstName = data.firstName
-            
+            tenantEntry.firstName = data.firstName            
         if(data.lastName):
             tenantEntry.lastName = data.lastName
-
         if(data.phone):
             tenantEntry.phone = data.phone
-        
         if(data.propertyID):
             tenantEntry.propertyID = data.propertyID
         
