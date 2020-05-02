@@ -14,12 +14,12 @@ class TenantModel(db.Model):
 
     # relationships
     property = relationship('PropertyModel')
-
-    
     # staffIDs = departments = relationship(
     #     UserModel,
     #     secondary='tenant_staff_link'
     # )
+
+
     def __init__(self, firstName, lastName, phone, propertyID):
         self.firstName = firstName
         self.lastName = lastName
