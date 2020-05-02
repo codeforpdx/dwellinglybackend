@@ -19,8 +19,9 @@ class Tenants(Resource):
     parser.add_argument('phone',type=str,required=True,help="This field cannot be blank.")
     parser.add_argument('propertyID',required=False,help="This field can be provided at a later time.")
     
+    
     def get(self, tenant_id=None):
-        # this endpoint is useful for deveopment, and may need to be disabled before production
+        # The get all endpoint is useful for development. Disable before production??
         if not tenant_id:
             return {'tenants': [tenant.json() for tenant in TenantModel.query.all()]}
 
@@ -52,6 +53,7 @@ class Tenants(Resource):
             return{"Message": "An Internal Error has Occured. Unable to insert tenant"}, 500
 
         return tenantEntry.json(), 201
+
 
     @jwt_required
     def put(self, tenant_id):
@@ -92,6 +94,7 @@ class Tenants(Resource):
 
         return tenantEntry.json()
 
+
     @jwt_required
     def delete(self, tenant_id):
         claims = get_jwt_claims() 
@@ -105,3 +108,4 @@ class Tenants(Resource):
 
         tenant.delete_from_db()
         return {'message': 'Tenant deleted.'}
+
