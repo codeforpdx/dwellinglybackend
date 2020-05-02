@@ -4,9 +4,11 @@ from flask_jwt_extended import JWTManager, jwt_refresh_token_required, create_ac
 from flask_cors import CORS
 from models.user import UserModel
 from models.property import PropertyModel
+from models.tenant import TenantModel
 from models.revoked_tokens import RevokedTokensModel
 from resources.user import UserRegister, User, UserLogin, ArchiveUser, UsersRole, UserAccessRefresh
 from resources.property import Properties, Property, ArchiveProperty
+from resources.tenants import Tenant, Tenants
 from flask_mail import Mail
 from resources.email import Email
 import os
@@ -71,7 +73,8 @@ def seedData():
     newProperty = PropertyModel(name="The Reginald", address="Aristocrat Avenue", city="Portland", state="OR", zipcode="97207", propertyManager=5, tenants=4, dateAdded="2020-04-12", archived=0)
     db.session.add(newProperty)
 
-
+    newTenant = TenantModel(firstName="Renty", lastName="McRenter", phone="800-RENT-ALOT", propertyID=1)
+    db.session.add(newTenant)
 
     revokedToken = RevokedTokensModel(jti="855c5cb8-c871-4a61-b3d8-90249f979601")
     db.session.add(revokedToken)
@@ -112,6 +115,7 @@ api.add_resource(ArchiveUser, '/user/archive/<int:user_id>')
 api.add_resource(UserLogin, '/login')
 api.add_resource(Email, '/user/message')
 api.add_resource(UserAccessRefresh, '/refresh')
+api.add_resource(Tenants, '/tenants')
 
 
 if __name__ == '__main__':
