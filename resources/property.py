@@ -1,6 +1,6 @@
 import json
 from flask_restful import Resource, reqparse
-from flask_jwt_extended import jwt_required, get_jwt_claims
+from resources.admin_required import admin_required
 from db import db
 from models.property import PropertyModel
 from models.user import UserModel
@@ -32,14 +32,8 @@ class Properties(Resource):
         # print(dict(zip(row.keys(), row)) for row in result)
         return {'properties': [property._asdict() for property in db.session.query(PropertyModel.id, PropertyModel.name, PropertyModel.address, PropertyModel.tenants, PropertyModel.dateAdded, UserModel.fullName.label('propertyManager')).join(UserModel).all()]}
     
-    @jwt_required
+    @admin_required
     def post(self):
-        #check if is_admin exist if not discontinue function
-        claims = get_jwt_claims() 
-        
-        if not claims['is_admin']:
-            return {'message': "Admin Access Required"}, 401
-
         data = Properties.parser.parse_args()
 
         if PropertyModel.find_by_name(data["name"]):
@@ -56,14 +50,8 @@ class Properties(Resource):
 
 class ArchiveProperty(Resource):
 
-    @jwt_required
+    @admin_required
     def post(self, id):
-        #check if is_admin exist if not discontinue function
-        claims = get_jwt_claims() 
-        
-        if not claims['is_admin']:
-            return {'message': "Admin Access Required"}, 401
-
         property = PropertyModel.find_by_id(id)
         if(not property):
             return{'message': 'Property cannot be archived'}, 400
@@ -89,40 +77,24 @@ class Property(Resource):
     parser.add_argument('dateAdded')
     parser.add_argument('archived')
 
-    @jwt_required
+    @admin_required
     def get(self, name):
-        claims = get_jwt_claims() 
-
-        if not claims['is_admin']:
-            return {'message': "Admin Access Required"}, 401
-
         rentalProperty = PropertyModel.find_by_name(name)
 
         if rentalProperty:
             return rentalProperty.json()
         return {'message': 'Property not found'}, 404
     
-    @jwt_required
+    @admin_required
     def delete(self, name):
-        claims = get_jwt_claims() 
-
-        if not claims['is_admin']:
-            return {'message': "Admin Access Required"}, 401
-
         property = PropertyModel.find_by_name(name)
         if property:
             property.delete_from_db()
             return {'message': 'Property deleted.'}
         return {'message': 'Property not found.'}, 404
 
-    @jwt_required
+    @admin_required
     def put(self, name):
-
-        claims = get_jwt_claims() 
-
-        if not claims['is_admin']:
-            return {'message': "Admin Access Required"}, 401
-
         data = Properties.parser.parse_args()
         rentalProperty = PropertyModel.find_by_name(name)
 
