@@ -1,6 +1,7 @@
 import json
 from flask_restful import Resource, reqparse
 from flask_jwt_extended import jwt_required, get_jwt_claims
+from resources.admin_required import admin_required
 from db import db
 from models.tenant import TenantModel
 
