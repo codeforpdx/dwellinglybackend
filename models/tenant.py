@@ -1,6 +1,6 @@
 from sqlalchemy.orm import relationship
 from db import db
-from models.user import UserModel
+from models.property import PropertyModel
 
 class TenantModel(db.Model):
     __tablename__ = "tenants"
@@ -9,20 +9,22 @@ class TenantModel(db.Model):
     firstName = db.Column(db.String(100))
     lastName = db.Column(db.String(100))
     phone = db.Column(db.String(20))
-    propertyID = db.Column(db.Integer, db.ForeignKey('property.id'))
-    staffIDs = departments = relationship(
-        UserModel,
-        secondary='tenant_staff_link'
-    )
+    propertyID = db.Column(db.Integer, db.ForeignKey('properties.id'))
     # leaseID = db.Column(db.Integer, db.ForeignKey('lease.id'))
 
+    # relationships
+    property = relationship('PropertyModel')
 
+    
+    # staffIDs = departments = relationship(
+    #     UserModel,
+    #     secondary='tenant_staff_link'
+    # )
     def __init__(self, firstName, lastName, phone, propertyID):
-        self.id = id
         self.firstName = firstName
         self.lastName = lastName
         self.phone = phone
-        self.propertyID = propertyID
+        self.propertyID = propertyID if propertyID else None
 
     def json(self):
         return {
@@ -31,7 +33,9 @@ class TenantModel(db.Model):
             'lastName':self.lastName, 
             'phone': self.phone, 
             'propertyID': self.propertyID,
-            'staffIDs': self.staffIDs
+            'propertyName': self.property.name if self.property else None,
+            'propertyAddress': self.property.address if self.property else None,
+            'propertyTenants': self.property.tenants if self.property else None,
         }
     
     @classmethod
@@ -41,6 +45,10 @@ class TenantModel(db.Model):
     @classmethod
     def find_by_property(cls, id):
         return cls.query.filter_by(propertyID = id).all()
+
+    @classmethod
+    def find_by_first_and_last(cls, first, last):
+        return cls.query.filter_by(firstName = first, lastName = last).first()
 
     def save_to_db(self):
         db.session.add(self)
