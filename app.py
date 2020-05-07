@@ -2,6 +2,7 @@ from flask import Flask
 from flask_restful import Api
 from flask_jwt_extended import JWTManager, jwt_refresh_token_required, create_access_token, get_jwt_identity
 from flask_cors import CORS
+from resources.admin_required import admin_required
 from models.user import UserModel
 from models.property import PropertyModel
 from models.revoked_tokens import RevokedTokensModel

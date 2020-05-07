@@ -1,47 +1,30 @@
+*Looking for the [Dwellingly App front end?](https://github.com/codeforpdx/dwellingly-app)*
+
+## Dwellingly App Backend
+
 Set up Dwelling Flask Testing Backend (for the first time)
 NOTE: Database is SQLite3 via SQLAlchemy 
 
-+ Github Repo: {https://github.com/codeforpdx/dwellinglybackend}
-+ Live Server: {https://dwellinglyapi.herokuapp.com/ } 
++ Github Repo: { https://github.com/codeforpdx/dwellinglybackend }
++ Live Server: {https://dwellinglyapi.herokuapp.com/} 
 
 ### To Start Server
 
-1. Fork the backend and clone a copy ( https://help.github.com/en/github/getting-started-with-github/fork-a-repo )
+1. Clone the repo (`git clone https://github.com/codeforpdx/dwellinglybackend.git`)
 2. Install Python ( https://realpython.com/installing-python/ )
-3. Install virtualenv onto system (if not already installed)
-
-    - Mac + Linux: `python3 -m venv env`
-    - Windows: `python -m venv env`
-
-4. Install dependencies while in main directory of dwellinglybackend forked copy
-
-    - `pip3 install --no-cache-dir -r requirements.txt`
-
-5. Create virtual environment: 
-
-    - `virtualenv env`
-    - To install virtualenv: `pip3 install --user virtualenv`
-
-6. Activate the virtual environment 
-
-    - Mac + Linux: `source env/bin/activate`
-    - Windows: `source env/Scripts/activate`
-    
-7. Seed the database
-
+3. Install pipenv: `pip3 install --user pipenv`
+4. Seed the database
     - Run: `python seed_db.py`
       - To re-seed the database from scratch, delete data.db before running the script
     - Look for the file data.db to be created in the root directory
 
-8. Start the server using the flask environment (required every time the project is re-opened):
-
+5. Start the server using the flask environment (required every time the project is re-opened):
     - Run: `pipenv run flask run`
     - Run + restart the server on changes:  `pipenv run flask run --reload`
-    - To install pipenv: `pip3 install --user pipenv`
 
 Queries can be made with the Postman Collection link ( https://www.getpostman.com/collections/a86a292798c7895425e2 )
 
-###Endpoints
+### Endpoints
 
 How to contribute to this project. 
 1. Set your origin to https://github.com/codeforpdx/dwellinglybackend.git
@@ -69,14 +52,14 @@ go to
 | DELETE | `/users/:uid`          | Deletes a single user (admin only)   |
 
 
-###This Backend Uses JWT for authorization 
+### This Backend Uses JWT for authorization 
 
 Authorization header format:
 ```javascript
 Authorization Bearer < JWT access token >
 ```
 
-###The database is seeded with 3 default users
+### The database is seeded with 3 default users
 
 ```javascript
     [{
