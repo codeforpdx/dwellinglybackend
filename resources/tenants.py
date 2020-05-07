@@ -32,21 +32,13 @@ class Tenants(Resource):
         return tenant.json()
 
 
-    @jwt_required
+    @admin_required
     def post(self):
-        #check if is_admin exist if not discontinue function
-        claims = get_jwt_claims() 
-        
-        if not claims['is_admin']:
-            return {'message': "Admin Access Required"}, 401
-
         data = Tenants.parser.parse_args()
-
         if TenantModel.find_by_first_and_last(data["firstName"], data["lastName"]):
             return { 'message': 'A tenant with this first and last name already exists'}, 401
 
         tenantEntry = TenantModel(**data) 
-
         try:
             TenantModel.save_to_db(tenantEntry)
         except:
@@ -55,14 +47,8 @@ class Tenants(Resource):
         return tenantEntry.json(), 201
 
 
-    @jwt_required
+    @admin_required
     def put(self, tenant_id):
-
-        claims = get_jwt_claims() 
-
-        if not claims['is_admin']:
-            return {'message': "Admin Access Required"}, 401
-
         parser_for_put = Tenants.parser.copy()
         parser_for_put.replace_argument('firstName',required=False)
         parser_for_put.replace_argument('lastName',required=False)
@@ -91,13 +77,8 @@ class Tenants(Resource):
         return tenantEntry.json()
 
 
-    @jwt_required
+    @admin_required
     def delete(self, tenant_id):
-        claims = get_jwt_claims() 
-
-        if not claims['is_admin']:
-            return {'message': "Admin Access Required"}, 401
-
         tenant = TenantModel.find_by_id(tenant_id)
         if not tenant:
             return {'message': 'Tenant not found.'}, 404
