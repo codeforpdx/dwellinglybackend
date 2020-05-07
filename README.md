@@ -13,8 +13,12 @@ NOTE: Database is SQLite3 via SQLAlchemy
 1. Clone the repo (`git clone https://github.com/codeforpdx/dwellinglybackend.git`)
 2. Install Python ( https://realpython.com/installing-python/ )
 3. Install pipenv: `pip3 install --user pipenv`
-3. Start the server using the flask environment (required every time the project is re-opened):
+4. Seed the database
+    - Run: `python seed_db.py`
+      - To re-seed the database from scratch, delete data.db before running the script
+    - Look for the file data.db to be created in the root directory
 
+5. Start the server using the flask environment (required every time the project is re-opened):
     - Run: `pipenv run flask run`
     - Run + restart the server on changes:  `pipenv run flask run --reload`
 
