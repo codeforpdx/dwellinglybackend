@@ -4,7 +4,6 @@ from models.revoked_tokens import RevokedTokensModel
 from werkzeug.security import safe_str_cmp
 from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt_claims, get_raw_jwt, get_jwt_identity, jwt_refresh_token_required
 
-
 class UserRegister(Resource):
     parser = reqparse.RequestParser()
     parser.add_argument('firstName',type=str,required=True,help="This field cannot be blank.")
@@ -81,7 +80,7 @@ class User(Resource):
         user = UserModel.find_by_id(user_id)
         if not user:
             return {"Message", "Unable to delete User"}, 404 
-        user.delete_from_db()
+        #user.delete_from_db()
         return {"Message": "User deleted"}, 200
 
 #pull all users - for debugging purposes disable before production

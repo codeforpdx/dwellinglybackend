@@ -42,8 +42,8 @@ app.config['MAIL_ASCII_ATTACHMENTS'] = False
 #allow cross-origin (CORS)
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = False
 app.config['JWT_REFRESH_TOKEN_EXPIRES'] = False
-CORS(app)
 
+CORS(app)
 api = Api(app)
 
 db.init_app(app) #need to solve this 
@@ -65,6 +65,17 @@ def seedData():
     user = UserModel(email="user3@dwellingly.org", role="property-manager", firstName="Gray", lastName="Pouponn", password="1234", archived=0)
     db.session.add(user)
 
+    user = UserModel(email="user4@dwellingly.org", role="pending", firstName="Leroy", lastName="Possible", password="1234", archived=0)
+    db.session.add(user)
+    user = UserModel(email="pm1@dwellingly.org", role="pending", firstName="Anthony", lastName="Redding", password="1234", archived=0)
+    db.session.add(user)
+    user = UserModel(email="pm2@dwellingly.org", role="pending", firstName="Ryan", lastName="Dander", password="1234", archived=0)
+    db.session.add(user)
+    user = UserModel(email="pm3@dwellingly.org", role="pending", firstName="Amber", lastName="Lemming", password="1234", archived=0)
+    db.session.add(user)
+    user = UserModel(email="pm4@dwellingly.org", role="pending", firstName="Jeremy", lastName="Quazar", password="1234", archived=0)
+    db.session.add(user)
+
     newProperty = PropertyModel(name="test1", address="123 NE FLanders St", city="Portland", state="OR", zipcode="97207", propertyManager=5, tenants=3, dateAdded="2020-04-12", archived=0)
     db.session.add(newProperty)
     newProperty = PropertyModel(name="Meerkat Manor", address="Privet Drive", city="Portland", state="OR", zipcode="97207", propertyManager=4, tenants=6, dateAdded="2020-04-12", archived=0)
@@ -72,12 +83,11 @@ def seedData():
     newProperty = PropertyModel(name="The Reginald", address="Aristocrat Avenue", city="Portland", state="OR", zipcode="97207", propertyManager=5, tenants=4, dateAdded="2020-04-12", archived=0)
     db.session.add(newProperty)
 
-
-
     revokedToken = RevokedTokensModel(jti="855c5cb8-c871-4a61-b3d8-90249f979601")
     db.session.add(revokedToken)
 
     db.session.commit()
+
 
 jwt = JWTManager(app) # /authorization 
 
