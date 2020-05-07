@@ -17,11 +17,16 @@ class TenantModel(db.Model):
     property = relationship('PropertyModel', backref='tenant')
     staff = relationship('UserModel', secondary='staff_tenant_links')
 
-    def __init__(self, firstName, lastName, phone, propertyID):
+    def __init__(self, firstName, lastName, phone, propertyID, staffIDs):
         self.firstName = firstName
         self.lastName = lastName
         self.phone = phone
         self.propertyID = propertyID if propertyID else None
+        self.staff = []
+        for id in staffIDs:
+            user = UserModel.find_by_id(id)
+            if user: self.staff.append(user)
+
 
     def json(self):
         return {

@@ -4,6 +4,7 @@ from flask_jwt_extended import jwt_required, get_jwt_claims
 from resources.admin_required import admin_required
 from db import db
 from models.tenant import TenantModel
+from models.user import UserModel
 
 # | method | route                | action                    |
 # | :----- | :------------------- | :------------------------ |
@@ -19,6 +20,7 @@ class Tenants(Resource):
     parser.add_argument('lastName',type=str,required=True,help="This field cannot be blank.")
     parser.add_argument('phone',type=str,required=True,help="This field cannot be blank.")
     parser.add_argument('propertyID',required=False,help="This field can be provided at a later time.")
+    parser.add_argument('staffIDs',action='append',required=False,help="This field can be provided at a later time.")
     
 
     def get(self, tenant_id=None):
@@ -69,6 +71,11 @@ class Tenants(Resource):
             tenantEntry.phone = data.phone
         if(data.propertyID):
             tenantEntry.propertyID = data.propertyID
+        if(data.staffIDs and len(data.staffIDs)):
+            tenantEntry.staff[:] = []
+            for id in data.staffIDs: 
+                user = UserModel.find_by_id(id)
+                if user: tenantEntry.staff.append(user)
         
         try:
             tenantEntry.save_to_db()
