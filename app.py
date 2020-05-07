@@ -6,6 +6,7 @@ from resources.admin_required import admin_required
 from models.user import UserModel
 from models.property import PropertyModel
 from models.tenant import TenantModel
+from models.tenant_staff_link import StaffTenantLink
 from models.revoked_tokens import RevokedTokensModel
 from resources.user import UserRegister, User, UserLogin, ArchiveUser, UsersRole, UserAccessRefresh
 from resources.property import Properties, Property, ArchiveProperty
@@ -53,19 +54,19 @@ db.init_app(app) #need to solve this
 @app.before_first_request
 def create_tables():
     db.create_all()
-    # seedData()
+    seedData()
 
 def seedData():
-    user = UserModel(email="user1@dwellingly.org", role="admin", firstName="user1", lastName="tester", password="1234", archived=0)
-    db.session.add(user)
-    user = UserModel(email="user2@dwellingly.org", role="admin", firstName="user2", lastName="tester", password="1234", archived=0)
-    db.session.add(user)
-    user = UserModel(email="user3@dwellingly.org", role="admin", firstName="user3", lastName="tester", password="1234", archived=0)
-    db.session.add(user)
-    user = UserModel(email="MisterSir@dwellingly.org", role="property-manager", firstName="Mr.", lastName="Sir", password="1234", archived=0)
-    db.session.add(user)
-    user = UserModel(email="user3@dwellingly.org", role="property-manager", firstName="Gray", lastName="Pouponn", password="1234", archived=0)
-    db.session.add(user)
+    user1 = UserModel(email="user1@dwellingly.org", role="admin", firstName="user1", lastName="tester", password="1234", archived=0)
+    db.session.add(user1)
+    user2 = UserModel(email="user2@dwellingly.org", role="admin", firstName="user2", lastName="tester", password="1234", archived=0)
+    db.session.add(user2)
+    user3 = UserModel(email="user3@dwellingly.org", role="admin", firstName="user3", lastName="tester", password="1234", archived=0)
+    db.session.add(user3)
+    propMgr1 = UserModel(email="MisterSir@dwellingly.org", role="property-manager", firstName="Mr.", lastName="Sir", password="1234", archived=0)
+    db.session.add(propMgr1)
+    propMgr2 = UserModel(email="GrayPouponn@dwellingly.org", role="property-manager", firstName="Gray", lastName="Pouponn", password="1234", archived=0)
+    db.session.add(propMgr2)
 
     newProperty = PropertyModel(name="test1", address="123 NE FLanders St", city="Portland", state="OR", zipcode="97207", propertyManager=5, tenants=3, dateAdded="2020-04-12", archived=0)
     db.session.add(newProperty)
@@ -75,6 +76,8 @@ def seedData():
     db.session.add(newProperty)
 
     newTenant = TenantModel(firstName="Renty", lastName="McRenter", phone="800-RENT-ALOT", propertyID=1)
+    newTenant.staff.append(user1)
+    newTenant.staff.append(user2)
     db.session.add(newTenant)
 
     revokedToken = RevokedTokensModel(jti="855c5cb8-c871-4a61-b3d8-90249f979601")

@@ -1,6 +1,7 @@
 from sqlalchemy.orm import relationship
 from db import db
 from models.property import PropertyModel
+from models.user import UserModel
 
 class TenantModel(db.Model):
     __tablename__ = "tenants"
@@ -13,12 +14,8 @@ class TenantModel(db.Model):
     # leaseID = db.Column(db.Integer, db.ForeignKey('lease.id'))
 
     # relationships
-    property = relationship('PropertyModel')
-    # staffIDs = departments = relationship(
-    #     UserModel,
-    #     secondary='tenant_staff_link'
-    # )
-
+    property = relationship('PropertyModel', backref='tenant')
+    staff = relationship('UserModel', secondary='staff_tenant_links')
 
     def __init__(self, firstName, lastName, phone, propertyID):
         self.firstName = firstName
@@ -36,6 +33,7 @@ class TenantModel(db.Model):
             'propertyName': self.property.name if self.property else None,
             'propertyAddress': self.property.address if self.property else None,
             'propertyTenants': self.property.tenants if self.property else None,
+            'staff': [user.json() for user in self.staff] if self.staff else None
         }
     
     @classmethod
