@@ -26,6 +26,10 @@ def seedData():
 
     newTenant = TenantModel(firstName="Renty", lastName="McRenter", phone="800-RENT-ALOT", propertyID=1, staffIDs=[1, 2])
     db.session.add(newTenant)
+    newTenant = TenantModel(firstName="Soho", lastName="Muless", phone="123-123-0000", propertyID=2, staffIDs=[])
+    db.session.add(newTenant)
+    newTenant = TenantModel(firstName="Starvin", lastName="Artist", phone="123-123-1111", propertyID=2, staffIDs=[])
+    db.session.add(newTenant)
 
     revokedToken = RevokedTokensModel(jti="855c5cb8-c871-4a61-b3d8-90249f979601")
     db.session.add(revokedToken)
