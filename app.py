@@ -58,7 +58,7 @@ def create_app():
 
 
 app = create_app()
-api = Api(app)
+api = Api(app, prefix="/api/")
 
 @app.before_first_request
 def check_for_admins():
