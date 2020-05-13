@@ -130,7 +130,8 @@ Authorization Bearer < JWT access token >
         "firstName": "Renty",
         "lastName": "McRenter",
         "phone": "800-RENT-ALOT",
-        "propertyID": 1
+        "propertyID": 1,
+        "staffIDs": [1, 2]
     },
 ```
 

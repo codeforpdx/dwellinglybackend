@@ -8,8 +8,8 @@ from models.user import UserModel
 
 # | method | route                | action                    |
 # | :----- | :------------------- | :------------------------ |
-# | GET    | `v1/tenants/`        | Gets all tenants          |
 # | POST   | `v1/tenants/`        | Creates a new tenant      |
+# | GET    | `v1/tenants/`        | Gets all tenants          |
 # | GET    | `v1/tenants/:id`     | Gets a single tenant      |
 # | PUT    | `v1/tenants/:id`     | Updates a single tenant   |
 # | DELETE | `v1/tenants/:id`     | Deletes a single tenant   |
@@ -21,15 +21,15 @@ class Tenants(Resource):
     parser.add_argument('phone',type=str,required=True,help="This field cannot be blank.")
     parser.add_argument('propertyID',required=False,help="This field can be provided at a later time.")
     parser.add_argument('staffIDs',action='append',required=False,help="This field can be provided at a later time.")
-    
+
 
     def get(self, tenant_id=None):
-        # The get all endpoint is useful for development. Disable before production??
+        # GET /tenants
         if not tenant_id:
             return {'tenants': [tenant.json() for tenant in TenantModel.query.all()]}
 
+        # GET /tenants/<tenant_id>
         tenant = TenantModel.find_by_id(tenant_id)
-        
         if not tenant:
             return {'message': 'Tenant not found'}, 404
         return tenant.json()
