@@ -30,7 +30,7 @@ Queries can be made with the Postman Collection link ( https://www.getpostman.co
 Python does not come by default for Windows users. Sometimes the PATH variable in Windows will point to the wrong path and you will have trouble running the `python` and `pipenv` commands. If you don't have Python installed then follow these steps. If the steps listed above did not work for you, try the following.
 
 1. Clone the repo (`git clone https://github.com/codeforpdx/dwellinglybackend.git`)
-2. Hit the Windows key on you keyboard and type `Microsoft Store`. Click on Microsoft store and search for Python. Download Python from the official Microsoft store. When you are installing **make sure you tick the Add to PATH checkbox [ ]** If you don't do this, it could result in you being unable to run the python or pip / pipenv commands.
+2. Hit the Windows key on your keyboard and type `Microsoft Store`. Click on Microsoft store and search for Python. Download Python from the official Microsoft store. When you are installing **make sure you tick the Add to PATH checkbox [ ]** If you don't do this, it could result in you being unable to run the python or pip / pipenv commands.
 3. Once Python is installed, run `pip3 install --user pipenv` If this command doesn't work, you can also try running `python -m pip` followed by running `python -m pip install --user pipenv`
 4. Seed the database
 
