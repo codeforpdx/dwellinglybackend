@@ -12,7 +12,7 @@ NOTE: Database is SQLite3 via SQLAlchemy
 
 1. Clone the repo (`git clone https://github.com/codeforpdx/dwellinglybackend.git`)
 2. Install Python ( https://realpython.com/installing-python/ )
-3. Install pipenv: `pip3 install --user pipenv`
+3. Install pipenv: `pip3 install --user pipenv`.
 4. Seed the database
 
    - Run: `python seed_db.py`
