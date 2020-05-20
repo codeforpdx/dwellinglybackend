@@ -5,9 +5,12 @@ from flask_cors import CORS
 from resources.admin_required import admin_required
 from models.user import UserModel
 from models.property import PropertyModel
+from models.tenant import TenantModel
+from models.tenant_staff_link import StaffTenantLink
 from models.revoked_tokens import RevokedTokensModel
 from resources.user import UserRegister, User, UserLogin, ArchiveUser, UsersRole, UserAccessRefresh
 from resources.property import Properties, Property, ArchiveProperty
+from resources.tenants import Tenants
 from flask_mail import Mail
 from resources.email import Email
 import os
@@ -108,6 +111,7 @@ api.add_resource(ArchiveUser, '/user/archive/<int:user_id>')
 api.add_resource(UserLogin, '/login')
 api.add_resource(Email, '/user/message')
 api.add_resource(UserAccessRefresh, '/refresh')
+api.add_resource(Tenants, '/tenants', '/tenants/<int:tenant_id>')
 
 
 if __name__ == '__main__':
