@@ -1,34 +1,57 @@
+from sqlalchemy.orm import relationship
 from db import db
-
-#basically a hash table to connect landlords, tenants, and properties
-#hold off on implementation as it might redundent
+from models.property import PropertyModel
+from models.user import UserModel
 
 class TenantModel(db.Model):
     __tablename__ = "tenants"
 
     id = db.Column(db.Integer, primary_key=True)
-    tenantID = db.Column(db.Integer, db.ForeignKey('users.id'))
-    propertyID = db.Column(db.Integer, db.ForeignKey('property.id'))
-    landlordID = db.Column(db.Integer, db.ForeignKey('users.id'))
+    firstName = db.Column(db.String(100))
+    lastName = db.Column(db.String(100))
+    phone = db.Column(db.String(20))
+    propertyID = db.Column(db.Integer, db.ForeignKey('properties.id'))
+    # leaseID = db.Column(db.Integer, db.ForeignKey('lease.id'))
 
-    def __init__(self, tenantID, propertyID, landlordID):
-        self.id = id
-        self.tenantID = tenantID
-        self.propertyID = propertyID
-        self.landlordID = landlordID
+    # relationships
+    property = relationship('PropertyModel', backref='tenant')
+    staff = relationship('UserModel', secondary='staff_tenant_links')
+
+    def __init__(self, firstName, lastName, phone, propertyID, staffIDs):
+        self.firstName = firstName
+        self.lastName = lastName
+        self.phone = phone
+        self.propertyID = propertyID if propertyID else None
+        self.staff = []
+        for id in staffIDs:
+            user = UserModel.find_by_id(id)
+            if user: self.staff.append(user)
+
 
     def json(self):
-        return {'id': self.id, 'name':self.name, 'address': self.address, 'city': self.city, 'state': self.state}
+        return {
+            'id': self.id, 
+            'firstName':self.firstName, 
+            'lastName':self.lastName, 
+            'phone': self.phone, 
+            'propertyID': self.propertyID,
+            'propertyName': self.property.name if self.property else None,
+            'propertyAddress': self.property.address if self.property else None,
+            'propertyTenants': self.property.tenants if self.property else None,
+            'staff': [user.json() for user in self.staff] if self.staff else None
+        }
     
     @classmethod
     def find_by_id(cls, id):
         return cls.query.filter_by(id=id).first() #SELECT * FROM property WHERE id = id LIMIT 1
-    
-    def find_by_tenant(cls, id):
-        return cls.query.filter_by(tenantID = id).first()
-    
+
+    @classmethod
     def find_by_property(cls, id):
         return cls.query.filter_by(propertyID = id).all()
+
+    @classmethod
+    def find_by_first_and_last(cls, first, last):
+        return cls.query.filter_by(firstName = first, lastName = last).first()
 
     def save_to_db(self):
         db.session.add(self)

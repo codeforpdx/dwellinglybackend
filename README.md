@@ -133,6 +133,28 @@ Authorization Bearer < JWT access token >
   },
 ```
 
+#### ENDPOINT: TENANTS
+
+| method | route                        | action                                   |
+| :----- | :--------------------------- | :--------------------------------------- |
+| POST   | `/tenants/`                  | Creates a new tenant (admin only)        |
+| GET    | `/tenants/`                  | Gets all tenants                         |
+| GET    | `/tenants/:id`               | Gets a single tenant (admin only)      |
+| PUT    | `/tenants/:id`               | Updates a single tenant (admin only)   | 
+| DELETE | `/tenants/:id`               | Deletes a single tenant (admin only)   |
+
+```javascript
+    {
+        "id": 1,
+        "firstName": "Renty",
+        "lastName": "McRenter",
+        "phone": "800-RENT-ALOT",
+        "propertyID": 1,
+        "staffIDs": [1, 2]
+    },
+```
+
+
 #### ENDPOINT: EMAIL
 
 | method | route           | action                 |
