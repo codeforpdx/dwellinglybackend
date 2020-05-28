@@ -2,10 +2,12 @@ from db import db
 from models.user import UserModel
 from models.property import PropertyModel
 from models.tenant import TenantModel
+from models.tickets import TicketModel
+from models.notes import NotesModel
 from models.revoked_tokens import RevokedTokensModel
 
-
 def seedData():
+
     user = UserModel(email="user1@dwellingly.org", role="admin", firstName="user1", lastName="tester", password="1234", archived=0)
     db.session.add(user)
     user = UserModel(email="user2@dwellingly.org", role="admin", firstName="user2", lastName="tester", password="1234", archived=0)
@@ -31,8 +33,25 @@ def seedData():
     newTenant = TenantModel(firstName="Starvin", lastName="Artist", phone="123-123-1111", propertyID=2, staffIDs=[])
     db.session.add(newTenant)
 
+    newNote = NotesModel(ticketid=0, text="Tenant not responding to phone calls.")
+    db.session.add(newNote)
+    newNote = NotesModel(ticketid=1, text="Tenant has over 40 cats.")
+    db.session.add(newNote)
+    newNote = NotesModel(ticketid=1, text="Issue Resolved with phone call")
+    db.session.add(newNote)
+    newNote = NotesModel(ticketid=2, text="Contacted Tenant -- follow up tomorrow.")
+    db.session.add(newNote)
+
+    newTicket = TicketModel(issue="The roof, the roof, the roof is one fire.", tenant=1, sender=1, status="Critical", urgency="HIGH")
+    db.session.add(newNote)
+    newTicket = TicketModel(issue="Flaming Dumpster Fire.", tenant=2, sender=2, status="Critical", urgency="HIGH")
+    db.session.add(newNote)
+    newTicket = TicketModel(issue="Unpaid Rent", tenant=1, sender=0, status="Critical", urgency="HIGH")
+    db.session.add(newNote)
+    newTicket = TicketModel(issue="Over 40 cats in domicile.", tenant=0, sender=1, status="Critical", urgency="HIGH")
+    db.session.add(newNote)
+
     revokedToken = RevokedTokensModel(jti="855c5cb8-c871-4a61-b3d8-90249f979601")
     db.session.add(revokedToken)
 
     db.session.commit()
-

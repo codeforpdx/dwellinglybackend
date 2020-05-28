@@ -2,6 +2,8 @@ from flask_restful import Resource
 from models.tickets import TicketsModel
 
 class Ticket(Resource):
+    parser = reqparse.RequestParser()
+    
     def get(self, id):
         ticket= TicketModel.find_by_id(id)
         if ticket:
