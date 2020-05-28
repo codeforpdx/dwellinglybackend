@@ -13,6 +13,7 @@ from resources.property import Properties, Property, ArchiveProperty
 from resources.tenants import Tenants
 from flask_mail import Mail
 from resources.email import Email
+from resources.tickets import Ticket, Tickets
 import os
 from db import db
 
@@ -27,7 +28,7 @@ def create_app():
     app.config['JWT_AUTH_USERNAME_KEY'] = 'email'
 
     # During development, it makes sense to allow permanent token validity
-    # Replace these configs before production release. 
+    # Replace these configs before production release.
     app.config['JWT_ACCESS_TOKEN_EXPIRES'] = False
     app.config['JWT_REFRESH_TOKEN_EXPIRES'] = False
 
@@ -43,17 +44,17 @@ def create_app():
     app.config['MAIL_DEBUG'] = True #same as app
     app.config['MAIL_USERNAME'] = "dwellingly@gmail.com" #not active
     app.config['MAIL_PASSWORD'] = "1234567thisisnotreal"
-    # app.config['MAIL_USERNAME'] = os.environ['EMAIL_USERNAME'] 
+    # app.config['MAIL_USERNAME'] = os.environ['EMAIL_USERNAME']
     # app.config['MAIL_PASSWORD'] = os.environ['EMAIL_PASSWORD']
     # app.config['MAIL_DEFAULT_SENDER'] = 'noreply@dwellingly.com'
     app.config['MAIL_MAX_EMAILS'] = 3
-    app.config['MAIL_SUPPRESS_SEND'] = False #same as testing 
+    app.config['MAIL_SUPPRESS_SEND'] = False #same as testing
     app.config['MAIL_ASCII_ATTACHMENTS'] = False
 
     #allow cross-origin (CORS)
     CORS(app)
 
-    db.init_app(app) #need to solve this 
+    db.init_app(app) #need to solve this
     return app
 
 
@@ -77,7 +78,7 @@ def check_for_admins():
         if(not len(admins)):
             print(errorMsg)
 
-jwt = JWTManager(app) # /authorization 
+jwt = JWTManager(app) # /authorization
 
 mail = Mail(app) #init Mail
 
@@ -92,7 +93,7 @@ def role_loader(identity): #identity = user.id in JWT
         'lastName': user.lastName,
         'is_admin': (user.role == 'admin')
     }
-    
+
 # checking if the token's jti (jwt id) is in the set of revoked tokens
 # this check is applied globally (to all routes that require jwt)
 @jwt.token_in_blacklist_loader
@@ -112,8 +113,9 @@ api.add_resource(UserLogin, '/login')
 api.add_resource(Email, '/user/message')
 api.add_resource(UserAccessRefresh, '/refresh')
 api.add_resource(Tenants, '/tenants', '/tenants/<int:tenant_id>')
-
+api.add_resource(Tickets, '/tickets')
+api.add_resource(Ticket, '/tickets/<int:id>')
 
 if __name__ == '__main__':
-    # db.init_app(app) 
+    # db.init_app(app)
     app.run(port=5000, debug=True)

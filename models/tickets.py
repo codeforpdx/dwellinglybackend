@@ -2,24 +2,8 @@ from sqlalchemy.orm import relationship
 from db import db
 from models.tenant import TenantModel
 from models.user import UserModel
+from models.notes import NotesModel
 from datetime import datetime
-
-#  id: 'K-0089ttxqQX-2',
-#     issue: 'Property Damage',
-#     tenant: {
-#       address: 'Magnolia Park, Unit #2',
-#       name: 'Alex Alder',
-#       number: '503-555-1234'
-#     },
-#     sender: {
-#       name: 'Tom Smith',
-#       number: '541-123-4567'
-#     },
-#     sent: new Date('2017/12/19').toString(),
-#     status: 'New',
-#     urgency: 'Low',
-#     notes: []
-
 
 class TicketModel(db.Model):
     __tablename__ = "tickets"
@@ -33,7 +17,7 @@ class TicketModel(db.Model):
     urgency = db.Column(db.String(12))
 
     #relationships
-    notes = db.relationship('NotesModel', lazy='dynamic')
+    notes = db.relationship(NotesModel)
 
     def __init__(self, issue, sender, tenant, status, urgency):
         dateTime = datetime.now()
@@ -46,6 +30,12 @@ class TicketModel(db.Model):
         self.urgency = urgency
 
     def json(self):
+        message_notes = []
+        for note in self.notes:
+            message_notes.append(note.json())
+
+        print(message_notes)
+
         return {
             'id': self.id,
             'issue':self.issue,
@@ -53,12 +43,10 @@ class TicketModel(db.Model):
             'sender': self.sender,
             'opened': self.opened,
             'status': self.status,
-            'notes': [notes.json() for note in self.notes.all()]
+            'notes': message_notes
         }
 
-    # @classmethod
-    #  def find_all(cls):
-    #     return cls.query.all()
+        # notes.json() for note in self.notes.all()]
 
     @classmethod
     def find_by_id(cls, id):

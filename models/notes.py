@@ -1,16 +1,15 @@
 from db import db
-from models.tickets import TicketModel
-from models.user import UserModel
 from datetime import datetime
 
 class NotesModel(db.Model):
     __tablenname__ = "Notes"
 
     id = db.Column(db.Integer, primary_key=True)
-    ticketid = db.Column(db.Integer, db.ForeignKey('tickets.id'))
     created = db.Column(db.String(32))
-    # created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     text = db.Column(db.Text)
+
+    ticket = db.relationship('TicketModel')
+    ticketid = db.Column(db.Integer, db.ForeignKey('tickets.id'))
 
     def __init__(self, ticketid, text):
         dateTime = datetime.now()
@@ -32,7 +31,7 @@ class NotesModel(db.Model):
             'id':self.id,
             'ticketid': self.ticketid,
             'created': self.created,
-            'self.text': self.text
+            'text': self.text
         }
 
     @classmethod
