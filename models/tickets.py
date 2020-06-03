@@ -15,6 +15,7 @@ class TicketModel(db.Model):
     opened =  db.Column(db.String(32))
     status = db.Column(db.String(12))
     urgency = db.Column(db.String(12))
+    notelog = db.Column(db.Text)
 
     #relationships
     notes = db.relationship(NotesModel)
@@ -34,8 +35,6 @@ class TicketModel(db.Model):
         for note in self.notes:
             message_notes.append(note.json())
 
-        print(message_notes)
-
         return {
             'id': self.id,
             'issue':self.issue,
@@ -43,6 +42,7 @@ class TicketModel(db.Model):
             'sender': self.sender,
             'opened': self.opened,
             'status': self.status,
+            'urgency': self.urgency,
             'notes': message_notes
         }
 

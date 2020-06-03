@@ -33,13 +33,13 @@ def seedData():
     newTenant = TenantModel(firstName="Starvin", lastName="Artist", phone="123-123-1111", propertyID=2, staffIDs=[])
     db.session.add(newTenant)
 
-    newNote = NotesModel(ticketid=0, text="Tenant not responding to phone calls.")
+    newNote = NotesModel(ticketid=0, text="Tenant not responding to phone calls.", user=1)
     db.session.add(newNote)
-    newNote = NotesModel(ticketid=1, text="Tenant has over 40 cats.")
+    newNote = NotesModel(ticketid=1, text="Tenant has over 40 cats.", user=2)
     db.session.add(newNote)
-    newNote = NotesModel(ticketid=1, text="Issue Resolved with phone call")
+    newNote = NotesModel(ticketid=1, text="Issue Resolved with phone call", user=3)
     db.session.add(newNote)
-    newNote = NotesModel(ticketid=2, text="Contacted Tenant -- follow up tomorrow.")
+    newNote = NotesModel(ticketid=2, text="Contacted Tenant -- follow up tomorrow.", user=3)
     db.session.add(newNote)
 
     newTicket = TicketModel(issue="The roof, the roof, the roof is one fire.", tenant=1, sender=1, status="Critical", urgency="HIGH")
