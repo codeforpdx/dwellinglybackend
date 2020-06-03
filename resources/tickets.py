@@ -2,6 +2,8 @@ from flask_restful import Resource, reqparse
 import json
 from models.tickets import TicketModel
 from models.notes import NotesModel
+from resources.admin_required import admin_required
+
 
 class Ticket(Resource):
     parser = reqparse.RequestParser()
@@ -12,12 +14,14 @@ class Ticket(Resource):
     parser.add_argument('issue')
     parser.add_argument('note')
 
+    @admin_required
     def get(self, id):
         ticket= TicketModel.find_by_id(id)
         if ticket:
             return ticket.json()
         return {'message': 'Ticket Not Found'}, 404
 
+    @admin_required
     def delete(self, id):
         ticket= TicketModel.find_by_id(id)
         if ticket:
@@ -25,6 +29,7 @@ class Ticket(Resource):
 
         return{'Message': 'Ticket Removed from Database'}
 
+    @admin_required
     def put(self, id):
         data = Ticket.parser.parse_args()
         ticket = TicketModel.find_by_id(id)
@@ -46,15 +51,11 @@ class Ticket(Resource):
             ticket.issue = data.issue
 
         if(data.note):
-            print(data.note)
-            print(ticket.sender)
             note = NotesModel(id, data.note, ticket.sender)
             try:
                 note.save_to_db()
             except:
                 return {'Message': 'An Error Has Occured'}, 500
-
-
         try:
             ticket.save_to_db()
         except:
@@ -70,9 +71,11 @@ class Tickets(Resource):
     parser.add_argument('urgency')
     parser.add_argument('issue')
 
+    @admin_required
     def get(self):
         return {'Tickets': [ticket.json() for ticket in TicketModel.query.all()]}
 
+    @admin_required
     def post(self):
         data = Tickets.parser.parse_args()
         ticket = TicketModel(**data)
