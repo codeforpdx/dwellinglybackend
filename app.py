@@ -20,7 +20,7 @@ def create_app():
     app = Flask(__name__)
 
     #config DataBase
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db'
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DATABASE_URL", default = 'sqlite:///data.db')
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['PROPAGATE_EXCEPTIONS'] = True
     app.secret_key = 'dwellingly' #Replace with Random Hash
@@ -58,7 +58,7 @@ def create_app():
 
 
 app = create_app()
-api = Api(app)
+api = Api(app, prefix="/api/")
 
 @app.before_first_request
 def check_for_admins():
