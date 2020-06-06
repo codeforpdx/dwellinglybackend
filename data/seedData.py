@@ -24,6 +24,7 @@ def seedData():
     db.session.add(newProperty)
     newProperty = PropertyModel(name="The Reginald", address="Aristocrat Avenue", city="Portland", state="OR", zipcode="97207", propertyManager=5, tenants=4, dateAdded="2020-04-12", archived=0)
     db.session.add(newProperty)
+    db.session.commit()
 
     newTenant = TenantModel(firstName="Renty", lastName="McRenter", phone="800-RENT-ALOT", propertyID=1, staffIDs=[1, 2])
     db.session.add(newTenant)
