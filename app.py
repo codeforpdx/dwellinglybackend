@@ -2,6 +2,7 @@ from flask import Flask
 from flask_restful import Api
 from flask_jwt_extended import JWTManager, jwt_refresh_token_required, create_access_token, get_jwt_identity
 from flask_cors import CORS
+from flask_mail import Mail
 from resources.admin_required import admin_required
 from models.user import UserModel
 from models.property import PropertyModel
@@ -18,9 +19,7 @@ from resources.tickets import Ticket, Tickets
 import os
 from db import db
 
-def create_app():
-    app = Flask(__name__)
-
+def config_app(app):
     #config DataBase
     app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DATABASE_URL", default = 'sqlite:///data.db')
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -52,16 +51,47 @@ def create_app():
     app.config['MAIL_SUPPRESS_SEND'] = False #same as testing
     app.config['MAIL_ASCII_ATTACHMENTS'] = False
 
+
+def create_routes(app):
+    api = Api(app, prefix="/api/")
+    api.add_resource(UserRegister, '/register')
+    api.add_resource(Property,'/properties/<string:name>') #TODO change to ID
+    api.add_resource(Properties,'/properties')
+    api.add_resource(ArchiveProperty,'/properties/archive/<int:id>')
+    api.add_resource(User, '/user/<int:user_id>')
+    api.add_resource(UsersRole, '/users/role')
+    api.add_resource(ArchiveUser, '/user/archive/<int:user_id>')
+    api.add_resource(UserLogin, '/login')
+    api.add_resource(Email, '/user/message')
+    api.add_resource(UserAccessRefresh, '/refresh')
+    api.add_resource(Tenants, '/tenants', '/tenants/<int:tenant_id>')
+    api.add_resource(EmergencyContacts, '/emergencycontacts', '/emergencycontacts/<int:id>')
+
+
+def create_app():
+    app = Flask(__name__)
+
+    config_app(app)
+
+    create_routes(app)
+
     #allow cross-origin (CORS)
     CORS(app)
 
-    db.init_app(app) #need to solve this
+    # set up authorization
+    app.jwt = JWTManager(app) 
+
+    # initialize Mail
+    app.mail = Mail(app)
+    
+    db.init_app(app)
     return app
 
 
 app = create_app()
-api = Api(app, prefix="/api/")
 
+
+# ensure the database has been initialized (development only)
 @app.before_first_request
 def check_for_admins():
     errorMsg = (
@@ -79,14 +109,10 @@ def check_for_admins():
         if(not len(admins)):
             print(errorMsg)
 
-jwt = JWTManager(app) # /authorization
 
-mail = Mail(app) #init Mail
-
-
-@jwt.user_claims_loader
-#check if user role == admin
-def role_loader(identity): #identity = user.id in JWT
+# check the user role in the JSON Web Token (JWT)
+@app.jwt.user_claims_loader
+def role_loader(identity): # identity = current user's id in JWT
     user = UserModel.find_by_id(identity)
     return {
         'email': user.email,
@@ -97,28 +123,10 @@ def role_loader(identity): #identity = user.id in JWT
 
 # checking if the token's jti (jwt id) is in the set of revoked tokens
 # this check is applied globally (to all routes that require jwt)
-@jwt.token_in_blacklist_loader
+@app.jwt.token_in_blacklist_loader
 def check_if_token_in_blacklist(decrypted_token):
     jti = decrypted_token['jti']
     return RevokedTokensModel.is_jti_blacklisted(jti)
 
-
-api.add_resource(UserRegister, '/register')
-api.add_resource(Property,'/properties/<string:name>') #TODO change to ID
-api.add_resource(Properties,'/properties')
-api.add_resource(ArchiveProperty,'/properties/archive/<int:id>')
-api.add_resource(User, '/user/<int:user_id>')
-api.add_resource(UsersRole, '/users/role')
-api.add_resource(ArchiveUser, '/user/archive/<int:user_id>')
-api.add_resource(UserLogin, '/login')
-api.add_resource(Email, '/user/message')
-api.add_resource(UserAccessRefresh, '/refresh')
-api.add_resource(Tenants, '/tenants', '/tenants/<int:tenant_id>')
-api.add_resource(Tickets, '/tickets')
-api.add_resource(Ticket, '/tickets/<int:id>')
-api.add_resource(EmergencyContacts, '/emergencycontacts', '/emergencycontacts/<int:id>')
-
-
 if __name__ == '__main__':
-    # db.init_app(app)
     app.run(port=5000, debug=True)
