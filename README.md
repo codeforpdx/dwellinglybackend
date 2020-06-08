@@ -23,6 +23,15 @@ NOTE: Database is SQLite3 via SQLAlchemy
     - Run: `pipenv run flask run`
     - Run + restart the server on changes:  `pipenv run flask run --reload`
 
+6. Test the app and view test coverage reports. Use of coverage reporting is recommended because the reports indicate test suite completeness and can locate defunct code in the code base.
+    - Run the test suite with coverage reporting:
+      - `pipenv run coverage run --branch --source=. -m py.test`
+      - View test coverage report: `pipenv run coverage report -m`
+      - Or, view report as a web page: `pipenv run coverage report html`. 
+        - Open [localhost:5500/htmlcov/index.html](http://localhost:5500/htmlcov/index.html) (requires the server to be running)
+    - Run the test suite without coverage reporting:
+      - `pipenv run py.test`
+
 Queries can be made with the Postman Collection link ( https://www.getpostman.com/collections/a86a292798c7895425e2 )
 
 ### Endpoints
