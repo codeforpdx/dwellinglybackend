@@ -20,8 +20,8 @@ class ContactNumberModel(db.Model):
         return cls.query.filter_by(emergency_contact_id=contact_id).all()
 
     @classmethod
-    def find_by_contact_id_and_number(cls, contact_id, number):
-        return cls.query.filter_by(emergency_contact_id=contact_id, number=number).first()
+    def find_by_id(cls, id):
+        return cls.query.filter_by(id=id).first()
 
     def json(self):
         return {'id': self.id, 'number':self.number, 'numtype': self.numtype, 'extension': self.extension}

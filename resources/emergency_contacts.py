@@ -14,7 +14,8 @@ def parseContactNumbersFromJson(json_data):
         if not 'number' in number.keys(): 
             error = "One of the contact_numbers for the emergency contact is missing a number"
             break
-        newNumber = { "number": number['number'] }
+        newNumber = { "number": number['number'], "id": "unavailable" }
+        if 'id' in number.keys(): newNumber['id'] = number['id']
         if 'numtype' in number.keys(): newNumber['numtype'] = number['numtype']
         if 'extension' in number.keys(): newNumber['extension'] = number['extension']
         parsedData.append(newNumber)
@@ -79,7 +80,7 @@ class EmergencyContacts(Resource):
             if numbersError:
                 return {'message': numbersError}, 401
             for number in numbersData:
-                contactToModify = ContactNumberModel.find_by_contact_id_and_number(id, number["number"])
+                contactToModify = ContactNumberModel.find_by_id(number["id"])
                 if not contactToModify:
                     contactToModify = ContactNumberModel(
                         emergency_contact_id = id,
