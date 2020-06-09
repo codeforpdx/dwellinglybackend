@@ -12,11 +12,11 @@ class EmergencyContactModel(db.Model):
     #relationships
     contact_numbers = relationship('ContactNumberModel', backref='contact_numbers', lazy=True)
 
-    def __init__(self, name, contactNumbers, description=None):
+    def __init__(self, name, contact_numbers, description=None):
         self.name = name
         self.description = description if description else ''
         self.contact_numbers = []
-        for number in contactNumbers:
+        for number in contact_numbers:
             #Need to revisit this... 
             #   contact numbers can be associated many-to-one  w.r.t. emergency contacts
             #   if a contact number exists already for one emergency contact, 
@@ -27,7 +27,7 @@ class EmergencyContactModel(db.Model):
                 item = ContactNumberModel(
                     emergency_contact_id = self.id,
                     number = number['number'],
-                    numtype = number['type'] if 'type' in number.keys() else '',
+                    numtype = number['numtype'] if 'numtype' in number.keys() else '',
                     extension = number['extension'] if 'extension' in number.keys() else '',
                 )
                 db.session.add(item)

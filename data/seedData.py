@@ -35,11 +35,11 @@ def seedData():
     revokedToken = RevokedTokensModel(jti="855c5cb8-c871-4a61-b3d8-90249f979601")
     db.session.add(revokedToken)
 
-    emergencyContact = EmergencyContactModel(name="Narcotics Anonymous", contactNumbers=[{"number": "503-345-9839"}])
+    emergencyContact = EmergencyContactModel(name="Narcotics Anonymous", contact_numbers=[{"number": "503-345-9839"}])
     db.session.add(emergencyContact)
-    emergencyContact = EmergencyContactModel(name="Washington Co. Crisis Team", contactNumbers=[{"number": "503-291-9111", "type": "Call"}, {"number": "503-555-3321", "type": "Text"}], description="Suicide prevention and referrals")
+    emergencyContact = EmergencyContactModel(name="Washington Co. Crisis Team", contact_numbers=[{"number": "503-291-9111", "numtype": "Call"}, {"number": "503-555-3321", "numtype": "Text"}], description="Suicide prevention and referrals")
     db.session.add(emergencyContact)
-    emergencyContact = EmergencyContactModel(name="Child Abuse/Reporting", contactNumbers=[{"number": "503-730-3100"}])
+    emergencyContact = EmergencyContactModel(name="Child Abuse/Reporting", contact_numbers=[{"number": "503-730-3100"}])
     db.session.add(emergencyContact)
 
     db.session.commit()
