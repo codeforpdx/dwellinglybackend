@@ -47,8 +47,5 @@ class EmergencyContactModel(db.Model):
         db.session.commit()
     
     def delete_from_db(self):
-        contactsToDelete = ContactNumberModel.find_by_contact_id(self.id)
-        for contact in contactsToDelete:
-            contact.delete_from_db()
         db.session.delete(self)
         db.session.commit()

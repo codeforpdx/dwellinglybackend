@@ -7,7 +7,7 @@ class ContactNumberModel(db.Model):
     number = db.Column(db.String(20))
     numtype = db.Column(db.String(30))
     extension = db.Column(db.String(10))
-    emergency_contact_id = db.Column(db.Integer, db.ForeignKey('emergency_contacts.id'), nullable=False)
+    emergency_contact_id = db.Column(db.Integer, db.ForeignKey('emergency_contacts.id'))
 
     def __init__(self, emergency_contact_id, number, numtype='', extension=''):
         self.emergency_contact_id = emergency_contact_id
