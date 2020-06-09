@@ -1,6 +1,5 @@
 from db import db
 
-
 class ContactNumberModel(db.Model):
     __tablename__ = "contact_numbers"
 
@@ -11,23 +10,26 @@ class ContactNumberModel(db.Model):
     emergency_contact_id = db.Column(db.Integer, db.ForeignKey('emergency_contacts.id'), nullable=False)
 
     def __init__(self, emergency_contact_id, number, numtype='', extension=''):
-        # self.id = id
         self.emergency_contact_id = emergency_contact_id
         self.number = number
         self.numtype = numtype if numtype else ''
         self.extension = extension if extension else ''
 
-    def json(self):
-        return {'id': self.id, 'number':self.number, 'numtype': self.numtype, 'extension': self.extension}
+    @classmethod
+    def find_by_contact_id(cls, contact_id):
+        return cls.query.filter_by(emergency_contact_id=contact_id).all()
 
     @classmethod
-    def find_by_number(cls, number):
-        return cls.query.filter_by(number=number).first()
+    def find_by_contact_id_and_number(cls, contact_id, number):
+        return cls.query.filter_by(emergency_contact_id=contact_id, number=number).first()
+
+    def json(self):
+        return {'id': self.id, 'number':self.number, 'numtype': self.numtype, 'extension': self.extension}
 
     def save_to_db(self):
         db.session.add(self)
         db.session.commit()
-    
+
     def delete_from_db(self):
         db.session.delete(self)
         db.session.commit()

@@ -17,20 +17,13 @@ class EmergencyContactModel(db.Model):
         self.description = description if description else ''
         self.contact_numbers = []
         for number in contact_numbers:
-            #Need to revisit this... 
-            #   contact numbers can be associated many-to-one  w.r.t. emergency contacts
-            #   if a contact number exists already for one emergency contact, 
-            #   and a second emergency contact claims that contact number as its own,
-            #   Does the backref to the first emergency contact become invalid???
-            item = ContactNumberModel.find_by_number(number['number'])
-            if not item: 
-                item = ContactNumberModel(
-                    emergency_contact_id = self.id,
-                    number = number['number'],
-                    numtype = number['numtype'] if 'numtype' in number.keys() else '',
-                    extension = number['extension'] if 'extension' in number.keys() else '',
-                )
-                db.session.add(item)
+            item = ContactNumberModel(
+                emergency_contact_id = self.id,
+                number = number['number'],
+                numtype = number['numtype'] if 'numtype' in number.keys() else '',
+                extension = number['extension'] if 'extension' in number.keys() else '',
+            )
+            db.session.add(item)
             self.contact_numbers.append(item)
 
     def json(self):
@@ -45,10 +38,17 @@ class EmergencyContactModel(db.Model):
     def find_by_id(cls, id):
         return cls.query.filter_by(id=id).first()
     
+    @classmethod
+    def find_by_name(cls, name):
+        return cls.query.filter_by(name=name).first()
+    
     def save_to_db(self):
         db.session.add(self)
         db.session.commit()
     
     def delete_from_db(self):
+        contactsToDelete = ContactNumberModel.find_by_contact_id(self.id)
+        for contact in contactsToDelete:
+            contact.delete_from_db()
         db.session.delete(self)
         db.session.commit()
