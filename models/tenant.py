@@ -30,17 +30,17 @@ class TenantModel(db.Model):
 
     def json(self):
         return {
-            'id': self.id, 
-            'firstName':self.firstName, 
-            'lastName':self.lastName, 
-            'phone': self.phone, 
+            'id': self.id,
+            'firstName':self.firstName,
+            'lastName':self.lastName,
+            'phone': self.phone,
             'propertyID': self.propertyID,
             'propertyName': self.property.name if self.property else None,
             'propertyAddress': self.property.address if self.property else None,
             'propertyTenants': self.property.tenants if self.property else None,
             'staff': [user.json() for user in self.staff] if self.staff else None
         }
-    
+
     @classmethod
     def find_by_id(cls, id):
         return cls.query.filter_by(id=id).first() #SELECT * FROM property WHERE id = id LIMIT 1
@@ -56,7 +56,7 @@ class TenantModel(db.Model):
     def save_to_db(self):
         db.session.add(self)
         db.session.commit()
-    
+
     def delete_from_db(self):
         db.session.delete(self)
         db.session.commit()

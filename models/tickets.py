@@ -3,6 +3,7 @@ from db import db
 from models.tenant import TenantModel
 from models.user import UserModel
 from models.notes import NotesModel
+from models.tenant import TenantModel
 from datetime import datetime
 
 class TicketModel(db.Model):
@@ -24,28 +25,32 @@ class TicketModel(db.Model):
         dateTime = datetime.now()
         timestamp = dateTime.strftime("%d-%b-%Y (%H:%M:%S.%f)")
         self.issue = issue
-        self.tenant = tenant
         self.sender = sender
+        self.tenant = tenant
         self.opened = timestamp
         self.status = status
         self.urgency = urgency
+        #
+
 
     def json(self):
         message_notes = []
         for note in self.notes:
             message_notes.append(note.json())
+    
+        senderData = UserModel.find_by_id(self.sender)
+        tenantData = TenantModel.find_by_id(self.tenant)
 
         return {
             'id': self.id,
             'issue':self.issue,
-            'tenant': self.tenant,
-            'sender': self.sender,
+            'tenant': tenantData.json(),
+            'sender': senderData.json(),
             'opened': self.opened,
             'status': self.status,
             'urgency': self.urgency,
             'notes': message_notes
         }
-
         # notes.json() for note in self.notes.all()]
 
     @classmethod
