@@ -1,3 +1,3 @@
-def test_new_user(new_user):
-    assert new_user.email == "user1@dwellingly.org"
-    assert new_user.role == "admin"
+def test_admin_user(admin_user):
+    assert admin_user.email == "user1@dwellingly.org"
+    assert admin_user.role == "admin"

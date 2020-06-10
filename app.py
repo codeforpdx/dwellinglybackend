@@ -84,49 +84,50 @@ def create_app():
     # initialize Mail
     app.mail = Mail(app)
     
+    # ensure the database has been initialized (development only)
+    @app.before_first_request
+    def check_for_admins():
+        errorMsg = (
+            "\n\n=-=-=-=-=-=-=-=\n"
+            "WARNING! Database unusable. Did you forget to run the seed_db.py script? `python seed_db.py`"
+            "\n=-=-=-=-=-=-=-=\n\n"
+        )
+
+        assert (os.path.isfile('./data.db')), errorMsg
+        try:
+            admins = UserModel.find_by_role('admin')
+        except:
+            print(errorMsg)
+        else:
+            if(not len(admins)):
+                print(errorMsg)
+
+    # check the user role in the JSON Web Token (JWT)
+    @app.jwt.user_claims_loader
+    def role_loader(identity): # identity = current user's id in JWT
+        user = UserModel.find_by_id(identity)
+        return {
+            'email': user.email,
+            'firstName': user.firstName,
+            'lastName': user.lastName,
+            'is_admin': (user.role == 'admin')
+        }
+
+
+    # checking if the token's jti (jwt id) is in the set of revoked tokens
+    # this check is applied globally (to all routes that require jwt)
+    @app.jwt.token_in_blacklist_loader
+    def check_if_token_in_blacklist(decrypted_token):
+        jti = decrypted_token['jti']
+        return RevokedTokensModel.is_jti_blacklisted(jti)
+
+
     db.init_app(app)
     return app
 
 
 app = create_app()
 
-
-# ensure the database has been initialized (development only)
-@app.before_first_request
-def check_for_admins():
-    errorMsg = (
-    "\n\n=-=-=-=-=-=-=-=\n"
-    "WARNING! Database unusable. Did you forget to run the seed_db.py script? `python seed_db.py`"
-    "\n=-=-=-=-=-=-=-=\n\n"
-    )
-
-    assert (os.path.isfile('./data.db')), errorMsg
-    try:
-        admins = UserModel.find_by_role('admin')
-    except:
-        print(errorMsg)
-    else:
-        if(not len(admins)):
-            print(errorMsg)
-
-
-# check the user role in the JSON Web Token (JWT)
-@app.jwt.user_claims_loader
-def role_loader(identity): # identity = current user's id in JWT
-    user = UserModel.find_by_id(identity)
-    return {
-        'email': user.email,
-        'firstName': user.firstName,
-        'lastName': user.lastName,
-        'is_admin': (user.role == 'admin')
-    }
-
-# checking if the token's jti (jwt id) is in the set of revoked tokens
-# this check is applied globally (to all routes that require jwt)
-@app.jwt.token_in_blacklist_loader
-def check_if_token_in_blacklist(decrypted_token):
-    jti = decrypted_token['jti']
-    return RevokedTokensModel.is_jti_blacklisted(jti)
 
 if __name__ == '__main__':
     app.run(port=5000, debug=True)
