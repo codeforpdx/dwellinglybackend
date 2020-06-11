@@ -42,13 +42,13 @@ def seedData():
     newNote = NotesModel(ticketid=2, text="Contacted Tenant -- follow up tomorrow.", user=3)
     db.session.add(newNote)
 
-    newTicket = TicketModel(issue="The roof, the roof, the roof is one fire.", tenant=1, sender=1, status="Critical", urgency="HIGH")
+    newTicket = TicketModel(issue="The roof, the roof, the roof is one fire.", tenant=1, sender=1, status="In Progress", urgency="Low", assignedUser=4)
     db.session.add(newTicket)
-    newTicket = TicketModel(issue="Flaming Dumpster Fire.", tenant=2, sender=3, status="Critical", urgency="HIGH")
+    newTicket = TicketModel(issue="Flaming Dumpster Fire.", tenant=2, sender=3, status="Critical", urgency="HIGH", assignedUser=4)
     db.session.add(newTicket)
-    newTicket = TicketModel(issue="Unpaid Rent", tenant=1, sender=1, status="Critical", urgency="HIGH")
+    newTicket = TicketModel(issue="Unpaid Rent", tenant=1, sender=1, status="Critical", urgency="HIGH", assignedUser=4)
     db.session.add(newTicket)
-    newTicket = TicketModel(issue="Over 40 cats in domicile.", tenant=2, sender=3, status="Critical", urgency="HIGH")
+    newTicket = TicketModel(issue="Over 40 cats in domicile.", tenant=2, sender=3, status="Critical", urgency="HIGH", assignedUser=4)
     db.session.add(newTicket)
 
     revokedToken = RevokedTokensModel(jti="855c5cb8-c871-4a61-b3d8-90249f979601")

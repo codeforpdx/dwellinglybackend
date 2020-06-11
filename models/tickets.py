@@ -12,8 +12,10 @@ class TicketModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     issue = db.Column(db.String(144))
     tenant = db.Column(db.Integer, db.ForeignKey('tenants.id'))
+    assignedUser = db.Column(db.Integer, db.ForeignKey('users.id'))
     sender = db.Column(db.Integer, db.ForeignKey('users.id'))
     opened =  db.Column(db.String(32))
+    updated = db.Column(db.String(32))
     status = db.Column(db.String(12))
     urgency = db.Column(db.String(12))
     notelog = db.Column(db.Text)
@@ -21,32 +23,45 @@ class TicketModel(db.Model):
     #relationships
     notes = db.relationship(NotesModel)
 
-    def __init__(self, issue, sender, tenant, status, urgency):
+    def __init__(self, issue, sender, tenant, status, urgency, assignedUser):
         dateTime = datetime.now()
-        timestamp = dateTime.strftime("%d-%b-%Y (%H:%M:%S.%f)")
+        timestamp = dateTime.strftime("%d-%b-%Y (%H:%M)")
         self.issue = issue
         self.sender = sender
         self.tenant = tenant
         self.opened = timestamp
+        self.updated = timestamp
+        self.assignedUser = assignedUser
         self.status = status
         self.urgency = urgency
-        #
+
 
 
     def json(self):
         message_notes = []
         for note in self.notes:
             message_notes.append(note.json())
-    
+
         senderData = UserModel.find_by_id(self.sender)
+        senderName = "{} {}".format(senderData.firstName, senderData.lastName)
+
         tenantData = TenantModel.find_by_id(self.tenant)
+        tenantName = "{} {}".format(tenantData.firstName, tenantData.lastName)
+
+        assignedUserData = UserModel.find_by_id(self.assignedUser)
+        assignedUser = "{} {}".format(assignedUserData.firstName, assignedUserData.lastName)
 
         return {
             'id': self.id,
             'issue':self.issue,
-            'tenant': tenantData.json(),
-            'sender': senderData.json(),
+            'tenant': tenantName,
+            'senderID': self.sender,
+            'tenantID': self.tenant,
+            'assignedUserID': self.assignedUser,
+            'sender': senderName,
+            'assigned': assignedUser,
             'opened': self.opened,
+            'updated':self.opened,
             'status': self.status,
             'urgency': self.urgency,
             'notes': message_notes
