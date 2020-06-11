@@ -36,7 +36,7 @@ class LeaseModel(db.Model):
           'name':self.name,
           'propertyID':self.propertyID,
           'landlordID': self.landlordID,
-          'unit': unit,
+          'unit': self.unit,
           'dateStart': self.dateStart,
           'dateEnd': self.dateEnd,
           'dateUpdate': self.dateUpdated,
