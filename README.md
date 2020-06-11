@@ -3,10 +3,10 @@
 ## Dwellingly App Backend
 
 Set up Dwelling Flask Testing Backend (for the first time)
-NOTE: Database is SQLite3 via SQLAlchemy 
+NOTE: Database is SQLite3 via SQLAlchemy
 
 + Github Repo: { https://github.com/codeforpdx/dwellinglybackend }
-+ Live Server: {https://dwellinglyapi.herokuapp.com/} 
++ Live Server: {https://dwellinglyapi.herokuapp.com/}
 
 ### To Start Server
 
@@ -24,19 +24,31 @@ NOTE: Database is SQLite3 via SQLAlchemy
 
 Queries can be made with the Postman Collection link ( https://www.getpostman.com/collections/a86a292798c7895425e2 )
 
+
+## Alternative Setup Instructions (for those who have never used Python/having path errors)
+
+1. Clone the repo (`git clone https://github.com/codeforpdx/dwellinglybackend.git`)
+2. Install Python ( https://realpython.com/installing-python/ )
+3. Install pipenv: `pip3 install --user pipenv`
+4. Shell into the environment configured by your Pipfile `pipenv shell`
+  - This brings you into a partitioned environment set up to spec with your Pipfile. Often people who skip this step will have path and version errors.
+5. Run: `python seed_db.py`
+6. Run: `pipenv run flask run`
+7. Login using one of the accounts below and you should be good to go!
+
 ### Endpoints
 
-How to contribute to this project. 
+How to contribute to this project.
 1. Set your origin to https://github.com/codeforpdx/dwellinglybackend.git
-2. The Main Branch is Development 
+2. The Main Branch is Development
 ```console
-~$: git pull origin development 
+~$: git pull origin development
 ```
-3. Branch from Development 
+3. Branch from Development
 ```console
 ~$ git checkout -b <name of branch>
 ```
-go to 
+go to
 
 
 #### ENDPOINT: USER Model
@@ -52,7 +64,7 @@ go to
 | DELETE | `/users/:uid`          | Deletes a single user (admin only)   |
 
 
-### This Backend Uses JWT for authorization 
+### This Backend Uses JWT for authorization
 
 Authorization header format:
 ```javascript
@@ -97,7 +109,7 @@ Authorization Bearer < JWT access token >
 | GET    | `/properties/`               | Gets all properties                      |
 | GET    | `/properties/:id`            | Gets a single property (admin only)      |
 | PATCH  | `/properties/:id`            | Updates a single property                | not implemented
-| PUT    | `/properties/:id`            | Updates a single property (admin only)   | 
+| PUT    | `/properties/:id`            | Updates a single property (admin only)   |
 | DELETE | `/properties/:id`            | Deletes a single property (admin only)   |
 | POST   | `/properties/archive/:id`    | Archives a single property (admin only)  |
 
@@ -121,7 +133,7 @@ Authorization Bearer < JWT access token >
 | POST   | `/tenants/`                  | Creates a new tenant (admin only)        |
 | GET    | `/tenants/`                  | Gets all tenants                         |
 | GET    | `/tenants/:id`               | Gets a single tenant (admin only)      |
-| PUT    | `/tenants/:id`               | Updates a single tenant (admin only)   | 
+| PUT    | `/tenants/:id`               | Updates a single tenant (admin only)   |
 | DELETE | `/tenants/:id`               | Deletes a single tenant (admin only)   |
 
 ```javascript
@@ -142,7 +154,7 @@ Authorization Bearer < JWT access token >
 | POST   | `/emergencycontacts/`        | Creates a new emergency contact (admin only)        |
 | GET    | `/emergencycontacts/`        | Gets all emergency contacts                         |
 | GET    | `/emergencycontacts/:id`     | Gets a single emergency contact (admin only)        |
-| PUT    | `/emergencycontacts/:id`     | Updates a single emergency contact (admin only)     | 
+| PUT    | `/emergencycontacts/:id`     | Updates a single emergency contact (admin only)     |
 | DELETE | `/emergencycontacts/:id`     | Deletes a single emergency contact (admin only)     |
 
 ```javascript
