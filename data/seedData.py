@@ -17,6 +17,7 @@ def seedData():
     db.session.add(user)
     user = UserModel(email="user3@dwellingly.org", role="property-manager", firstName="Gray", lastName="Pouponn", password="1234", archived=0)
     db.session.add(user)
+    db.session.commit()
 
     newProperty = PropertyModel(name="test1", address="123 NE FLanders St", city="Portland", state="OR", zipcode="97207", propertyManager=5, tenants=3, dateAdded="2020-04-12", archived=0)
     db.session.add(newProperty)
@@ -24,6 +25,7 @@ def seedData():
     db.session.add(newProperty)
     newProperty = PropertyModel(name="The Reginald", address="Aristocrat Avenue", city="Portland", state="OR", zipcode="97207", propertyManager=5, tenants=4, dateAdded="2020-04-12", archived=0)
     db.session.add(newProperty)
+    db.session.commit()
 
     newTenant = TenantModel(firstName="Renty", lastName="McRenter", phone="800-RENT-ALOT", propertyID=1, staffIDs=[1, 2])
     db.session.add(newTenant)
