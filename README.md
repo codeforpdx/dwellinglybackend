@@ -135,6 +135,34 @@ Authorization Bearer < JWT access token >
     },
 ```
 
+#### ENDPOINT: EMERGENCY NUMBERS
+
+| method | route                        | action                                              |
+| :----- | :--------------------------- | :-------------------------------------------------- |
+| POST   | `/emergencycontacts/`        | Creates a new emergency contact (admin only)        |
+| GET    | `/emergencycontacts/`        | Gets all emergency contacts                         |
+| GET    | `/emergencycontacts/:id`     | Gets a single emergency contact (admin only)        |
+| PUT    | `/emergencycontacts/:id`     | Updates a single emergency contact (admin only)     | 
+| DELETE | `/emergencycontacts/:id`     | Deletes a single emergency contact (admin only)     |
+
+```javascript
+    {
+        "id": 1,
+        "name": "Narcotics Anonymous",
+        "description": "Addiction services")
+        "contact_numbers": [
+            {
+                "number": "503-345-9839"
+            },
+            {
+                "number": "503-291-9111",
+                "numtype": "Phone",
+                "extension": "x123"
+            }
+        ]
+    }
+```
+
 #### ENDPOINT: EMAIL
 
 | method | route                | action                     |
