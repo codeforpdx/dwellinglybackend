@@ -18,6 +18,15 @@ def seedData():
     user = UserModel(email="user3@dwellingly.org", role="property-manager", firstName="Gray", lastName="Pouponn", password="1234", archived=0)
     db.session.add(user)
 
+    user = UserModel(email="pending1@dwellingly.org", role="pending", firstName="Anthony", lastName="Redding", password="1234", archived=0)
+    db.session.add(user)
+    user = UserModel(email="pending2@dwellingly.org", role="pending", firstName="Ryan", lastName="Dander", password="1234", archived=0)
+    db.session.add(user)
+    user = UserModel(email="pending3@dwellingly.org", role="pending", firstName="Amber", lastName="Lemming", password="1234", archived=0)
+    db.session.add(user)
+    user = UserModel(email="pending4@dwellingly.org", role="pending", firstName="Jeremy", lastName="Quazar", password="1234", archived=0)
+    db.session.add(user)
+
     newProperty = PropertyModel(name="test1", address="123 NE FLanders St", city="Portland", state="OR", zipcode="97207", propertyManager=5, tenants=3, dateAdded="2020-04-12", archived=0)
     db.session.add(newProperty)
     newProperty = PropertyModel(name="Meerkat Manor", address="Privet Drive", city="Portland", state="OR", zipcode="97207", propertyManager=4, tenants=6, dateAdded="2020-04-12", archived=0)
