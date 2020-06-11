@@ -8,12 +8,16 @@ class LeaseModel(db.Model):
     name = db.Column(db.String(100))
     unit = db.Column(db.String(20))
     landlordID = db.Column(db.Integer)
-    propertyID = db.Column(db.Integer)
+    propertyID = db.Column(db.Integer, db.ForeignKey('properties.id'))
+    userID = db.Column(db.Integer, db.ForeignKey('users.id'))
     dateStart = db.Column(db.DateTime, default=datetime.datetime.utcnow)
     dateEnd = db.Column(db.DateTime, default=datetime.datetime.utcnow)
     dateUpdated = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+    timeStart = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+    timeEnd = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+    occupants = db.Column(db.Integer)
 
-    def __init__(self, id, name, unit, landlordID, propertyID, dateStart, dateEnd, dateUpdated):
+    def __init__(self, id, name, unit, landlordID, propertyID, dateStart, dateEnd, dateUpdated, timeStart, timeEnd, occupants):
         self.id = id
         self.name = name
         self.unit = unit
@@ -22,9 +26,24 @@ class LeaseModel(db.Model):
         self.dateStart = dateStart
         self.dateEnd = dateEnd
         self.dateUpdate = dateUpdated
+        self.timeStart = timeStart
+        self.timeEnd = timeEnd
+        self.occupants = occupants
 
     def json(self):
-        return {'id': self.id, 'name':self.name, 'propertyID':self.propertyID, 'landlordID': self.landlordID, 'unit': unit, 'dateStart': self.dateStart, 'dateEnd': self.dateEnd, 'dateUpdate': self.dateUpdated}
+        return {
+          'id': self.id,
+          'name':self.name,
+          'propertyID':self.propertyID,
+          'landlordID': self.landlordID,
+          'unit': unit,
+          'dateStart': self.dateStart,
+          'dateEnd': self.dateEnd,
+          'dateUpdate': self.dateUpdated,
+          'timeStart': self.timeStart,
+          'timeEnd': self.timeEnd,
+          'occupants': self.occupants
+        }
     
     @classmethod
     def find_by_id(cls, id):

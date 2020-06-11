@@ -7,6 +7,7 @@ class PropertyModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100))
     address = db.Column(db.String(250))
+    unit = db.Column(db.String(20))
     city = db.Column(db.String(50))
     state = db.Column(db.String(50))
     zipcode = db.Column(db.String(20))
@@ -16,9 +17,10 @@ class PropertyModel(db.Model):
     archived = db.Column(db.Boolean)
 
 
-    def __init__(self, name, address, city, state, zipcode, propertyManager, tenants, dateAdded, archived):
+    def __init__(self, name, address, unit, city, state, zipcode, propertyManager, tenants, dateAdded, archived):
         self.name = name
         self.address = address
+        self.unit = unit
         self.city = city
         self.state = state
         self.zipcode = zipcode
@@ -32,6 +34,7 @@ class PropertyModel(db.Model):
             'id': self.id, 
             'name':self.name, 
             'address': self.address, 
+            'unit': self.unit,
             'city': self.city, 
             'state': self.state, 
             'zipcode': self.zipcode,
