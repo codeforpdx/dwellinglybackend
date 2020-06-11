@@ -31,11 +31,12 @@ class Ticket(Resource):
 
         return{'Message': 'Ticket Removed from Database'}
 
-    @jwt_required
+    # @jwt_required
     def put(self, id):
         data = Ticket.parser.parse_args()
         ticket = TicketModel.find_by_id(id)
         updated = False
+        dateTime = datetime.now()
 
         if ticket:
             #variable statements allow for only updated fields to be transmitted
@@ -72,7 +73,10 @@ class Ticket(Resource):
                     return {'Message': 'An Error Has Occured'}, 500
 
             if updated:
-                ticket.updated = dateTime.strftime("%d-%b-%Y (%H:%M)")
+                timestamp = dateTime.strftime("%d-%b-%Y (%H:%M)")
+                print(ticket.updated)
+                ticket.updated = timestamp
+                print(ticket.updated)
 
             try:
                 ticket.save_to_db()

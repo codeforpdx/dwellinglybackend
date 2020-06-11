@@ -36,7 +36,6 @@ class TicketModel(db.Model):
         self.urgency = urgency
 
 
-
     def json(self):
         message_notes = []
         for note in self.notes:
@@ -61,7 +60,7 @@ class TicketModel(db.Model):
             'sender': senderName,
             'assigned': assignedUser,
             'opened': self.opened,
-            'updated':self.opened,
+            'updated':self.updated,
             'status': self.status,
             'urgency': self.urgency,
             'notes': message_notes
