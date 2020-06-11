@@ -31,7 +31,7 @@ class Ticket(Resource):
 
         return{'Message': 'Ticket Removed from Database'}
 
-    # @jwt_required
+    @jwt_required
     def put(self, id):
         data = Ticket.parser.parse_args()
         ticket = TicketModel.find_by_id(id)
