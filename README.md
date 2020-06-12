@@ -18,6 +18,7 @@ NOTE: Database is SQLite3 via SQLAlchemy
    - Run: `python seed_db.py`
      - To re-seed the database from scratch, delete data.db before running the script
    - Look for the file data.db to be created in the root directory
+   - - If you get the error `ImportError: No module named flask` or similar, you may need to run `pipenv shell` to launch virtual environment.
 
 5. Run `pipenv install`
 6. Start the server using the flask environment (required every time the project is re-opened):
