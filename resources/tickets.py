@@ -74,9 +74,7 @@ class Ticket(Resource):
 
             if updated:
                 timestamp = dateTime.strftime("%d-%b-%Y (%H:%M)")
-                print(ticket.updated)
                 ticket.updated = timestamp
-                print(ticket.updated)
 
             try:
                 ticket.save_to_db()
