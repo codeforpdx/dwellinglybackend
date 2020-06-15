@@ -1,99 +1,80 @@
-from flask_restful import Resource, reqparse
+from sqlalchemy.orm import relationship
 from db import db
-from models.property import PropertyModel
+from models.tenant import TenantModel
+from models.user import UserModel
+from models.notes import NotesModel
+from models.tenant import TenantModel
+from datetime import datetime
 
-# | method | route                | action                     |
-# | :----- | :------------------- | :------------------------- |
-# | POST   | `/tickets/`          | Creates a new property     |
-# | GET    | `v1/properties/`   | Gets all properties        |
-# | GET    | `v1/property/:name`  | Gets a single property     |
-# | PUT    | `v1/property/:name`  | Updates a single property  |
-# | DELETE | `v1/property/:name`  | Deletes a single property  |
+class TicketModel(db.Model):
+    __tablename__ = "tickets"
 
-#TODO Add Id based identifiers. 
+    id = db.Column(db.Integer, primary_key=True)
+    issue = db.Column(db.String(144))
+    tenant = db.Column(db.Integer, db.ForeignKey('tenants.id'))
+    assignedUser = db.Column(db.Integer, db.ForeignKey('users.id'))
+    sender = db.Column(db.Integer, db.ForeignKey('users.id'))
+    opened =  db.Column(db.String(32))
+    updated = db.Column(db.String(32))
+    status = db.Column(db.String(12))
+    urgency = db.Column(db.String(12))
+    notelog = db.Column(db.Text)
 
-class Tickets(Resource):
-    parser = reqparse.RequestParser()
-    parser.add_argument('name')
-    parser.add_argument('address')
-    parser.add_argument('city')
-    parser.add_argument('zipcode')
-    parser.add_argument('state')
+    #relationships
+    notes = db.relationship(NotesModel)
 
-    # if we want to do server-side evaluation -- probably should. 
-    # parser.add_argument('name', required=True, help="need a name")
-    # parser.add_argument('address', required=True, help="address incomplete")
-    # parser.add_argument('city', required=True, help="address incomplete")
-    # parser.add_argument('zipCode', required=True, help="address incomplete")
-    # parser.add_argument('state', required=True, help="address incomplete")
-    
+    def __init__(self, issue, sender, tenant, status, urgency, assignedUser):
+        dateTime = datetime.now()
+        timestamp = dateTime.strftime("%d-%b-%Y (%H:%M)")
+        self.issue = issue
+        self.sender = sender
+        self.tenant = tenant
+        self.opened = timestamp
+        self.updated = timestamp
+        self.assignedUser = assignedUser
+        self.status = status
+        self.urgency = urgency
 
-    def get(self):
-        return {'properties': [property.json() for property in PropertyModel.query.all()]}
-    
-    def post(self):
-        data = Properties.parser.parse_args()
 
-        if PropertyModel.find_by_name(data["name"]):
-            return { 'Message': 'A property with this name already exists'}, 401
+    def json(self):
+        message_notes = []
+        for note in self.notes:
+            message_notes.append(note.json())
 
-        rentalproperty = PropertyModel(**data) 
+        senderData = UserModel.find_by_id(self.sender)
+        senderName = "{} {}".format(senderData.firstName, senderData.lastName)
 
-        try:
-            PropertyModel.save_to_db(rentalproperty)
-        except:
-            return{"Message": "An Internal Error has Occured. Unable to insert Property"}, 500
+        tenantData = TenantModel.find_by_id(self.tenant)
+        tenantName = "{} {}".format(tenantData.firstName, tenantData.lastName)
 
-        return rentalproperty.json(), 201
+        assignedUserData = UserModel.find_by_id(self.assignedUser)
+        assignedUser = "{} {}".format(assignedUserData.firstName, assignedUserData.lastName)
 
-# single property/name
-class Property(Resource):
-    parser = reqparse.RequestParser()
-    parser.add_argument('name')
-    parser.add_argument('address')
-    parser.add_argument('city')
-    parser.add_argument('zipcode')
-    parser.add_argument('state')
+        return {
+            'id': self.id,
+            'issue':self.issue,
+            'tenant': tenantName,
+            'senderID': self.sender,
+            'tenantID': self.tenant,
+            'assignedUserID': self.assignedUser,
+            'sender': senderName,
+            'assigned': assignedUser,
+            'opened': self.opened,
+            'updated':self.updated,
+            'status': self.status,
+            'urgency': self.urgency,
+            'notes': message_notes
+        }
+        # notes.json() for note in self.notes.all()]
 
-    def get(self, name):
-        rentalProperty = PropertyModel.find_by_name(name)
+    @classmethod
+    def find_by_id(cls, id):
+        return cls.query.filter_by(id=id).first() #SELECT * FROM property WHERE id = id LIMIT 1
 
-        if rentalProperty:
-            return rentalProperty.json()
-        return {'message': 'Property not found'}, 404
-    
-    def delete(self, name):
-        property = PropertyModel.find_by_name(name)
-        if property:
-            property.delete_from_db()
-            return {'message': 'Property deleted.'}
-        return {'message': 'Property not found.'}, 404
+    def save_to_db(self):
+        db.session.add(self)
+        db.session.commit()
 
-    def put(self, name):
-        data = Properties.parser.parse_args()
-        rentalProperty = PropertyModel.find_by_name(name)
-
-        if(data.address):
-            rentalProperty.address = data.address
-            
-        if(data.city):
-            rentalProperty.city = data.city
-
-        if(data.name):
-            rentalProperty.name = data.name
-        
-        if(data.zipcode):
-            rentalProperty.zipcode = data.zipcode
-        
-        if(data.state):
-            rentalProperty.state = data.state
-        
-        # rentalProperty = PropertyModel(name,**data) -- this doesn't work as well. 
-        
-        try:
-            rentalProperty.save_to_db()
-        except:
-            return{"message": "An error has occured updating the property"}, 500
-
-        return rentalProperty.json()
-    
+    def delete_from_db(self):
+        db.session.delete(self)
+        db.session.commit()

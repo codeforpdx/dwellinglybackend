@@ -3,10 +3,10 @@
 ## Dwellingly App Backend
 
 Set up Dwelling Flask Testing Backend (for the first time)
-NOTE: Database is SQLite3 via SQLAlchemy 
+NOTE: Database is SQLite3 via SQLAlchemy
 
 + Github Repo: { https://github.com/codeforpdx/dwellinglybackend }
-+ Live Server: {https://dwellinglyapi.herokuapp.com/} 
++ Live Server: {https://dwellinglyapi.herokuapp.com/}
 
 ### To Start Server
 
@@ -27,17 +27,17 @@ Queries can be made with the Postman Collection link ( https://www.getpostman.co
 
 ### Endpoints
 
-How to contribute to this project. 
+How to contribute to this project.
 1. Set your origin to https://github.com/codeforpdx/dwellinglybackend.git
-2. The Main Branch is Development 
+2. The Main Branch is Development
 ```console
-~$: git pull origin development 
+~$: git pull origin development
 ```
-3. Branch from Development 
+3. Branch from Development
 ```console
 ~$ git checkout -b <name of branch>
 ```
-go to 
+go to
 
 
 #### ENDPOINT: USER Model
@@ -53,7 +53,7 @@ go to
 | DELETE | `/users/:uid`          | Deletes a single user (admin only)   |
 
 
-### This Backend Uses JWT for authorization 
+### This Backend Uses JWT for authorization
 
 Authorization header format:
 ```javascript
@@ -98,7 +98,7 @@ Authorization Bearer < JWT access token >
 | GET    | `/properties/`               | Gets all properties                      |
 | GET    | `/properties/:id`            | Gets a single property (admin only)      |
 | PATCH  | `/properties/:id`            | Updates a single property                | not implemented
-| PUT    | `/properties/:id`            | Updates a single property (admin only)   | 
+| PUT    | `/properties/:id`            | Updates a single property (admin only)   |
 | DELETE | `/properties/:id`            | Deletes a single property (admin only)   |
 | POST   | `/properties/archive/:id`    | Archives a single property (admin only)  |
 
@@ -122,7 +122,7 @@ Authorization Bearer < JWT access token >
 | POST   | `/tenants/`                  | Creates a new tenant (admin only)        |
 | GET    | `/tenants/`                  | Gets all tenants                         |
 | GET    | `/tenants/:id`               | Gets a single tenant (admin only)      |
-| PUT    | `/tenants/:id`               | Updates a single tenant (admin only)   | 
+| PUT    | `/tenants/:id`               | Updates a single tenant (admin only)   |
 | DELETE | `/tenants/:id`               | Deletes a single tenant (admin only)   |
 
 ```javascript
@@ -178,3 +178,19 @@ Authorization Bearer < JWT access token >
     "title": "Test email title",
     "body": "Dwellingly Test email body"
   },
+
+  #  id: 'K-0089ttxqQX-2',
+  #     issue: 'Property Damage',
+  #     tenant: {
+  #       address: 'Magnolia Park, Unit #2',
+  #       name: 'Alex Alder',
+  #       number: '503-555-1234'
+  #     },
+  #     sender: {
+  #       name: 'Tom Smith',
+  #       number: '541-123-4567'
+  #     },
+  #     sent: new Date('2017/12/19').toString(),
+  #     status: 'New',
+  #     urgency: 'Low',
+  #     notes: []
