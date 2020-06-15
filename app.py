@@ -11,6 +11,7 @@ from models.revoked_tokens import RevokedTokensModel
 from resources.user import UserRegister, User, UserLogin, ArchiveUser, UsersRole, UserAccessRefresh
 from resources.property import Properties, Property, ArchiveProperty
 from resources.tenants import Tenants
+from resources.emergency_contacts import EmergencyContacts
 from flask_mail import Mail
 from resources.email import Email
 from resources.tickets import Ticket, Tickets
@@ -21,7 +22,7 @@ def create_app():
     app = Flask(__name__)
 
     #config DataBase
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db'
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DATABASE_URL", default = 'sqlite:///data.db')
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['PROPAGATE_EXCEPTIONS'] = True
     app.secret_key = 'dwellingly' #Replace with Random Hash
@@ -59,7 +60,7 @@ def create_app():
 
 
 app = create_app()
-api = Api(app)
+api = Api(app, prefix="/api/")
 
 @app.before_first_request
 def check_for_admins():
@@ -115,6 +116,8 @@ api.add_resource(UserAccessRefresh, '/refresh')
 api.add_resource(Tenants, '/tenants', '/tenants/<int:tenant_id>')
 api.add_resource(Tickets, '/tickets')
 api.add_resource(Ticket, '/tickets/<int:id>')
+api.add_resource(EmergencyContacts, '/emergencycontacts', '/emergencycontacts/<int:id>')
+
 
 if __name__ == '__main__':
     # db.init_app(app)
