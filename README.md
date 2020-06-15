@@ -5,8 +5,10 @@ _Looking for the [Dwellingly App front end?](https://github.com/codeforpdx/dwell
 Set up Dwelling Flask Testing Backend (for the first time)
 NOTE: Database is SQLite3 via SQLAlchemy
 
+
 - Github Repo: { https://github.com/codeforpdx/dwellinglybackend }
 - Live Server: {https://dwellinglyapi.herokuapp.com/}
+
 
 ### To Start Server
 
@@ -14,12 +16,10 @@ NOTE: Database is SQLite3 via SQLAlchemy
 2. Install Python ( https://realpython.com/installing-python/ )
 3. Install pipenv: `pip3 install --user pipenv`.
 4. Seed the database
-
    - Run: `python seed_db.py`
-     - To re-seed the database from scratch, delete data.db before running the script
+   - To re-seed the database from scratch, delete data.db before running the script
    - Look for the file data.db to be created in the root directory
    - If you get the error `ImportError: No module named flask` or similar, you may need to run `pipenv shell` to launch virtual environment.
-
 5. Run `pipenv install`
 6. Start the server using the flask environment (required every time the project is re-opened):
    - Run: `pipenv run flask run`
@@ -40,7 +40,7 @@ Python does not come by default for Windows users. Sometimes the PATH variable i
 
 If you are still having issues or if your command prompt is throwing an error that says `python is not a command` or `pip is not a command`, it is most likely a pathing issue where the ENV variable is pointing to the wrong directory. To try to troubleshoot, I suggest following this guide: ( https://github.com/LambdaSchool/CS-Wiki/wiki/Installing-Python-3-and-pipenv ).
 
-## Alternative Setup Instructions (for those who have never used Python/having path errors)
+## Alternative Setup Instructions (for those who have never used Python/having path errors) - Mac OS
 
 1. Clone the repo (`git clone https://github.com/codeforpdx/dwellinglybackend.git`)
 2. Install Python ( https://realpython.com/installing-python/ )
@@ -55,6 +55,7 @@ If you are still having issues or if your command prompt is throwing an error th
 
 How to contribute to this project.
 
+
 1. Set your origin to https://github.com/codeforpdx/dwellinglybackend.git
 2. The Main Branch is Development
 
@@ -67,8 +68,7 @@ How to contribute to this project.
 ```console
 ~$ git checkout -b <name of branch>
 ```
-
-go to
+(Step #3 creates a new branch titled <name of branch> and navigates you to that branch)
 
 #### ENDPOINT: USER Model
 
@@ -122,6 +122,7 @@ Authorization Bearer < JWT access token >
 ```
 
 #### ENDPOINT: PROPERTIES
+
 
 | method | route                     | action                                  |
 | :----- | :------------------------ | :-------------------------------------- |
@@ -210,4 +211,22 @@ Authorization Bearer < JWT access token >
     "title": "Test email title",
     "body": "Dwellingly Test email body"
   },
+
 ```
+
+
+  #  id: 'K-0089ttxqQX-2',
+  #     issue: 'Property Damage',
+  #     tenant: {
+  #       address: 'Magnolia Park, Unit #2',
+  #       name: 'Alex Alder',
+  #       number: '503-555-1234'
+  #     },
+  #     sender: {
+  #       name: 'Tom Smith',
+  #       number: '541-123-4567'
+  #     },
+  #     sent: new Date('2017/12/19').toString(),
+  #     status: 'New',
+  #     urgency: 'Low',
+  #     notes: []
