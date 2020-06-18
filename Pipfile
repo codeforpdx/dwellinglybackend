@@ -4,6 +4,8 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
+pytest-flask = "*"
+coverage = "*"
 
 [packages]
 aniso8601 = "==8.0.0"
@@ -26,8 +28,14 @@ Werkzeug = "==1.0.0"
 Flask-mail = "==0.9.1"
 Flask-Cors = "*"
 psycopg2 = "*"
-pytest-flask = "*"
-coverage = "*"
 
 [requires]
 python_version = "3.8"
+
+[scripts]
+# details for the parameters below are as follows: 
+#     `--branch` indicates to watch that all cases of a conditional are sensitized
+#     `--source=.` calculate coverage only for files in this repository (aka: ignore code from packages)
+#     `-m py.test` is the call to run the test suite
+test = "coverage run --branch --source=. -m py.test"
+show_coverage = "coverage report -m"
