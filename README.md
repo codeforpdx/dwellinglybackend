@@ -214,7 +214,7 @@ Authorization Bearer < JWT access token >
 
 ```
 
-
+```
   id: 'K-0089ttxqQX-2',
 issue: 'Property Damage',
 tenant: {
@@ -230,3 +230,4 @@ tenant: {
   status: 'New',
   urgency: 'Low',
   notes: []
+  ```
