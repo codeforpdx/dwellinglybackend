@@ -215,18 +215,18 @@ Authorization Bearer < JWT access token >
 ```
 
 
-  #  id: 'K-0089ttxqQX-2',
-  #     issue: 'Property Damage',
-  #     tenant: {
-  #       address: 'Magnolia Park, Unit #2',
-  #       name: 'Alex Alder',
-  #       number: '503-555-1234'
-  #     },
-  #     sender: {
-  #       name: 'Tom Smith',
-  #       number: '541-123-4567'
-  #     },
-  #     sent: new Date('2017/12/19').toString(),
-  #     status: 'New',
-  #     urgency: 'Low',
-  #     notes: []
+  id: 'K-0089ttxqQX-2',
+issue: 'Property Damage',
+tenant: {
+  address: 'Magnolia Park, Unit #2',
+  name: 'Alex Alder',
+  number: '503-555-1234'
+   },
+  sender: {
+  name: 'Tom Smith',
+  number: '541-123-4567'
+  },
+  sent: new Date('2017/12/19').toString(),
+  status: 'New',
+  urgency: 'Low',
+  notes: []
