@@ -6,6 +6,7 @@ from data.seedData import seedData
 from models.user import UserModel
 
 adminUserEmail = "user1@dwellingly.org"
+adminRole = "admin"
 newUserEmail = "someone@domain.com"
 userPassword = "1234"
 
@@ -16,7 +17,7 @@ def app():
 
 @pytest.fixture
 def admin_user():
-    adminUser = UserModel(email=adminUserEmail, password=userPassword, firstName="user1", lastName="admin", role="admin", archived=0)
+    adminUser = UserModel(email=adminUserEmail, password=userPassword, firstName="user1", lastName="admin", role=adminRole, archived=0)
     return adminUser
 
 @pytest.fixture
