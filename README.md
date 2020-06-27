@@ -24,6 +24,7 @@ NOTE: Database is SQLite3 via SQLAlchemy
     - Run + restart the server on changes:  `pipenv run flask run --reload`
 
 6. Test the server and view coverage reports. Use of coverage reporting is recommended to indicate test suite completeness and to locate defunct code in the code base.
+    - Install the dev-packages: `pipenv install -d`
     - Run the tests: `pipenv run pytest --cov .`
       - View coverage for a particular directory: `pipenv run pytest --cov [directory]`
     - View detailed coverage reports, with listings for untested lines of code ...
