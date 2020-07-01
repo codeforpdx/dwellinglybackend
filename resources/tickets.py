@@ -29,7 +29,7 @@ class Ticket(Resource):
         if ticket:
             ticket.delete_from_db()
 
-        return{'Message': 'Ticket Removed from Database'}
+        return {'Message': 'Ticket Removed from Database'}
 
     @jwt_required
     def put(self, id):

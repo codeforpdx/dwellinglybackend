@@ -4,6 +4,9 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
+pytest-flask = "*"
+coverage = "*"
+pytest-cov = "*"
 
 [packages]
 aniso8601 = "==8.0.0"
@@ -29,3 +32,6 @@ psycopg2 = "*"
 
 [requires]
 python_version = "3.8"
+
+[scripts]
+view_coverage = "coverage report -m"
