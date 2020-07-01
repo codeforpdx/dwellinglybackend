@@ -16,6 +16,7 @@ from resources.emergency_contacts import EmergencyContacts
 from flask_mail import Mail
 from resources.email import Email
 from resources.tickets import Ticket, Tickets
+from resources.lease import Lease, Leases
 import os
 from db import db
 
@@ -66,6 +67,8 @@ def create_routes(app):
     api.add_resource(UserAccessRefresh, '/refresh')
     api.add_resource(Tenants, '/tenants', '/tenants/<int:tenant_id>')
     api.add_resource(EmergencyContacts, '/emergencycontacts', '/emergencycontacts/<int:id>')
+    api.add_resource(Lease, '/lease/<int:lease_id>')
+    api.add_resource(Leases, '/lease/')
 
 
 def check_for_admins():
@@ -97,18 +100,18 @@ def create_app():
     CORS(app)
 
     # set up authorization
-    app.jwt = JWTManager(app) 
+    app.jwt = JWTManager(app)
 
     # initialize Mail
     app.mail = Mail(app)
-    
+
     # ensure the database has been initialized (development only)
     @app.before_first_request
     def decorated_check_for_admins(): check_for_admins()
 
     # check the user role in the JSON Web Token (JWT)
     @app.jwt.user_claims_loader
-    def role_loader(identity): 
+    def role_loader(identity):
         user = UserModel.find_by_id(identity)
         return {'email': user.email, 'firstName': user.firstName, 'lastName': user.lastName, 'is_admin': (user.role == 'admin')}
 
