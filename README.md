@@ -223,20 +223,38 @@ Authorization Bearer < JWT access token >
 
 ```
 
+
+#### ENDPOINT: TICKETS
+
+| method | route              | action (all actions require user to be logged in)   |
+| :----- | :----------------- | :-------------------------------------------------- |
+| POST   | `/tickets/`        | Creates a new ticket                                |
+| GET    | `/tickets/`        | Gets all tickets                                    |
+| GET    | `/tickets/:id`     | Gets a single ticket                                |
+| PUT    | `/tickets/:id`     | Updates a single ticket                             | 
+| DELETE | `/tickets/:id`     | Deletes a single ticket                             |
+
+```javascript
+    id: 1,
+    issue: 'Property Damage',
+    tenant: 'Renty McRenter',
+    senderID: 1,
+    tenantID: 2,
+    assignedUserID: 4,
+    sender: "user1 tester",
+    assigned: "Mr. Sir",
+    status: "new",
+    urgency: "Low",
+    opened: "01-Jul-2020 (21:29)",
+    updated: "01-Jul-2020 (22:20)",
+    minsPastUpdate: 745,
+    notes: [
+        {
+            id: 2,
+            ticketid: 1,
+            created: "01-Jul-2020 (21:29:10.086958)",
+            text: "Tenant has over 40 cats.",
+            user: "user2 tester"
+        },
+    ]
 ```
-  id: 'K-0089ttxqQX-2',
-issue: 'Property Damage',
-tenant: {
-  address: 'Magnolia Park, Unit #2',
-  name: 'Alex Alder',
-  number: '503-555-1234'
-   },
-  sender: {
-  name: 'Tom Smith',
-  number: '541-123-4567'
-  },
-  sent: new Date('2017/12/19').toString(),
-  status: 'New',
-  urgency: 'Low',
-  notes: []
-  ```
