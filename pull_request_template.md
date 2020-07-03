@@ -1,5 +1,5 @@
 ### What issue is this solving?
-Please connect this Pull Request to the issue it is resolving by using the controls on the right side of this PR.
+Please post a link to the issue (on the front end repo) that this PR is resolving.
 
 ### Any helpful knowledge/context for the reviewer?
 Is a re-seeding of the database necessary?
