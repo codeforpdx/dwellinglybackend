@@ -11,4 +11,3 @@ Any special requirements to test?
 - [ ] Code has been tested and does not produce errors
 - [ ] Code is readable and formatted
 - [ ] There isn't any unnecessary commented-out code
-- [ ] There aren't any unnecessary commits or files changed (shouldn't touch the /stashed folder unless the issue requests it)
