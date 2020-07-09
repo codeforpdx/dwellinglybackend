@@ -4,6 +4,7 @@ from app import create_app
 from db import db
 from data.seedData import seedData
 from models.user import UserModel
+from models.property import PropertyModel
 
 adminUserEmail = "user1@dwellingly.org"
 adminRole = "admin"
@@ -24,6 +25,20 @@ def admin_user():
 def new_user():
     newUser = UserModel(email=newUserEmail, password=userPassword, firstName="user2", lastName="tester", role="", archived=0)
     return newUser
+
+@pytest.fixture
+def new_property():
+    newProperty = PropertyModel( name="test1"
+                               , address="123 NE FLanders St"
+                               , city="Portland"
+                               , state="OR"
+                               , zipcode="97207"
+                               , propertyManager=5
+                               , tenants=3
+                               , dateAdded="2020-04-12"
+                               , archived=0
+                               )
+    return newProperty
 
 @pytest.fixture
 def empty_database():
