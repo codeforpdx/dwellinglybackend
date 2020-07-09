@@ -22,7 +22,7 @@ class Tenants(Resource):
     parser.add_argument('propertyID',required=False,help="This field can be provided at a later time.")
     parser.add_argument('staffIDs',action='append',required=False,help="This field can be provided at a later time.")
 
-
+    @admin_required
     def get(self, tenant_id=None):
         # GET /tenants
         if not tenant_id:
