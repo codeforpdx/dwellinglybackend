@@ -13,8 +13,8 @@ class LeaseModel(db.Model):
     dateStart = db.Column(db.DateTime, default=datetime.datetime.utcnow)
     dateEnd = db.Column(db.DateTime, default=datetime.datetime.utcnow)
     dateUpdated = db.Column(db.DateTime, default=datetime.datetime.utcnow)
-    timeStart = db.Column(db.DateTime, default=datetime.datetime.utcnow)
-    timeEnd = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+    timeStart = db.Column(db.String(20))
+    timeEnd = db.Column(db.String(20))
     occupants = db.Column(db.Integer)
 
     def __init__(self, id, name, unit, landlordID, propertyID, dateStart, dateEnd, dateUpdated, timeStart, timeEnd, occupants):
@@ -44,7 +44,7 @@ class LeaseModel(db.Model):
           'timeEnd': self.timeEnd,
           'occupants': self.occupants
         }
-    
+
     @classmethod
     def find_by_id(cls, id):
         return cls.query.filter_by(id=id).first() #SELECT * FROM property WHERE id = id LIMIT 1
@@ -52,8 +52,7 @@ class LeaseModel(db.Model):
     def save_to_db(self):
         db.session.add(self)
         db.session.commit()
-    
+
     def delete_from_db(self):
         db.session.delete(self)
         db.session.commit()
-
