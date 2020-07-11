@@ -4,11 +4,16 @@ from app import create_app
 from db import db
 from data.seedData import seedData
 from models.user import UserModel
+from models.emergency_contact import EmergencyContactModel
+from models.contact_number import ContactNumberModel
 
 adminUserEmail = "user1@dwellingly.org"
 adminRole = "admin"
 newUserEmail = "someone@domain.com"
 userPassword = "1234"
+
+# Note: this repo uses the "pytest-flask" plugin which exposes the following fixtures for use in tests:
+#   client: an instance of flask's app.test_client - for making requests i.e. client.get('/')
 
 @pytest.fixture
 def app():
@@ -26,6 +31,10 @@ def new_user():
     return newUser
 
 @pytest.fixture
+def property_manager_user():
+    return UserModel(email="manager@domain.com", password=userPassword, firstName="Leslie", lastName="Knope", role="property_manager", archived=0)
+
+@pytest.fixture
 def empty_database():
     if(os.path.isfile("./data.db")):
         os.remove("./data.db")
@@ -39,13 +48,13 @@ def users_in_database(admin_user, new_user):
     yield db
     db.drop_all()
 
-@pytest.fixture
-def seeded_database():
-    app = create_app()
-    db.create_all()
-    seedData()
-    yield db
-    db.drop_all()
+# @pytest.fixture
+# def seeded_database():
+#     app = create_app()
+#     db.create_all()
+#     seedData()
+#     yield db
+#     db.drop_all()
 
 @pytest.fixture
 def admin_logged_in(client, users_in_database, admin_user):
@@ -60,3 +69,40 @@ def admin_logged_in(client, users_in_database, admin_user):
 def admin_auth_header(admin_logged_in):
     header = {"Authorization": f"Bearer {admin_logged_in.json['access_token']}"}
     return header
+
+#----------     EMERGENCY CONTACT & CONTACT NUMBERS     -------------------
+emergency_contact_name = "Washington Co. Crisis Team"
+emergency_contact_description = "Suicide prevention and referrals"
+contact_number = "503-291-9111"
+contact_numtype = "Call"
+
+# Logs the user in and returns their auth header
+def get_auth_header(client, userModel):
+    response = client.post("/api/login", json={
+        "email": userModel.email,
+        "password": userModel.password
+    })
+    return {"Authorization": f"Bearer {response.json['access_token']}"}
+
+@pytest.fixture
+def emergency_contact():
+    app = create_app()
+    with app.app_context():
+        emergencyContact = EmergencyContactModel(name=emergency_contact_name, contact_numbers=[{"number": contact_number, "numtype": contact_numtype}], description=emergency_contact_description)
+        return emergencyContact
+
+@pytest.fixture
+def test_database(admin_user, new_user, property_manager_user):
+    app = create_app()
+    db.create_all()
+
+    db.session.add(admin_user)
+    db.session.add(new_user)
+    db.session.add(property_manager_user)
+
+    db.session.add(EmergencyContactModel(name="Narcotics Anonymous", description="NA Hotline", contact_numbers=[{"number": "503-345-9839"}]))
+
+    db.session.commit()
+
+    yield db
+    db.drop_all()
