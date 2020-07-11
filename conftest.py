@@ -20,6 +20,7 @@ def app():
     app = create_app()
     return app
 
+
 # ----------------     TEST USERS    ------------------
 
 @pytest.fixture
@@ -36,7 +37,7 @@ def new_user():
 def property_manager_user():
     return UserModel(email="manager@domain.com", password=userPassword, firstName="Leslie", lastName="Knope", role="property_manager", archived=0)
 
-# Logs a user in and returns their auth header
+# Logs a user in and returns the response and auth header
 # To log a user in, you must also load the "test_database" fixture
 def login_user(client, userModel):
     login_response = client.post("/api/login", json={
@@ -46,6 +47,7 @@ def login_user(client, userModel):
     auth_header = {"Authorization": f"Bearer {login_response.json['access_token']}"}
     return login_response, auth_header
 
+
 # ---------------     TEST DATABASES     ----------------
 
 @pytest.fixture
@@ -53,7 +55,6 @@ def empty_database():
     if(os.path.isfile("./data.db")):
         os.remove("./data.db")
 
-# WARING: Changing this data will likely result in broken tests!
 @pytest.fixture
 def test_database(admin_user, new_user, property_manager_user):
     app = create_app()
@@ -84,4 +85,3 @@ def emergency_contact():
     with app.app_context():
         emergencyContact = EmergencyContactModel(name=emergency_contact_name, contact_numbers=[{"number": contact_number, "numtype": contact_numtype}], description=emergency_contact_description)
         return emergencyContact
-
