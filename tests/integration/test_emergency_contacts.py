@@ -1,4 +1,5 @@
 from models.emergency_contact import EmergencyContactModel
+from conftest import login_user
 
 endpoint = '/api/emergencycontacts'
 
@@ -18,7 +19,8 @@ def test_emergency_contacts_GET_one(client, test_database):
   assert response.status_code == 200
   assert response.json['name'] == 'Narcotics Anonymous'
 
-def test_emergency_contacts_POST(client, test_database, admin_auth_header):
+def test_emergency_contacts_POST(client, test_database, admin_user):
+  login_response, auth_header = login_user(client, admin_user)
   newContact = {
     'name': "Narcotics Anonymous",
     'description': "Cool description",
@@ -27,15 +29,16 @@ def test_emergency_contacts_POST(client, test_database, admin_auth_header):
       {"number": "503-555-3321", "numtype": "Text"}
     ]
   }
-  response = client.post(endpoint, json=newContact, headers=admin_auth_header)
+  response = client.post(endpoint, json=newContact, headers=auth_header)
   assert response.status_code == 401 # UNAUTHORIZED - An emergency contact with this name already exists
 
   newContact['name'] = "Cooler Name"
-  response = client.post(endpoint, json=newContact, headers=admin_auth_header)
+  response = client.post(endpoint, json=newContact, headers=auth_header)
   assert response.status_code == 201 # CREATED
 
 
-def test_emergency_contacts_PUT(client, test_database, admin_auth_header):
+def test_emergency_contacts_PUT(client, test_database, admin_user):
+  login_response, auth_header = login_user(client, admin_user)
   id = 1
   updatedInfo = {
     'name': 'Cooler Name',
@@ -44,13 +47,14 @@ def test_emergency_contacts_PUT(client, test_database, admin_auth_header):
       {"number": "503-555-3321", "numtype": "Text"}
     ]
   }
-  response = client.put(f'{endpoint}/{id}', json=updatedInfo, headers=admin_auth_header)
+  response = client.put(f'{endpoint}/{id}', json=updatedInfo, headers=auth_header)
   assert response.status_code == 200 # OK
 
 
-def test_emergency_contacts_DELETE(client, test_database, admin_auth_header):
+def test_emergency_contacts_DELETE(client, test_database, admin_user):
+  login_response, auth_header = login_user(client, admin_user)
   id = 1
-  response = client.delete(f'{endpoint}/{id}', headers=admin_auth_header)
+  response = client.delete(f'{endpoint}/{id}', headers=auth_header)
   assert response.status_code == 200 # OK - Emergency Contact Deleted
   response = client.get(f'{endpoint}/{id}')
   assert response.status_code == 404 # NOT FOUND - Emergency Contact not found

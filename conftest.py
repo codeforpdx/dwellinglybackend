@@ -20,6 +20,8 @@ def app():
     app = create_app()
     return app
 
+# ----------------     TEST USERS    ------------------
+
 @pytest.fixture
 def admin_user():
     adminUser = UserModel(email=adminUserEmail, password=userPassword, firstName="user1", lastName="admin", role=adminRole, archived=0)
@@ -34,63 +36,24 @@ def new_user():
 def property_manager_user():
     return UserModel(email="manager@domain.com", password=userPassword, firstName="Leslie", lastName="Knope", role="property_manager", archived=0)
 
+# Logs a user in and returns their auth header
+# To log a user in, you must also load the "test_database" fixture
+def login_user(client, userModel):
+    login_response = client.post("/api/login", json={
+        "email": userModel.email,
+        "password": userModel.password
+    })
+    auth_header = {"Authorization": f"Bearer {login_response.json['access_token']}"}
+    return login_response, auth_header
+
+# ---------------     TEST DATABASES     ----------------
+
 @pytest.fixture
 def empty_database():
     if(os.path.isfile("./data.db")):
         os.remove("./data.db")
 
-@pytest.fixture
-def users_in_database(admin_user, new_user):
-    app = create_app()
-    db.create_all()
-    admin_user.save_to_db()
-    new_user.save_to_db()
-    yield db
-    db.drop_all()
-
-# @pytest.fixture
-# def seeded_database():
-#     app = create_app()
-#     db.create_all()
-#     seedData()
-#     yield db
-#     db.drop_all()
-
-@pytest.fixture
-def admin_logged_in(client, users_in_database, admin_user):
-    data = {
-        "email": admin_user.email,
-        "password": admin_user.password
-    }
-    response = client.post("/api/login", json=data)
-    return response
-
-@pytest.fixture
-def admin_auth_header(admin_logged_in):
-    header = {"Authorization": f"Bearer {admin_logged_in.json['access_token']}"}
-    return header
-
-#----------     EMERGENCY CONTACT & CONTACT NUMBERS     -------------------
-emergency_contact_name = "Washington Co. Crisis Team"
-emergency_contact_description = "Suicide prevention and referrals"
-contact_number = "503-291-9111"
-contact_numtype = "Call"
-
-# Logs the user in and returns their auth header
-def get_auth_header(client, userModel):
-    response = client.post("/api/login", json={
-        "email": userModel.email,
-        "password": userModel.password
-    })
-    return {"Authorization": f"Bearer {response.json['access_token']}"}
-
-@pytest.fixture
-def emergency_contact():
-    app = create_app()
-    with app.app_context():
-        emergencyContact = EmergencyContactModel(name=emergency_contact_name, contact_numbers=[{"number": contact_number, "numtype": contact_numtype}], description=emergency_contact_description)
-        return emergencyContact
-
+# WARING: Changing this data will likely result in broken tests!
 @pytest.fixture
 def test_database(admin_user, new_user, property_manager_user):
     app = create_app()
@@ -106,3 +69,19 @@ def test_database(admin_user, new_user, property_manager_user):
 
     yield db
     db.drop_all()
+
+
+#----------     EMERGENCY CONTACT & CONTACT NUMBERS     -------------------
+
+emergency_contact_name = "Washington Co. Crisis Team"
+emergency_contact_description = "Suicide prevention and referrals"
+contact_number = "503-291-9111"
+contact_numtype = "Call"
+
+@pytest.fixture
+def emergency_contact():
+    app = create_app()
+    with app.app_context():
+        emergencyContact = EmergencyContactModel(name=emergency_contact_name, contact_numbers=[{"number": contact_number, "numtype": contact_numtype}], description=emergency_contact_description)
+        return emergencyContact
+
