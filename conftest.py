@@ -7,11 +7,6 @@ from models.user import UserModel
 from models.emergency_contact import EmergencyContactModel
 from models.contact_number import ContactNumberModel
 
-adminUserEmail = "user1@dwellingly.org"
-adminRole = "admin"
-newUserEmail = "someone@domain.com"
-userPassword = "1234"
-
 # Note: this repo uses the "pytest-flask" plugin which exposes the following fixtures for use in tests:
 #   client: an instance of flask's app.test_client - for making requests i.e. client.get('/')
 
@@ -24,17 +19,17 @@ def app():
 
 @pytest.fixture
 def admin_user():
-    adminUser = UserModel(email=adminUserEmail, password=userPassword, firstName="user1", lastName="admin", role=adminRole, archived=0)
+    adminUser = UserModel(email="user1@dwellingly.org", password="1234", firstName="user1", lastName="admin", role="admin", archived=0)
     return adminUser
 
 @pytest.fixture
 def new_user():
-    newUser = UserModel(email=newUserEmail, password=userPassword, firstName="user2", lastName="tester", role="", archived=0)
+    newUser = UserModel(email="someone@domain.com", password="1234", firstName="user2", lastName="tester", role="", archived=0)
     return newUser
 
 @pytest.fixture
 def property_manager_user():
-    return UserModel(email="manager@domain.com", password=userPassword, firstName="Leslie", lastName="Knope", role="property_manager", archived=0)
+    return UserModel(email="manager@domain.com", password="1234", firstName="Leslie", lastName="Knope", role="property_manager", archived=0)
 
 #Returns an object with authorization headers for users of all roles (admin, property-manager, pending)
 @pytest.fixture
