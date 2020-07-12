@@ -58,9 +58,10 @@ def test_emergency_contacts_POST(client, auth_headers):
   response = client.post(endpoint, json=newContact)
   assert is_valid(response, 401) # UNAUTHORIZED - Missing Authorization Header
 
-  newContact['name'] = "Cooler Name"
+  newContact['name'] = 'Cooler Name'
   response = client.post(endpoint, json=newContact, headers=auth_headers["admin"])
   assert is_valid(response, 201) # CREATED
+  assert response.json['name'] == 'Cooler Name'
 
 
 def test_emergency_contacts_PUT(client, auth_headers):
@@ -74,6 +75,7 @@ def test_emergency_contacts_PUT(client, auth_headers):
   }
   response = client.put(f'{endpoint}/{id}', json=updatedInfo, headers=auth_headers["admin"])
   assert is_valid(response, 200) # OK
+  assert response.json['name'] == 'Greg'
 
   id = 100
   response = client.put(f'{endpoint}/{id}', json=updatedInfo, headers=auth_headers["admin"])
@@ -82,6 +84,16 @@ def test_emergency_contacts_PUT(client, auth_headers):
 
 def test_emergency_contacts_DELETE(client, auth_headers):
   id = 1
+
+  response = client.delete(f'{endpoint}/{id}')
+  assert is_valid(response, 401) # UNAUTHORIZED - Missing Authorization Header
+
+  response = client.delete(f'{endpoint}/{id}', headers=auth_headers["pending"])
+  assert is_valid(response, 401) # UNAUTHORIZED - Admin Access Required
+
+  response = client.delete(f'{endpoint}/{id}', headers=auth_headers["pm"])
+  assert is_valid(response, 401) # UNAUTHORIZED - Admin Access Required
+
   response = client.delete(f'{endpoint}/{id}', headers=auth_headers["admin"])
   assert is_valid(response, 200) # OK
 
