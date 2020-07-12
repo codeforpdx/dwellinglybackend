@@ -101,6 +101,6 @@ def is_valid(response, expected_status_code):
 # Be sure to run "pytest -s" to allow console prints
 def log(response):
     print(f'\n\nResponse Status: {response.status}')
-    print(f'Response JSON: {response.json}\n')
-    print(f'Response headers: {response.headers}\n')
+    print(f'Response JSON: {response.json}')
+    print(f'Response headers:\n\n{response.headers}')
     

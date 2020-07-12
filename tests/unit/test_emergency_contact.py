@@ -1,7 +1,5 @@
 from models.emergency_contact import EmergencyContactModel
 
-#note: this test inherently tests the contact_number model as well
-
 emergency_contact_name = "Washington Co. Crisis Team"
 emergency_contact_description = "Suicide prevention and referrals"
 contact_number = "503-291-9111"
