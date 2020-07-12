@@ -20,7 +20,6 @@ def app():
     app = create_app()
     return app
 
-
 # ----------------     TEST USERS    ------------------
 
 @pytest.fixture
@@ -37,18 +36,20 @@ def new_user():
 def property_manager_user():
     return UserModel(email="manager@domain.com", password=userPassword, firstName="Leslie", lastName="Knope", role="property_manager", archived=0)
 
-# Logs a user in and returns the response and auth header
-# To log a user in, you must also load the "test_database" fixture
-def login_user(client, userModel):
-    login_response = client.post("/api/login", json={
-        "email": userModel.email,
-        "password": userModel.password
-    })
-    auth_header = {"Authorization": f"Bearer {login_response.json['access_token']}"}
-    return login_response, auth_header
+#Returns an object with authorization headers for users of all roles (admin, property-manager, pending)
+@pytest.fixture
+def auth_headers(client, test_database, admin_user, new_user, property_manager_user):
+    admin_auth_header = get_auth_header(client, admin_user)
+    pm_auth_header = get_auth_header(client, property_manager_user)
+    pending_auth_header = get_auth_header(client, new_user)
 
+    return {
+        "admin": admin_auth_header,
+        "pm": pm_auth_header,
+        "pending": pending_auth_header
+    }
 
-# ---------------     TEST DATABASES     ----------------
+# ---------------     TEST DATABASES   ----------------
 
 @pytest.fixture
 def empty_database():
@@ -56,8 +57,7 @@ def empty_database():
         os.remove("./data.db")
 
 @pytest.fixture
-def test_database(admin_user, new_user, property_manager_user):
-    app = create_app()
+def test_database(app, admin_user, new_user, property_manager_user):
     db.create_all()
 
     db.session.add(admin_user)
@@ -71,17 +71,36 @@ def test_database(admin_user, new_user, property_manager_user):
     yield db
     db.drop_all()
 
+# -------------     NON-FIXTURE FUNCTIONS     --------------------
 
-#----------     EMERGENCY CONTACT & CONTACT NUMBERS     -------------------
+# Logs a user in and returns their auth header
+# To log a user in, you must also load the "test_database" fixture
+def get_auth_header(client, userModel):
+    login_response = client.post("/api/login", json={
+        "email": userModel.email,
+        "password": userModel.password
+    })
+    auth_header = {"Authorization": f"Bearer {login_response.json['access_token']}"}
+    return auth_header
 
-emergency_contact_name = "Washington Co. Crisis Team"
-emergency_contact_description = "Suicide prevention and referrals"
-contact_number = "503-291-9111"
-contact_numtype = "Call"
+def has_valid_headers(response):
+    if (response.content_type != "application/json"):
+        return False
+    elif ("*" not in response.access_control_allow_origin):
+        return False
+    return True
 
-@pytest.fixture
-def emergency_contact():
-    app = create_app()
-    with app.app_context():
-        emergencyContact = EmergencyContactModel(name=emergency_contact_name, contact_numbers=[{"number": contact_number, "numtype": contact_numtype}], description=emergency_contact_description)
-        return emergencyContact
+def is_valid(response, expected_status_code):
+    if (not has_valid_headers(response)):
+        return False
+    if (response.status_code != expected_status_code):
+        return False
+    return True
+
+# A debug function that prints useful response data
+# Be sure to run "pytest -s" to allow console prints
+def log(response):
+    print(f'\n\nResponse Status: {response.status}')
+    print(f'Response JSON: {response.json}\n')
+    print(f'Response headers: {response.headers}\n')
+    
