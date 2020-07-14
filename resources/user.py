@@ -3,11 +3,19 @@ from flask_restful import Resource, reqparse
 from models.property import PropertyModel
 from models.tenant import TenantModel
 from resources.admin_required import admin_required
+from enum import Enum
 from models.user import UserModel
 from models.revoked_tokens import RevokedTokensModel
 from werkzeug.security import safe_str_cmp
 from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt_claims, get_raw_jwt, get_jwt_identity, jwt_refresh_token_required
 
+
+class RoleEnum(Enum):
+    PENDING = 0
+    TENANT = 1
+    PROPERTYMANAGER = 2
+    STAFF = 3
+    ADMIN = 4
 
 class UserRegister(Resource):
     parser = reqparse.RequestParser()
@@ -15,7 +23,7 @@ class UserRegister(Resource):
     parser.add_argument('lastName',type=str,required=True,help="This field cannot be blank.")
     parser.add_argument('email',type=str,required=True,help="This field cannot be blank.")
     parser.add_argument('password', type=str, required=True, help="This field cannot be blank.")
-    parser.add_argument('role',type=str,required=False,help="This field is not required.")
+    parser.add_argument('role',type=int,required=False,help="This field is not required.")
     parser.add_argument('archived',type=str,required=False,help="This field is not required.")
 
     def post(self):
