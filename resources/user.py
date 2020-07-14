@@ -38,8 +38,13 @@ class UserRegister(Resource):
         return {"message": "User created successfully."}, 201
 
 class User(Resource):
-    @admin_required
+    @jwt_required
     def get(self, user_id):
+        #check if is_admin exist if not discontinue function
+        claims = get_jwt_claims()         
+        if not claims['is_admin']:
+            return {'message': 'Admin Access Required'}, 401
+
         user = UserModel.find_by_id(user_id)
 
         if not user:
@@ -55,35 +60,72 @@ class User(Resource):
         return user_info, 200
 
     @admin_required
+        # hard coded return as .json() is not compatiable with user model and sqlalchemy
+        return {
+            'id': str(user.id),
+            'firstName': user.firstName,
+            'lastName': user.lastName,
+            'email': user.email,
+            'role': user.role,
+            'archived': user.archived
+        }, 200
+        
+    @jwt_required
     def patch(self,user_id):
+        #check if is_admin exists - if not discontinue function
+        claims = get_jwt_claims()         
+        if not claims['is_admin']:
+            return {'message': "Admin Access Required"}, 401
+
         parser = reqparse.RequestParser()
         parser.add_argument('role',type=str,required=True,help="This field cannot be blank.")
 
         user = UserModel.find_by_id(user_id)
         if not user:
-            return {"Message": "Unable to update user"}, 400
+            return {"Message": "Unable to update user"}
 
         data = parser.parse_args()
         user.role = data['role']
         try:
             user.save_to_db()
         except:
-            return {'Message': 'An Error Has Occurred'}, 500
+            return {'Message': 'An Error Has Occured'}, 500
 
         return user.json(), 201
 
-    @admin_required
+    @jwt_required
     def delete(self, user_id):
+        #check if is_admin exists - if not discontinue function
+        claims = get_jwt_claims()         
+        if not claims['is_admin']:
+            return {'message': "Admin Access Required"}, 401
+
         user = UserModel.find_by_id(user_id)
         if not user:
-            return {"Message": "Unable to delete User"}, 400
+            return {"Message", "Unable to delete User"}, 404 
         user.delete_from_db()
         return {"Message": "User deleted"}, 200
 
+#pull all users - for debugging purposes disable before production
+class Users(Resource):
+    @jwt_required
+    def get(self):
+        #check if is_admin exists - if not discontinue function
+        claims = get_jwt_claims() 
+        if not claims['is_admin']:
+            return {'message': "Admin Access Required"}, 401
+        return {'Users': [user.json() for user in UserModel.query.all()]}
+
 class ArchiveUser(Resource):
 
-    @admin_required
+    @jwt_required
     def post(self, user_id):
+        #check if is_admin exist if not discontinue function
+        claims = get_jwt_claims() 
+
+        if not claims['is_admin']:
+            return {'message': "Admin Access Required"}, 401
+
         user = UserModel.find_by_id(user_id)
         if(not user):
             return{'Message': 'User cannot be archived'}, 400
@@ -129,8 +171,13 @@ class UsersRole(Resource):
     parser = reqparse.RequestParser()
     parser.add_argument('userrole',type=str,required=True,help="This field cannot be blank.")
 
-    @admin_required
+    @jwt_required
     def post(self):
+        #check if is_admin exist if not discontinue function
+        claims = get_jwt_claims() 
+        if not claims['is_admin']:
+            return {'message': "Admin Access Required"}, 401
+
         data = UsersRole.parser.parse_args()
         users = UserModel.find_by_role(data['userrole'])
         users_info = []
