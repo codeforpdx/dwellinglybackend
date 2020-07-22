@@ -1,4 +1,7 @@
 from flask_restful import Resource, reqparse
+
+from models.property import PropertyModel
+from models.tenant import TenantModel
 from resources.admin_required import admin_required
 from models.user import UserModel
 from models.revoked_tokens import RevokedTokensModel
@@ -14,7 +17,7 @@ class UserRegister(Resource):
     parser.add_argument('password', type=str, required=True, help="This field cannot be blank.")
     parser.add_argument('role',type=str,required=False,help="This field is not required.")
     parser.add_argument('archived',type=str,required=False,help="This field is not required.")
-    
+
     def post(self):
         data = UserRegister.parser.parse_args()
 
@@ -34,16 +37,26 @@ class User(Resource):
         if not user:
             return {'message': 'User Not Found'}, 404
 
-        # hard coded return as .json() is not compatiable with user model and sqlalchemy
-        return {
-            'id': str(user.id),
-            'firstName': user.firstName,
-            'lastName': user.lastName,
-            'email': user.email,
-            'role': user.role,
-            'archived': user.archived
-        }, 200
-        
+        user_info = user.json()
+
+        if user.role == 'property-manager':
+            managed_properties = []
+            tenants_list = []
+            tenants_ids = set()
+            for p in PropertyModel.find_by_manager(user_id):
+                if p:
+                    managed_properties.append(p.json())
+                tenants_ids.add(p.tenants)
+            user_info['properties'] = managed_properties
+
+            for t in tenants_ids:
+                tenant = TenantModel.find_by_id(t)
+                if tenant:
+                    tenants_list.append(tenant.json())
+            user_info['tenants'] = tenants_list
+
+        return user_info, 200
+
     @admin_required
     def patch(self,user_id):
         parser = reqparse.RequestParser()
