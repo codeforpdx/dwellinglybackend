@@ -40,20 +40,9 @@ class User(Resource):
         user_info = user.json()
 
         if user.role == 'property-manager':
-            managed_properties = []
-            tenants_list = []
-            tenants_ids = set()
-            for p in PropertyModel.find_by_manager(user_id):
-                if p:
-                    managed_properties.append(p.json())
-                tenants_ids.add(p.tenants)
-            user_info['properties'] = managed_properties
-
-            for t in tenants_ids:
-                tenant = TenantModel.find_by_id(t)
-                if tenant:
-                    tenants_list.append(tenant.json())
-            user_info['tenants'] = tenants_list
+            user_info['properties'], tenants_ids = zip(*((p.json(), p.tenants) for p in PropertyModel.find_by_manager(user_id) if p))
+            tenants_list = [TenantModel.find_by_id(t) for t in set(tenants_ids)]
+            user_info['tenants'] = [t.json() for t in tenants_list if t]
 
         return user_info, 200
 
