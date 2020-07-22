@@ -62,7 +62,7 @@ If you are still having issues or if your command prompt is throwing an error th
 3. Install pipenv: `pip3 install --user pipenv`
 4. Shell into the environment configured by your Pipfile `pipenv shell`
   - This brings you into a partitioned environment set up to spec with your Pipfile. Often people who skip this step will have path and version errors.
-5. Run: `python seed_db.py`
+5. Run: `python manage.py create`
 6. Run: `pipenv run flask run`
 7. Login using one of the accounts below and you should be good to go!
 

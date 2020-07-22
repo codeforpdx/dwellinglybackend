@@ -77,7 +77,7 @@ def create_routes(app):
 def check_for_admins():
     errorMsg = (
         "\n\n=-=-=-=-=-=-=-=\n"
-        "WARNING! Database unusable. Did you forget to run the seed_db.py script? `python seed_db.py`"
+        "WARNING! Database unusable. Did you forget to create and seed your database? `python manage.py create`"
         "\n=-=-=-=-=-=-=-=\n\n"
     )
     assert (os.path.isfile('./data.db')), errorMsg
