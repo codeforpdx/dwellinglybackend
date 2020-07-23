@@ -30,8 +30,7 @@ class Properties(Resource):
     parser.add_argument('archived')
     
     def get(self):
-        # print(dict(zip(row.keys(), row)) for row in result)
-        return {'properties': [property._asdict() for property in db.session.query(PropertyModel.id, PropertyModel.name, PropertyModel.address, PropertyModel.tenants, PropertyModel.dateAdded, UserModel.fullName.label('propertyManager')).join(UserModel).all()]}
+        return {'properties': [property.json() for property in db.session.query(PropertyModel).all()]}
     
     @admin_required
     def post(self):
