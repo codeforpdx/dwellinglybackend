@@ -125,7 +125,12 @@ class UsersRole(Resource):
     def post(self):
         data = UsersRole.parser.parse_args()
         users = UserModel.find_by_role(data['userrole'])
-        return {'users': [user.json() for user in users]}
+        users_info = []
+        for user in users:
+            info = user.json()
+            info['properties'] = [p.json() for p in PropertyModel.find_by_manager(user.id) if p]
+            users_info.append(info)
+        return {'users': users_info}
 
 # This endpoint allows the app to use a refresh token to get a new access token 
 class UserAccessRefresh(Resource):
