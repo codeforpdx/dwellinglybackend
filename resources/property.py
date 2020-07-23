@@ -25,7 +25,6 @@ class Properties(Resource):
     parser.add_argument('zipcode')
     parser.add_argument('state')
     parser.add_argument('propertyManager')
-    parser.add_argument('tenants')
     parser.add_argument('dateAdded')
     parser.add_argument('archived')
     
@@ -117,9 +116,6 @@ class Property(Resource):
 
         if(data.propertyManager):
             rentalProperty.propertyManager = data.propertyManager
-
-        if(data.tenants):
-            rentalProperty.tenants = data.tenants
 
         if(data.dateAdded):
             rentalProperty.dateAdded = data.dateAdded
