@@ -1,4 +1,5 @@
 from models.property import PropertyModel
+import json
 
 def test_get_properties(client, seeded_database):
     """the server should successfully retrieve all properties"""
@@ -23,19 +24,70 @@ def test_get_property_by_name(client, admin_auth_header, seeded_database):
     response = client.get("/api/properties/test1", headers=admin_auth_header)
     assert response.status_code == 200
 
-    """The server responds with an error if the URL containts a non-existent property name"""
+    """The server responds with an error if the URL contains a non-existent property name"""
     responseBadPropertyName = client.get("/api/properties/this_property_does_not_exist", headers=admin_auth_header)
     assert responseBadPropertyName == 404
 
 def test_get_property_by_id(client, admin_auth_header, new_property, seeded_database):
-    """The get property by id returns a successful response code."""
     test_property = PropertyModel.find_by_name(new_property.name)
+
+    """The get property by id returns a successful response code."""
     response = client.get(f'/api/properties/{test_property.id}', headers=admin_auth_header)
     assert response.status_code == 200
 
-    """The server responds with an error if the URL containts a non-existent property id"""
+    """The server responds with an error if the URL contains a non-existent property id"""
     responseBadPropertyName = client.get("/api/properties/000000", headers=admin_auth_header)
     assert responseBadPropertyName == 404
 
+def test_archive_property_by_id(client, admin_auth_header, new_property, seeded_database):
+    test_property = PropertyModel.find_by_name(new_property.name)
 
+    """The server responds with a 401 error if a non-admin tries to archive"""
+    responseNoAdmin = client.post(f"/api/properties/archive/{test_property.id}")
+    assert responseNoAdmin == 401
+
+    """The archive property endpoint should return a 201 code when successful"""
+    responseSuccess = client.post(f'/api/properties/archive/{test_property.id}', headers=admin_auth_header)
+    assert responseSuccess.status_code == 201
     
+    """The property should have its 'archived' key set to True"""
+    responseArchivedProperty = client.get(f'/api/properties/{test_property.name}', headers=admin_auth_header)
+    assert json.loads(responseArchivedProperty.data)["archived"] 
+
+    """The server responds with a 404 error if the URL contains a non-existent property id"""
+    responseBadPropertyID = client.get("/api/properties/archive/000000", headers=admin_auth_header)
+    assert responseBadPropertyID == 405
+
+def test_delete_property_by_name(client, admin_auth_header, new_property, seeded_database):
+    test_property = PropertyModel.find_by_name(new_property.name)
+
+    """First verify that the property exists"""
+    response = client.get(f"/api/properties/{test_property.name}", headers=admin_auth_header)
+    assert response.status_code == 200
+
+    response = client.delete(f"/api/properties/{test_property.name}", headers=admin_auth_header)
+    assert response.status_code == 200
+
+    """Now verify that the property no longer exists"""
+    response = client.get(f"/api/properties/{test_property.name}", headers=admin_auth_header)
+    assert response.status_code == 404
+
+    """The server responds with a 401 error if a non-admin tries to delete"""
+    responseNoAdmin = client.delete(f"/api/properties/{test_property.name}")
+    assert responseNoAdmin == 401
+
+def test_update_property_by_name(client, admin_auth_header, new_property, seeded_database):
+    test_property = PropertyModel.find_by_name(new_property.name)
+    new_property_address = "123 NE Flanders St"
+    test_property.address = new_property_address
+    responseUpdateProperty = client.put( f'/api/properties/{test_property.id}'
+                                       , headers=admin_auth_header
+                                       , json=test_property.json()
+                                       )
+
+    """The property should have a new address"""
+    test_changed_property = client.get(f'/api/properties/{test_property.name}', headers=admin_auth_header)
+    test_changed_property = json.loads(test_changed_property.data)
+    
+    assert test_changed_property["address"] == new_property_address
+
