@@ -10,6 +10,8 @@ adminUserEmail = "user1@dwellingly.org"
 adminRole = "admin"
 newUserEmail = "someone@domain.com"
 userPassword = "1234"
+newPropertyName = "test1"
+newPropertyAddress = "123 NE FLanders St"
 
 @pytest.fixture
 def app():
@@ -28,8 +30,8 @@ def new_user():
 
 @pytest.fixture
 def new_property():
-    newProperty = PropertyModel( name="test1"
-                               , address="123 NE FLanders St"
+    newProperty = PropertyModel( name=newPropertyName
+                               , address=newPropertyAddress
                                , city="Portland"
                                , state="OR"
                                , zipcode="97207"
