@@ -35,46 +35,38 @@ class Ticket(Resource):
     def put(self, id):
         data = Ticket.parser.parse_args()
         ticket = TicketModel.find_by_id(id)
-        updated = False
-        dateTime = datetime.now()
 
         if ticket:
             #variable statements allow for only updated fields to be transmitted
             if(data.sender):
                 ticket.sender = data.sender
-                updated = True
 
             if(data.tenant):
                 ticket.tenant = data.tenant
-                updated = True
 
             if(data.assignedUser):
                 ticket.assignedUser = data.assignedUser
-                updated = True
 
             if(data.status):
-                ticket.status = data.status
-                updated = True
+                updated = not (ticket.status == data.status)
+                if updated:
+                    ticket.status = data.status
+                    dateTime = datetime.now()
+                    timestamp = dateTime.strftime("%d-%b-%Y (%H:%M)")
+                    ticket.updated = timestamp
 
             if(data.urgency):
                 ticket.urgency = data.urgency
-                updated = True
 
             if(data.issue):
                 ticket.issue = data.issue
-                updated = True
 
             if(data.note):
                 note = NotesModel(id, data.note, ticket.sender)
-                updated = True
                 try:
                     note.save_to_db()
                 except:
                     return {'Message': 'An Error Has Occured'}, 500
-
-            if updated:
-                timestamp = dateTime.strftime("%d-%b-%Y (%H:%M)")
-                ticket.updated = timestamp
 
             try:
                 ticket.save_to_db()
