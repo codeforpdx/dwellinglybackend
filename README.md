@@ -22,6 +22,7 @@ NOTE: Database is SQLite3 via SQLAlchemy
    - Look for the file data.db to be created in the root directory
    - If you get the error `ImportError: No module named flask` or similar, you may need to run `pipenv shell` to launch virtual environment.
 5. Run `pipenv install`
+   - If you get the error `ImportError: cannot import name 'Feature' from 'setuptools'`, your setuptools version might be at 46 or later. You may be able to get it to work using version 45 (e.g. `pip3 install setuptools==45`)
 6. Start the server using the flask environment (required every time the project is re-opened):
    - Run: `pipenv run flask run`
    - Run + restart the server on changes: `pipenv run flask run --reload`
