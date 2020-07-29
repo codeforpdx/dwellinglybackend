@@ -66,6 +66,8 @@ def create_routes(app):
     api.add_resource(UserAccessRefresh, '/refresh')
     api.add_resource(Tenants, '/tenants', '/tenants/<int:tenant_id>')
     api.add_resource(EmergencyContacts, '/emergencycontacts', '/emergencycontacts/<int:id>')
+    api.add_resource(Tickets, '/tickets')
+    api.add_resource(Ticket, '/tickets/<int:id>')
 
 
 def check_for_admins():

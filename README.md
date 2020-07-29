@@ -22,6 +22,7 @@ NOTE: Database is SQLite3 via SQLAlchemy
    - Look for the file data.db to be created in the root directory
    - If you get the error `ImportError: No module named flask` or similar, you may need to run `pipenv shell` to launch virtual environment.
 5. Run `pipenv install`
+   - If you get the error `ImportError: cannot import name 'Feature' from 'setuptools'`, your setuptools version might be at 46 or later. You may be able to get it to work using version 45 (e.g. `pip3 install setuptools==45`)
 6. Start the server using the flask environment (required every time the project is re-opened):
    - Run: `pipenv run flask run`
    - Run + restart the server on changes: `pipenv run flask run --reload`
@@ -223,20 +224,38 @@ Authorization Bearer < JWT access token >
 
 ```
 
+
+#### ENDPOINT: TICKETS
+
+| method | route              | action (all actions require user to be logged in)   |
+| :----- | :----------------- | :-------------------------------------------------- |
+| POST   | `/tickets/`        | Creates a new ticket                                |
+| GET    | `/tickets/`        | Gets all tickets                                    |
+| GET    | `/tickets/:id`     | Gets a single ticket                                |
+| PUT    | `/tickets/:id`     | Updates a single ticket                             | 
+| DELETE | `/tickets/:id`     | Deletes a single ticket                             |
+
+```javascript
+    id: 1,
+    issue: 'Property Damage',
+    tenant: 'Renty McRenter',
+    senderID: 1,
+    tenantID: 2,
+    assignedUserID: 4,
+    sender: "user1 tester",
+    assigned: "Mr. Sir",
+    status: "new",
+    urgency: "Low",
+    opened: "01-Jul-2020 (21:29)",
+    updated: "01-Jul-2020 (22:20)",
+    minsPastUpdate: 745,
+    notes: [
+        {
+            id: 2,
+            ticketid: 1,
+            created: "01-Jul-2020 (21:29:10.086958)",
+            text: "Tenant has over 40 cats.",
+            user: "user2 tester"
+        },
+    ]
 ```
-  id: 'K-0089ttxqQX-2',
-issue: 'Property Damage',
-tenant: {
-  address: 'Magnolia Park, Unit #2',
-  name: 'Alex Alder',
-  number: '503-555-1234'
-   },
-  sender: {
-  name: 'Tom Smith',
-  number: '541-123-4567'
-  },
-  sent: new Date('2017/12/19').toString(),
-  status: 'New',
-  urgency: 'Low',
-  notes: []
-  ```

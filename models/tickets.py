@@ -50,6 +50,10 @@ class TicketModel(db.Model):
         assignedUserData = UserModel.find_by_id(self.assignedUser)
         assignedUser = "{} {}".format(assignedUserData.firstName, assignedUserData.lastName)
 
+        dateTimeStatusChange = datetime.strptime(self.updated, "%d-%b-%Y (%H:%M)")
+        dateTimeNow = datetime.now()
+        minsPastUpdate = int((dateTimeNow - dateTimeStatusChange).total_seconds() / 60)
+
         return {
             'id': self.id,
             'issue':self.issue,
@@ -62,6 +66,7 @@ class TicketModel(db.Model):
             'opened': self.opened,
             'updated':self.updated,
             'status': self.status,
+            'minsPastUpdate': minsPastUpdate,
             'urgency': self.urgency,
             'notes': message_notes
         }
