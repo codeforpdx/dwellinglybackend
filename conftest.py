@@ -12,10 +12,6 @@ from models.tickets import TicketModel
 from models.notes import NotesModel
 from models.revoked_tokens import RevokedTokensModel
 
-adminUserEmail = "user4@dwellingly.org"
-adminRole = "admin"
-newUserEmail = "someone@domain.com"
-userPassword = "1234"
 newPropertyName = "test1"
 newPropertyAddress = "123 NE FLanders St"
 
@@ -28,31 +24,15 @@ def app():
     app = create_app()
     return app
 
-# ----------------     TEST USERS    ------------------
-
 @pytest.fixture
 def admin_user():
-    adminUser = UserModel(email="user1@dwellingly.org", password="1234", firstName="user1", lastName="admin", role="admin", archived=0)
+    adminUser = UserModel(email="user4@dwellingly.org", password="1234", firstName="user4", lastName="admin", role="admin", archived=0)
     return adminUser
 
 @pytest.fixture
 def new_user():
     newUser = UserModel(email="someone@domain.com", password="1234", firstName="user2", lastName="tester", role="", archived=0)
     return newUser
-
-@pytest.fixture
-def new_property():
-    newProperty = PropertyModel( name=newPropertyName
-                               , address=newPropertyAddress
-                               , city="Portland"
-                               , state="OR"
-                               , zipcode="97207"
-                               , propertyManager=5
-                               , tenants=3
-                               , dateAdded="2020-04-12"
-                               , archived=0
-                               )
-    return newProperty
 
 @pytest.fixture
 def property_manager_user():
@@ -71,6 +51,19 @@ def auth_headers(client, test_database, admin_user, new_user, property_manager_u
         "pending": pending_auth_header
     }
 
+@pytest.fixture
+def new_property():
+    newProperty = PropertyModel( name=newPropertyName
+                               , address=newPropertyAddress
+                               , city="Portland"
+                               , state="OR"
+                               , zipcode="97207"
+                               , propertyManager=5
+                               , tenants=3
+                               , dateAdded="2020-04-12"
+                               , archived=0
+                               )
+    return newProperty
 
 @pytest.fixture
 def empty_database():
@@ -90,6 +83,7 @@ def test_database(app, admin_user, new_user, property_manager_user):
 
     yield db
     db.drop_all()
+
 
 # -------------     NON-FIXTURE FUNCTIONS     --------------------
 
