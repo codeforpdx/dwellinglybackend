@@ -6,9 +6,18 @@ from data.seedData import seedData
 from models.user import UserModel
 from models.emergency_contact import EmergencyContactModel
 from models.contact_number import ContactNumberModel
+from models.property import PropertyModel
+
+adminUserEmail = "user1@dwellingly.org"
+adminRole = "admin"
+newUserEmail = "someone@domain.com"
+userPassword = "1234"
+newPropertyName = "test1"
+newPropertyAddress = "123 NE FLanders St"
 
 # Note: this repo uses the "pytest-flask" plugin which exposes the following fixtures for use in tests:
 #   client: an instance of flask's app.test_client - for making requests i.e. client.get('/')
+
 
 @pytest.fixture
 def app():
@@ -28,6 +37,19 @@ def new_user():
     return newUser
 
 @pytest.fixture
+def new_property():
+    newProperty = PropertyModel( name=newPropertyName
+                               , address=newPropertyAddress
+                               , city="Portland"
+                               , state="OR"
+                               , zipcode="97207"
+                               , propertyManager=5
+                               , tenants=3
+                               , dateAdded="2020-04-12"
+                               , archived=0
+                               )
+    return newProperty
+
 def property_manager_user():
     return UserModel(email="manager@domain.com", password="1234", firstName="Leslie", lastName="Knope", role="property_manager", archived=0)
 
@@ -44,7 +66,7 @@ def auth_headers(client, test_database, admin_user, new_user, property_manager_u
         "pending": pending_auth_header
     }
 
-# ---------------     TEST DATABASES   ----------------
+
 
 @pytest.fixture
 def empty_database():
