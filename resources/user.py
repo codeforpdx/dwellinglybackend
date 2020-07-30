@@ -5,9 +5,16 @@ from models.tenant import TenantModel
 from resources.admin_required import admin_required
 from models.user import UserModel
 from models.revoked_tokens import RevokedTokensModel
+from enum import Enum
 from werkzeug.security import safe_str_cmp
 from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt_claims, get_raw_jwt, get_jwt_identity, jwt_refresh_token_required
 
+class RoleEnum(Enum):
+    PENDING = 0
+    TENANT = 1
+    PROPERTYMANAGER = 2
+    STAFF = 3
+    ADMIN = 4
 
 class UserRegister(Resource):
     parser = reqparse.RequestParser()
