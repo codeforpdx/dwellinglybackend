@@ -32,7 +32,7 @@ class PropertyModel(db.Model):
     def json(self):
         property_tenants = []
         for tenant in self.tenants:
-            property_tenants.append(tenant.json())
+            property_tenants.append(tenant.id)
 
         return {
             'id': self.id, 
@@ -43,11 +43,11 @@ class PropertyModel(db.Model):
             'state': self.state, 
             'zipcode': self.zipcode,
             'propertyManager': self.propertyManager,
-            'tenants': property_tenants,
+            'tenantIDs': property_tenants,
             'dateAdded': self.dateAdded,
             'archived': self.archived
         }
-    
+
     @classmethod
     def find_by_name(cls, name):
         return cls.query.filter_by(name=name).first()
