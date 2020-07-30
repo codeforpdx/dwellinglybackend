@@ -31,6 +31,9 @@ class LeaseModel(db.Model):
         self.occupants = occupants
 
     def json(self):
+        print("debug")
+        print(self.timeStartnow.strftime("%m/%d/%Y, %H:%M:%S"))
+        
         return {
           'id': self.id,
           'name':self.name,

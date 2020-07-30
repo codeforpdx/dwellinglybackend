@@ -7,6 +7,7 @@ class Lease(Resource):
     parser.add_argument('unit')
     parser.add_argument('landlordID')
     parser.add_argument('propertyID')
+    parser.add_argument('tenantID')
     parser.add_argument('dateStart')
     parser.add_argument('dateEnd')
     parser.add_argument('dateUpdated')
