@@ -7,7 +7,7 @@ class LeaseModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100))
     unit = db.Column(db.String(20))
-    landlordID = db.Column(db.Integer)
+    landlordID = db.Column(db.Integer), db.ForeignKey('users.id')
     propertyID = db.Column(db.Integer, db.ForeignKey('properties.id'))
     userID = db.Column(db.Integer, db.ForeignKey('users.id'))
     dateStart = db.Column(db.DateTime, default=datetime.datetime.utcnow)
