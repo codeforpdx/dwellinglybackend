@@ -1,3 +1,5 @@
+from dotenv import load_dotenv
+load_dotenv()
 from flask import Flask
 from flask_restful import Api
 from flask_jwt_extended import JWTManager, jwt_refresh_token_required, create_access_token, get_jwt_identity
@@ -18,6 +20,7 @@ from resources.email import Email
 from resources.tickets import Ticket, Tickets
 import os
 from db import db
+from config.google_oauth import init_google_oauth
 
 def config_app(app):
     #config DataBase
@@ -85,7 +88,6 @@ def check_for_admins():
         if(not len(admins)):
             print(errorMsg)
 
-
 def create_app():
     app = Flask(__name__)
 
@@ -94,6 +96,8 @@ def create_app():
 
     #declare the available routes
     create_routes(app)
+
+    init_google_oauth(app)
 
     #allow cross-origin (CORS)
     CORS(app)

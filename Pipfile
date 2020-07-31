@@ -30,6 +30,9 @@ Flask-mail = "==0.9.1"
 Flask-Cors = "*"
 psycopg2 = "*"
 pytest = "*"
+python-dotenv = "*"
+flask-dance = "*"
+sqlalchemy-utils = "*"
 
 [requires]
 python_version = "3.8"
