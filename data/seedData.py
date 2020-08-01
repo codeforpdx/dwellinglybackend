@@ -1,4 +1,6 @@
 from db import db
+from datetime import datetime
+
 from models.user import UserModel
 from models.property import PropertyModel
 from models.tenant import TenantModel
@@ -6,6 +8,7 @@ from models.tickets import TicketModel
 from models.notes import NotesModel
 from models.revoked_tokens import RevokedTokensModel
 from models.emergency_contact import EmergencyContactModel
+from models.lease import LeaseModel
 
 def seedData():
 
@@ -72,5 +75,11 @@ def seedData():
     db.session.add(emergencyContact)
     emergencyContact = EmergencyContactModel(name="Child Abuse/Reporting", contact_numbers=[{"number": "503-730-3100"}])
     db.session.add(emergencyContact)
+
+    now=datetime.now()
+    print(now)
+    lease = LeaseModel(name="Lease 1", landlordID = 1, propertyID=1, tenantID=1, timeStart="12:00 PM", timeEnd="11:59 AM", dateStart =now, dateEnd = now, dateUpdated = now, occupants=3)
+    db.session.add(lease)
+
 
     db.session.commit()

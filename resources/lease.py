@@ -4,7 +4,6 @@ from models.lease import LeaseModel
 class Lease(Resource):
     parser = reqparse.RequestParser()
     parser.add_argument('name')
-    parser.add_argument('unit')
     parser.add_argument('landlordID')
     parser.add_argument('propertyID')
     parser.add_argument('tenantID')
