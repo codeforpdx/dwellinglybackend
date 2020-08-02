@@ -82,6 +82,7 @@ class Leases(Resource):
 
     def post(self):
         data = Lease.parser.parse_args()
+        
         #convert strings to DateTime Object
         data.dateTimeStart = datetime.strptime(data.dateTimeStart, '%m/%d/%Y %H:%M:%S')
         data.dateTimeEnd = datetime.strptime(data.dateTimeEnd, '%m/%d/%Y %H:%M:%S')

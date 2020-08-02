@@ -83,7 +83,13 @@ def seedData():
     db.session.add(lease)
     lease = LeaseModel(name="Lease 2", landlordID = 1, propertyID=2, tenantID=2, dateTimeStart =now, dateTimeEnd = future, dateUpdated = now, occupants=2)
     db.session.add(lease)
+    lease = LeaseModel(name="Lease 3", landlordID = 2, propertyID=3, tenantID=3, dateTimeStart =now, dateTimeEnd = future, dateUpdated = now, occupants=1)
+    db.session.add(lease)
 
-    db.session.commit()
+    try:
+        db.session.commit()
+    except:
+        print("Error updating database")
+    
     print("Database sucessfully seeded: " + now.strftime("%m/%d/%Y, %H:%M:%S"))
     
