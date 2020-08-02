@@ -1,5 +1,5 @@
 from db import db
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from models.user import UserModel
 from models.property import PropertyModel
@@ -77,9 +77,13 @@ def seedData():
     db.session.add(emergencyContact)
 
     now=datetime.now()
-    print(now)
-    lease = LeaseModel(name="Lease 1", landlordID = 1, propertyID=1, tenantID=1, timeStart="12:00 PM", timeEnd="11:59 AM", dateStart =now, dateEnd = now, dateUpdated = now, occupants=3)
+    future = now + timedelta(days=365)
+
+    lease = LeaseModel(name="Lease 1", landlordID = 1, propertyID=1, tenantID=1, dateStart =now, dateEnd = future, dateUpdated = now, occupants=3)
+    db.session.add(lease)
+    lease = LeaseModel(name="Lease 2", landlordID = 1, propertyID=2, tenantID=2, dateStart =now, dateEnd = future, dateUpdated = now, occupants=2)
     db.session.add(lease)
 
-
     db.session.commit()
+    print("Database sucessfully seeded: " + now.strftime("%m/%d/%Y, %H:%M:%S"))
+    

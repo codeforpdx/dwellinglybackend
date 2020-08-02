@@ -6,19 +6,15 @@ class LeaseModel(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100))
-    unit = db.Column(db.String(20))
-    landlordID = db.Column(db.Integer), db.ForeignKey('users.id')
+    landlordID = db.Column(db.Integer(), db.ForeignKey('users.id'))
     propertyID = db.Column(db.Integer, db.ForeignKey('properties.id'))
-    # userID = db.Column(db.Integer, db.ForeignKey('users.id'))
-    tenantID = db.Column(db.Integer, db.ForeignKey('tenants.id'))
+    tenantID = db.Column(db.Integer)
+    occupants = db.Column(db.Integer)
     dateStart = db.Column(db.DateTime, default=datetime.datetime.utcnow)
     dateEnd = db.Column(db.DateTime, default=datetime.datetime.utcnow)
     dateUpdated = db.Column(db.DateTime, default=datetime.datetime.utcnow)
-    timeStart = db.Column(db.String(20))
-    timeEnd = db.Column(db.String(20))
-    occupants = db.Column(db.Integer)
 
-    def __init__(self, name, tenantID, landlordID, propertyID, dateStart, dateEnd, dateUpdated, timeStart, timeEnd, occupants):
+    def __init__(self, name, tenantID, landlordID, propertyID, dateStart, dateEnd, dateUpdated, occupants):
         self.name = name
         self.landlordID = landlordID
         self.propertyID = propertyID
@@ -26,14 +22,9 @@ class LeaseModel(db.Model):
         self.dateStart = dateStart
         self.dateEnd = dateEnd
         self.dateUpdate = dateUpdated
-        self.timeStart = timeStart
-        self.timeEnd = timeEnd
         self.occupants = occupants
 
     def json(self):
-        print("debug")
-        print(self)
-        # print(self.timeStartnow.strftime("%m/%d/%Y, %H:%M:%S"))
 
         return {
           'id': self.id,
@@ -41,11 +32,11 @@ class LeaseModel(db.Model):
           'propertyID':self.propertyID,
           'landlordID': self.landlordID,
           'tenantID': self.tenantID,
-          'dateStart': self.dateStart,
-          'dateEnd': self.dateEnd,
-          'dateUpdate': self.dateUpdated,
-          'timeStart': self.timeStart,
-          'timeEnd': self.timeEnd,
+          'dateStart': self.dateStart.strftime("%m/%d/%Y"),
+          'dateEnd': self.dateEnd.strftime("%m/%d/%Y"),
+          'dateUpdate': self.dateUpdated.strftime("%m/%d/%Y"),
+          'timeStart': self.dateStart.strftime("%H:%M:%S"),
+          'timeEnd': self.dateEnd.strftime("%H:%M:%S"),
           'occupants': self.occupants
         }
 
