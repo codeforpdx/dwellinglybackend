@@ -2,7 +2,6 @@ from flask_restful import Resource, reqparse
 from models.lease import LeaseModel
 from models.property import PropertyModel
 from datetime import datetime
-from resources.admin_required import admin_required
 from flask_jwt_extended import jwt_required
 
 class Lease(Resource):
