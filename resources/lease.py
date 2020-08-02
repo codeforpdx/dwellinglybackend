@@ -23,17 +23,51 @@ class Lease(Resource):
     
     def put(self,id):
         data = Lease.parser.parse_args()
+        update = False
 
-        if LeaseModel.find_by_id(id):
-            return{'Message': 'Lease already exists'}, 400
+        if not LeaseModel.find_by_id(id):
+            return("Lease not found"), 401  
+            
+        baseLease = LeaseModel.find_by_id(id)
+       
+
+        if(data.occupants):
+            baseLease.occupants = data.occupants
+            update = True
         
-        lease = LeaseModel(id)
+        if(data.name):
+            baseLease.name = data.name
+            update = True
+        
+        if(data.landlordID):
+            baseLease.landlordID = data.landlordID
+            update = True
+
+        if(data.propertyID):
+            baseLease.propertyID = data.propertyID
+            update = True
+    
+        if(data.tenantID):
+            baseLease.tenantID = data.tenantID
+            update = True
+
+        if(data.dateTimeStart):
+            baseLease.dateTimeStart = datetime.strptime(data.dateTimeStart, '%m/%d/%Y %H:%M:%S')
+            update = True
+
+        if(data.dateTimeEnd):
+            baseLease.dateTimeEnd = datetime.strptime(data.dateTimeEnd, '%m/%d/%Y %H:%M:%S')
+            update = True
+
+        if update == True:
+            baseLease.dateUpdated = datetime.now()                         
+  
         try:
-            lease.save_to_db()
+            baseLease.save_to_db()
         except:
             return {'Message': 'An Error Has Occured'}, 500
 
-        return lease.json(), 201
+        return baseLease.json(), 201
 
     def delete(self, id):
         lease = LeaseModel.find_by_id(id)
@@ -52,7 +86,7 @@ class Leases(Resource):
         data.dateTimeStart = datetime.strptime(data.dateTimeStart, '%m/%d/%Y %H:%M:%S')
         data.dateTimeEnd = datetime.strptime(data.dateTimeEnd, '%m/%d/%Y %H:%M:%S')
         data.dateUpdated = datetime.now()
-        
+
         lease = LeaseModel(**data)
 
         try:
