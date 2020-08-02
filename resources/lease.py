@@ -2,6 +2,7 @@ from flask_restful import Resource, reqparse
 from models.lease import LeaseModel
 from models.property import PropertyModel
 from datetime import datetime
+from resources.admin_required import admin_required
 
 class Lease(Resource):
     parser = reqparse.RequestParser()
@@ -14,13 +15,15 @@ class Lease(Resource):
     parser.add_argument('dateTimeEnd')
     parser.add_argument('dateUpdated')
 
+    @jwt_required
     def get(self, id):
         lease = LeaseModel.find_by_id(id)
         if lease:
             return lease.json()
 
         return {'Message': 'Lease Not Found'}, 404
-    
+   
+    @jwt_required
     def put(self,id):
         data = Lease.parser.parse_args()
         update = False
@@ -68,7 +71,8 @@ class Lease(Resource):
             return {'Message': 'An Error Has Occured'}, 500
 
         return baseLease.json(), 201
-
+    
+    @jwt_required
     def delete(self, id):
         lease = LeaseModel.find_by_id(id)
         if lease:
@@ -77,9 +81,11 @@ class Lease(Resource):
         return{'Message': 'Lease Removed from Database'}
 
 class Leases(Resource):
+    @jwt_required    
     def get(self):
         return {'Leases': [lease.json() for lease in LeaseModel.query.all()]}
-
+    
+    @jwt_required
     def post(self):
         data = Lease.parser.parse_args()
         
