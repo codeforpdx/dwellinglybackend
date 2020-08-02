@@ -17,6 +17,7 @@ class LeaseModel(db.Model):
     dateTimeStart = db.Column(db.DateTime, default=datetime.datetime.utcnow)
     dateTimeEnd = db.Column(db.DateTime, default=datetime.datetime.utcnow)
     dateUpdated = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+    occupants = db.Column(db.Integer)
 
     def __init__(self, name, tenantID, landlordID, propertyID, dateTimeStart, dateTimeEnd, dateUpdated, occupants):
         self.name = name
