@@ -3,6 +3,7 @@ from models.lease import LeaseModel
 from models.property import PropertyModel
 from datetime import datetime
 from resources.admin_required import admin_required
+from flask_jwt_extended import jwt_required
 
 class Lease(Resource):
     parser = reqparse.RequestParser()
