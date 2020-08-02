@@ -79,9 +79,9 @@ def seedData():
     now=datetime.now()
     future = now + timedelta(days=365)
 
-    lease = LeaseModel(name="Lease 1", landlordID = 1, propertyID=1, tenantID=1, dateStart =now, dateEnd = future, dateUpdated = now, occupants=3)
+    lease = LeaseModel(name="Lease 1", landlordID = 1, propertyID=1, tenantID=1, dateTimeStart =now, dateTimeEnd = future, dateUpdated = now, occupants=3)
     db.session.add(lease)
-    lease = LeaseModel(name="Lease 2", landlordID = 1, propertyID=2, tenantID=2, dateStart =now, dateEnd = future, dateUpdated = now, occupants=2)
+    lease = LeaseModel(name="Lease 2", landlordID = 1, propertyID=2, tenantID=2, dateTimeStart =now, dateTimeEnd = future, dateUpdated = now, occupants=2)
     db.session.add(lease)
 
     db.session.commit()
