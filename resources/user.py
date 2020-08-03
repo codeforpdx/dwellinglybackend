@@ -6,6 +6,7 @@ from resources.admin_required import admin_required
 from models.user import UserModel
 from models.revoked_tokens import RevokedTokensModel
 from enum import Enum
+import json
 from werkzeug.security import safe_str_cmp
 from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt_claims, get_raw_jwt, get_jwt_identity, jwt_refresh_token_required
 
@@ -15,6 +16,27 @@ class RoleEnum(Enum):
     PROPERTYMANAGER = 2
     STAFF = 3
     ADMIN = 4
+
+class UserRoles(Resource):
+    def get(self):
+        roles = []
+        for role in RoleEnum:
+            print(role.name)
+            print(role.value)
+            roles.append(role.name)
+        result = json.dumps(roles)
+        print(result)
+        return result, 200
+
+    # def post(self, user_id):
+    #     parser = reqparse.RequestParser()
+    #     parser.add_argument('role',type=str,required=True,help="This field cannot be blank.")
+
+    #     data = UserRoles.parser.parse_args()
+
+    #     user = UserModel.find_by_id(user_id)
+    #     if not user:
+    #         return {"Message": "Unable to Grant User"}, 400
 
 class UserRegister(Resource):
     parser = reqparse.RequestParser()
@@ -57,6 +79,9 @@ class User(Resource):
     def patch(self,user_id):
         parser = reqparse.RequestParser()
         parser.add_argument('role',type=str,required=True,help="This field cannot be blank.")
+        parser.add_argument('firstName',type=str)
+        parser.add_argument('lastName',type=str)
+        parser.add_argument('email',type=str)
 
         user = UserModel.find_by_id(user_id)
         if not user:
@@ -64,6 +89,13 @@ class User(Resource):
 
         data = parser.parse_args()
         user.role = data['role']
+        if (data['firstName'] != None):
+            user.firstName = data['firstName']
+        if (data['lastName'] != None):
+            user.lastName = data['lastName']
+        if (data['email'] != None):
+            user.email = data['email']
+
         try:
             user.save_to_db()
         except:
