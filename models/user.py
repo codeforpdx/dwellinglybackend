@@ -9,13 +9,15 @@ class UserModel(db.Model):
     firstName = db.Column(db.String(80))
     lastName = db.Column(db.String(80))
     fullName = db.column_property(firstName + ' ' + lastName)
+    phone = db.Column(db.String(20))
     password = db.Column(db.String(80))
     archived = db.Column(db.Boolean)
 
-    def __init__(self, firstName, lastName, email, password, role, archived):
+    def __init__(self, firstName, lastName, email, password, phone, role, archived):
         self.firstName = firstName
         self.lastName = lastName
         self.email = email
+        self.phone = phone
         self.password = password
         self.role = role if role else 'pending'
         self.archived = False
@@ -34,6 +36,7 @@ class UserModel(db.Model):
             'firstName': self.firstName,
             'lastName': self.lastName,
             'email': self.email,
+            'phone': self.phone,
             'role': self.role,
             'archived': self.archived
         }
