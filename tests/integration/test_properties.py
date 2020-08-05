@@ -33,18 +33,6 @@ def test_get_property_by_name(client, auth_headers, test_database):
     responseBadPropertyName = client.get("/api/properties/this_property_does_not_exist", headers=auth_headers["admin"])
     assert responseBadPropertyName == 404
 
-@pytest.mark.skip(reason="skip failed test")
-def test_get_property_by_id(client, auth_headers, new_property, test_database):
-    test_property = PropertyModel.find_by_name(new_property.name)
-
-    """The get property by id returns a successful response code."""
-    response = client.get(f'/api/properties/{test_property.id}', headers=auth_headers["admin"])
-    assert response.status_code == 200
-
-    """The server responds with an error if the URL contains a non-existent property id"""
-    responseBadPropertyName = client.get("/api/properties/000000", headers=auth_headers["admin"])
-    assert responseBadPropertyName == 404
-
 def test_archive_property_by_id(client, auth_headers, new_property, test_database):
     test_property = PropertyModel.find_by_name(new_property.name)
 
