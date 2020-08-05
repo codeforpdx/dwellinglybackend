@@ -70,12 +70,11 @@ def test_delete_property_by_name(client, auth_headers, new_property, test_databa
     responseNoAdmin = client.delete(f"/api/properties/{test_property.name}")
     assert responseNoAdmin == 401
 
-@pytest.mark.skip(reason="skip failed test")
 def test_update_property_by_name(client, auth_headers, new_property, test_database):
     test_property = PropertyModel.find_by_name(new_property.name)
     new_property_address = "123 NE Flanders St"
     test_property.address = new_property_address
-    responseUpdateProperty = client.put( f'/api/properties/{test_property.id}'
+    responseUpdateProperty = client.put( f'/api/properties/{test_property.name}'
                                        , headers=auth_headers["admin"]
                                        , json=test_property.json()
                                        )
