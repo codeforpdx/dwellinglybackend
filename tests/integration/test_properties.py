@@ -7,18 +7,21 @@ def test_get_properties(client, test_database):
     response = client.get("/api/properties")
     assert response.status_code == 200
 
-@pytest.mark.skip(reason="skip failed test")
 def test_post_property(client, auth_headers, new_property):
+    property = new_property.json()
+    property['name'] = "new_property"
+
     """The server should check for the correct credentials when posting a new property"""
-    response = client.post("/api/properties", json=new_property.json())
+    response = client.post("/api/properties", json=property)
     assert response.status_code == 401
 
     """The server should successfully add a new property"""
-    response = client.post("/api/properties", json=new_property.json(), headers=auth_headers["admin"])
+    response = client.post("/api/properties", json=property, headers=auth_headers["admin"])
     assert response.status_code == 201
 
     """The server should return with an error if a duplicate property is posted"""
-    response = client.post("/api/properties", json=new_property.json(), headers=auth_headers["admin"])
+    response = client.post("/api/properties", json=property, headers=auth_headers["admin"])
+    assert response.get_json() == {'message': 'A property with this name already exists'}
     assert response.status_code == 401
 
 def test_get_property_by_name(client, auth_headers, test_database):
