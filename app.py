@@ -97,8 +97,11 @@ def create_app():
     #declare the available routes
     create_routes(app)
 
+<<<<<<< HEAD
     # setup a google Oauth login initiated by Get request to route /api/login/google
     # redirect url set to /api/login/google/authorized
+=======
+>>>>>>> 590b0fe0657af6e679f631a84368d47577ab9772
     init_google_oauth(app)
 
     #allow cross-origin (CORS)
