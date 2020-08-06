@@ -13,7 +13,7 @@ from flask_jwt_extended import create_access_token, create_refresh_token, jwt_re
 class RoleEnum(Enum):
     PENDING = 0
     TENANT = 1
-    PROPERTYMANAGER = 2
+    PROPERTY_MANAGER = 2
     STAFF = 3
     ADMIN = 4
 
