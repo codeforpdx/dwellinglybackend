@@ -7,18 +7,21 @@ def test_get_properties(client, test_database):
     response = client.get("/api/properties")
     assert response.status_code == 200
 
-@pytest.mark.skip(reason="skip failed test")
 def test_post_property(client, auth_headers, new_property):
+    property = new_property.json()
+    property['name'] = "new_property"
+
     """The server should check for the correct credentials when posting a new property"""
-    response = client.post("/api/properties", json=new_property.json())
+    response = client.post("/api/properties", json=property)
     assert response.status_code == 401
 
     """The server should successfully add a new property"""
-    response = client.post("/api/properties", json=new_property.json(), headers=auth_headers["admin"])
+    response = client.post("/api/properties", json=property, headers=auth_headers["admin"])
     assert response.status_code == 201
 
     """The server should return with an error if a duplicate property is posted"""
-    response = client.post("/api/properties", json=new_property.json(), headers=auth_headers["admin"])
+    response = client.post("/api/properties", json=property, headers=auth_headers["admin"])
+    assert response.get_json() == {'message': 'A property with this name already exists'}
     assert response.status_code == 401
 
 def test_get_property_by_name(client, auth_headers, test_database):
@@ -28,18 +31,6 @@ def test_get_property_by_name(client, auth_headers, test_database):
 
     """The server responds with an error if the URL contains a non-existent property name"""
     responseBadPropertyName = client.get("/api/properties/this_property_does_not_exist", headers=auth_headers["admin"])
-    assert responseBadPropertyName == 404
-
-@pytest.mark.skip(reason="skip failed test")
-def test_get_property_by_id(client, auth_headers, new_property, test_database):
-    test_property = PropertyModel.find_by_name(new_property.name)
-
-    """The get property by id returns a successful response code."""
-    response = client.get(f'/api/properties/{test_property.id}', headers=auth_headers["admin"])
-    assert response.status_code == 200
-
-    """The server responds with an error if the URL contains a non-existent property id"""
-    responseBadPropertyName = client.get("/api/properties/000000", headers=auth_headers["admin"])
     assert responseBadPropertyName == 404
 
 def test_archive_property_by_id(client, auth_headers, new_property, test_database):
@@ -79,12 +70,11 @@ def test_delete_property_by_name(client, auth_headers, new_property, test_databa
     responseNoAdmin = client.delete(f"/api/properties/{test_property.name}")
     assert responseNoAdmin == 401
 
-@pytest.mark.skip(reason="skip failed test")
 def test_update_property_by_name(client, auth_headers, new_property, test_database):
     test_property = PropertyModel.find_by_name(new_property.name)
     new_property_address = "123 NE Flanders St"
     test_property.address = new_property_address
-    responseUpdateProperty = client.put( f'/api/properties/{test_property.id}'
+    responseUpdateProperty = client.put( f'/api/properties/{test_property.name}'
                                        , headers=auth_headers["admin"]
                                        , json=test_property.json()
                                        )
