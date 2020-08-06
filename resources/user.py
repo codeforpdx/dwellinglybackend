@@ -19,24 +19,12 @@ class RoleEnum(Enum):
 
 class UserRoles(Resource):
     def get(self):
-        roles = []
+        roles = {}
         for role in RoleEnum:
-            print(role.name)
-            print(role.value)
-            roles.append(role.name)
+            roles[role.name] = role.value
         result = json.dumps(roles)
         print(result)
         return result, 200
-
-    # def post(self, user_id):
-    #     parser = reqparse.RequestParser()
-    #     parser.add_argument('role',type=str,required=True,help="This field cannot be blank.")
-
-    #     data = UserRoles.parser.parse_args()
-
-    #     user = UserModel.find_by_id(user_id)
-    #     if not user:
-    #         return {"Message": "Unable to Grant User"}, 400
 
 class UserRegister(Resource):
     parser = reqparse.RequestParser()
@@ -78,7 +66,7 @@ class User(Resource):
     @admin_required
     def patch(self,user_id):
         parser = reqparse.RequestParser()
-        parser.add_argument('role',type=str,required=True,help="This field cannot be blank.")
+        parser.add_argument('role', type=int, required=True, help="This field cannot be blank.")
         parser.add_argument('firstName',type=str)
         parser.add_argument('lastName',type=str)
         parser.add_argument('email',type=str)
