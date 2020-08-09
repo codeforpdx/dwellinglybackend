@@ -11,8 +11,12 @@ NOTE: Database is SQLite3 via SQLAlchemy
 
 
 ### To Start Server
+[Note for Windows users](#Note-For-Windows-Users)
 
-1. Clone the repo (`git clone https://github.com/codeforpdx/dwellinglybackend.git`)
+[Note for Mac users](#Mac-OS-Alternative-Setup-Instructions-(for-those-who-have-never-used-Python/having-path-errors))
+
+
+1. Clone the repo (`git clone https://github.com/${your-repo-name}/dwellinglybackend.git`)
 2. Install Python ( https://realpython.com/installing-python/ )
 3. Install pipenv: `pip3 install --user pipenv`.
    - Python version 3.6 or higher is required
@@ -50,7 +54,7 @@ Python does not come by default for Windows users. Sometimes the PATH variable i
 
 If you are still having issues or if your command prompt is throwing an error that says `python is not a command` or `pip is not a command`, it is most likely a pathing issue where the ENV variable is pointing to the wrong directory. To try to troubleshoot, I suggest following this guide: ( https://github.com/LambdaSchool/CS-Wiki/wiki/Installing-Python-3-and-pipenv ).
 
-## Alternative Setup Instructions (for those who have never used Python/having path errors) - Mac OS
+### Mac OS Alternative Setup Instructions (for those who have never used Python/having path errors)
 
 1. Clone the repo (`git clone https://github.com/codeforpdx/dwellinglybackend.git`)
 2. Install Python ( https://realpython.com/installing-python/ )
