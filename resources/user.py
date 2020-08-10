@@ -1,10 +1,20 @@
 from flask_restful import Resource, reqparse
+
+from models.property import PropertyModel
+from models.tenant import TenantModel
 from resources.admin_required import admin_required
 from models.user import UserModel
 from models.revoked_tokens import RevokedTokensModel
+from enum import Enum
 from werkzeug.security import safe_str_cmp
 from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt_claims, get_raw_jwt, get_jwt_identity, jwt_refresh_token_required
 
+class RoleEnum(Enum):
+    PENDING = 0
+    TENANT = 1
+    PROPERTYMANAGER = 2
+    STAFF = 3
+    ADMIN = 4
 
 class UserRegister(Resource):
     parser = reqparse.RequestParser()
@@ -14,7 +24,7 @@ class UserRegister(Resource):
     parser.add_argument('password', type=str, required=True, help="This field cannot be blank.")
     parser.add_argument('role',type=str,required=False,help="This field is not required.")
     parser.add_argument('archived',type=str,required=False,help="This field is not required.")
-    
+
     def post(self):
         data = UserRegister.parser.parse_args()
 
@@ -34,16 +44,15 @@ class User(Resource):
         if not user:
             return {'message': 'User Not Found'}, 404
 
-        # hard coded return as .json() is not compatiable with user model and sqlalchemy
-        return {
-            'id': str(user.id),
-            'firstName': user.firstName,
-            'lastName': user.lastName,
-            'email': user.email,
-            'role': user.role,
-            'archived': user.archived
-        }, 200
-        
+        user_info = user.json()
+
+        if user.role == 'property-manager':
+            user_info['properties'], tenants_ids = zip(*((p.json(), p.tenants) for p in PropertyModel.find_by_manager(user_id) if p))
+            tenants_list = [TenantModel.find_by_id(t) for t in set(tenants_ids)]
+            user_info['tenants'] = [t.json() for t in tenants_list if t]
+
+        return user_info, 200
+
     @admin_required
     def patch(self,user_id):
         parser = reqparse.RequestParser()
@@ -123,7 +132,12 @@ class UsersRole(Resource):
     def post(self):
         data = UsersRole.parser.parse_args()
         users = UserModel.find_by_role(data['userrole'])
-        return {'users': [user.json() for user in users]}
+        users_info = []
+        for user in users:
+            info = user.json()
+            info['properties'] = [p.json() for p in PropertyModel.find_by_manager(user.id) if p]
+            users_info.append(info)
+        return {'users': users_info}
 
 # This endpoint allows the app to use a refresh token to get a new access token 
 class UserAccessRefresh(Resource):

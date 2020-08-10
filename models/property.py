@@ -51,7 +51,11 @@ class PropertyModel(db.Model):
     @classmethod
     def find_by_id(cls, id):
         return cls.query.filter_by(id=id).first() #SELECT * FROM property WHERE id = id LIMIT 1
-    
+
+    @classmethod
+    def find_by_manager(cls, manager_id):
+        return cls.query.filter_by(propertyManager=manager_id).all()
+
     def save_to_db(self):
         db.session.add(self)
         db.session.commit()

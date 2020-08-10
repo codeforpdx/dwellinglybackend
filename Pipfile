@@ -30,6 +30,7 @@ Werkzeug = "==1.0.0"
 Flask-mail = "==0.9.1"
 Flask-Cors = "*"
 psycopg2 = "*"
+pytest = "*"
 
 [requires]
 python_version = "3.8"

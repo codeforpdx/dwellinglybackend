@@ -11,8 +11,12 @@ NOTE: Database is SQLite3 via SQLAlchemy
 
 
 ### To Start Server
+[Note for Windows users](#Note-For-Windows-Users)
 
-1. Clone the repo (`git clone https://github.com/codeforpdx/dwellinglybackend.git`)
+[Note for Mac users](#Mac-OS-Alternative-Setup-Instructions-(for-those-who-have-never-used-Python/having-path-errors))
+
+
+1. Clone the repo (`git clone https://github.com/${your-repo-name}/dwellinglybackend.git`)
 2. Install Python ( https://realpython.com/installing-python/ )
 3. Install pipenv: `pip3 install --user pipenv`.
    - Python version 3.6 or higher is required
@@ -22,6 +26,7 @@ NOTE: Database is SQLite3 via SQLAlchemy
    - Look for the file data.db to be created in the root directory
    - If you get the error `ImportError: No module named flask` or similar, you may need to run `pipenv shell` to launch virtual environment.
 5. Run `pipenv install`
+   - If you get the error `ImportError: cannot import name 'Feature' from 'setuptools'`, your setuptools version might be at 46 or later. You may be able to get it to work using version 45 (e.g. `pip3 install setuptools==45`)
 6. Start the server using the flask environment (required every time the project is re-opened):
    - Run: `pipenv run flask run`
    - Run + restart the server on changes: `pipenv run flask run --reload`
@@ -49,7 +54,7 @@ Python does not come by default for Windows users. Sometimes the PATH variable i
 
 If you are still having issues or if your command prompt is throwing an error that says `python is not a command` or `pip is not a command`, it is most likely a pathing issue where the ENV variable is pointing to the wrong directory. To try to troubleshoot, I suggest following this guide: ( https://github.com/LambdaSchool/CS-Wiki/wiki/Installing-Python-3-and-pipenv ).
 
-## Alternative Setup Instructions (for those who have never used Python/having path errors) - Mac OS
+### Mac OS Alternative Setup Instructions (for those who have never used Python/having path errors)
 
 1. Clone the repo (`git clone https://github.com/codeforpdx/dwellinglybackend.git`)
 2. Install Python ( https://realpython.com/installing-python/ )
@@ -223,20 +228,38 @@ Authorization Bearer < JWT access token >
 
 ```
 
+
+#### ENDPOINT: TICKETS
+
+| method | route              | action (all actions require user to be logged in)   |
+| :----- | :----------------- | :-------------------------------------------------- |
+| POST   | `/tickets/`        | Creates a new ticket                                |
+| GET    | `/tickets/`        | Gets all tickets                                    |
+| GET    | `/tickets/:id`     | Gets a single ticket                                |
+| PUT    | `/tickets/:id`     | Updates a single ticket                             | 
+| DELETE | `/tickets/:id`     | Deletes a single ticket                             |
+
+```javascript
+    id: 1,
+    issue: 'Property Damage',
+    tenant: 'Renty McRenter',
+    senderID: 1,
+    tenantID: 2,
+    assignedUserID: 4,
+    sender: "user1 tester",
+    assigned: "Mr. Sir",
+    status: "new",
+    urgency: "Low",
+    opened: "01-Jul-2020 (21:29)",
+    updated: "01-Jul-2020 (22:20)",
+    minsPastUpdate: 745,
+    notes: [
+        {
+            id: 2,
+            ticketid: 1,
+            created: "01-Jul-2020 (21:29:10.086958)",
+            text: "Tenant has over 40 cats.",
+            user: "user2 tester"
+        },
+    ]
 ```
-  id: 'K-0089ttxqQX-2',
-issue: 'Property Damage',
-tenant: {
-  address: 'Magnolia Park, Unit #2',
-  name: 'Alex Alder',
-  number: '503-555-1234'
-   },
-  sender: {
-  name: 'Tom Smith',
-  number: '541-123-4567'
-  },
-  sent: new Date('2017/12/19').toString(),
-  status: 'New',
-  urgency: 'Low',
-  notes: []
-  ```
