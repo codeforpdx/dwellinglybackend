@@ -7,7 +7,7 @@ class PropertyModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100))
     address = db.Column(db.String(250))
-    unit = db.Column(db.String(20))
+    unit = db.Column(db.String(20), default="")
     city = db.Column(db.String(50))
     state = db.Column(db.String(50))
     zipcode = db.Column(db.String(20))

@@ -24,7 +24,8 @@ def test_register_duplicate_user(client, test_database):
         "firstName": "first",
         "lastName": "last",
         "password": "1234",
-        "email": "email@mail.com"
+        "email": "email@mail.com",
+        "phone": "123 123 5555"
     }
     login_response = client.post("/api/register", json=genericUser)
     assert login_response.status_code == 201
