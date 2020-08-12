@@ -9,8 +9,8 @@ class UserModel(db.Model):
     firstName = db.Column(db.String(80))
     lastName = db.Column(db.String(80))
     fullName = db.column_property(firstName + ' ' + lastName)
-    phone = db.Column(db.String(20))
-    password = db.Column(db.String(80))
+    phone = db.Column(db.String(25))
+    password = db.Column(db.String(128))
     archived = db.Column(db.Boolean)
 
     def __init__(self, firstName, lastName, email, password, phone, role, archived):
