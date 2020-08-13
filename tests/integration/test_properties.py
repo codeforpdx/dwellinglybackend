@@ -1,6 +1,5 @@
 from models.property import PropertyModel
 import json
-import pytest
 
 def test_get_properties(client, test_database):
     """the server should successfully retrieve all properties"""
@@ -48,9 +47,10 @@ def test_archive_property_by_id(client, auth_headers, new_property, test_databas
     responseArchivedProperty = client.get(f'/api/properties/{test_property.name}', headers=auth_headers["admin"])
     assert json.loads(responseArchivedProperty.data)["archived"]
 
-    """The server responds with a 404 error if the URL contains a non-existent property id"""
-    responseBadPropertyID = client.get("/api/properties/archive/000000", headers=auth_headers["admin"])
-    assert responseBadPropertyID == 405
+    """The server responds with a 400 error if the URL contains a non-existent property id"""
+    responseBadPropertyID = client.post("/api/properties/archive/99999", headers=auth_headers["admin"])
+    assert responseBadPropertyID.get_json() == {'message': 'Property cannot be archived'}
+    assert responseBadPropertyID.status_code == 400
 
 def test_delete_property_by_name(client, auth_headers, new_property, test_database):
     test_property = PropertyModel.find_by_name(new_property.name)
@@ -69,6 +69,10 @@ def test_delete_property_by_name(client, auth_headers, new_property, test_databa
     """The server responds with a 401 error if a non-admin tries to delete"""
     responseNoAdmin = client.delete(f"/api/properties/{test_property.name}")
     assert responseNoAdmin == 401
+
+    """The server responds with a 404 error if property not exist"""
+    response = client.delete(f"/api/properties/propertyNotInDB", headers=auth_headers["admin"])
+    assert response == 404
 
 def test_update_property_by_name(client, auth_headers, new_property, test_database):
     test_property = PropertyModel.find_by_name(new_property.name)

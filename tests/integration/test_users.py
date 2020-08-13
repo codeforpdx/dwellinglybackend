@@ -55,9 +55,26 @@ def test_get_user_by_id(client, auth_headers, admin_user):
     responseBadUserId = client.get("/api/user/000000", headers=auth_headers["admin"])
     assert responseBadUserId.status_code == 404
 
+def test_get_user_by_property_manager_id(client, auth_headers, new_property):
+    """The get user by property manager id return properties and tenants list"""
+    user = UserModel.find_by_id(new_property.propertyManager)
+    response = client.get(f"/api/user/{user.id}", headers=auth_headers["admin"])
+    user_info = response.get_json()
+    assert 'properties' in user_info.keys()
+    assert 'tenants' in user_info.keys()
+    assert response.status_code == 200
+
 def test_user_roles(client, auth_headers):
     """The get users by role route returns a successful response code."""
     response = client.post("/api/users/role", json={"userrole": "admin"}, headers=auth_headers["admin"])
+    assert len(response.get_json()['users']) == 4
+    assert response.status_code == 200
+
+    """The get users by role route returns only property managers."""
+    response = client.post("/api/users/role", json={"userrole": "property-manager"}, headers=auth_headers["admin"])
+    managers = response.get_json()['users']
+    assert len(managers) == 2
+    assert all(["property-manager" == pm['role'] for pm in managers])
     assert response.status_code == 200
 
 def test_archive_user(client, auth_headers, new_user):
