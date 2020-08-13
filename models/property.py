@@ -18,7 +18,7 @@ class PropertyModel(db.Model):
 
     tenants = db.relationship(TenantModel, backref="property")
 
-    def __init__(self, name, address, unit, city, state, zipcode, propertyManager, tenants, dateAdded, archived):
+    def __init__(self, name, address, unit, city, state, zipcode, propertyManager, dateAdded, archived):
         self.name = name
         self.address = address
         self.unit = unit
