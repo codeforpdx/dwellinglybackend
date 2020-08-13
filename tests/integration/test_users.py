@@ -1,5 +1,6 @@
 from models.user import UserModel
 from conftest import is_valid, log
+from freezegun import freeze_time
 
 def test_user_auth(client, test_database, admin_user):
     login_response = client.post("/api/login", json={
@@ -17,6 +18,18 @@ def test_user_auth(client, test_database, admin_user):
     """The server responds with an error when a request is made (to a protected route) without the admin token provided."""
     responseMissingToken = client.get(f"/api/user/1", headers={})
     assert responseMissingToken.status_code == 401
+
+def test_last_active(client, test_database, admin_user):
+    user = UserModel.find_by_email(admin_user.email)
+    assert user.lastActive.strftime('%Y-%m-%d %H:%M:%S') != '2020-01-01 00:00:00'
+
+    with freeze_time('2020-01-01'):
+        login_response = client.post("/api/login", json={
+            "email": admin_user.email,
+            "password": admin_user.password
+        })
+        user = UserModel.find_by_email(admin_user.email)
+        assert user.lastActive.strftime('%Y-%m-%d %H:%M:%S') == '2020-01-01 00:00:00'
 
 def test_register_duplicate_user(client, test_database):
     """When a user first registers, the server responds successfully."""

@@ -118,6 +118,7 @@ class UserLogin(Resource):
         if user and safe_str_cmp(user.password, data['password']):
             access_token = create_access_token(identity=user.id, fresh=True) 
             refresh_token = create_refresh_token(user.id)
+            user.update_last_active()
             return {
                 'access_token': access_token,
                 'refresh_token': refresh_token
