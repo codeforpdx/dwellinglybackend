@@ -22,7 +22,7 @@ NOTE: Database is SQLite3 via SQLAlchemy
 4. Run `pipenv install`
    - If you get the error `ImportError: cannot import name 'Feature' from 'setuptools'`, your setuptools version might be at 46 or later. You may be able to get it to work using version 45 (e.g. `pip3 install setuptools==45`)
 5. Seed the database
-   - Run: `python seed_db.py`
+   - Run: `pipenv run python seed_db.py`
    - To re-seed the database from scratch, delete data.db before running the script
    - Look for the file data.db to be created in the root directory
    - If you get the error `ImportError: No module named flask` or similar, you may need to run `pipenv shell` to launch virtual environment.
@@ -35,7 +35,7 @@ NOTE: Database is SQLite3 via SQLAlchemy
     - Run the tests: `pipenv run pytest --cov .`
       - View coverage for a particular directory: `pipenv run pytest --cov [directory]`
     - View detailed coverage reports, with listings for untested lines of code ...
-      - As a web page: `python view_coverage.py`
+      - As a web page: `pipenv run python view_coverage.py`
       - In the console: `pipenv run view_coverage`
 
 Queries can be made with the Postman Collection link ( https://www.getpostman.com/collections/a86a292798c7895425e2 )
