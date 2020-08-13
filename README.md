@@ -18,8 +18,7 @@ NOTE: Database is SQLite3 via SQLAlchemy
 
 1. Clone the repo (`git clone https://github.com/${your-repo-name}/dwellinglybackend.git`)
 2. Install Python ( https://realpython.com/installing-python/ )
-3. Install pipenv: `pip3 install --user pipenv`.
-   - Python version 3.6 or higher is required
+3. Install [pipenv](https://pipenv.pypa.io/en/latest/#install-pipenv-today)
 4. Seed the database
    - Run: `python seed_db.py`
    - To re-seed the database from scratch, delete data.db before running the script
