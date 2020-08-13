@@ -19,7 +19,7 @@ NOTE: Database is SQLite3 via SQLAlchemy
 1. Clone the repo (`git clone https://github.com/${your-repo-name}/dwellinglybackend.git`)
 2. Install Python ( https://realpython.com/installing-python/ )
 3. Install [pipenv](https://pipenv.pypa.io/en/latest/#install-pipenv-today)
-4. Run `pipenv install`
+4. Run `pipenv install -d`
    - If you get the error `ImportError: cannot import name 'Feature' from 'setuptools'`, your setuptools version might be at 46 or later. You may be able to get it to work using version 45 (e.g. `pip3 install setuptools==45`)
 5. Seed the database
    - Run: `pipenv run python seed_db.py`
@@ -31,7 +31,6 @@ NOTE: Database is SQLite3 via SQLAlchemy
    - Run + restart the server on changes: `pipenv run flask run --reload`
 
 6. Test the server and view coverage reports. Use of coverage reporting is recommended to indicate test suite completeness and to locate defunct code in the code base.
-    - Install the dev-packages: `pipenv install -d`
     - Run the tests: `pipenv run pytest --cov .`
       - View coverage for a particular directory: `pipenv run pytest --cov [directory]`
     - View detailed coverage reports, with listings for untested lines of code ...
