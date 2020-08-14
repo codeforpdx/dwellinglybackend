@@ -1,8 +1,10 @@
 from sqlalchemy.orm import relationship
 from db import db
 from models.tenant import TenantModel
+from models.base_model import BaseModel
 
-class PropertyModel(db.Model):
+
+class PropertyModel(BaseModel):
     __tablename__ = "properties"
 
     id = db.Column(db.Integer, primary_key=True)
@@ -35,12 +37,12 @@ class PropertyModel(db.Model):
             property_tenants.append(tenant.id)
 
         return {
-            'id': self.id, 
-            'name':self.name, 
-            'address': self.address, 
+            'id': self.id,
+            'name':self.name,
+            'address': self.address,
             'unit': self.unit,
-            'city': self.city, 
-            'state': self.state, 
+            'city': self.city,
+            'state': self.state,
             'zipcode': self.zipcode,
             'propertyManager': self.propertyManager,
             'tenantIDs': property_tenants,
@@ -53,17 +55,5 @@ class PropertyModel(db.Model):
         return cls.query.filter_by(name=name).first()
 
     @classmethod
-    def find_by_id(cls, id):
-        return cls.query.filter_by(id=id).first() #SELECT * FROM property WHERE id = id LIMIT 1
-
-    @classmethod
     def find_by_manager(cls, manager_id):
         return cls.query.filter_by(propertyManager=manager_id).all()
-
-    def save_to_db(self):
-        db.session.add(self)
-        db.session.commit()
-    
-    def delete_from_db(self):
-        db.session.delete(self)
-        db.session.commit()

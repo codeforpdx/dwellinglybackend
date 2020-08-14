@@ -1,8 +1,10 @@
 from sqlalchemy.orm import relationship
 from db import db
 from models.user import UserModel
+from models.base_model import BaseModel
 
-class TenantModel(db.Model):
+
+class TenantModel(BaseModel):
     __tablename__ = "tenants"
 
     id = db.Column(db.Integer, primary_key=True)
@@ -38,17 +40,5 @@ class TenantModel(db.Model):
         }
 
     @classmethod
-    def find_by_id(cls, id):
-        return cls.query.filter_by(id=id).first() #SELECT * FROM property WHERE id = id LIMIT 1
-
-    @classmethod
     def find_by_first_and_last(cls, first, last):
         return cls.query.filter_by(firstName = first, lastName = last).first()
-
-    def save_to_db(self):
-        db.session.add(self)
-        db.session.commit()
-
-    def delete_from_db(self):
-        db.session.delete(self)
-        db.session.commit()

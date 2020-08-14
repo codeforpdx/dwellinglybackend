@@ -1,9 +1,10 @@
 from sqlalchemy.orm import relationship
 from db import db
 from models.contact_number import ContactNumberModel
+from models.base_model import BaseModel
 
 
-class EmergencyContactModel(db.Model):
+class EmergencyContactModel(BaseModel):
     __tablename__ = "emergency_contacts"
 
     id = db.Column(db.Integer, primary_key=True)
@@ -28,24 +29,12 @@ class EmergencyContactModel(db.Model):
 
     def json(self):
         return {
-            'id': self.id, 
-            'name':self.name, 
-            'description': self.description, 
+            'id': self.id,
+            'name':self.name,
+            'description': self.description,
             'contact_numbers': [number.json() for number in self.contact_numbers]
         }
 
     @classmethod
-    def find_by_id(cls, id):
-        return cls.query.filter_by(id=id).first()
-    
-    @classmethod
     def find_by_name(cls, name):
         return cls.query.filter_by(name=name).first()
-    
-    def save_to_db(self):
-        db.session.add(self)
-        db.session.commit()
-    
-    def delete_from_db(self):
-        db.session.delete(self)
-        db.session.commit()

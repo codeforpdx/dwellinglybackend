@@ -1,8 +1,10 @@
 from db import db
 from datetime import datetime
 from models.user import UserModel
+from models.base_model import BaseModel
 
-class NotesModel(db.Model):
+
+class NotesModel(BaseModel):
     __tablename__ = "Notes"
 
     id = db.Column(db.Integer, primary_key=True)
@@ -21,14 +23,6 @@ class NotesModel(db.Model):
         self.text = text
         self.user = user
 
-    def save_to_db(self):
-        db.session.add(self)
-        db.session.commit()
-
-    def delete_from_db(self):
-        db.session.delete(self)
-        db.session.commit()
-
     def json(self):
         user = UserModel.find_by_id(self.user)
 
@@ -39,15 +33,3 @@ class NotesModel(db.Model):
             'text': self.text,
             'user': user.fullName
         }
-
-    def save_to_db(self):
-        db.session.add(self)
-        db.session.commit()
-
-    def delete_from_db(self):
-        db.session.delete(self)
-        db.session.commit()
-
-    @classmethod
-    def find_by_id(cls, id):
-        return cls.query.filter_by(id = id).first()
