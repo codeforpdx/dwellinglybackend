@@ -42,10 +42,6 @@ class TenantModel(db.Model):
         return cls.query.filter_by(id=id).first() #SELECT * FROM property WHERE id = id LIMIT 1
 
     @classmethod
-    def find_by_property(cls, id):
-        return cls.query.filter_by(propertyID = id).all()
-
-    @classmethod
     def find_by_first_and_last(cls, first, last):
         return cls.query.filter_by(firstName = first, lastName = last).first()
 

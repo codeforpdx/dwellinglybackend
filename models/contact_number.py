@@ -16,10 +16,6 @@ class ContactNumberModel(db.Model):
         self.extension = extension if extension else ''
 
     @classmethod
-    def find_by_contact_id(cls, contact_id):
-        return cls.query.filter_by(emergency_contact_id=contact_id).all()
-
-    @classmethod
     def find_by_id(cls, id):
         return cls.query.filter_by(id=id).first()
 

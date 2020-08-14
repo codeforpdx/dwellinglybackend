@@ -40,10 +40,6 @@ class NotesModel(db.Model):
             'user': user.fullName
         }
 
-    @classmethod
-    def find_by_ticketid(cls, ticketid):
-        return cls.query.filter_by(ticketid = ticketid).all()
-
     def save_to_db(self):
         db.session.add(self)
         db.session.commit()
