@@ -53,7 +53,6 @@ def new_property():
                                , state="OR"
                                , zipcode="97207"
                                , propertyManager=5
-                               , tenants=3
                                , dateAdded="2020-04-12"
                                , archived=0
                                )
