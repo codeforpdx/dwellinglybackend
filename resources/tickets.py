@@ -16,7 +16,7 @@ class Ticket(Resource):
     parser.add_argument('assignedUser')
 
 
-    @jwt_required
+    # @jwt_required
     def get(self, id):
         ticket= TicketModel.find_by_id(id)
         if ticket:
@@ -31,10 +31,11 @@ class Ticket(Resource):
 
         return {'Message': 'Ticket Removed from Database'}
 
-    @jwt_required
+    # @jwt_required
     def put(self, id):
         data = Ticket.parser.parse_args()
         ticket = TicketModel.find_by_id(id)
+        updated = false
 
         if ticket:
             #variable statements allow for only updated fields to be transmitted
@@ -49,11 +50,11 @@ class Ticket(Resource):
 
             if(data.status):
                 updated = not (ticket.status == data.status)
+                print(ticket.status)
+                print(data.status)
                 if updated:
                     ticket.status = data.status
-                    dateTime = datetime.now()
-                    timestamp = dateTime.strftime("%d-%b-%Y (%H:%M)")
-                    ticket.updated = timestamp
+                    ticket.updated = datetime.now()
 
             if(data.urgency):
                 ticket.urgency = data.urgency
@@ -84,11 +85,11 @@ class Tickets(Resource):
     parser.add_argument('issue')
     parser.add_argument('assignedUser')
 
-    @jwt_required
+    # @jwt_required
     def get(self):
         return {'Tickets': [ticket.json() for ticket in TicketModel.query.all()]}
 
-    @jwt_required
+    # @jwt_required
     def post(self):
         data = Tickets.parser.parse_args()
         ticket = TicketModel(**data)
