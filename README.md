@@ -38,6 +38,7 @@ NOTE: Database is SQLite3 via SQLAlchemy
     - View detailed coverage reports, with listings for untested lines of code ...
       - As a web page: `pipenv run python view_coverage.py`
       - In the console: `pipenv run view_coverage`
+    - Tests can be run automatically after each file save using [pytest-watch](https://pypi.org/project/pytest-watch/). Visit the documentation to learn how to run it for your system. See [PR #72](https://github.com/codeforpdx/dwellinglybackend/pull/72) for a preview of what it can do.
 
 Queries can be made with the Postman Collection link ( https://www.getpostman.com/collections/a86a292798c7895425e2 )
 [![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/0078de8f58d4ea0b78eb)
