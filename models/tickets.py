@@ -4,7 +4,7 @@ from models.tenant import TenantModel
 from models.user import UserModel
 from models.notes import NotesModel
 from models.tenant import TenantModel
-from datetime import datetime
+from datetime import datetime, timedelta
 
 class TicketModel(db.Model):
     __tablename__ = "tickets"
@@ -16,6 +16,7 @@ class TicketModel(db.Model):
     sender = db.Column(db.Integer, db.ForeignKey('users.id'))
     opened =  db.Column(db.DateTime, default=datetime.utcnow)
     updated = db.Column(db.DateTime, default=datetime.utcnow)
+    minsPastUpdate = db.Column(db.Integer, default=0)
     status = db.Column(db.String(12))
     urgency = db.Column(db.String(12))
     notelog = db.Column(db.Text)
@@ -29,6 +30,7 @@ class TicketModel(db.Model):
         self.tenant = tenant
         self.opened = datetime.now()
         self.updated = datetime.now()
+        self.minsPastUpdate = 0
         self.assignedUser = assignedUser
         self.status = status
         self.urgency = urgency
@@ -50,7 +52,7 @@ class TicketModel(db.Model):
 
         # dateTimeStatusChange = datetime.strptime(self.updated, "%d-%b-%Y (%H:%M)")
         dateTimeNow = datetime.now()
-        minsPastUpdate = int((dateTimeNow - self.updated).total_seconds() / 60)
+        minsPastUpdate = int((datetime.now() - self.updated).total_seconds() / 60)
 
         return {
             'id': self.id,
@@ -73,7 +75,17 @@ class TicketModel(db.Model):
     @classmethod
     def find_by_id(cls, id):
         return cls.query.filter_by(id=id).first() 
+    
+    @classmethod
+    def find_count_by_status(cls, status):
+        return cls.query.filter_by(status=status).count()
 
+    @classmethod
+    def find_count_by_age_status(cls, status, minutes):
+        #calculated in minutes: 1 day = 1440, 1 week = 10080
+        dateTime = datetime.now() - timedelta(minutes = minutes)
+        return db.session.query(TicketModel).filter(TicketModel.updated >= dateTime).filter(TicketModel.status == status).count()
+        
     def save_to_db(self):
         db.session.add(self)
         db.session.commit()

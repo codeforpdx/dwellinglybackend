@@ -35,7 +35,6 @@ class Ticket(Resource):
     def put(self, id):
         data = Ticket.parser.parse_args()
         ticket = TicketModel.find_by_id(id)
-        updated = false
 
         if ticket:
             #variable statements allow for only updated fields to be transmitted
@@ -50,8 +49,6 @@ class Ticket(Resource):
 
             if(data.status):
                 updated = not (ticket.status == data.status)
-                print(ticket.status)
-                print(data.status)
                 if updated:
                     ticket.status = data.status
                     ticket.updated = datetime.now()
@@ -93,9 +90,9 @@ class Tickets(Resource):
     def post(self):
         data = Tickets.parser.parse_args()
         ticket = TicketModel(**data)
-
         try:
             ticket.save_to_db()
         except:
             return {'Message': 'An Error Has Occured'}, 500
         return ticket.json(), 201
+

@@ -17,6 +17,8 @@ from flask_mail import Mail
 from resources.email import Email
 from resources.tickets import Ticket, Tickets
 from resources.lease import Lease, Leases
+from resources.widgets import Widgets
+
 import os
 from db import db
 
@@ -71,6 +73,7 @@ def create_routes(app):
     api.add_resource(Leases, '/lease/')
     api.add_resource(Tickets, '/tickets')
     api.add_resource(Ticket, '/tickets/<int:id>')
+    api.add_resource(Widgets, '/widgets')
 
 
 def check_for_admins():
