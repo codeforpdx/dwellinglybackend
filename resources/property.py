@@ -25,13 +25,11 @@ class Properties(Resource):
     parser.add_argument('zipcode')
     parser.add_argument('state')
     parser.add_argument('propertyManager')
-    parser.add_argument('tenants')
     parser.add_argument('dateAdded')
     parser.add_argument('archived')
     
     def get(self):
-        # print(dict(zip(row.keys(), row)) for row in result)
-        return {'properties': [property._asdict() for property in db.session.query(PropertyModel.id, PropertyModel.name, PropertyModel.address, PropertyModel.tenants, PropertyModel.dateAdded, UserModel.fullName.label('propertyManager')).join(UserModel).all()]}
+        return {'properties': [property.json() for property in db.session.query(PropertyModel).all()]}
     
     @admin_required
     def post(self):
@@ -118,9 +116,6 @@ class Property(Resource):
 
         if(data.propertyManager):
             rentalProperty.propertyManager = data.propertyManager
-
-        if(data.tenants):
-            rentalProperty.tenants = data.tenants
 
         if(data.dateAdded):
             rentalProperty.dateAdded = data.dateAdded

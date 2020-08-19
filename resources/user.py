@@ -51,8 +51,10 @@ class User(Resource):
         user_info = user.json()
 
         if user.role == 'property-manager':
-            user_info['properties'], tenants_ids = zip(*((p.json(), p.tenants) for p in PropertyModel.find_by_manager(user_id) if p))
-            tenants_list = [TenantModel.find_by_id(t) for t in set(tenants_ids)]
+            user_info['properties'], tenant_list = zip(*((p.json(), p.tenants) for p in PropertyModel.find_by_manager(user_id) if p))
+            
+            tenant_IDs = [tenant.id for sublist in tenant_list for tenant in sublist]
+            tenants_list = [TenantModel.find_by_id(t) for t in set(tenant_IDs)]
             user_info['tenants'] = [t.json() for t in tenants_list if t]
 
         return user_info, 200
