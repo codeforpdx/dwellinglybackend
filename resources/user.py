@@ -60,7 +60,7 @@ class User(Resource):
 
         user_info = user.json()
 
-        if user.role == 'property-manager':
+        if user.role == 2:
             user_info['properties'], tenant_list = zip(*((p.json(), p.tenants) for p in PropertyModel.find_by_manager(user_id) if p))
             
             tenant_IDs = [tenant.id for sublist in tenant_list for tenant in sublist]
@@ -153,7 +153,7 @@ class UserLogin(Resource):
 
 class UsersRole(Resource):
     parser = reqparse.RequestParser()
-    parser.add_argument('userrole',type=str,required=True,help="This field cannot be blank.")
+    parser.add_argument('userrole',type=int,required=True,help="This field cannot be blank.")
 
     @admin_required
     def post(self):

@@ -79,15 +79,15 @@ def test_get_user_by_property_manager_id(client, auth_headers, new_property):
 
 def test_user_roles(client, auth_headers):
     """The get users by role route returns a successful response code."""
-    response = client.post("/api/users/role", json={"userrole": "admin"}, headers=auth_headers["admin"])
-    assert len(response.get_json()['users']) == 4
+    response = client.post("/api/users/role", json={"userrole": 4}, headers=auth_headers["admin"])
+    assert len(response.get_json()['users']) == 3
     assert response.status_code == 200
 
     """The get users by role route returns only property managers."""
-    response = client.post("/api/users/role", json={"userrole": "property-manager"}, headers=auth_headers["admin"])
+    response = client.post("/api/users/role", json={"userrole": 2}, headers=auth_headers["admin"])
     managers = response.get_json()['users']
     assert len(managers) == 2
-    assert all(["property-manager" == pm['role'] for pm in managers])
+    assert all([2 == pm['role'] for pm in managers])
     assert response.status_code == 200
 
 def test_archive_user(client, auth_headers, new_user):
