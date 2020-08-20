@@ -23,7 +23,6 @@ class UserRoles(Resource):
         for role in RoleEnum:
             roles[role.name] = role.value
         result = json.dumps(roles)
-        print(result)
         return result, 200
 
 class UserRegister(Resource):
