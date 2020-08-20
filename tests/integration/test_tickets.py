@@ -50,3 +50,28 @@ def test_tickets_POST(client, auth_headers):
     assert response.json['opened'] == datetime.now().strftime("%d-%b-%Y (%H:%M)")
     assert response.json['updated'] == datetime.now().strftime("%d-%b-%Y (%H:%M)")
     assert response.json['notes'] == []
+
+
+def test_tickets_PUT(client, auth_headers):
+    id = 1
+    updatedTicket = {
+        'sender': 2,
+        'tenant': 2,
+        'assignedUser': 3,
+        'status': 'in progress',
+        'urgency': 'high',
+        'issue': 'Leaky pipe',
+    }
+    response = client.put(f'{endpoint}/{id}', json=updatedTicket, headers=auth_headers["admin"])
+    assert is_valid(response, 200)
+    assert response.json['issue'] == 'Leaky pipe'
+    assert response.json['tenant'] == 'Soho Muless'
+    assert response.json['senderID'] == 2
+    assert response.json['tenantID'] == 2
+    assert response.json['assignedUserID'] == 3
+    assert response.json['sender'] == 'user2 tester'
+    assert response.json['assigned'] == 'user3 tester'
+    assert response.json['status'] == 'in progress'
+    assert response.json['urgency'] == 'high'
+    assert response.json['updated'] == datetime.now().strftime("%d-%b-%Y (%H:%M)")
+    assert len(response.json['notes']) == 2
