@@ -34,6 +34,7 @@ class UserRegister(Resource):
     parser.add_argument('password', type=str, required=True, help="This field cannot be blank.")
     parser.add_argument('role',type=str,required=False,help="This field is not required.")
     parser.add_argument('archived',type=str,required=False,help="This field is not required.")
+    parser.add_argument('phone',type=str,required=True,help="This field cannot be blank.")
 
     def post(self):
         data = UserRegister.parser.parse_args()
@@ -41,7 +42,10 @@ class UserRegister(Resource):
         if UserModel.find_by_email(data['email']):
             return {"message": "A user with that email already exists"}, 400
 
-        user = UserModel(data['firstName'], data['lastName'], data['email'], data['password'], data['role'], data['archived'])
+        user = UserModel(firstName=data['firstName'],
+                         lastName=data['lastName'], email=data['email'],
+                         password=data['password'], phone=data['phone'],
+                         role=data['role'], archived=data['archived'])
         user.save_to_db()
 
         return {"message": "User created successfully."}, 201
@@ -57,8 +61,10 @@ class User(Resource):
         user_info = user.json()
 
         if user.role == 'property-manager':
-            user_info['properties'], tenants_ids = zip(*((p.json(), p.tenants) for p in PropertyModel.find_by_manager(user_id) if p))
-            tenants_list = [TenantModel.find_by_id(t) for t in set(tenants_ids)]
+            user_info['properties'], tenant_list = zip(*((p.json(), p.tenants) for p in PropertyModel.find_by_manager(user_id) if p))
+            
+            tenant_IDs = [tenant.id for sublist in tenant_list for tenant in sublist]
+            tenants_list = [TenantModel.find_by_id(t) for t in set(tenant_IDs)]
             user_info['tenants'] = [t.json() for t in tenants_list if t]
 
         return user_info, 200
@@ -137,6 +143,7 @@ class UserLogin(Resource):
         if user and safe_str_cmp(user.password, data['password']):
             access_token = create_access_token(identity=user.id, fresh=True) 
             refresh_token = create_refresh_token(user.id)
+            user.update_last_active()
             return {
                 'access_token': access_token,
                 'refresh_token': refresh_token

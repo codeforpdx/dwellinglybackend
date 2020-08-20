@@ -1,4 +1,6 @@
 from db import db
+from datetime import datetime, timedelta
+
 from models.user import UserModel
 from models.property import PropertyModel
 from models.tenant import TenantModel
@@ -6,35 +8,36 @@ from models.tickets import TicketModel
 from models.notes import NotesModel
 from models.revoked_tokens import RevokedTokensModel
 from models.emergency_contact import EmergencyContactModel
+from models.lease import LeaseModel
 
 def seedData():
 
-    user = UserModel(email="user1@dwellingly.org", role="admin", firstName="user1", lastName="tester", password="1234", archived=0)
+    user = UserModel(email="user1@dwellingly.org", role="admin", firstName="user1", lastName="tester", password="1234", phone="555-555-5555", archived=0)
     db.session.add(user)
-    user = UserModel(email="user2@dwellingly.org", role="admin", firstName="user2", lastName="tester", password="1234", archived=0)
+    user = UserModel(email="user2@dwellingly.org", role="admin", firstName="user2", lastName="tester", password="1234", phone="555-555-5555", archived=0)
     db.session.add(user)
-    user = UserModel(email="user3@dwellingly.org", role="admin", firstName="user3", lastName="tester", password="1234", archived=0)
+    user = UserModel(email="user3@dwellingly.org", role="admin", firstName="user3", lastName="tester", password="1234", phone="555-555-5555", archived=0)
     db.session.add(user)
-    user = UserModel(email="MisterSir@dwellingly.org", role="property-manager", firstName="Mr.", lastName="Sir", password="1234", archived=0)
+    user = UserModel(email="MisterSir@dwellingly.org", role="property-manager", firstName="Mr.", lastName="Sir", password="1234", phone="555-555-5555", archived=0)
     db.session.add(user)
-    user = UserModel(email="user3@dwellingly.org", role="property-manager", firstName="Gray", lastName="Pouponn", password="1234", archived=0)
+    user = UserModel(email="user3@dwellingly.org", role="property-manager", firstName="Gray", lastName="Pouponn", password="1234", phone="555-555-5555", archived=0)
     db.session.add(user)
     db.session.commit()
 
-    user = UserModel(email="pending1@dwellingly.org", role="pending", firstName="Anthony", lastName="Redding", password="1234", archived=0)
+    user = UserModel(email="pending1@dwellingly.org", role="pending", firstName="Anthony", lastName="Redding", password="1234", phone="555-555-5555", archived=0)
     db.session.add(user)
-    user = UserModel(email="pending2@dwellingly.org", role="pending", firstName="Ryan", lastName="Dander", password="1234", archived=0)
+    user = UserModel(email="pending2@dwellingly.org", role="pending", firstName="Ryan", lastName="Dander", password="1234", phone="555-555-5555", archived=0)
     db.session.add(user)
-    user = UserModel(email="pending3@dwellingly.org", role="pending", firstName="Amber", lastName="Lemming", password="1234", archived=0)
+    user = UserModel(email="pending3@dwellingly.org", role="pending", firstName="Amber", lastName="Lemming", password="1234", phone="555-555-5555", archived=0)
     db.session.add(user)
-    user = UserModel(email="pending4@dwellingly.org", role="pending", firstName="Jeremy", lastName="Quazar", password="1234", archived=0)
+    user = UserModel(email="pending4@dwellingly.org", role="pending", firstName="Jeremy", lastName="Quazar", password="1234", phone="555-555-5555", archived=0)
     db.session.add(user)
 
-    newProperty = PropertyModel(name="test1", address="123 NE FLanders St", city="Portland", state="OR", zipcode="97207", propertyManager=5, tenants=3, dateAdded="2020-04-12", archived=0)
+    newProperty = PropertyModel(name="test1", address="123 NE FLanders St", unit="5", city="Portland", state="OR", zipcode="97207", propertyManager=5, dateAdded="2020-04-12", archived=0)
     db.session.add(newProperty)
-    newProperty = PropertyModel(name="Meerkat Manor", address="Privet Drive", city="Portland", state="OR", zipcode="97207", propertyManager=4, tenants=6, dateAdded="2020-04-12", archived=0)
+    newProperty = PropertyModel(name="Meerkat Manor", address="Privet Drive", unit="2", city="Portland", state="OR", zipcode="97207", propertyManager=4, dateAdded="2020-04-12", archived=0)
     db.session.add(newProperty)
-    newProperty = PropertyModel(name="The Reginald", address="Aristocrat Avenue", city="Portland", state="OR", zipcode="97207", propertyManager=5, tenants=4, dateAdded="2020-04-12", archived=0)
+    newProperty = PropertyModel(name="The Reginald", address="Aristocrat Avenue", unit="3", city="Portland", state="OR", zipcode="97207", propertyManager=5, dateAdded="2020-04-12", archived=0)
     db.session.add(newProperty)
     db.session.commit()
 
@@ -73,4 +76,20 @@ def seedData():
     emergencyContact = EmergencyContactModel(name="Child Abuse/Reporting", contact_numbers=[{"number": "503-730-3100"}])
     db.session.add(emergencyContact)
 
-    db.session.commit()
+    now=datetime.now()
+    future = now + timedelta(days=365)
+
+    lease = LeaseModel(name="Lease 1", landlordID = 1, propertyID=1, tenantID=1, dateTimeStart =now, dateTimeEnd = future, dateUpdated = now, occupants=3)
+    db.session.add(lease)
+    lease = LeaseModel(name="Lease 2", landlordID = 1, propertyID=2, tenantID=2, dateTimeStart =now, dateTimeEnd = future, dateUpdated = now, occupants=2)
+    db.session.add(lease)
+    lease = LeaseModel(name="Lease 3", landlordID = 2, propertyID=3, tenantID=3, dateTimeStart =now, dateTimeEnd = future, dateUpdated = now, occupants=1)
+    db.session.add(lease)
+
+    try:
+        db.session.commit()
+    except:
+        print("Error updating database")
+    
+    print("Database sucessfully seeded: " + now.strftime("%m/%d/%Y, %H:%M:%S"))
+    
