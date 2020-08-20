@@ -112,10 +112,10 @@ def test_archive_user_failure(client, auth_headers):
 
 def test_patch_user(client, auth_headers, new_user):
     """The route to patch a user by id returns a successful response code and the expected data is patched."""
-    expected = "property_manager"
+    expected = 2
     userToPatch = UserModel.find_by_email(new_user.email)
     response = client.patch(f"/api/user/{userToPatch.id}", json={"role": expected}, headers=auth_headers["admin"])
-    actual = response.json["role"]
+    actual = int(response.json["role"])
     assert response.status_code == 201
     assert expected == actual
 

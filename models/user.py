@@ -6,7 +6,7 @@ class UserModel(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(100))
-    role = db.Column(db.String(20))
+    role = db.Column(db.Integer)
     firstName = db.Column(db.String(80))
     lastName = db.Column(db.String(80))
     fullName = db.column_property(firstName + ' ' + lastName)
@@ -22,7 +22,7 @@ class UserModel(db.Model):
         self.email = email
         self.phone = phone
         self.password = password
-        self.role = role if role else 'pending'
+        self.role = role if role else 0
         self.archived = False
         self.lastActive = datetime.datetime.utcnow()
 
