@@ -18,14 +18,14 @@ class Ticket(Resource):
 
     @jwt_required
     def get(self, id):
-        ticket= TicketModel.find_by_id(id)
+        ticket = TicketModel.find_by_id(id)
         if ticket:
             return ticket.json()
         return {'message': 'Ticket Not Found'}, 404
 
     @jwt_required
     def delete(self, id):
-        ticket= TicketModel.find_by_id(id)
+        ticket = TicketModel.find_by_id(id)
         if ticket:
             ticket.delete_from_db()
 
@@ -86,7 +86,7 @@ class Tickets(Resource):
 
     @jwt_required
     def get(self):
-        return {'Tickets': [ticket.json() for ticket in TicketModel.query.all()]}
+        return {'tickets': [ticket.json() for ticket in TicketModel.query.all()]}
 
     @jwt_required
     def post(self):
