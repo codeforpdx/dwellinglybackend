@@ -61,19 +61,32 @@ class User(Resource):
 
     @admin_required
     def patch(self,user_id):
-        parser = reqparse.RequestParser()
-        parser.add_argument('role',type=str,required=True,help="This field cannot be blank.")
-
         user = UserModel.find_by_id(user_id)
-        if not user:
-            return {"Message": "Unable to update user"}, 400
+        parser = reqparse.RequestParser()
+
+        parser.add_argument('role',type=str, required=False,help="This field is not required.")
+        parser.add_argument('email',type=str, required=False,help="This field is not required.")
+        parser.add_argument('phone',type=str, required=False,help="This field is not required.")
+        parser.add_argument('password',type=str, required=False,help="This field is not required.")
 
         data = parser.parse_args()
-        user.role = data['role']
+
+        if not user:
+            return {"Message": "Unable to find user."}, 400
+        
+        if data['role']:
+            user.role = data['role']
+        if data['email']:
+            user.email = data['email']
+        if data['phone']:
+            user.phone = data['phone']
+        if data['password']:
+            user.password = data['password']
+
         try:
             user.save_to_db()
         except:
-            return {'Message': 'An Error Has Occurred'}, 500
+            return {'Message': 'An Error Has Occurred. Note that you can only update a user\'s role, email, phone, or password.'}, 500
 
         return user.json(), 201
 
