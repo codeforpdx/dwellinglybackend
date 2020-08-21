@@ -10,15 +10,32 @@ def test_tickets_GET_all(client, test_database, auth_headers):
     response = client.get(endpoint, headers=auth_headers["admin"])
     assert is_valid(response, 200)
     assert len(response.json['tickets']) == 4
-    assert response.json['tickets'][0]['issue'] == 'The roof, the roof, the roof is one fire.'
-    assert response.json['tickets'][0]['status'] == 'In Progress'
+    assert len(response.json['tickets'][0]['notes']) == 2
+    assert len(response.json['tickets'][1]['notes']) == 1
+    assert len(response.json['tickets'][2]['notes']) == 0
+    assert len(response.json['tickets'][3]['notes']) == 0
 
 
 def test_tickets_GET_one(client, test_database, auth_headers):
     response = client.get(f'{endpoint}/{validID}', headers=auth_headers["admin"])
     assert is_valid(response, 200)
     assert response.json['id'] == 1
+    assert response.json['issue'] == 'The roof, the roof, the roof is one fire.'
     assert response.json['tenant'] == 'Renty McRenter'
+    assert response.json['senderID'] == 1
+    assert response.json['tenantID'] == 1
+    assert response.json['assignedUserID'] == 4
+    assert response.json['sender'] == 'user1 tester'
+    assert response.json['assigned'] == 'Mr. Sir'
+    assert response.json['status'] == 'In Progress'
+    assert response.json['urgency'] == 'Low'
+    assert len(response.json['notes']) == 2
+    assert response.json['notes'][0]['ticketid'] == 1
+    assert response.json['notes'][0]['text'] == 'Tenant has over 40 cats.'
+    assert response.json['notes'][0]['user'] == 'user2 tester'
+    assert response.json['notes'][1]['ticketid'] == 1
+    assert response.json['notes'][1]['text'] == 'Issue Resolved with phone call'
+    assert response.json['notes'][1]['user'] == 'user3 tester'
 
     response = client.get(f'{endpoint}/{invalidID}', headers=auth_headers["admin"])
     assert is_valid(response, 404)
