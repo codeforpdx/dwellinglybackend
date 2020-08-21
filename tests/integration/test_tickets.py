@@ -75,6 +75,7 @@ def test_tickets_PUT(client, auth_headers):
         'status': 'in progress',
         'urgency': 'high',
         'issue': 'Leaky pipe',
+        'note': 'Tenant has a service dog'
     }
     response = client.put(f'{endpoint}/{validID}', json=updatedTicket, headers=auth_headers["admin"])
     assert is_valid(response, 200)
@@ -88,7 +89,11 @@ def test_tickets_PUT(client, auth_headers):
     assert response.json['status'] == 'in progress'
     assert response.json['urgency'] == 'high'
     assert response.json['updated'] == datetime.now().strftime("%d-%b-%Y (%H:%M)")
-    assert len(response.json['notes']) == 2
+    # Ticket already had 2 notes to begin with - and with this PUT - it's +1
+    assert len(response.json['notes']) == 3
+    assert response.json['notes'][2]['ticketid'] == 1
+    assert response.json['notes'][2]['text'] == 'Tenant has a service dog'
+    assert response.json['notes'][2]['user'] == 'user2 tester'
 
     response = client.put(f'{endpoint}/{invalidID}', json=updatedTicket, headers=auth_headers["admin"])
     # NOT FOUND - Trying to update a non-existing ticket
