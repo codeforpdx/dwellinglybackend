@@ -3,11 +3,11 @@ from models.notes import NotesModel
 
 def test_ticket():
     """The properties must match the ticket model's inputs."""
-    testIssue = "Property Damage"
-    testSender = "user1 tester"
-    testTenant = "Renty McRenter"
-    testStatus = "new"
-    testUrgency = "low"
+    testIssue = 'Property Damage'
+    testSender = 'user1 tester'
+    testTenant = 'Renty McRenter'
+    testStatus = 'new'
+    testUrgency = 'low'
     testAssignedUser = 4
 
     test_ticket = TicketModel(
@@ -31,8 +31,8 @@ def test_notes():
     """The properties must match the notes model's inputs."""
 
     testTicketId = 1
-    testText = "Tenant has 40 cats"
-    testUser = "user1 tester"
+    testText = 'Tenant has 40 cats'
+    testUser = 'user1 tester'
 
     test_note = NotesModel(
         ticketid=testTicketId,

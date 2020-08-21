@@ -48,7 +48,6 @@ def test_tickets_POST(client, auth_headers):
         'status': 'new',
         'urgency': 'low',
         'issue': 'Lead paint issue',
-        'note': [],
         "assignedUser": 4,
     }
 
@@ -66,7 +65,6 @@ def test_tickets_POST(client, auth_headers):
     assert response.json['urgency'] == 'low'
     assert response.json['opened'] == datetime.now().strftime("%d-%b-%Y (%H:%M)")
     assert response.json['updated'] == datetime.now().strftime("%d-%b-%Y (%H:%M)")
-    assert response.json['notes'] == []
 
 
 def test_tickets_PUT(client, auth_headers):
@@ -92,6 +90,10 @@ def test_tickets_PUT(client, auth_headers):
     assert response.json['updated'] == datetime.now().strftime("%d-%b-%Y (%H:%M)")
     assert len(response.json['notes']) == 2
 
+    response = client.put(f'{endpoint}/{invalidID}', json=updatedTicket, headers=auth_headers["admin"])
+    # NOT FOUND - Trying to update a non-existing ticket
+    assert is_valid(response, 404)
+
 
 def test_tickets_DELETE(client, auth_headers):
 
@@ -99,5 +101,9 @@ def test_tickets_DELETE(client, auth_headers):
     # UNAUTHORIZED - Missing Authorization Header
     assert is_valid(response, 401)
 
-    response = client.delete(f'{endpoint}/{invalidID}', headers=auth_headers["admin"])
+    response = client.delete(f'{endpoint}/{validID}', headers=auth_headers["admin"])
     assert is_valid(response, 200)
+
+    response = client.delete(f'{endpoint}/{validID}', headers=auth_headers["admin"])
+    # NOT FOUND - Trying to delete a non-existing ticket or an already deleted ticket
+    assert is_valid(response, 404)
