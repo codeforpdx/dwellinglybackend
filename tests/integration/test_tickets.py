@@ -2,6 +2,8 @@ from conftest import is_valid
 from datetime import datetime
 
 endpoint = '/api/tickets'
+validID = 1
+invalidID = 777
 
 
 def test_tickets_GET_all(client, test_database, auth_headers):
@@ -13,13 +15,11 @@ def test_tickets_GET_all(client, test_database, auth_headers):
 
 
 def test_tickets_GET_one(client, test_database, auth_headers):
-    validID = 1
     response = client.get(f'{endpoint}/{validID}', headers=auth_headers["admin"])
     assert is_valid(response, 200)
     assert response.json['id'] == 1
     assert response.json['tenant'] == 'Renty McRenter'
 
-    invalidID = 777
     response = client.get(f'{endpoint}/{invalidID}', headers=auth_headers["admin"])
     assert is_valid(response, 404)
 
@@ -53,7 +53,6 @@ def test_tickets_POST(client, auth_headers):
 
 
 def test_tickets_PUT(client, auth_headers):
-    id = 1
     updatedTicket = {
         'sender': 2,
         'tenant': 2,
@@ -62,7 +61,7 @@ def test_tickets_PUT(client, auth_headers):
         'urgency': 'high',
         'issue': 'Leaky pipe',
     }
-    response = client.put(f'{endpoint}/{id}', json=updatedTicket, headers=auth_headers["admin"])
+    response = client.put(f'{endpoint}/{validID}', json=updatedTicket, headers=auth_headers["admin"])
     assert is_valid(response, 200)
     assert response.json['issue'] == 'Leaky pipe'
     assert response.json['tenant'] == 'Soho Muless'
@@ -75,3 +74,13 @@ def test_tickets_PUT(client, auth_headers):
     assert response.json['urgency'] == 'high'
     assert response.json['updated'] == datetime.now().strftime("%d-%b-%Y (%H:%M)")
     assert len(response.json['notes']) == 2
+
+
+def test_tickets_DELETE(client, auth_headers):
+
+    response = client.delete(f'{endpoint}/{validID}')
+    # UNAUTHORIZED - Missing Authorization Header
+    assert is_valid(response, 401)
+
+    response = client.delete(f'{endpoint}/{invalidID}', headers=auth_headers["admin"])
+    assert is_valid(response, 200)
