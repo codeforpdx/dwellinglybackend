@@ -25,10 +25,11 @@ class Widgets(Resource):
         return stat
 
     def returnPropertyName(self, userID):
+        #returns the first property to keep things tidy, could add feature later
         property = PropertyModel.find_by_manager(userID)
         propertyName = "Not Assigned"
 
-        if property[0]:
+        if property[0]: 
             propertyName = property[0].name
 
         return propertyName
