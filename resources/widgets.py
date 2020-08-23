@@ -7,7 +7,6 @@ from flask_jwt_extended import jwt_required
 from datetime import datetime, timedelta
 
 class Widgets(Resource):
-    # @jwt_required
 
     def dateStringConversion(self, date):
         stat = date.strftime('%m/%d')
@@ -33,7 +32,8 @@ class Widgets(Resource):
             propertyName = property[0].name
 
         return propertyName
-
+   
+    @jwt_required
     def get(self):
         users = UserModel.find_recent_role("property-manager", 5)
         projectManagers = []

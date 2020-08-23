@@ -53,19 +53,7 @@ class UserModel(db.Model):
             'lastActive': self.lastActive.strftime('%Y-%m-%d %H:%M:%S %Z')
         }
     
-    def widgetJson(self, propertyName, date):
-        # stat = self.created.strftime('%m/%d')
-        # today = datetime.now()
-        # yesterday = today - timedelta(days = 1)
-        # week = today - timedelta(days = 1)
-        
-        # if self.created.date() == today.date():
-        #     stat = "Today"
-        # elif self.created.date() == yesterday.date():
-        #     stat = "Yesterday"
-        # elif self.created.date() >= week.date() & self.created.date() < yesterday.date():
-        #     stat = "This Week"
-            
+    def widgetJson(self, propertyName, date):          
         return{
             'id': self.id,
             'stat': date,
