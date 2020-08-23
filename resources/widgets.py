@@ -4,17 +4,43 @@ from models.tickets import TicketModel
 from models.user import UserModel
 from models.property import PropertyModel
 from flask_jwt_extended import jwt_required 
-from datetime import datetime
+from datetime import datetime, timedelta
 
 class Widgets(Resource):
     # @jwt_required
-   
+
+    def dateStringConversion(self, date):
+        stat = date.strftime('%m/%d')
+        today = datetime.now()
+        yesterday = today - timedelta(days = 1)
+        week = today - timedelta(days = 1)
+        
+        if date.date() == today.date():
+            stat = "Today"
+        elif date.date() == yesterday.date():
+            stat = "Yesterday"
+        elif date.date() >= week.date() & date.date() < yesterday.date():
+            stat = "This Week"
+        
+        return stat
+
+    def returnPropertyName(self, userID):
+        property = PropertyModel.find_by_manager(userID)
+        propertyName = "Not Assigned"
+
+        if property[0]:
+            propertyName = property[0].name
+
+        return propertyName
+
     def get(self):
         users = UserModel.find_recent_role("property-manager", 5)
         projectManagers = []
+        
         for user in users:
-            print(user.widgetJson)
-            projectManagers.append(user)
+            date = self.dateStringConversion(user.created)
+            propertyName = self.returnPropertyName(user.id)           
+            projectManagers.append(user.widgetJson(propertyName, date))
 
         return { 'opentickets':{
             'title': 'Open Tickets', 
@@ -54,7 +80,7 @@ class Widgets(Resource):
                     {
                         'stat': TicketModel.find_count_by_status("Closed"),
                         'desc': "Closed tickets",
-                        'subtext': 'in the last week'
+                        'subtext': 'in the last week!'
                     }
                 ]
             ]
@@ -63,34 +89,7 @@ class Widgets(Resource):
                 'title': 'New Property Managers',
                 'link': '#',
                 'isDate': True,
-                'stats': [
-                    [ 
-                        {
-                            'stat': 'Today',
-                            'desc': 'Property Manager Name',
-                            'subtext': 'Meerkat Manor'
-                        },
-                        {
-                        'stat': '01/14',
-                        'desc': 'Property Manager Name',
-                        'subtext': 'Meerkat Manor'
-                        },
-                        {
-                            'stat': '02/04',
-                            'desc': 'Property Manager Name',
-                            'subtext': 'Meerkat Manor'
-                        },
-                    ],
-                ]
+                'stats': [projectManagers]
             }
         }, 200
         
-        
-        
-        # {'New': TicketModel.find_count_by_status("New"), 
-        # 'Unseen24': TicketModel.find_count_by_age_status("New", 1440), 
-        # 'InProgress': TicketModel.find_count_by_status("In Progress"), 
-        # 'WeekOld': TicketModel.find_count_by_age_status("In Progress", 10080), 
-        # 'Closed':TicketModel.find_count_by_status("Closed"), 
-        # 'Compliments': 1}, 200
-

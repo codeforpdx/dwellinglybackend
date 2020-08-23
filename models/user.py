@@ -53,13 +53,24 @@ class UserModel(db.Model):
             'lastActive': self.lastActive.strftime('%Y-%m-%d %H:%M:%S %Z')
         }
     
-    def widgetJson(self):
-        # "{} {}".format(self.firstName, self.lastName)
+    def widgetJson(self, propertyName, date):
+        # stat = self.created.strftime('%m/%d')
+        # today = datetime.now()
+        # yesterday = today - timedelta(days = 1)
+        # week = today - timedelta(days = 1)
+        
+        # if self.created.date() == today.date():
+        #     stat = "Today"
+        # elif self.created.date() == yesterday.date():
+        #     stat = "Yesterday"
+        # elif self.created.date() >= week.date() & self.created.date() < yesterday.date():
+        #     stat = "This Week"
+            
         return{
-            'id': "self.id",
-            'stat': 'Today',
-            'desc': "test",
-            'subtext': "null"
+            'id': self.id,
+            'stat': date,
+            'desc': "{} {}".format(self.firstName, self.lastName),
+            'subtext': propertyName
         }
 
     @classmethod
@@ -78,5 +89,4 @@ class UserModel(db.Model):
     def find_recent_role(cls, role, days):
         dateTime = datetime.now() - timedelta(days = days)
         return db.session.query(UserModel).filter(UserModel.role == role).order_by(UserModel.created.desc()).limit(3).all()
-        # return db.session.query(UserModel).filter(UserModel.created >= dateTime).filter(UserModel.role == role).order_by(UserModel.created.desc()).limit(4)
 
