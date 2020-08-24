@@ -8,6 +8,7 @@ pytest-flask = "*"
 coverage = "*"
 pytest-cov = "*"
 flake8 = "*"
+freezegun = "*"
 
 [packages]
 aniso8601 = "==8.0.0"
