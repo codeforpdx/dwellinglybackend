@@ -24,17 +24,7 @@ class TestGetLease:
             )
 
         assert is_valid(response, 200)
-        assert response.json == {
-            'id': self.lease.id,
-            'name': self.lease.name,
-            'propertyID': self.property.json(),
-            'landlordID': self.landlord.json(),
-            'tenantID': self.tenant.json(),
-            'dateTimeStart': Time.format_date(self.lease.dateTimeStart),
-            'dateTimeEnd': Time.format_date(self.lease.dateTimeEnd),
-            'dateUpdated': Time.format_date(self.lease.dateUpdated),
-            'occupants': self.lease.occupants
-        }
+        assert response.json == self.lease.json()
 
     def test_authorized_request_for_a_non_existent_lease(self, auth_headers):
         response = self.client.get(
@@ -67,39 +57,9 @@ class TestGetLease:
         assert is_valid(response, 200)
         assert response.json == {
                 "Leases": [
-                    {
-                        'id': self.lease.id,
-                        'name': self.lease.name,
-                        'propertyID': self.property.json(),
-                        'landlordID': self.landlord.json(),
-                        'tenantID': self.tenant.json(),
-                        'dateTimeStart': Time.format_date(self.lease.dateTimeStart),
-                        'dateTimeEnd': Time.format_date(self.lease.dateTimeEnd),
-                        'dateUpdated': Time.format_date(self.lease.dateUpdated),
-                        'occupants': self.lease.occupants
-                    },
-                    {
-                        'id': lease_2.id,
-                        'name': lease_2.name,
-                        'propertyID': property_2.json(),
-                        'landlordID': landlord_2.json(),
-                        'tenantID': tenant_2.json(),
-                        'dateTimeStart': Time.format_date(lease_2.dateTimeStart),
-                        'dateTimeEnd': Time.format_date(lease_2.dateTimeEnd),
-                        'dateUpdated': Time.format_date(lease_2.dateUpdated),
-                        'occupants': lease_2.occupants
-                    },
-                    {
-                        'id': lease_3.id,
-                        'name': lease_3.name,
-                        'propertyID': property_3.json(),
-                        'landlordID': landlord_3.json(),
-                        'tenantID': tenant_3.json(),
-                        'dateTimeStart': Time.format_date(lease_3.dateTimeStart),
-                        'dateTimeEnd': Time.format_date(lease_3.dateTimeEnd),
-                        'dateUpdated': Time.format_date(lease_3.dateUpdated),
-                        'occupants': lease_3.occupants
-                    }
+                    self.lease.json(),
+                    lease_2.json(),
+                    lease_3.json()
                 ]
             }
  
