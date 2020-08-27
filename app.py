@@ -116,7 +116,7 @@ def create_app():
     @app.jwt.user_claims_loader
     def role_loader(identity):
         user = UserModel.find_by_id(identity)
-        return {'email': user.email, 'firstName': user.firstName, 'lastName': user.lastName, 'is_admin': (user.role == 'admin')}
+        return {'email': user.email, 'phone': user.phone, 'firstName': user.firstName, 'lastName': user.lastName, 'is_admin': (user.role == 'admin')}
 
     # checking if the token's jti (jwt id) is in the set of revoked tokens
     # this check is applied globally (to all routes that require jwt)
