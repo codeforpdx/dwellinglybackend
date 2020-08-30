@@ -10,6 +10,7 @@ from models.tenant import TenantModel
 from models.tenant_staff_link import StaffTenantLink
 from models.revoked_tokens import RevokedTokensModel
 from resources.user import UserRegister, User, UserLogin, ArchiveUser, UsersRole, UserAccessRefresh, UserRoles
+from resources.forgot_password import ForgotPassword
 from resources.property import Properties, Property, ArchiveProperty
 from resources.tenants import Tenants
 from resources.emergency_contacts import EmergencyContacts
@@ -74,7 +75,7 @@ def create_routes(app):
     api.add_resource(Leases, '/lease')
     api.add_resource(Tickets, '/tickets')
     api.add_resource(Ticket, '/tickets/<int:id>')
-
+    api.add_resource(ForgotPassword, '/forgot_password')
 
 def check_for_admins():
     errorMsg = (
