@@ -1,5 +1,13 @@
 import datetime
 from db import db
+from enum import Enum
+
+class RoleEnum(Enum):
+    PENDING = 0
+    TENANT = 1
+    PROPERTY_MANAGER = 2
+    STAFF = 3
+    ADMIN = 4
 
 class UserModel(db.Model):
     __tablename__ = 'users'

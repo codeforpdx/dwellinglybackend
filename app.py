@@ -4,7 +4,7 @@ from flask_jwt_extended import JWTManager, jwt_refresh_token_required, create_ac
 from flask_cors import CORS
 from flask_mail import Mail
 from resources.admin_required import admin_required
-from models.user import UserModel
+from models.user import UserModel, RoleEnum
 from models.property import PropertyModel
 from models.tenant import TenantModel
 from models.tenant_staff_link import StaffTenantLink
@@ -82,7 +82,7 @@ def check_for_admins():
     )
     assert (os.path.isfile('./data.db')), errorMsg
     try:
-        admins = UserModel.find_by_role(4)
+        admins = UserModel.find_by_role(RoleEnum.ADMIN.value)
     except:
         print(errorMsg)
     else:
@@ -116,7 +116,7 @@ def create_app():
     @app.jwt.user_claims_loader
     def role_loader(identity):
         user = UserModel.find_by_id(identity)
-        return {'email': user.email, 'firstName': user.firstName, 'lastName': user.lastName, 'is_admin': (user.role == 4)}
+        return {'email': user.email, 'firstName': user.firstName, 'lastName': user.lastName, 'is_admin': (user.role == RoleEnum.ADMIN.value)}
 
     # checking if the token's jti (jwt id) is in the set of revoked tokens
     # this check is applied globally (to all routes that require jwt)

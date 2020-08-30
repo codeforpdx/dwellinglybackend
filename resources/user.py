@@ -3,19 +3,12 @@ from flask_restful import Resource, reqparse
 from models.property import PropertyModel
 from models.tenant import TenantModel
 from resources.admin_required import admin_required
-from models.user import UserModel
+from models.user import UserModel, RoleEnum
 from models.revoked_tokens import RevokedTokensModel
-from enum import Enum
 import json
 from werkzeug.security import safe_str_cmp
 from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt_claims, get_raw_jwt, get_jwt_identity, jwt_refresh_token_required
 
-class RoleEnum(Enum):
-    PENDING = 0
-    TENANT = 1
-    PROPERTY_MANAGER = 2
-    STAFF = 3
-    ADMIN = 4
 
 class UserRoles(Resource):
     def get(self):
