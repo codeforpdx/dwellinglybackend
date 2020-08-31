@@ -1,6 +1,7 @@
 from models.user import UserModel
 from conftest import is_valid, log
 from freezegun import freeze_time
+from models.user import RoleEnum
 
 def test_user_auth(client, test_database, admin_user):
     login_response = client.post("/api/login", json={
@@ -79,15 +80,15 @@ def test_get_user_by_property_manager_id(client, auth_headers, new_property):
 
 def test_user_roles(client, auth_headers):
     """The get users by role route returns a successful response code."""
-    response = client.post("/api/users/role", json={"userrole": 4}, headers=auth_headers["admin"])
+    response = client.post("/api/users/role", json={"userrole": RoleEnum.ADMIN.value}, headers=auth_headers["admin"])
     assert len(response.get_json()['users']) == 4
     assert response.status_code == 200
 
     """The get users by role route returns only property managers."""
-    response = client.post("/api/users/role", json={"userrole": 2}, headers=auth_headers["admin"])
+    response = client.post("/api/users/role", json={"userrole": RoleEnum.PROPERTY_MANAGER.value}, headers=auth_headers["admin"])
     managers = response.get_json()['users']
     assert len(managers) == 3
-    assert all([2 == pm['role'] for pm in managers])
+    assert all([RoleEnum.PROPERTY_MANAGER.value == pm['role'] for pm in managers])
     assert response.status_code == 200
 
 def test_archive_user(client, auth_headers, new_user):
@@ -112,7 +113,7 @@ def test_archive_user_failure(client, auth_headers):
 
 def test_patch_user(client, auth_headers, new_user):
     """The route to patch a user by id returns a successful response code and the expected data is patched."""
-    expected = 2
+    expected = RoleEnum.PROPERTY_MANAGER.value
     userToPatch = UserModel.find_by_email(new_user.email)
     response = client.patch(f"/api/user/{userToPatch.id}", json={"role": expected}, headers=auth_headers["admin"])
     actual = int(response.json["role"])

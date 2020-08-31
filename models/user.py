@@ -14,7 +14,7 @@ class UserModel(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(100))
-    role = db.Column(db.Integer)
+    role = db.Column(db.Enum(RoleEnum), default=RoleEnum.PENDING)
     firstName = db.Column(db.String(80))
     lastName = db.Column(db.String(80))
     fullName = db.column_property(firstName + ' ' + lastName)
@@ -30,7 +30,7 @@ class UserModel(db.Model):
         self.email = email
         self.phone = phone
         self.password = password
-        self.role = role if role else 0
+        self.role = role
         self.archived = False
         self.lastActive = datetime.datetime.utcnow()
 
@@ -53,7 +53,7 @@ class UserModel(db.Model):
             'lastName': self.lastName,
             'email': self.email,
             'phone': self.phone,
-            'role': self.role,
+            'role': self.role.value,
             'archived': self.archived,
             'lastActive': self.lastActive.astimezone(datetime.timezone.utc).strftime('%Y-%m-%d %H:%M:%S %Z')
         }

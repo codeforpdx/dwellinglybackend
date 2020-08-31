@@ -82,7 +82,7 @@ def check_for_admins():
     )
     assert (os.path.isfile('./data.db')), errorMsg
     try:
-        admins = UserModel.find_by_role(RoleEnum.ADMIN.value)
+        admins = UserModel.find_by_role(RoleEnum.ADMIN)
     except:
         print(errorMsg)
     else:
@@ -116,7 +116,7 @@ def create_app():
     @app.jwt.user_claims_loader
     def role_loader(identity):
         user = UserModel.find_by_id(identity)
-        return {'email': user.email, 'firstName': user.firstName, 'lastName': user.lastName, 'is_admin': (user.role == RoleEnum.ADMIN.value)}
+        return {'email': user.email, 'firstName': user.firstName, 'lastName': user.lastName, 'is_admin': (user.role == RoleEnum.ADMIN)}
 
     # checking if the token's jti (jwt id) is in the set of revoked tokens
     # this check is applied globally (to all routes that require jwt)

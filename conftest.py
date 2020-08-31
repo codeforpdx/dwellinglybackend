@@ -19,17 +19,17 @@ def app():
 
 @pytest.fixture
 def admin_user():
-    adminUser = UserModel(email="user4@dwellingly.org", password="1234", firstName="user4", lastName="admin", phone="555-867-5309", role=RoleEnum.ADMIN.value, archived=0)
+    adminUser = UserModel(email="user4@dwellingly.org", password="1234", firstName="user4", lastName="admin", phone="555-867-5309", role=RoleEnum.ADMIN, archived=0)
     return adminUser
 
 @pytest.fixture
 def new_user():
-    newUser = UserModel(email="someone@domain.com", password="1234", firstName="user2", lastName="tester", phone="1-888-cal-saul", role=RoleEnum.PENDING.value, archived=0)
+    newUser = UserModel(email="someone@domain.com", password="1234", firstName="user2", lastName="tester", phone="1-888-cal-saul", role=RoleEnum.PENDING, archived=0)
     return newUser
 
 @pytest.fixture
 def property_manager_user():
-    return UserModel(email="manager@domain.com", password="1234", firstName="Leslie", lastName="Knope", phone="505-503-4455", role=RoleEnum.PROPERTY_MANAGER.value, archived=0)
+    return UserModel(email="manager@domain.com", password="1234", firstName="Leslie", lastName="Knope", phone="505-503-4455", role=RoleEnum.PROPERTY_MANAGER, archived=0)
 
 #Returns an object with authorization headers for users of all roles (admin, property-manager, pending)
 @pytest.fixture

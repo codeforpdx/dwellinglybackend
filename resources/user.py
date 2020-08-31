@@ -24,7 +24,7 @@ class UserRegister(Resource):
     parser.add_argument('lastName',type=str,required=True,help="This field cannot be blank.")
     parser.add_argument('email',type=str,required=True,help="This field cannot be blank.")
     parser.add_argument('password', type=str, required=True, help="This field cannot be blank.")
-    parser.add_argument('role',type=str,required=False,help="This field is not required.")
+    parser.add_argument('role',type=int,required=False,help="This field is not required.")
     parser.add_argument('archived',type=str,required=False,help="This field is not required.")
     parser.add_argument('phone',type=str,required=True,help="This field cannot be blank.")
 
@@ -37,7 +37,7 @@ class UserRegister(Resource):
         user = UserModel(firstName=data['firstName'],
                          lastName=data['lastName'], email=data['email'],
                          password=data['password'], phone=data['phone'],
-                         role=data['role'], archived=data['archived'])
+                         role=RoleEnum(data['role']) if data['role'] else None, archived=data['archived'])
         user.save_to_db()
 
         return {"message": "User created successfully."}, 201
@@ -52,7 +52,7 @@ class User(Resource):
 
         user_info = user.json()
 
-        if user.role == 2:
+        if user.role == RoleEnum.PROPERTY_MANAGER:
             user_info['properties'], tenant_list = zip(*((p.json(), p.tenants) for p in PropertyModel.find_by_manager(user_id) if p))
             
             tenant_IDs = [tenant.id for sublist in tenant_list for tenant in sublist]
@@ -74,7 +74,7 @@ class User(Resource):
             return {"Message": "Unable to update user"}, 400
 
         data = parser.parse_args()
-        user.role = data['role']
+        user.role = RoleEnum(data['role'])
         if (data['firstName'] != None):
             user.firstName = data['firstName']
         if (data['lastName'] != None):
@@ -150,7 +150,7 @@ class UsersRole(Resource):
     @admin_required
     def post(self):
         data = UsersRole.parser.parse_args()
-        users = UserModel.find_by_role(data['userrole'])
+        users = UserModel.find_by_role(RoleEnum(data['userrole']))
         users_info = []
         for user in users:
             info = user.json()
