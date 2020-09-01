@@ -31,3 +31,7 @@ class Email(Resource):
         app.mail.send(message)
         return {"Message": "Message Sent"}
 
+
+    @staticmethod
+    def send_reset_password_msg(user):
+        pass

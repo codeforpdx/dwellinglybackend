@@ -1,5 +1,6 @@
 from flask_restful import Resource, reqparse
 from models.user import UserModel
+from resources.email import Email
 
 
 class ForgotPassword(Resource):
@@ -11,6 +12,7 @@ class ForgotPassword(Resource):
         user = UserModel.find_by_email(data['email'])
 
         if user:
+            Email.send_reset_password_msg(user)
             return user.json(), 200
         else:
             return {"message": "Unable to find email"}, 400
