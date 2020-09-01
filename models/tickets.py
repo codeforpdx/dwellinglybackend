@@ -50,7 +50,6 @@ class TicketModel(db.Model):
         assignedUserData = UserModel.find_by_id(self.assignedUser)
         assignedUser = "{} {}".format(assignedUserData.firstName, assignedUserData.lastName)
 
-        # dateTimeStatusChange = datetime.strptime(self.updated, "%d-%b-%Y (%H:%M)")
         dateTimeNow = datetime.now()
         minsPastUpdate = int((datetime.now() - self.updated).total_seconds() / 60)
 
@@ -69,7 +68,7 @@ class TicketModel(db.Model):
             'minsPastUpdate': minsPastUpdate,
             'urgency': self.urgency,
             'notes': message_notes
-        }
+        } 
 
 
     @classmethod
@@ -85,7 +84,7 @@ class TicketModel(db.Model):
         #calculated in minutes: 1 day = 1440, 1 week = 10080
         dateTime = datetime.now() - timedelta(minutes = minutes)
         return db.session.query(TicketModel).filter(TicketModel.updated >= dateTime).filter(TicketModel.status == status).count()
-        
+
     def save_to_db(self):
         db.session.add(self)
         db.session.commit()

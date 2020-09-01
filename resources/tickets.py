@@ -16,7 +16,7 @@ class Ticket(Resource):
     parser.add_argument('assignedUser')
 
 
-    # @jwt_required
+    @jwt_required
     def get(self, id):
         ticket= TicketModel.find_by_id(id)
         if ticket:
@@ -31,7 +31,7 @@ class Ticket(Resource):
 
         return {'Message': 'Ticket Removed from Database'}
 
-    # @jwt_required
+    @jwt_required
     def put(self, id):
         data = Ticket.parser.parse_args()
         ticket = TicketModel.find_by_id(id)
@@ -82,11 +82,11 @@ class Tickets(Resource):
     parser.add_argument('issue')
     parser.add_argument('assignedUser')
 
-    # @jwt_required
+    @jwt_required
     def get(self):
         return {'Tickets': [ticket.json() for ticket in TicketModel.query.all()]}
 
-    # @jwt_required
+    @jwt_required
     def post(self):
         data = Tickets.parser.parse_args()
         ticket = TicketModel(**data)
