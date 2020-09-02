@@ -1,6 +1,7 @@
 import datetime
 from db import db
 from enum import Enum
+from models.base_model import BaseModel
 
 class RoleEnum(Enum):
     PENDING = 0
@@ -9,7 +10,8 @@ class RoleEnum(Enum):
     STAFF = 3
     ADMIN = 4
 
-class UserModel(db.Model):
+
+class UserModel(BaseModel):
     __tablename__ = 'users'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -22,7 +24,6 @@ class UserModel(db.Model):
     password = db.Column(db.String(128))
     archived = db.Column(db.Boolean)
     lastActive = db.Column(db.DateTime, default=datetime.datetime.utcnow)
-
 
     def __init__(self, firstName, lastName, email, password, phone, role, archived):
         self.firstName = firstName
@@ -38,15 +39,7 @@ class UserModel(db.Model):
         self.lastActive = datetime.datetime.utcnow()
         db.session.commit()
 
-    def save_to_db(self):
-        db.session.add(self)
-        db.session.commit()
-    
-    def delete_from_db(self):
-        db.session.delete(self)
-        db.session.commit()
-
-    def json(self): 
+    def json(self):
         return {
             'id': self.id,
             'firstName': self.firstName,
@@ -58,14 +51,9 @@ class UserModel(db.Model):
             'lastActive': self.lastActive.astimezone(datetime.timezone.utc).strftime('%Y-%m-%d %H:%M:%S %Z')
         }
 
-
     @classmethod
     def find_by_email(cls, email):
         return cls.query.filter_by(email=email).first()
-
-    @classmethod
-    def find_by_id(cls, _id):
-        return cls.query.filter_by(id=_id).first()
 
     @classmethod
     def find_by_role(cls, role):
