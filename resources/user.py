@@ -3,18 +3,20 @@ from flask_restful import Resource, reqparse
 from models.property import PropertyModel
 from models.tenant import TenantModel
 from resources.admin_required import admin_required
-from models.user import UserModel
+from models.user import UserModel, RoleEnum
 from models.revoked_tokens import RevokedTokensModel
-from enum import Enum
+import json
 from werkzeug.security import safe_str_cmp
 from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt_claims, get_raw_jwt, get_jwt_identity, jwt_refresh_token_required
 
-class RoleEnum(Enum):
-    PENDING = 0
-    TENANT = 1
-    PROPERTYMANAGER = 2
-    STAFF = 3
-    ADMIN = 4
+
+class UserRoles(Resource):
+    def get(self):
+        roles = {}
+        for role in RoleEnum:
+            roles[role.name] = role.value
+        result = json.dumps(roles)
+        return result, 200
 
 class UserRegister(Resource):
     parser = reqparse.RequestParser()
@@ -22,7 +24,7 @@ class UserRegister(Resource):
     parser.add_argument('lastName',type=str,required=True,help="This field cannot be blank.")
     parser.add_argument('email',type=str,required=True,help="This field cannot be blank.")
     parser.add_argument('password', type=str, required=True, help="This field cannot be blank.")
-    parser.add_argument('role',type=str,required=False,help="This field is not required.")
+    parser.add_argument('role',type=int,required=False,help="This field is not required.")
     parser.add_argument('archived',type=str,required=False,help="This field is not required.")
     parser.add_argument('phone',type=str,required=True,help="This field cannot be blank.")
 
@@ -35,7 +37,7 @@ class UserRegister(Resource):
         user = UserModel(firstName=data['firstName'],
                          lastName=data['lastName'], email=data['email'],
                          password=data['password'], phone=data['phone'],
-                         role=data['role'], archived=data['archived'])
+                         role=RoleEnum(data['role']) if data['role'] else None, archived=data['archived'])
         user.save_to_db()
 
         return {"message": "User created successfully."}, 201
@@ -50,7 +52,7 @@ class User(Resource):
 
         user_info = user.json()
 
-        if user.role == 'property-manager':
+        if user.role == RoleEnum.PROPERTY_MANAGER:
             user_info['properties'], tenant_list = zip(*((p.json(), p.tenants) for p in PropertyModel.find_by_manager(user_id) if p))
             
             tenant_IDs = [tenant.id for sublist in tenant_list for tenant in sublist]
@@ -63,9 +65,10 @@ class User(Resource):
     def patch(self,user_id):
         user = UserModel.find_by_id(user_id)
         parser = reqparse.RequestParser()
-
-        parser.add_argument('role',type=str, required=False,help="This field is not required.")
-        parser.add_argument('email',type=str, required=False,help="This field is not required.")
+        parser.add_argument('role', type=int, required=False, help="This field is not required.")
+        parser.add_argument('firstName',type=str, required=False, help="This field is not required.")
+        parser.add_argument('lastName',type=str, required=False, help="This field is not required.")
+        parser.add_argument('email',type=str, required=False, help="This field is not required.")
         parser.add_argument('phone',type=str, required=False,help="This field is not required.")
         parser.add_argument('password',type=str, required=False,help="This field is not required.")
 
@@ -73,9 +76,13 @@ class User(Resource):
 
         if not user:
             return {"Message": "Unable to find user."}, 400
-        
+      
         if data['role']:
-            user.role = data['role']
+          user.role = RoleEnum(data['role'])
+        if (data['firstName'] != None):
+            user.firstName = data['firstName']
+        if (data['lastName'] != None):
+            user.lastName = data['lastName']
         if data['email']:
             user.email = data['email']
         if data['phone']:
@@ -146,12 +153,12 @@ class UserLogin(Resource):
 
 class UsersRole(Resource):
     parser = reqparse.RequestParser()
-    parser.add_argument('userrole',type=str,required=True,help="This field cannot be blank.")
+    parser.add_argument('userrole',type=int,required=True,help="This field cannot be blank.")
 
     @admin_required
     def post(self):
         data = UsersRole.parser.parse_args()
-        users = UserModel.find_by_role(data['userrole'])
+        users = UserModel.find_by_role(RoleEnum(data['userrole']))
         users_info = []
         for user in users:
             info = user.json()

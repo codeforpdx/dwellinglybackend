@@ -1,12 +1,20 @@
 import datetime
 from db import db
+from enum import Enum
+
+class RoleEnum(Enum):
+    PENDING = 0
+    TENANT = 1
+    PROPERTY_MANAGER = 2
+    STAFF = 3
+    ADMIN = 4
 
 class UserModel(db.Model):
     __tablename__ = 'users'
 
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(100))
-    role = db.Column(db.String(20))
+    role = db.Column(db.Enum(RoleEnum), default=RoleEnum.PENDING)
     firstName = db.Column(db.String(80))
     lastName = db.Column(db.String(80))
     fullName = db.column_property(firstName + ' ' + lastName)
@@ -22,7 +30,7 @@ class UserModel(db.Model):
         self.email = email
         self.phone = phone
         self.password = password
-        self.role = role if role else 'pending'
+        self.role = role
         self.archived = False
         self.lastActive = datetime.datetime.utcnow()
 
@@ -45,7 +53,7 @@ class UserModel(db.Model):
             'lastName': self.lastName,
             'email': self.email,
             'phone': self.phone,
-            'role': self.role,
+            'role': self.role.value,
             'archived': self.archived,
             'lastActive': self.lastActive.astimezone(datetime.timezone.utc).strftime('%Y-%m-%d %H:%M:%S %Z')
         }
