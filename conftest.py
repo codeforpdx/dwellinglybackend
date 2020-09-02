@@ -110,4 +110,4 @@ def log(response):
     print(f'\n\nResponse Status: {response.status}')
     print(f'Response JSON: {response.json}')
     print(f'Response headers:\n\n{response.headers}')
-    
+
