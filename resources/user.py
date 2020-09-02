@@ -76,15 +76,7 @@ class User(Resource):
 
         if not user:
             return {"Message": "Unable to find user."}, 400
-        
-        # user.role = RoleEnum(data['role'])
-        # if (data['firstName'] != None):
-        #     user.firstName = data['firstName']
-        # if (data['lastName'] != None):
-        #     user.lastName = data['lastName']
-        # if (data['email'] != None):
-        #     user.email = data['email']
-
+      
         if data['role']:
           user.role = RoleEnum(data['role'])
         if (data['firstName'] != None):
