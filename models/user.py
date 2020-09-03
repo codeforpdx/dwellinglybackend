@@ -1,12 +1,22 @@
 from datetime import datetime, timedelta
 from db import db
+from enum import Enum
+from models.base_model import BaseModel
 
-class UserModel(db.Model):
+class RoleEnum(Enum):
+    PENDING = 0
+    TENANT = 1
+    PROPERTY_MANAGER = 2
+    STAFF = 3
+    ADMIN = 4
+
+
+class UserModel(BaseModel):
     __tablename__ = 'users'
 
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(100))
-    role = db.Column(db.String(20))
+    role = db.Column(db.Enum(RoleEnum), default=RoleEnum.PENDING)
     firstName = db.Column(db.String(80))
     lastName = db.Column(db.String(80))
     fullName = db.column_property(firstName + ' ' + lastName)
@@ -16,14 +26,13 @@ class UserModel(db.Model):
     lastActive = db.Column(db.DateTime, default=datetime.utcnow)
     created = db.Column(db.DateTime, default=datetime.utcnow)
 
-
     def __init__(self, firstName, lastName, email, password, phone, role, archived):
         self.firstName = firstName
         self.lastName = lastName
         self.email = email
         self.phone = phone
         self.password = password
-        self.role = role if role else 'pending'
+        self.role = role
         self.archived = False
         self.lastActive = datetime.utcnow()
         self.created = datetime.utcnow()
@@ -32,15 +41,7 @@ class UserModel(db.Model):
         self.lastActive = datetime.utcnow()
         db.session.commit()
 
-    def save_to_db(self):
-        db.session.add(self)
-        db.session.commit()
-    
-    def delete_from_db(self):
-        db.session.delete(self)
-        db.session.commit()
-
-    def json(self): 
+    def json(self):
         return {
             'id': self.id,
             'firstName': self.firstName,
@@ -66,13 +67,9 @@ class UserModel(db.Model):
         return cls.query.filter_by(email=email).first()
 
     @classmethod
-    def find_by_id(cls, _id):
-        return cls.query.filter_by(id=_id).first()
-
-    @classmethod
     def find_by_role(cls, role):
         return cls.query.filter_by(role=role).all()
-    
+
     @classmethod
     def find_recent_role(cls, role, days):
         dateTime = datetime.now() - timedelta(days = days)

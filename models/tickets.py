@@ -4,9 +4,12 @@ from models.tenant import TenantModel
 from models.user import UserModel
 from models.notes import NotesModel
 from models.tenant import TenantModel
-from datetime import datetime, timedelta
+from datetime import datetime
+from models.base_model import BaseModel
 
-class TicketModel(db.Model):
+
+
+class TicketModel(BaseModel):
     __tablename__ = "tickets"
 
     id = db.Column(db.Integer, primary_key=True)
@@ -92,3 +95,4 @@ class TicketModel(db.Model):
     def delete_from_db(self):
         db.session.delete(self)
         db.session.commit()
+
