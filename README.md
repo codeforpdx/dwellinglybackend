@@ -18,7 +18,7 @@ NOTE: Database is SQLite3 via SQLAlchemy
 [Note for Mac users](#Mac-OS-Alternative-Setup-Instructions-(for-those-who-have-never-used-Python/having-path-errors))
 
 
-1. Clone the repo (`git clone https://github.com/${your-repo-name}/dwellinglybackend.git`)
+1. Clone the repo (`git clone https://github.com/codeforpdx/dwellinglybackend.git`)
 2. Install Python ( https://realpython.com/installing-python/ )
 3. Install [pipenv](https://pipenv.pypa.io/en/latest/#install-pipenv-today)
 4. Run `pipenv install -d`
