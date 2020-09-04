@@ -126,3 +126,6 @@ data.db
 
 # Ignore editor settings
 .vscode
+
+# Jetbrains pyCharm ide
+.idea
