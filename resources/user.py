@@ -1,5 +1,6 @@
+from app import create_app
 from flask_restful import Resource, reqparse
-
+from flask.ext.bcrypt import Bcrypt
 from models.property import PropertyModel
 from models.tenant import TenantModel
 from resources.admin_required import admin_required
@@ -9,6 +10,8 @@ import json
 from werkzeug.security import safe_str_cmp
 from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt_claims, get_raw_jwt, get_jwt_identity, jwt_refresh_token_required
 
+app = create_app()
+bcrypt = Bcrypt(app)
 
 class UserRoles(Resource):
     def get(self):
@@ -34,9 +37,11 @@ class UserRegister(Resource):
         if UserModel.find_by_email(data['email']):
             return {"message": "A user with that email already exists"}, 400
 
+        pw_hash = bcrypt.generate_password_hash(data['password']).decode('utf-8')
+
         user = UserModel(firstName=data['firstName'],
                          lastName=data['lastName'], email=data['email'],
-                         password=data['password'], phone=data['phone'],
+                         password=pw_hash, phone=data['phone'],
                          role=RoleEnum(data['role']) if data['role'] else None, archived=data['archived'])
         user.save_to_db()
 
@@ -88,7 +93,7 @@ class User(Resource):
         if data['phone']:
             user.phone = data['phone']
         if data['password']:
-            user.password = data['password']
+            user.password = bcrypt.generate_password_hash(data['password']).decode('utf-8')
 
         try:
             user.save_to_db()
@@ -140,14 +145,15 @@ class UserLogin(Resource):
         if user and user.archived:
             return {"message": "Not a valid user"}, 403
 
-        if user and safe_str_cmp(user.password, data['password']):
-            access_token = create_access_token(identity=user.id, fresh=True) 
-            refresh_token = create_refresh_token(user.id)
-            user.update_last_active()
-            return {
-                'access_token': access_token,
-                'refresh_token': refresh_token
-            }, 200
+        if bcrypt.check_password_hash(user.password, data['password']):
+            if user and safe_str_cmp(bcrypt.generate_hash(data['password']).decode('utf-8'), data['password']):
+                access_token = create_access_token(identity=user.id, fresh=True)
+                refresh_token = create_refresh_token(user.id)
+                user.update_last_active()
+                return {
+                           'access_token': access_token,
+                           'refresh_token': refresh_token
+                       }, 200
 
         return {"message": "Invalid Credentials!"}, 401       
 
