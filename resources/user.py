@@ -1,6 +1,5 @@
-from app import create_app
 from flask_restful import Resource, reqparse
-from flask.ext.bcrypt import Bcrypt
+from flask_bcrypt import generate_password_hash, check_password_hash
 from models.property import PropertyModel
 from models.tenant import TenantModel
 from resources.admin_required import admin_required
@@ -9,9 +8,6 @@ from models.revoked_tokens import RevokedTokensModel
 import json
 from werkzeug.security import safe_str_cmp
 from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt_claims, get_raw_jwt, get_jwt_identity, jwt_refresh_token_required
-
-app = create_app()
-bcrypt = Bcrypt(app)
 
 class UserRoles(Resource):
     def get(self):
