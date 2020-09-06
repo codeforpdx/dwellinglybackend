@@ -29,7 +29,7 @@ class Lease(Resource):
         update = False
 
         if not LeaseModel.find_by_id(id):
-            return("Lease not found"), 401  
+            return {'Message': 'Lease Not Found'}, 404  
             
         baseLease = LeaseModel.find_by_id(id)
        

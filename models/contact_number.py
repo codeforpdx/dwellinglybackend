@@ -1,6 +1,8 @@
 from db import db
+from models.base_model import BaseModel
 
-class ContactNumberModel(db.Model):
+
+class ContactNumberModel(BaseModel):
     __tablename__ = "contact_numbers"
 
     id = db.Column(db.Integer, primary_key=True)
@@ -15,21 +17,5 @@ class ContactNumberModel(db.Model):
         self.numtype = numtype if numtype else ''
         self.extension = extension if extension else ''
 
-    @classmethod
-    def find_by_contact_id(cls, contact_id):
-        return cls.query.filter_by(emergency_contact_id=contact_id).all()
-
-    @classmethod
-    def find_by_id(cls, id):
-        return cls.query.filter_by(id=id).first()
-
     def json(self):
         return {'id': self.id, 'number':self.number, 'numtype': self.numtype, 'extension': self.extension}
-
-    def save_to_db(self):
-        db.session.add(self)
-        db.session.commit()
-
-    def delete_from_db(self):
-        db.session.delete(self)
-        db.session.commit()

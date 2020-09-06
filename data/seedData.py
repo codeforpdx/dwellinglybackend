@@ -1,7 +1,7 @@
 from db import db
 from datetime import datetime, timedelta
 
-from models.user import UserModel
+from models.user import UserModel, RoleEnum
 from models.property import PropertyModel
 from models.tenant import TenantModel
 from models.tickets import TicketModel
@@ -12,25 +12,25 @@ from models.lease import LeaseModel
 
 def seedData():
 
-    user = UserModel(email="user1@dwellingly.org", role=4, firstName="user1", lastName="tester", password="1234", phone="555-555-5555", archived=0)
+    user = UserModel(email="user1@dwellingly.org", role=RoleEnum.ADMIN, firstName="user1", lastName="tester", password="1234", phone="555-555-5555", archived=0)
     db.session.add(user)
-    user = UserModel(email="user2@dwellingly.org", role=4, firstName="user2", lastName="tester", password="1234", phone="555-555-5555", archived=0)
+    user = UserModel(email="user2@dwellingly.org", role=RoleEnum.ADMIN, firstName="user2", lastName="tester", password="1234", phone="555-555-5555", archived=0)
     db.session.add(user)
-    user = UserModel(email="user3@dwellingly.org", role=4, firstName="user3", lastName="tester", password="1234", phone="555-555-5555", archived=0)
+    user = UserModel(email="user3@dwellingly.org", role=RoleEnum.ADMIN, firstName="user3", lastName="tester", password="1234", phone="555-555-5555", archived=0)
     db.session.add(user)
-    user = UserModel(email="MisterSir@dwellingly.org", role=2, firstName="Mr.", lastName="Sir", password="1234", phone="555-555-5555", archived=0)
+    user = UserModel(email="MisterSir@dwellingly.org", role=RoleEnum.PROPERTY_MANAGER, firstName="Mr.", lastName="Sir", password="1234", phone="555-555-5555", archived=0)
     db.session.add(user)
-    user = UserModel(email="user3@dwellingly.org", role=2, firstName="Gray", lastName="Pouponn", password="1234", phone="555-555-5555", archived=0)
+    user = UserModel(email="user3@dwellingly.org", role=RoleEnum.PROPERTY_MANAGER, firstName="Gray", lastName="Pouponn", password="1234", phone="555-555-5555", archived=0)
     db.session.add(user)
     db.session.commit()
 
-    user = UserModel(email="pending1@dwellingly.org", role=0, firstName="Anthony", lastName="Redding", password="1234", phone="555-555-5555", archived=0)
+    user = UserModel(email="pending1@dwellingly.org", role=RoleEnum.PENDING, firstName="Anthony", lastName="Redding", password="1234", phone="555-555-5555", archived=0)
     db.session.add(user)
-    user = UserModel(email="pending2@dwellingly.org", role=0, firstName="Ryan", lastName="Dander", password="1234", phone="555-555-5555", archived=0)
+    user = UserModel(email="pending2@dwellingly.org", role=RoleEnum.PENDING, firstName="Ryan", lastName="Dander", password="1234", phone="555-555-5555", archived=0)
     db.session.add(user)
-    user = UserModel(email="pending3@dwellingly.org", role=0, firstName="Amber", lastName="Lemming", password="1234", phone="555-555-5555", archived=0)
+    user = UserModel(email="pending3@dwellingly.org", role=RoleEnum.PENDING, firstName="Amber", lastName="Lemming", password="1234", phone="555-555-5555", archived=0)
     db.session.add(user)
-    user = UserModel(email="pending4@dwellingly.org", role=0, firstName="Jeremy", lastName="Quazar", password="1234", phone="555-555-5555", archived=0)
+    user = UserModel(email="pending4@dwellingly.org", role=RoleEnum.PENDING, firstName="Jeremy", lastName="Quazar", password="1234", phone="555-555-5555", archived=0)
     db.session.add(user)
 
     newProperty = PropertyModel(name="test1", address="123 NE FLanders St", unit="5", city="Portland", state="OR", zipcode="97207", propertyManager=5, dateAdded="2020-04-12", archived=0)

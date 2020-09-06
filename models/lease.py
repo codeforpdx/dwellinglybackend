@@ -3,9 +3,10 @@ from db import db
 from models.property import PropertyModel
 from models.user import UserModel
 from models.tenant import TenantModel
+from models.base_model import BaseModel
 
 
-class LeaseModel(db.Model):
+class LeaseModel(BaseModel):
     __tablename__ = "lease"
 
     id = db.Column(db.Integer, primary_key=True)
@@ -44,15 +45,3 @@ class LeaseModel(db.Model):
           'dateUpdated': self.dateUpdated.strftime("%m/%d/%Y %H:%M:%S"),
           'occupants': self.occupants
         }
-
-    @classmethod
-    def find_by_id(cls, id):
-        return cls.query.filter_by(id=id).first() #SELECT * FROM property WHERE id = id LIMIT 1
-
-    def save_to_db(self):
-        db.session.add(self)
-        db.session.commit()
-
-    def delete_from_db(self):
-        db.session.delete(self)
-        db.session.commit()

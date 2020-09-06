@@ -1,7 +1,7 @@
-from models.user import UserModel
+from models.user import UserModel, RoleEnum
 
 adminUserEmail = "user1@dwellingly.org"
-adminRole = "admin"
+adminRole = RoleEnum.ADMIN
 phone = "1 800-Cal-Saul"
 
 def test_admin_user():
