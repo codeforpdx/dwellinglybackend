@@ -17,6 +17,7 @@ NOTE: Database is SQLite3 via SQLAlchemy
 
 [Note for Mac users](#Mac-OS-Alternative-Setup-Instructions-(for-those-who-have-never-used-Python/having-path-errors))
 
+**Note about Python Versions**: You may have to substitue **python** with **python3** and **pip** with **pip3** in the instructions below.
 
 1. Clone the repo (`git clone https://github.com/codeforpdx/dwellinglybackend.git`)
 2. Install Python ( https://realpython.com/installing-python/ )
@@ -24,12 +25,12 @@ NOTE: Database is SQLite3 via SQLAlchemy
 4. Run `pipenv install -d`
    - If you get the error `ImportError: cannot import name 'Feature' from 'setuptools'`, your setuptools version might be at 46 or later. You may be able to get it to work using version 45 (e.g. `pip3 install setuptools==45`)
 5. Seed the database
-   - Run: `pipenv run python seed_db.py`
+   - Run: `pipenv run manage.py create`
    - To re-seed the database from scratch, delete data.db before running the script
    - Look for the file data.db to be created in the root directory
    - If you get the error `ImportError: No module named flask` or similar, you may need to run `pipenv shell` to launch virtual environment.
 6. Start the server using the flask environment (required every time the project is re-opened):
-   - Run: `pipenv run flask run`
+   - Run: `pipenv run manage.py create`
    - Run + restart the server on changes: `pipenv run flask run --reload`
 
 6. Test the server and view coverage reports. Use of coverage reporting is recommended to indicate test suite completeness and to locate defunct code in the code base.
@@ -65,6 +66,11 @@ If you are still having issues or if your command prompt is throwing an error th
 5. Run: `python manage.py create`
 6. Run: `pipenv run flask run`
 7. Login using one of the accounts below and you should be good to go!
+
+### Database commands. 
+- Create and Seed the Database: `pipenv run manage.py create`
+- Seed the Database: `pipenv run manage.py recreate`
+- Delete the Database: `pipenv run mange.py drop`
 
 ### Contributing
 
