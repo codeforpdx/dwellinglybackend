@@ -1,11 +1,10 @@
 from flask_restful import Resource, reqparse
-from flask_bcrypt import generate_password_hash, check_password_hash
 from models.property import PropertyModel
 from models.tenant import TenantModel
 from resources.admin_required import admin_required
 from models.user import UserModel, RoleEnum
 from models.revoked_tokens import RevokedTokensModel
-import json
+import flask_bcrypt
 from werkzeug.security import safe_str_cmp
 from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt_claims, get_raw_jwt, get_jwt_identity, jwt_refresh_token_required
 
@@ -33,7 +32,7 @@ class UserRegister(Resource):
         if UserModel.find_by_email(data['email']):
             return {"message": "A user with that email already exists"}, 400
 
-        pw_hash = bcrypt.generate_password_hash(data['password']).decode('utf-8')
+        pw_hash = flask_bcrypt.generate_password_hash(data['password']).decode('utf-8')
 
         user = UserModel(firstName=data['firstName'],
                          lastName=data['lastName'], email=data['email'],
@@ -89,7 +88,7 @@ class User(Resource):
         if data['phone']:
             user.phone = data['phone']
         if data['password']:
-            user.password = bcrypt.generate_password_hash(data['password']).decode('utf-8')
+            user.password = flask_bcrypt.generate_password_hash(data['password']).decode('utf-8')
 
         try:
             user.save_to_db()
@@ -141,8 +140,8 @@ class UserLogin(Resource):
         if user and user.archived:
             return {"message": "Not a valid user"}, 403
 
-        if bcrypt.check_password_hash(user.password, data['password']):
-            if user and safe_str_cmp(bcrypt.generate_hash(data['password']).decode('utf-8'), data['password']):
+        if flask_bcrypt.check_password_hash(user.password, data['password']):
+            if user and safe_str_cmp(flask_bcrypt.generate_hash(data['password']).decode('utf-8'), data['password']):
                 access_token = create_access_token(identity=user.id, fresh=True)
                 refresh_token = create_refresh_token(user.id)
                 user.update_last_active()
