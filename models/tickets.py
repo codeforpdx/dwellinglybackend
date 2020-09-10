@@ -5,8 +5,10 @@ from models.user import UserModel
 from models.notes import NotesModel
 from models.tenant import TenantModel
 from datetime import datetime
+from models.base_model import BaseModel
 
-class TicketModel(db.Model):
+
+class TicketModel(BaseModel):
     __tablename__ = "tickets"
 
     id = db.Column(db.Integer, primary_key=True)
@@ -71,15 +73,3 @@ class TicketModel(db.Model):
             'notes': message_notes
         }
         # notes.json() for note in self.notes.all()]
-
-    @classmethod
-    def find_by_id(cls, id):
-        return cls.query.filter_by(id=id).first() #SELECT * FROM property WHERE id = id LIMIT 1
-
-    def save_to_db(self):
-        db.session.add(self)
-        db.session.commit()
-
-    def delete_from_db(self):
-        db.session.delete(self)
-        db.session.commit()

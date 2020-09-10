@@ -18,7 +18,7 @@ NOTE: Database is SQLite3 via SQLAlchemy
 [Note for Mac users](#Mac-OS-Alternative-Setup-Instructions-(for-those-who-have-never-used-Python/having-path-errors))
 
 
-1. Clone the repo (`git clone https://github.com/${your-repo-name}/dwellinglybackend.git`)
+1. Clone the repo (`git clone https://github.com/codeforpdx/dwellinglybackend.git`)
 2. Install Python ( https://realpython.com/installing-python/ )
 3. Install [pipenv](https://pipenv.pypa.io/en/latest/#install-pipenv-today)
 4. Run `pipenv install -d`
@@ -40,6 +40,7 @@ NOTE: Database is SQLite3 via SQLAlchemy
       - In the console: `pipenv run view_coverage`
 
 Queries can be made with the Postman Collection link ( https://www.getpostman.com/collections/a86a292798c7895425e2 )
+[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/0078de8f58d4ea0b78eb)
 
 ### Note For Windows Users
 
@@ -61,11 +62,11 @@ If you are still having issues or if your command prompt is throwing an error th
 3. Install pipenv: `pip3 install --user pipenv`
 4. Shell into the environment configured by your Pipfile `pipenv shell`
   - This brings you into a partitioned environment set up to spec with your Pipfile. Often people who skip this step will have path and version errors.
-5. Run: `python seed_db.py`
+5. Run: `python manage.py create`
 6. Run: `pipenv run flask run`
 7. Login using one of the accounts below and you should be good to go!
 
-### Endpoints
+### Contributing
 
 How to contribute to this project.
 
@@ -83,18 +84,6 @@ How to contribute to this project.
 ~$ git checkout -b <name of branch>
 ```
 (Step #3 creates a new branch titled <name of branch> and navigates you to that branch)
-
-#### ENDPOINT: USER Model
-
-| method | route                | action                              |
-| :----- | :------------------- | :---------------------------------- |
-| POST   | `/register/`         | Creates a new user                  |
-| GET    | `/users/`            | Gets all users (dev only)           |
-| GET    | `/users/:uid`        | Gets a single user (admin only)     |
-| PATCH  | `/users/:uid`        | Updates a single user               | not implemented yet |
-| POST   | `/login`             | Login a single user                 |
-| POST   | `/user/archive/:uid` | Archives a single user (admin only) |
-| DELETE | `/users/:uid`        | Deletes a single user (admin only)  |
 
 ### This Backend Uses JWT for authorization
 
@@ -134,6 +123,21 @@ Authorization Bearer < JWT access token >
 	},
 ];
 ```
+
+### Endpoints
+
+#### ENDPOINT: USER Model
+
+| method | route                | action                              |
+| :----- | :------------------- | :---------------------------------- |
+| POST   | `/register/`         | Creates a new user                  |
+| GET    | `/users/`            | Gets all users (dev only)           |
+| GET    | `/users/:uid`        | Gets a single user (admin only)     |
+| PATCH  | `/users/:uid`        | Updates a single user               | not implemented yet |
+| POST   | `/login`             | Login a single user                 |
+| POST   | `/user/archive/:uid` | Archives a single user (admin only) |
+| DELETE | `/users/:uid`        | Deletes a single user (admin only)  |
+
 
 #### ENDPOINT: PROPERTIES
 

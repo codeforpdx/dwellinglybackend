@@ -4,12 +4,12 @@ from flask_jwt_extended import JWTManager, jwt_refresh_token_required, create_ac
 from flask_cors import CORS
 from flask_mail import Mail
 from resources.admin_required import admin_required
-from models.user import UserModel
+from models.user import UserModel, RoleEnum
 from models.property import PropertyModel
 from models.tenant import TenantModel
 from models.tenant_staff_link import StaffTenantLink
 from models.revoked_tokens import RevokedTokensModel
-from resources.user import UserRegister, User, UserLogin, ArchiveUser, UsersRole, UserAccessRefresh
+from resources.user import UserRegister, User, UserLogin, ArchiveUser, UsersRole, UserAccessRefresh, UserRoles
 from resources.property import Properties, Property, ArchiveProperty
 from resources.tenants import Tenants
 from resources.emergency_contacts import EmergencyContacts
@@ -63,12 +63,13 @@ def create_routes(app):
     api.add_resource(UsersRole, '/users/role')
     api.add_resource(ArchiveUser, '/user/archive/<int:user_id>')
     api.add_resource(UserLogin, '/login')
+    api.add_resource(UserRoles, '/roles')
     api.add_resource(Email, '/user/message')
     api.add_resource(UserAccessRefresh, '/refresh')
     api.add_resource(Tenants, '/tenants', '/tenants/<int:tenant_id>')
     api.add_resource(EmergencyContacts, '/emergencycontacts', '/emergencycontacts/<int:id>')
     api.add_resource(Lease, '/lease/<int:id>')
-    api.add_resource(Leases, '/lease/')
+    api.add_resource(Leases, '/lease')
     api.add_resource(Tickets, '/tickets')
     api.add_resource(Ticket, '/tickets/<int:id>')
 
@@ -76,12 +77,12 @@ def create_routes(app):
 def check_for_admins():
     errorMsg = (
         "\n\n=-=-=-=-=-=-=-=\n"
-        "WARNING! Database unusable. Did you forget to run the seed_db.py script? `python seed_db.py`"
+        "WARNING! Database unusable. Did you forget to create and seed your database? `python manage.py create`"
         "\n=-=-=-=-=-=-=-=\n\n"
     )
     assert (os.path.isfile('./data.db')), errorMsg
     try:
-        admins = UserModel.find_by_role('admin')
+        admins = UserModel.find_by_role(RoleEnum.ADMIN)
     except:
         print(errorMsg)
     else:
@@ -115,7 +116,7 @@ def create_app():
     @app.jwt.user_claims_loader
     def role_loader(identity):
         user = UserModel.find_by_id(identity)
-        return {'email': user.email, 'phone': user.phone, 'firstName': user.firstName, 'lastName': user.lastName, 'is_admin': (user.role == 'admin')}
+        return {'email': user.email, 'phone': user.phone, 'firstName': user.firstName, 'lastName': user.lastName, 'is_admin': (user.role == RoleEnum.ADMIN)}
 
     # checking if the token's jti (jwt id) is in the set of revoked tokens
     # this check is applied globally (to all routes that require jwt)
