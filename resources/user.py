@@ -64,9 +64,6 @@ class User(Resource):
     @admin_required
     def patch(self,user_id):
         user = UserModel.find_by_id(user_id)
-        if not user:
-            return {"Message": "Unable to find user."}, 400
-
         parser = reqparse.RequestParser()
         parser.add_argument('role', type=int, required=False, help="This field is not required.")
         parser.add_argument('firstName',type=str, required=False, help="This field is not required.")
