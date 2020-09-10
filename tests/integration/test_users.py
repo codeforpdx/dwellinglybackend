@@ -113,12 +113,8 @@ def test_archive_user_failure(client, auth_headers):
 
 def test_patch_user(client, auth_headers, new_user):
     """The route to patch a user by id returns a successful response code and the expected data is patched."""
-<<<<<<< HEAD
-    expectedRole = 2
-=======
 
     expectedRole =  RoleEnum.PROPERTY_MANAGER.value
->>>>>>> 59ab35c3b598fe112f62fc0fc03ea652cb13162c
     expectedEmail = "patch@test.com"
     expectedPhone = "503-867-5309"
 
