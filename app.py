@@ -51,7 +51,6 @@ def config_app(app):
     # app.config['MAIL_PASSWORD'] = os.environ['EMAIL_PASSWORD']
     # app.config['MAIL_DEFAULT_SENDER'] = 'noreply@dwellingly.com'
     app.config['MAIL_MAX_EMAILS'] = 3
-    app.config['MAIL_SUPPRESS_SEND'] = False #same as testing
     app.config['MAIL_ASCII_ATTACHMENTS'] = False
 
 

@@ -1,8 +1,7 @@
-from flask import Flask
+from flask import Flask, current_app
 from flask_restful import Resource, reqparse
 from flask_mail import Message
 from resources.admin_required import admin_required
-import app
 from models.user import UserModel
 
 class Email(Resource):
@@ -28,7 +27,7 @@ class Email(Resource):
         else:
             return {'Message': 'Bad Request'}, 400
 
-        app.mail.send(message)
+        current_app.mail.send(message)
         return {"Message": "Message Sent"}
 
 
