@@ -17,8 +17,6 @@ class Email(Resource):
         if not data.userid or not data.title or not data.body:
             return {'Message': 'Bad Request'}, 400
 
-        #TODO add feature to send to multiple emails
-    
         message = Message(data.title, sender="noreply@codeforpdx.org", body=data.body )
         
         user = UserModel.find_by_id(data.userid)
