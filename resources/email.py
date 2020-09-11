@@ -20,10 +20,7 @@ class Email(Resource):
         message = Message(data.title, sender="noreply@codeforpdx.org", body=data.body )
         
         user = UserModel.find_by_id(data.userid)
-        if user.email:
-            message.recipients = [user.email] 
-        else:
-            return {'Message': 'Bad Request'}, 400
+        message.recipients = [user.email] 
 
         current_app.mail.send(message)
         return {"Message": "Message Sent"}
