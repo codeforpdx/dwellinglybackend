@@ -1,7 +1,8 @@
 import pytest
 from conftest import is_valid
 from unittest.mock import patch
-from flask_mail import Mail
+from flask_mail import Mail, Message
+from resources.email import Email
 
 
 @pytest.mark.usefixtures('client_class', 'test_database')
@@ -94,3 +95,11 @@ class TestEmailAuthorizations:
                 response = self.client.post(self.endpoint, json=payload, headers=token)
                 assert is_valid(response, 401)
                 assert response.json == {'message': "Admin Access Required"}
+
+
+@pytest.mark.usefixtures('test_database')
+class TesttEmail:
+    @patch.object(Mail, 'send')
+    def test_reset_password_msg(self, send_mail_msg, new_user):
+        Email.send_reset_password_msg(new_user)
+        send_mail_msg.assert_called()
