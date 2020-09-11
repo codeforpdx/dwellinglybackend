@@ -11,6 +11,8 @@ from models.emergency_contact import EmergencyContactModel
 from models.lease import LeaseModel
 
 def seedData():
+    now=datetime.now()
+    future = now + timedelta(days=365)
 
     user = UserModel(email="user1@dwellingly.org", role=RoleEnum.ADMIN, firstName="user1", lastName="tester", password="1234", phone="555-555-5555", archived=0)
     db.session.add(user)
@@ -41,11 +43,11 @@ def seedData():
     db.session.add(newProperty)
     db.session.commit()
 
-    newTenant = TenantModel(firstName="Renty", lastName="McRenter", phone="800-RENT-ALOT", propertyID=1, staffIDs=[1, 2])
+    newTenant = TenantModel(firstName="Renty", lastName="McRenter", phone="800-RENT-ALOT", propertyID=1, staffIDs=[1, 2], unit=1, addedOn=now)
     db.session.add(newTenant)
-    newTenant = TenantModel(firstName="Soho", lastName="Muless", phone="123-123-0000", propertyID=2, staffIDs=[])
+    newTenant = TenantModel(firstName="Soho", lastName="Muless", phone="123-123-0000", propertyID=2, staffIDs=[], unit=2, addedOn=now)
     db.session.add(newTenant)
-    newTenant = TenantModel(firstName="Starvin", lastName="Artist", phone="123-123-1111", propertyID=2, staffIDs=[])
+    newTenant = TenantModel(firstName="Starvin", lastName="Artist", phone="123-123-1111", propertyID=2, staffIDs=[], unit=3, addedOn=now)
     db.session.add(newTenant)
 
     newNote = NotesModel(ticketid=0, text="Tenant not responding to phone calls.", user=1)
@@ -75,9 +77,6 @@ def seedData():
     db.session.add(emergencyContact)
     emergencyContact = EmergencyContactModel(name="Child Abuse/Reporting", contact_numbers=[{"number": "503-730-3100"}])
     db.session.add(emergencyContact)
-
-    now=datetime.now()
-    future = now + timedelta(days=365)
 
     lease = LeaseModel(name="Lease 1", landlordID = 1, propertyID=1, tenantID=1, dateTimeStart =now, dateTimeEnd = future, dateUpdated = now, occupants=3)
     db.session.add(lease)

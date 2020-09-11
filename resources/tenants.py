@@ -5,6 +5,7 @@ from resources.admin_required import admin_required
 from db import db
 from models.tenant import TenantModel
 from models.user import UserModel
+from datetime import datetime
 
 # | method | route                | action                    |
 # | :----- | :------------------- | :------------------------ |
@@ -21,6 +22,8 @@ class Tenants(Resource):
     parser.add_argument('phone',type=str,required=True,help="This field cannot be blank.")
     parser.add_argument('propertyID',required=False,help="This field can be provided at a later time.")
     parser.add_argument('staffIDs',action='append',required=False,help="This field can be provided at a later time.")
+    parser.add_argument('unit',action='append',required=False,help="This field can be provided at a later time.")
+    parser.add_argument('addedOn',type=datetime,required=True,help="This field cannot be blank.")
 
     @admin_required
     def get(self, tenant_id=None):
@@ -76,6 +79,9 @@ class Tenants(Resource):
             for id in data.staffIDs: 
                 user = UserModel.find_by_id(id)
                 if user: tenantEntry.staff.append(user)
+        if(data.unit):
+            tenantEntry.unit = data.unit
+        tenantEntry.addedOn = datetime.date(datetime.now())
         
         try:
             tenantEntry.save_to_db()
