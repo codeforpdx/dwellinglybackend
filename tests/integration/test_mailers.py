@@ -38,7 +38,7 @@ class TestPostEmail:
                 headers=auth_headers["admin"]
             )
 
-        assert response.json == {'Message': 'Bad Request'}, 400
+        assert response.status == '400 BAD REQUEST'
         send_mail_msg.assert_not_called()
 
     @patch.object(Mail, 'send')
@@ -53,7 +53,7 @@ class TestPostEmail:
                 headers=auth_headers["admin"]
             )
 
-        assert response.json == {'Message': 'Bad Request'}, 400
+        assert response.status == '400 BAD REQUEST'
         send_mail_msg.assert_not_called()
 
     @patch.object(Mail, 'send')
@@ -68,7 +68,7 @@ class TestPostEmail:
                 headers=auth_headers["admin"]
             )
 
-        assert response.json == {'Message': 'Bad Request'}, 400
+        assert response.status == '400 BAD REQUEST'
         send_mail_msg.assert_not_called()
 
 
