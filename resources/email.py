@@ -5,7 +5,8 @@ from resources.admin_required import admin_required
 from models.user import UserModel
 
 class Email(Resource):
-    NO_REPLY = 'noreply@codeforpdx.org'
+    NO_REPLY = 'noreply@codeforpdx.org' # Should this be dwellingly address?
+
     parser = reqparse.RequestParser()
     parser.add_argument('user_id', required=True)
     parser.add_argument('subject', required=True)
@@ -26,7 +27,7 @@ class Email(Resource):
     @staticmethod
     def send_reset_password_msg(user):
         token = user.reset_password_token()
-        msg = Message('Reset password', sender=Email.NO_REPLY, recipients=[user.email])
+        msg = Message('Reset password for Dwellingly', sender=Email.NO_REPLY, recipients=[user.email])
         msg.body = render_template('emails/reset_msg.txt', user=user, token=token)
         msg.html = render_template('emails/reset_msg.html', user=user, token=token)
 
