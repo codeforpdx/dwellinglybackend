@@ -12,8 +12,8 @@ class TestPostEmail:
     @patch.object(Mail, 'send')
     def test_email_can_be_sent(self, send_mail_msg, auth_headers):
         payload = {
-                'userid': 1,
-                'title': 'Some email subject',
+                'user_id': 1,
+                'subject': 'Some email subject',
                 'body': 'Some body'
             }
         
@@ -29,7 +29,7 @@ class TestPostEmail:
     @patch.object(Mail, 'send')
     def test_user_id_param_is_required(self, send_mail_msg, auth_headers):
         payload = {
-                'title': 'Some email subject',
+                'subject': 'Some email subject',
                 'body': 'Some body'
             }
         response = self.client.post(
@@ -44,7 +44,7 @@ class TestPostEmail:
     @patch.object(Mail, 'send')
     def test_subject_param_is_required(self, send_mail_msg, auth_headers):
         payload = {
-                'userid': 1,
+                'user_id': 1,
                 'body': 'Some body'
             }
         response = self.client.post(
@@ -59,8 +59,8 @@ class TestPostEmail:
     @patch.object(Mail, 'send')
     def test_body_param_is_required(self, send_mail_msg, auth_headers):
         payload = {
-                'userid': 1,
-                'title': 'Some email subject',
+                'user_id': 1,
+                'subject': 'Some email subject',
             }
         response = self.client.post(
                 self.endpoint,
@@ -85,8 +85,8 @@ class TestEmailAuthorizations:
 
     def test_all_roles_except_admin_are_denied_access(self, auth_headers):
         payload = {
-                'userid': 1,
-                'title': 'Some email subject',
+                'user_id': 1,
+                'subject': 'Some email subject',
                 'body': 'Some body'
             }
         for role, token in auth_headers.items():

@@ -6,17 +6,17 @@ from models.user import UserModel
 
 class Email(Resource):
     parser = reqparse.RequestParser()
-    parser.add_argument('userid', required=True)
-    parser.add_argument('title', required=True)
+    parser.add_argument('user_id', required=True)
+    parser.add_argument('subject', required=True)
     parser.add_argument('body', required=True)
 
     @admin_required
     def post(self):
         data = Email.parser.parse_args()
 
-        message = Message(data.title, sender="noreply@codeforpdx.org", body=data.body )
+        message = Message(data.subject, sender="noreply@codeforpdx.org", body=data.body )
 
-        user = UserModel.find_by_id(data.userid)
+        user = UserModel.find_by_id(data.user_id)
         message.recipients = [user.email]
 
         current_app.mail.send(message)
