@@ -5,7 +5,7 @@ from resources.email import Email
 
 class ForgotPassword(Resource):
     parser = reqparse.RequestParser()
-    parser.add_argument('email',type=str,required=True,help="This field cannot be blank.")
+    parser.add_argument('email', required=True)
 
     def post(self):
         data = ForgotPassword.parser.parse_args()
@@ -13,6 +13,6 @@ class ForgotPassword(Resource):
 
         if user:
             Email.send_reset_password_msg(user)
-            return user.json(), 200
+            return {"message": "Email sent"}, 200
         else:
-            return {"message": "Unable to find email"}, 400
+            return {"message": "Invalid email"}, 400
