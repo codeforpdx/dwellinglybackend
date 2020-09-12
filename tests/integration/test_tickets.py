@@ -53,7 +53,6 @@ def test_tickets_POST(client, auth_headers):
 
     response = client.post(endpoint, json=newTicket, headers=auth_headers["admin"])
     assert is_valid(response, 201)
-    print(response.json)
     assert response.json['id'] != 0
     assert response.json['issue'] == 'Lead paint issue'
     assert response.json['tenant'] == 'Renty McRenter'
