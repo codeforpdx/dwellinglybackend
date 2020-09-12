@@ -81,4 +81,7 @@ class TicketModel(BaseModel):
         #calculated in minutes: 1 day = 1440, 1 week = 10080
         dateTime = datetime.now() - timedelta(minutes = minutes)
         return db.session.query(TicketModel).filter(TicketModel.updated >= dateTime).filter(TicketModel.status == status).count()
-
+    
+    @classmethod
+    def find_by_tenantID(cls, tenantID):
+        return cls.query.filter_by(tenant=tenantID).all()

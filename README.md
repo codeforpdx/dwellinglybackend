@@ -9,7 +9,7 @@ NOTE: Database is SQLite3 via SQLAlchemy
 - Github Repo: { https://github.com/codeforpdx/dwellinglybackend }
 - Live Server: {https://dwellinglyapi.herokuapp.com/}
 
-- Database Diagram: {https://dbdiagram.io/d/5f28f4b27543d301bf5dc585}
+- Database Diagram: { https://dbdiagram.io/d/5f28f4b27543d301bf5dc585 }
 
 
 ### To Start Server
@@ -24,7 +24,7 @@ NOTE: Database is SQLite3 via SQLAlchemy
 4. Run `pipenv install -d`
    - If you get the error `ImportError: cannot import name 'Feature' from 'setuptools'`, your setuptools version might be at 46 or later. You may be able to get it to work using version 45 (e.g. `pip3 install setuptools==45`)
 5. Seed the database
-   - Run: `pipenv run python seed_db.py`
+   - Run: `pipenv run python manage.py create`
    - To re-seed the database from scratch, delete data.db before running the script
    - Look for the file data.db to be created in the root directory
    - If you get the error `ImportError: No module named flask` or similar, you may need to run `pipenv shell` to launch virtual environment.
@@ -38,6 +38,7 @@ NOTE: Database is SQLite3 via SQLAlchemy
     - View detailed coverage reports, with listings for untested lines of code ...
       - As a web page: `pipenv run python view_coverage.py`
       - In the console: `pipenv run view_coverage`
+    - Tests can be run automatically after each file save using [pytest-watch](https://pypi.org/project/pytest-watch/). Visit the documentation to learn how to run it for your system. See [PR #72](https://github.com/codeforpdx/dwellinglybackend/pull/72) for a preview of what it can do.
 
 Queries can be made with the Postman Collection link ( https://www.getpostman.com/collections/a86a292798c7895425e2 )
 [![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/0078de8f58d4ea0b78eb)
@@ -85,7 +86,22 @@ How to contribute to this project.
 ```
 (Step #3 creates a new branch titled <name of branch> and navigates you to that branch)
 
+## Using the API
 ### This Backend Uses JWT for authorization
+
+A JWT token is required to authenticate requests. To get a token, use the login API:
+
+```sh
+curl http://127.0.0.1:5000/api/login \
+--data "email=user1@dwellingly.org&password=1234"
+```
+
+Then, use the JWT token (`access_token`) as a Authorization bearer header:
+
+```
+curl http://127.0.0.1:5000/api/properties \
+-H "Authorization: Bearer {put_token_here}"
+```
 
 Authorization header format:
 
@@ -125,6 +141,8 @@ Authorization Bearer < JWT access token >
 ```
 
 ### Endpoints
+
+All endpoints are prefixed with `/api/`
 
 #### ENDPOINT: USER Model
 

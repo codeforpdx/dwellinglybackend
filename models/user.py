@@ -75,3 +75,9 @@ class UserModel(BaseModel):
     def find_recent_role(cls, role, days):
         dateTime = datetime.now() - timedelta(days = days)
         return db.session.query(UserModel).filter(UserModel.role == role).order_by(UserModel.created.desc()).limit(3).all()
+      
+    @classmethod
+    def find_by_role_and_name(cls, role, name):
+        likeName = f'%{name}%'
+        return cls.query.filter((UserModel.role == role) & (UserModel.firstName.ilike(likeName) | UserModel.lastName.ilike(likeName))).all()
+
