@@ -51,10 +51,8 @@ class Ticket(Resource):
                 updated = not (ticket.status == data.status)
                 if updated:
                     ticket.status = data.status
-                    dateTime = datetime.now()
-                    timestamp = dateTime.strftime("%d-%b-%Y (%H:%M)")
-                    ticket.updated = timestamp
-
+                    ticket.updated = datetime.now()
+                    
             if(data.urgency):
                 ticket.urgency = data.urgency
 

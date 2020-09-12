@@ -16,8 +16,9 @@ class TicketModel(BaseModel):
     tenant = db.Column(db.Integer, db.ForeignKey('tenants.id'))
     assignedUser = db.Column(db.Integer, db.ForeignKey('users.id'))
     sender = db.Column(db.Integer, db.ForeignKey('users.id'))
-    opened =  db.Column(db.String(32))
-    updated = db.Column(db.String(32))
+    opened =  db.Column(db.DateTime, default=datetime.utcnow)
+    updated = db.Column(db.DateTime, default=datetime.utcnow)
+    minsPastUpdate = db.Column(db.Integer, default=0)
     status = db.Column(db.String(12))
     urgency = db.Column(db.String(12))
     notelog = db.Column(db.Text)
@@ -26,13 +27,12 @@ class TicketModel(BaseModel):
     notes = db.relationship(NotesModel)
 
     def __init__(self, issue, sender, tenant, status, urgency, assignedUser):
-        dateTime = datetime.now()
-        timestamp = dateTime.strftime("%d-%b-%Y (%H:%M)")
         self.issue = issue
         self.sender = sender
         self.tenant = tenant
-        self.opened = timestamp
-        self.updated = timestamp
+        self.opened = datetime.now()
+        self.updated = datetime.now()
+        self.minsPastUpdate = 0
         self.assignedUser = assignedUser
         self.status = status
         self.urgency = urgency
@@ -52,9 +52,8 @@ class TicketModel(BaseModel):
         assignedUserData = UserModel.find_by_id(self.assignedUser)
         assignedUser = "{} {}".format(assignedUserData.firstName, assignedUserData.lastName)
 
-        dateTimeStatusChange = datetime.strptime(self.updated, "%d-%b-%Y (%H:%M)")
         dateTimeNow = datetime.now()
-        minsPastUpdate = int((dateTimeNow - dateTimeStatusChange).total_seconds() / 60)
+        minsPastUpdate = int((datetime.now() - self.updated).total_seconds() 
 
         return {
             'id': self.id,
@@ -65,11 +64,21 @@ class TicketModel(BaseModel):
             'assignedUserID': self.assignedUser,
             'sender': senderName,
             'assigned': assignedUser,
-            'opened': self.opened,
-            'updated':self.updated,
+            'opened': self.opened.strftime("%m/%d/%Y, %H:%M:%S"),
+            'updated':self.updated.strftime("%m/%d/%Y, %H:%M:%S"),
             'status': self.status,
             'minsPastUpdate': minsPastUpdate,
             'urgency': self.urgency,
             'notes': message_notes
         }
-        # notes.json() for note in self.notes.all()]
+
+    @classmethod
+    def find_count_by_status(cls, status):
+        return cls.query.filter_by(status=status).count()
+
+    @classmethod
+    def find_count_by_age_status(cls, status, minutes):
+        #calculated in minutes: 1 day = 1440, 1 week = 10080
+        dateTime = datetime.now() - timedelta(minutes = minutes)
+        return db.session.query(TicketModel).filter(TicketModel.updated >= dateTime).filter(TicketModel.status == status).count()
+
