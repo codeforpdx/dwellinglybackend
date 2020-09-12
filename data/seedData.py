@@ -171,8 +171,9 @@ def seedData():
                                  assignedUser=user_mister_sir.id)
     ticket_40_cats.save_to_db()
 
+    # TODO(@gussmith23) This note doesn't actually attach to a real issue!
     note_not_responding = NotesModel(
-        ticketid=ticket_roof_on_fire.id,
+        0,
         text="Tenant not responding to phone calls.",
         user=user_1.id)
     note_not_responding.save_to_db()
