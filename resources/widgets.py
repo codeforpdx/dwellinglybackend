@@ -33,7 +33,7 @@ class Widgets(Resource):
 
         return propertyName
 
-    # @jwt_required
+    @jwt_required
     def get(self):
         users = UserModel.find_recent_role("property-manager", 5)
         projectManagers = []
@@ -50,7 +50,6 @@ class Widgets(Resource):
             projectManagers.append(user.widgetJson(propertyName, date))
 
         if len(projectManagers) == 0:
-            print("no managers")
             projectManagers.append(nullPropertyManager)
 
         return { 'opentickets':{
