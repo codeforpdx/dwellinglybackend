@@ -9,7 +9,7 @@ NOTE: Database is SQLite3 via SQLAlchemy
 - Github Repo: { https://github.com/codeforpdx/dwellinglybackend }
 - Live Server: {https://dwellinglyapi.herokuapp.com/}
 
-- Database Diagram: {https://dbdiagram.io/d/5f28f4b27543d301bf5dc585}
+- Database Diagram: { https://dbdiagram.io/d/5f28f4b27543d301bf5dc585 }
 
 
 ### To Start Server
