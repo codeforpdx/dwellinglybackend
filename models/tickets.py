@@ -73,3 +73,7 @@ class TicketModel(BaseModel):
             'notes': message_notes
         }
         # notes.json() for note in self.notes.all()]
+    
+    @classmethod
+    def find_by_tenantID(cls, tenantID):
+        return cls.query.filter_by(tenant=tenantID).all()

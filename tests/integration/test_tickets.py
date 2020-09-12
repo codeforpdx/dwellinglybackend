@@ -15,6 +15,12 @@ def test_tickets_GET_all(client, test_database, auth_headers):
     assert len(response.json['tickets'][2]['notes']) == 0
     assert len(response.json['tickets'][3]['notes']) == 0
 
+def test_tickets_GET_byTenant(client, test_database, auth_headers):
+    response = client.get(f'{endpoint}?tenant=1', headers=auth_headers["admin"])
+    assert is_valid(response, 200)
+    assert len(response.json['tickets']) == 2
+    assert response.json['tickets'][0]['tenantID'] == 1
+    assert response.json['tickets'][1]['tenantID'] == 1
 
 def test_tickets_GET_one(client, test_database, auth_headers):
     response = client.get(f'{endpoint}/{validID}', headers=auth_headers["admin"])
