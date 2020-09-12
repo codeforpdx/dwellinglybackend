@@ -86,7 +86,22 @@ How to contribute to this project.
 ```
 (Step #3 creates a new branch titled <name of branch> and navigates you to that branch)
 
+## Using the API
 ### This Backend Uses JWT for authorization
+
+A JWT token is required to authenticate requests. To get a token, use the login API:
+
+```sh
+curl http://127.0.0.1:5000/api/login \
+--data "email=user1@dwellingly.org&password=1234"
+```
+
+Then, use the JWT token (`access_token`) as a Authorization bearer header:
+
+```
+curl http://127.0.0.1:5000/api/properties \
+-H "Authorization: Bearer {put_token_here}"
+```
 
 Authorization header format:
 
@@ -126,6 +141,8 @@ Authorization Bearer < JWT access token >
 ```
 
 ### Endpoints
+
+All endpoints are prefixed with `/api/`
 
 #### ENDPOINT: USER Model
 
