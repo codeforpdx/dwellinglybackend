@@ -5,6 +5,8 @@ from db import db
 from enum import Enum
 from models.base_model import BaseModel
 from flask import current_app
+from jwt import ExpiredSignatureError
+
 
 class RoleEnum(Enum):
     PENDING = 0
@@ -48,10 +50,18 @@ class UserModel(BaseModel):
     def reset_password_token(self):
         ten_minutes = 600
         return jwt.encode(
-                {'reset_password': self.id, 'exp': time.time() + ten_minutes},
+                {'user_id': self.id, 'exp': time.time() + ten_minutes},
                 current_app.secret_key,
                 algorithm='HS256'
             ).decode('utf-8')
+
+    @staticmethod
+    def validate_reset_password(token):
+        try:
+            token = jwt.decode(token, current_app.secret_key, algorithms=['HS256'])
+            return UserModel.find_by_id(token['user_id'])
+        except ExpiredSignatureError:
+            return None
 
     def json(self):
         return {

@@ -74,7 +74,7 @@ def create_routes(app):
     api.add_resource(Leases, '/lease')
     api.add_resource(Tickets, '/tickets')
     api.add_resource(Ticket, '/tickets/<int:id>')
-    api.add_resource(ForgotPassword, '/forgot_password')
+    api.add_resource(ForgotPassword, '/forgot_password', '/forgot_password/<string:token>')
 
 def check_for_admins():
     errorMsg = (

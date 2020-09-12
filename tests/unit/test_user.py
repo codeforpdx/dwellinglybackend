@@ -21,7 +21,7 @@ def test_reset_password_token(stubbed_encode, app, test_database):
 
     with freeze_time(time.ctime(time.time())):
         ten_minutes = time.time() + 600
-        payload = {'reset_password': user.id, 'exp': ten_minutes}
+        payload = {'user_id': user.id, 'exp': ten_minutes}
 
         assert user.reset_password_token()
         stubbed_encode.assert_called_once_with(payload, app.secret_key, algorithm='HS256')

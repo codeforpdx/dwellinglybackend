@@ -16,3 +16,11 @@ class ForgotPassword(Resource):
             return {"message": "Email sent"}, 200
         else:
             return {"message": "Invalid email"}, 400
+
+    def get(self, token):
+        user = UserModel.validate_reset_password(token)
+
+        if user:
+            return {'message': 'Valid token', 'user_id': user.id}, 200
+        else:
+            return {'message': 'Expired token'}, 422
