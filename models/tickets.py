@@ -4,7 +4,7 @@ from models.tenant import TenantModel
 from models.user import UserModel
 from models.notes import NotesModel
 from models.tenant import TenantModel
-from datetime import datetime
+from datetime import datetime, timedelta
 from models.base_model import BaseModel
 
 
@@ -53,8 +53,8 @@ class TicketModel(BaseModel):
         assignedUser = "{} {}".format(assignedUserData.firstName, assignedUserData.lastName)
 
         dateTimeNow = datetime.now()
-        minsPastUpdate = int((datetime.now() - self.updated).total_seconds() 
-
+        minsPastUpdate = int((datetime.now() - self.updated).total_seconds() / 60)
+        
         return {
             'id': self.id,
             'issue':self.issue,
