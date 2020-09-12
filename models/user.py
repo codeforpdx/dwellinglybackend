@@ -58,3 +58,8 @@ class UserModel(BaseModel):
     @classmethod
     def find_by_role(cls, role):
         return cls.query.filter_by(role=role).all()
+    
+    @classmethod
+    def find_by_role_and_name(cls, role, name):
+        likeName = f'%{name}%'
+        return cls.query.filter((UserModel.role == role) & (UserModel.firstName.ilike(likeName) | UserModel.lastName.ilike(likeName))).all()

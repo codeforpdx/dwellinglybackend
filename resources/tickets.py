@@ -87,7 +87,11 @@ class Tickets(Resource):
 
     @jwt_required
     def get(self):
-        return {'tickets': [ticket.json() for ticket in TicketModel.query.all()]}
+        data = Tickets.parser.parse_args()
+        if data["tenant"]:
+            return {'Tickets': [ticket.json() for ticket in TicketModel.find_by_tenantID(data["tenant"])]}
+        else:
+            return {'Tickets': [ticket.json() for ticket in TicketModel.query.all()]}
 
     @jwt_required
     def post(self):
