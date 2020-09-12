@@ -95,7 +95,15 @@ class User(Resource):
         except:
             return {'Message': 'An Error Has Occurred. Note that you can only update a user\'s role, email, phone, or password.'}, 500
 
-        return user.json(), 201
+        access_token = create_access_token(identity=user.id, fresh=True) 
+        refresh_token = create_refresh_token(user.id)
+        user.update_last_active()
+        new_tokens = {
+            'access_token': access_token,
+            'refresh_token': refresh_token
+        }
+        
+        return {**user.json(), **new_tokens}, 201
 
     @admin_required
     def delete(self, user_id):
