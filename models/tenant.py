@@ -33,6 +33,7 @@ class TenantModel(BaseModel):
             'id': self.id,
             'firstName':self.firstName,
             'lastName':self.lastName,
+            'fullName': '{} {}'.format(self.firstName, self.lastName),
             'phone': self.phone,
             'propertyID': self.propertyID,
             'propertyName': self.property.name if self.property else None,
