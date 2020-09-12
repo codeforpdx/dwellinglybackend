@@ -3,12 +3,12 @@ from models.user import UserModel
 from resources.email import Email
 
 
-class ForgotPassword(Resource):
+class ResetPassword(Resource):
     parser = reqparse.RequestParser()
     parser.add_argument('email', required=True)
 
     def post(self):
-        data = ForgotPassword.parser.parse_args()
+        data = ResetPassword.parser.parse_args()
         user = UserModel.find_by_email(data['email'])
 
         if user:

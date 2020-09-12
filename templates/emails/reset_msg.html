@@ -2,10 +2,10 @@
 
 <p>To reset your password click on the following link:
 
-<a href="{{ url_for('forgotpassword', token=token, _method='GET', _external=True) }}"> Reset password link</a></p>
+<a href="{{ url_for('resetpassword', token=token, _method='GET', _external=True) }}"> Reset password link</a></p>
 
 <p>Alternatively, you can paste the following link in your browser's address bar:</p>
-<p>{{ url_for('forgotpassword', token=token, _method='GET', _external=True) }}</p>
+<p>{{ url_for('resetpassword', token=token, _method='GET', _external=True) }}</p>
 <p> If you have not requested a password reset simply ignore this message.</p>
 
 
