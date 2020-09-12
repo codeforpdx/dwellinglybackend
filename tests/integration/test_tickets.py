@@ -69,8 +69,9 @@ def test_tickets_POST(client, auth_headers):
     assert response.json['assigned'] == 'Mr. Sir'
     assert response.json['status'] == 'new'
     assert response.json['urgency'] == 'low'
-    assert response.json['opened'] == datetime.now().strftime("%d-%b-%Y (%H:%M)")
-    assert response.json['updated'] == datetime.now().strftime("%d-%b-%Y (%H:%M)")
+    assert response.json['opened'] == datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
+    assert response.json['updated'] == datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
+
 
 
 def test_tickets_PUT(client, auth_headers):
@@ -94,7 +95,7 @@ def test_tickets_PUT(client, auth_headers):
     assert response.json['assigned'] == 'user3 tester'
     assert response.json['status'] == 'in progress'
     assert response.json['urgency'] == 'high'
-    assert response.json['updated'] == datetime.now().strftime("%d-%b-%Y (%H:%M)")
+    assert response.json['updated'] == datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
     # Ticket already had 2 notes to begin with - and with this PUT - it's +1
     assert len(response.json['notes']) == 3
     assert response.json['notes'][2]['ticketid'] == 1

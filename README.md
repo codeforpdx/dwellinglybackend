@@ -285,3 +285,64 @@ All endpoints are prefixed with `/api/`
         },
     ]
 ```
+
+
+#### ENDPOINT: WIDGETS
+
+| method | route              | action (all actions require user to be logged in)   |
+| :----- | :----------------- | :-------------------------------------------------- |
+| GET    | `/widgets/`        | Pull down Widget Info                               |
+
+```javascript
+{ 'opentickets':{
+            'title': 'Open Tickets', 
+            'stats': [[
+                {
+                    "stat": TicketModel.find_count_by_status("New"),
+                    "desc": 'New',
+                },
+                {
+                    "stat": TicketModel.find_count_by_age_status("New", 1440),
+                    "desc": "Unseen for > 24 hours",
+                }
+            ],
+            [
+                {
+                    "stat": TicketModel.find_count_by_status("In Progress"),
+                    "desc": 'In Progress'
+                },
+                {
+                    "stat": TicketModel.find_count_by_age_status("In Progress", 10080),
+                    "desc": 'In progress for > 1 week',
+                }
+            ]]
+        },
+        'reports':{
+            'title': 'Reports',
+            'link': '#',
+            'stats': [
+                [ 
+                    {
+                        'stat': 0,
+                        'desc': 'Compliments',
+                        'subtext': 'in the last week'
+                    },
+                ],
+                [
+                    {
+                        'stat': TicketModel.find_count_by_status("Closed"),
+                        'desc': "Closed tickets",
+                        'subtext': 'in the last week!'
+                    }
+                ]
+            ]
+        },
+        'managers':{
+                'title': 'New Property Managers',
+                'link': '#',
+                'isDate': True,
+                'stats': [projectManagers]
+            }
+        }
+
+```
