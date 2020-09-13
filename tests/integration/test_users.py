@@ -91,6 +91,20 @@ def test_user_roles(client, auth_headers):
     assert all([RoleEnum.PROPERTY_MANAGER.value == pm['role'] for pm in managers])
     assert response.status_code == 200
 
+    """The get users by role route returns only property managers named Gray Pouponn."""
+    response = client.post("/api/users/role", json={"name": "ray","userrole": RoleEnum.PROPERTY_MANAGER.value}, headers=auth_headers["admin"])
+    managers = response.get_json()['users']
+    assert len(managers) == 1
+    assert all(["Gray" == pm['firstName'] for pm in managers])
+    assert all(["Pouponn" == pm['lastName'] for pm in managers])
+    assert response.status_code == 200
+
+    """The get users by role route returns zero users when no names match."""
+    response = client.post("/api/users/role", json={"name": "ABCDEFG","userrole": RoleEnum.PROPERTY_MANAGER.value}, headers=auth_headers["admin"])
+    managers = response.get_json()['users']
+    assert len(managers) == 0
+    assert response.status_code == 200
+
 def test_archive_user(client, auth_headers, new_user):
     """The archive user by id route returns a successful response code and changes the user's status."""
     userToArchive = UserModel.find_by_email(new_user.email)

@@ -23,7 +23,6 @@ class Tenants(Resource):
     parser.add_argument('propertyID',required=False,help="This field can be provided at a later time.")
     parser.add_argument('staffIDs',action='append',required=False,help="This field can be provided at a later time.")
     parser.add_argument('unit',action='append',required=False,help="This field can be provided at a later time.")
-    parser.add_argument('addedOn',type=datetime,required=True,help="This field cannot be blank.")
 
     @admin_required
     def get(self, tenant_id=None):

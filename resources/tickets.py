@@ -51,10 +51,8 @@ class Ticket(Resource):
                 updated = not (ticket.status == data.status)
                 if updated:
                     ticket.status = data.status
-                    dateTime = datetime.now()
-                    timestamp = dateTime.strftime("%d-%b-%Y (%H:%M)")
-                    ticket.updated = timestamp
-
+                    ticket.updated = datetime.now()
+                    
             if(data.urgency):
                 ticket.urgency = data.urgency
 
@@ -87,7 +85,11 @@ class Tickets(Resource):
 
     @jwt_required
     def get(self):
-        return {'tickets': [ticket.json() for ticket in TicketModel.query.all()]}
+        data = Tickets.parser.parse_args()
+        if data["tenant"]:
+            return {'tickets': [ticket.json() for ticket in TicketModel.find_by_tenantID(data["tenant"])]}
+        else:
+            return {'tickets': [ticket.json() for ticket in TicketModel.query.all()]}
 
     @jwt_required
     def post(self):

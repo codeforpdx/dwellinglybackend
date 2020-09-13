@@ -9,6 +9,7 @@ coverage = "*"
 pytest-cov = "*"
 flake8 = "*"
 freezegun = "*"
+pytest-watch = "*"
 
 [packages]
 aniso8601 = "==8.0.0"

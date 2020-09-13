@@ -154,11 +154,15 @@ class UserLogin(Resource):
 class UsersRole(Resource):
     parser = reqparse.RequestParser()
     parser.add_argument('userrole',type=int,required=True,help="This field cannot be blank.")
+    parser.add_argument('name',type=str,required=False)
 
     @admin_required
     def post(self):
         data = UsersRole.parser.parse_args()
-        users = UserModel.find_by_role(RoleEnum(data['userrole']))
+        if data["name"]:
+            users = UserModel.find_by_role_and_name(RoleEnum(data['userrole']), data['name'])
+        else:
+            users = UserModel.find_by_role(RoleEnum(data['userrole']))
         users_info = []
         for user in users:
             info = user.json()

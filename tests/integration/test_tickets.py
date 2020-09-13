@@ -15,6 +15,12 @@ def test_tickets_GET_all(client, test_database, auth_headers):
     assert len(response.json['tickets'][2]['notes']) == 0
     assert len(response.json['tickets'][3]['notes']) == 0
 
+def test_tickets_GET_byTenant(client, test_database, auth_headers):
+    response = client.get(f'{endpoint}?tenant=1', headers=auth_headers["admin"])
+    assert is_valid(response, 200)
+    assert len(response.json['tickets']) == 2
+    assert response.json['tickets'][0]['tenantID'] == 1
+    assert response.json['tickets'][1]['tenantID'] == 1
 
 def test_tickets_GET_one(client, test_database, auth_headers):
     response = client.get(f'{endpoint}/{validID}', headers=auth_headers["admin"])
@@ -63,8 +69,9 @@ def test_tickets_POST(client, auth_headers):
     assert response.json['assigned'] == 'Mr. Sir'
     assert response.json['status'] == 'new'
     assert response.json['urgency'] == 'low'
-    assert response.json['opened'] == datetime.now().strftime("%d-%b-%Y (%H:%M)")
-    assert response.json['updated'] == datetime.now().strftime("%d-%b-%Y (%H:%M)")
+    assert response.json['opened'] == datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
+    assert response.json['updated'] == datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
+
 
 
 def test_tickets_PUT(client, auth_headers):
@@ -88,7 +95,7 @@ def test_tickets_PUT(client, auth_headers):
     assert response.json['assigned'] == 'user3 tester'
     assert response.json['status'] == 'in progress'
     assert response.json['urgency'] == 'high'
-    assert response.json['updated'] == datetime.now().strftime("%d-%b-%Y (%H:%M)")
+    assert response.json['updated'] == datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
     # Ticket already had 2 notes to begin with - and with this PUT - it's +1
     assert len(response.json['notes']) == 3
     assert response.json['notes'][2]['ticketid'] == 1

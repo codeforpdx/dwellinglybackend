@@ -10,3 +10,4 @@ def test_admin_user():
     assert admin_user.email == adminUserEmail
     assert admin_user.role == adminRole
     assert admin_user.phone == phone
+
