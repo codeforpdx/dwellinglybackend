@@ -29,7 +29,7 @@ class TenantModel(BaseModel):
             user = UserModel.find_by_id(id)
             if user: self.staff.append(user)
         self.unit = unit
-        self.addedOn = addedOn
+        self.addedOn = addedOn.strftime("%m/%d/%Y, %H:%M:%S")
 
 
     def json(self):
