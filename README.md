@@ -18,11 +18,14 @@ NOTE: Database is SQLite3 via SQLAlchemy
 [Note for Mac users](#Mac-OS-Alternative-Setup-Instructions-(for-those-who-have-never-used-Python/having-path-errors))
 
 
+**Note about Python Versions**: You may have to substitue **python** with **python3** and **pip** with **pip3** in the instructions below.
+
+
 1. Clone the repo (`git clone https://github.com/codeforpdx/dwellinglybackend.git`)
 2. Install Python ( https://realpython.com/installing-python/ )
 3. Install [pipenv](https://pipenv.pypa.io/en/latest/#install-pipenv-today)
 4. Run `pipenv install -d`
-   - If you get the error `ImportError: cannot import name 'Feature' from 'setuptools'`, your setuptools version might be at 46 or later. You may be able to get it to work using version 45 (e.g. `pip3 install setuptools==45`)
+   - If you get the error `ImportError: cannot import name 'Feature' from 'setuptools'`, your setuptools version might be at 46 or later. You may be able to get it to work using version 45 (e.g. `pip3 install setuptools==45`) 
 5. Seed the database
    - Run: `pipenv run python manage.py create`
    - To re-seed the database from scratch, delete data.db before running the script
@@ -63,9 +66,16 @@ If you are still having issues or if your command prompt is throwing an error th
 3. Install pipenv: `pip3 install --user pipenv`
 4. Shell into the environment configured by your Pipfile `pipenv shell`
   - This brings you into a partitioned environment set up to spec with your Pipfile. Often people who skip this step will have path and version errors.
-5. Run: `python manage.py create`
+5. Run: `pipenv run python manage.py create`
 6. Run: `pipenv run flask run`
 7. Login using one of the accounts below and you should be good to go!
+
+
+### Database commands. 
+- Create and Seed the Database: `pipenv run python manage.py create`
+- Delete, create, Seed the Database: `pipenv run python manage.py recreate`
+- Delete the Database: `pipenv run python manage.py drop`
+
 
 ### Contributing
 
