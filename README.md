@@ -73,7 +73,7 @@ If you are still having issues or if your command prompt is throwing an error th
 ### Database commands. 
 - Create and Seed the Database: `pipenv run python manage.py create`
 - Delete, create, Seed the Database: `pipenv run python manage.py recreate`
-- Delete the Database: `pipenv run python mange.py drop`
+- Delete the Database: `pipenv run python manage.py drop`
 
 
 ### Contributing
