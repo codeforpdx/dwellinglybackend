@@ -10,6 +10,7 @@ from models.tenant import TenantModel
 from models.tenant_staff_link import StaffTenantLink
 from models.revoked_tokens import RevokedTokensModel
 from resources.user import UserRegister, User, UserLogin, ArchiveUser, UsersRole, UserAccessRefresh, UserRoles
+from resources.reset_password import ResetPassword
 from resources.property import Properties, Property, ArchiveProperty
 from resources.tenants import Tenants
 from resources.emergency_contacts import EmergencyContacts
@@ -50,7 +51,6 @@ def config_app(app):
     # app.config['MAIL_PASSWORD'] = os.environ['EMAIL_PASSWORD']
     # app.config['MAIL_DEFAULT_SENDER'] = 'noreply@dwellingly.com'
     app.config['MAIL_MAX_EMAILS'] = 3
-    app.config['MAIL_SUPPRESS_SEND'] = False #same as testing
     app.config['MAIL_ASCII_ATTACHMENTS'] = False
 
 
@@ -74,7 +74,7 @@ def create_routes(app):
     api.add_resource(Leases, '/lease')
     api.add_resource(Tickets, '/tickets')
     api.add_resource(Ticket, '/tickets/<int:id>')
-
+    api.add_resource(ResetPassword, '/reset-password', '/reset-password/<string:token>')
 
 def check_for_admins():
     errorMsg = (

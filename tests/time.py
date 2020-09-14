@@ -15,3 +15,6 @@ class Time:
     def one_year_from_now():
         return Time.format_date(datetime.today() + relativedelta(years=1))
 
+    @staticmethod
+    def yesterday():
+      return Time.format_date(datetime.today() - relativedelta(days=1))
