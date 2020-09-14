@@ -12,7 +12,7 @@ The nonprofit Join is currently working to help transition people out of homeles
 
  - Please read and abide by our [Code of Conduct](https://github.com/codeforpdx/codeofconduct)
 
- - To learn about our workflow and how to install the project for development. See our [Install page](./doc/install.md)
+ - To learn about our workflow and how to install the project for development. View the [CONTRIBUTING.MD](./CONTRIBUTING.md) doc.
 
  - To learn about how to get a JWT token, using the API for development, and all our endpoints (warning endpoint info may be out of date). Please see our [API Usage](./doc/using_the_api.md) page.
 
