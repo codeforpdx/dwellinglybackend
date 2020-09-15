@@ -3,6 +3,7 @@ from flask_restful import Resource, reqparse
 from models.property import PropertyModel
 from models.tenant import TenantModel
 from resources.admin_required import admin_required
+from resources.dev_required import dev_required
 from models.user import UserModel, RoleEnum
 from models.revoked_tokens import RevokedTokensModel
 import json
@@ -106,8 +107,9 @@ class User(Resource):
         return {"Message": "User deleted"}, 200
 
 class Users(Resource):
-    
-
+    @dev_required
+    def get(self):
+        
 
 class ArchiveUser(Resource):
 
