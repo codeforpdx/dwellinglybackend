@@ -7,8 +7,6 @@ def dev_required(func):
         #check if user is dev, if not return 401
         claims = get_jwt_claims() 
         user = UserModel.find_by_email(claims['email'])
-        print(user.role)
-        print(get_jwt_claims())
         if user.role != RoleEnum.DEV:
             return {'message': "Dev Access Required"}, 401
 
