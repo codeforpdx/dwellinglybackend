@@ -103,3 +103,7 @@ class UserModel(BaseModel):
         likeName = f'%{name}%'
         return cls.query.filter((UserModel.role == role) & (UserModel.firstName.ilike(likeName) | UserModel.lastName.ilike(likeName))).all()
 
+    @classmethod
+    def all():
+        return db.session.query(UserModel).all()
+

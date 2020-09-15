@@ -107,7 +107,6 @@ class User(Resource):
         return {"Message": "User deleted"}, 200
 
 class Users(Resource):
-    @dev_required
     def get(self):
         return {"Message": "all users"}, 200
 
