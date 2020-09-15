@@ -109,8 +109,7 @@ class User(Resource):
 class Users(Resource):
     @dev_required
     def get(self):
-        users = UserModel.all()
-        users = [user.json() for user in users ]
+        users = [user.json() for user in UserModel.all()]
         return {"users": users}, 200
 
 class ArchiveUser(Resource):
