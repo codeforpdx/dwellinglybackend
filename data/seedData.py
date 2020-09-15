@@ -24,7 +24,7 @@ def seedData():
     db.session.add(user)
     db.session.commit()
 
-    user = UserModel(email="dev`@dwellingly.org", role=RoleEnum.DEV, firstName="dev1", lastName="tester", password="1234", phone="555-555-5555", archived=0)
+    user = UserModel(email="dev1@dwellingly.org", role=RoleEnum.DEV, firstName="dev1", lastName="tester", password="1234", phone="555-555-5555", archived=0)
     db.session.add(user)
 
     user = UserModel(email="pending1@dwellingly.org", role=RoleEnum.PENDING, firstName="Anthony", lastName="Redding", password="1234", phone="555-555-5555", archived=0)

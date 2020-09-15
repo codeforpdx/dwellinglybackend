@@ -109,7 +109,7 @@ class User(Resource):
 class Users(Resource):
     @dev_required
     def get(self):
-        
+        return {"Message": "all users"}, 200
 
 class ArchiveUser(Resource):
 
