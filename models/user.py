@@ -14,6 +14,7 @@ class RoleEnum(Enum):
     PROPERTY_MANAGER = 2
     STAFF = 3
     ADMIN = 4
+    DEV = 5
 
 
 class UserModel(BaseModel):
