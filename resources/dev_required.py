@@ -5,6 +5,7 @@ def dev_required(func):
     def check_dev_wrapper(*args, **kwargs):
         #check if is_dev exist. If not discontinue function
         claims = get_jwt_claims() 
+        print(get_jwt_claims())
         if not claims['is_dev']:
             return {'message': "Dev Access Required"}, 401
 

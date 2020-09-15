@@ -107,6 +107,7 @@ class User(Resource):
         return {"Message": "User deleted"}, 200
 
 class Users(Resource):
+    @dev_required
     def get(self):
         users = UserModel.all()
         users = [user.json() for user in users ]
