@@ -104,6 +104,6 @@ class UserModel(BaseModel):
         return cls.query.filter((UserModel.role == role) & (UserModel.firstName.ilike(likeName) | UserModel.lastName.ilike(likeName))).all()
 
     @classmethod
-    def all():
+    def all(cls):
         return db.session.query(UserModel).all()
 

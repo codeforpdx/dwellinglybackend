@@ -108,6 +108,7 @@ class User(Resource):
 
 class Users(Resource):
     def get(self):
+        print(UserModel.all())
         return {"Message": "all users"}, 200
 
 class ArchiveUser(Resource):
