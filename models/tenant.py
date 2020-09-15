@@ -2,6 +2,7 @@ from sqlalchemy.orm import relationship
 from db import db
 from models.user import UserModel
 from models.base_model import BaseModel
+from datetime import datetime
 
 
 class TenantModel(BaseModel):
@@ -14,12 +15,12 @@ class TenantModel(BaseModel):
     propertyID = db.Column(db.Integer, db.ForeignKey('properties.id'))
     # leaseID = db.Column(db.Integer, db.ForeignKey('lease.id'))
     addedOn = db.Column(db.Date())
-    unit = db.Column(db.String(20))
+    unitNum = db.Column(db.String(20))
 
     # relationships
     staff = relationship('UserModel', secondary='staff_tenant_links')
 
-    def __init__(self, firstName, lastName, phone, propertyID, staffIDs, unit, addedOn):
+    def __init__(self, firstName, lastName, phone, propertyID, staffIDs, unitNum):
         self.firstName = firstName
         self.lastName = lastName
         self.phone = phone
@@ -28,8 +29,8 @@ class TenantModel(BaseModel):
         for id in staffIDs:
             user = UserModel.find_by_id(id)
             if user: self.staff.append(user)
-        self.unit = unit
-        self.addedOn = addedOn.strftime("%m/%d/%Y, %H:%M:%S")
+        self.unitNum = unitNum
+        self.addedOn = datetime.date(datetime.now())
 
 
     def json(self):
@@ -42,8 +43,8 @@ class TenantModel(BaseModel):
             'propertyID': self.propertyID,
             'propertyName': self.property.name if self.property else None,
             'staff': [user.json() for user in self.staff] if self.staff else None,
-            'unit': self.unit,
-            'addedOn': self.addedOn
+            'unitNum': self.unitNum,
+            'addedOn': self.addedOn.strftime("%m/%d/%Y, %H:%M:%S")
         }
 
     @classmethod

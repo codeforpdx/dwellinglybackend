@@ -1,4 +1,5 @@
 from conftest import is_valid, log
+from datetime import datetime
 
 endpoint = '/api/tenants'
 
@@ -26,7 +27,9 @@ def test_tenants_POST(client, auth_headers):
         "lastName": "The Dog",
         "phone": "111-111-1111",
         "propertyID": 1,
-        "staffIDs": [1, 2]
+        "staffIDs": [1, 2],
+        "unitNum": "237",
+
     }
 
     response = client.post(endpoint, json=newTenant,
@@ -65,7 +68,8 @@ def test_tenants_PUT(client, auth_headers):
         "lastName": "The Dog",
         "phone": "111-111-1111",
         "propertyID": 1,
-        "staffIDs": [1, 2]
+        "staffIDs": [1, 2],
+        "unitNum": "237"
     }
     response = client.put(f'{endpoint}/{id}',
                           json=updatedTenant, headers=auth_headers["admin"])
