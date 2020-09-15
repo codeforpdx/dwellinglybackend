@@ -105,6 +105,10 @@ class User(Resource):
         user.delete_from_db()
         return {"Message": "User deleted"}, 200
 
+class Users(Resource):
+    
+
+
 class ArchiveUser(Resource):
 
     @admin_required
