@@ -5,9 +5,11 @@ from models.user import RoleEnum
 from flask_jwt_extended import create_access_token, create_refresh_token
 
 def test_user_auth(client, test_database, admin_user):
+    print(admin_user.email)
+    print(admin_user.password)
     login_response = client.post("/api/login", json={
         "email": admin_user.email,
-        "password": admin_user.password
+        "password": "1234"
     })
     """When an admin user logs in, the request should succeed."""
     assert is_valid(login_response, 200) # OK
