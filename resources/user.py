@@ -64,6 +64,10 @@ class User(Resource):
     @jwt_required
     def patch(self,user_id):
         user = UserModel.find_by_id(user_id)
+
+        if user.id != get_jwt_identity and user.role != RoleEnum.ADMIN:
+            return {"Message: You cannot change another user's information unless you are an admin"}, 403
+
         parser = reqparse.RequestParser()
         parser.add_argument('role', type=int, required=False, help="This field is not required.")
         parser.add_argument('firstName',type=str, required=False, help="This field is not required.")
@@ -102,9 +106,9 @@ class User(Resource):
                 "refresh_token": create_refresh_token(user.id)
             }
             user.update_last_active()
-            return {**user.json(), **new_tokens}
+            return {**user.json(), **new_tokens}, 201
 
-        return {**user.json(), **new_tokens}, 201
+        return user.json(), 201
 
     @admin_required
     def delete(self, user_id):
