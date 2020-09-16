@@ -149,6 +149,16 @@ def test_patch_user(client, auth_headers, new_user):
     responseInvalidId = client.patch("/api/user/999999", json={"role": "new_role"}, headers=auth_headers["admin"])
     assert responseInvalidId.status_code == 400
 
+    """The server responds with a 403 error if a non-admin attempts to edit another user's information"""
+
+    newRole =  RoleEnum.ADMIN.value
+    newEmail = "unauthorizedpatch@test.com"
+    newPhone = "555-555-5555"
+
+    responseUnauthorized = client.patch(f"/api/user/{userToPatch.id}", json={"role": newRole, "email": newEmail, "phone": newPhone}, headers=auth_headers["pm"])
+
+    assert responseUnauthorized.status_code == 403
+
 def test_delete_user(client, auth_headers, new_user):
     userToDelete = UserModel.find_by_email(new_user.email)
 
