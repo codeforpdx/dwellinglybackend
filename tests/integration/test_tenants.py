@@ -28,8 +28,7 @@ def test_tenants_POST(client, auth_headers):
         "phone": "111-111-1111",
         "propertyID": 1,
         "staffIDs": [1, 2],
-        "unitNum": "237",
-
+        "unitNum": "237"
     }
 
     response = client.post(endpoint, json=newTenant,
