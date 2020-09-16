@@ -61,7 +61,7 @@ class User(Resource):
 
         return user_info, 200
 
-    @admin_required
+    @jwt_required
     def patch(self,user_id):
         user = UserModel.find_by_id(user_id)
         parser = reqparse.RequestParser()
