@@ -167,9 +167,9 @@ def test_patch_user(client, auth_headers, new_user):
 
     selfPatchResponse = client.patch(f"/api/user/{userToPatch.id}", json={"phone": newPhone}, headers={"Authorization": f"Bearer {original_access_token}"})
 
-    assert newPhone == selfPatchResponse["phone"]
-    assert original_access_token != selfPatchResponse["access_token"]
-    assert original_refresh_token != selfPatchResponse["refresh_token"]
+    assert newPhone == selfPatchResponse.json["phone"]
+    assert original_access_token != selfPatchResponse.json["access_token"]
+    assert original_refresh_token != selfPatchResponse.json["refresh_token"]
 
 def test_delete_user(client, auth_headers, new_user):
     userToDelete = UserModel.find_by_email(new_user.email)
