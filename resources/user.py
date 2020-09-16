@@ -67,8 +67,6 @@ class User(Resource):
 
         user = UserModel.find_by_id(user_id)
 
-        if user_id != get_jwt_identity() and user.role != RoleEnum.ADMIN:
-            return {"Message": "You cannot change another user's information unless you are an admin"}, 403
 
         parser = reqparse.RequestParser()
         parser.add_argument('role', type=int, required=False, help="This field is not required.")
@@ -83,6 +81,9 @@ class User(Resource):
         if not user:
             return {"Message": "Unable to find user."}, 400
       
+        if user_id != get_jwt_identity() and user.role != RoleEnum.ADMIN:
+            return {"Message": "You cannot change another user's information unless you are an admin"}, 403
+            
         if data['role']:
           user.role = RoleEnum(data['role'])
         if (data['firstName'] != None):
