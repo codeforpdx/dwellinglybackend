@@ -154,9 +154,9 @@ def test_patch_user(client, auth_headers, new_user):
 
     newEmail = "unauthorizedpatch@test.com"
 
-    responseUnauthorized = client.patch(f"/api/user/{userToPatch.id}", json={"email": newEmail}, headers=auth_headers["pm"])
+    unauthorizedResponse = client.patch(f"/api/user/{userToPatch.id}", json={"email": newEmail}, headers=auth_headers["pm"])
 
-    assert responseUnauthorized.status_code == 403
+    assert unauthorizedResponse.status_code == 403
 
     """The server responds with updated user information and a new jwt token when a user patches his own information"""
 
@@ -165,11 +165,24 @@ def test_patch_user(client, auth_headers, new_user):
 
     newPhone = "555-555-5555"
 
-    selfPatchResponse = client.patch(f"/api/user/{userToPatch.id}", json={"phone": newPhone}, headers={"Authorization": f"Bearer {original_access_token}"})
+    tokenTestResponse = client.patch(f"/api/user/{userToPatch.id}", json={"phone": newPhone}, headers={"Authorization": f"Bearer {original_access_token}"})
 
-    assert newPhone == selfPatchResponse.json["phone"]
-    assert original_access_token != selfPatchResponse.json["access_token"]
-    assert original_refresh_token != selfPatchResponse.json["refresh_token"]
+    new_access_token = tokenTestResponse.json["access_token"]
+    new_refresh_token = tokenTestResponse.json["refresh_token"]
+
+    assert newPhone == tokenTestResponse.json["phone"]
+    assert original_access_token != new_access_token
+    assert original_refresh_token != new_refresh_token
+
+    """Non-Admin users cannot change their own role"""
+
+    newRole =  RoleEnum.ADMIN.value
+
+    changeOwnRoleResponse = client.patch(f"/api/user/{userToPatch.id}", json={"role": newRole}, headers={"Authorization": f"Bearer {new_access_token}"})
+
+    assert changeOwnRoleResponse.status_code == 403
+
+
 
 def test_delete_user(client, auth_headers, new_user):
     userToDelete = UserModel.find_by_email(new_user.email)
