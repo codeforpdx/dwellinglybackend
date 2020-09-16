@@ -2,6 +2,7 @@ from models.user import UserModel
 from conftest import is_valid, log
 from freezegun import freeze_time
 from models.user import RoleEnum
+from flask_jwt_extended import create_access_token, create_refresh_token
 
 def test_user_auth(client, test_database, admin_user):
     login_response = client.post("/api/login", json={
