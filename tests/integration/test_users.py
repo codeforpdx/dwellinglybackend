@@ -151,13 +151,22 @@ def test_patch_user(client, auth_headers, new_user):
 
     """The server responds with a 403 error if a non-admin attempts to edit another user's information"""
 
-    newRole =  RoleEnum.ADMIN.value
     newEmail = "unauthorizedpatch@test.com"
-    newPhone = "555-555-5555"
 
-    responseUnauthorized = client.patch(f"/api/user/{userToPatch.id}", json={"role": newRole, "email": newEmail, "phone": newPhone}, headers=auth_headers["pm"])
+    responseUnauthorized = client.patch(f"/api/user/{userToPatch.id}", json={"email": newEmail}, headers=auth_headers["pm"])
 
     assert responseUnauthorized.status_code == 403
+
+    """The server responds with updated user information and a new jwt token when a user patches his own information"""
+
+    original_access_token = create_access_token(identity=userToPatch.id, fresh=True)
+
+    newPhone = "555-555-5555"
+
+    selfPatchResponse = client.patch(f"/api/user/{userToPatch.id}", json={"phone": newPhone}, headers={"Authorization": f"Bearer {original_access_token}"})
+
+    assert newPhone == selfPatchResponse["phone"]
+    assert original_acces_token != selftPatchResponse["access_token"]
 
 def test_delete_user(client, auth_headers, new_user):
     userToDelete = UserModel.find_by_email(new_user.email)
