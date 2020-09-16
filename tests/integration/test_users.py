@@ -160,13 +160,15 @@ def test_patch_user(client, auth_headers, new_user):
     """The server responds with updated user information and a new jwt token when a user patches his own information"""
 
     original_access_token = create_access_token(identity=userToPatch.id, fresh=True)
+    original_refresh_token = create_refresh_token(userToPatch.id)
 
     newPhone = "555-555-5555"
 
     selfPatchResponse = client.patch(f"/api/user/{userToPatch.id}", json={"phone": newPhone}, headers={"Authorization": f"Bearer {original_access_token}"})
 
     assert newPhone == selfPatchResponse["phone"]
-    assert original_acces_token != selftPatchResponse["access_token"]
+    assert original_access_token != selfPatchResponse["access_token"]
+    assert original_refresh_token != selfPatchResponse["refresh_token"]
 
 def test_delete_user(client, auth_headers, new_user):
     userToDelete = UserModel.find_by_email(new_user.email)
