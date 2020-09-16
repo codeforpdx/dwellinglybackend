@@ -80,11 +80,12 @@ class User(Resource):
 
         if not user:
             return {"Message": "Unable to find user."}, 400
-
-        print(get_jwt_claims())
       
         if user_id != get_jwt_identity() and not get_jwt_claims()['is_admin']:
             return {"Message": "You cannot change another user's information unless you are an admin"}, 403
+
+        if data['role'] and not get_jwt_claims()['is_admin']:
+            return {"Message": "Only admins can change roles"}, 403
 
         if data['role']:
           user.role = RoleEnum(data['role'])
