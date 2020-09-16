@@ -63,10 +63,12 @@ class User(Resource):
 
     @jwt_required
     def patch(self,user_id):
+
+
         user = UserModel.find_by_id(user_id)
 
-        if user.id != get_jwt_identity and user.role != RoleEnum.ADMIN:
-            return {"Message: You cannot change another user's information unless you are an admin"}, 403
+        if user_id != get_jwt_identity() and user.role != RoleEnum.ADMIN:
+            return {"Message": "You cannot change another user's information unless you are an admin"}, 403
 
         parser = reqparse.RequestParser()
         parser.add_argument('role', type=int, required=False, help="This field is not required.")
