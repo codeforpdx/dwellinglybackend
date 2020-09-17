@@ -26,7 +26,19 @@ def test_post_property(client, auth_headers, new_property):
 def test_get_property_by_name(client, auth_headers, test_database):
     """The get property by name returns a successful response code."""
     response = client.get("/api/properties/test1", headers=auth_headers["admin"])
+    property_info = response.get_json()
     assert response.status_code == 200
+    assert property_info['name'] == 'test1'
+    assert property_info['address'] == '123 NE FLanders St'
+    assert property_info['unit'] == '5'
+    assert property_info['city'] == 'Portland'
+    assert property_info['state'] == 'OR'
+    assert property_info['zipcode'] == '97207'
+    assert property_info['propertyManager'] == 5
+    assert property_info['propertyManagerName'] == 'Gray Pouponn'
+    assert property_info['tenantIDs'] == [1]
+    assert property_info['dateAdded'] == '2020-04-12'
+    assert property_info['archived'] == 0
 
     """The server responds with an error if the URL contains a non-existent property name"""
     responseBadPropertyName = client.get("/api/properties/this_property_does_not_exist", headers=auth_headers["admin"])
