@@ -4,23 +4,22 @@ NOTE: Database is SQLite3 via SQLAlchemy
 
 [Note for Windows users](#Note-For-Windows-Users)
 
-[Note for Mac users](#Mac-OS-Alternative-Setup-Instructions-(for-those-who-have-never-used-Python/having-path-errors))
-
-
-**Note about Python Versions**: You may have to substitue **python** with **python3** and **pip** with **pip3** in the instructions below.
-
+[Mac OS Troubleshooting](#Mac-OS-Troubleshooting)
 
 1. Clone the repo (`git clone https://github.com/codeforpdx/dwellinglybackend.git`)
-2. Install Python ( https://realpython.com/installing-python/ )
-3. Install [pipenv](https://pipenv.pypa.io/en/latest/#install-pipenv-today)
-4. Install dependencies `pipenv install -d`
-   - If you get the error `ImportError: cannot import name 'Feature' from 'setuptools'`, your setuptools version might be at 46 or later. You may be able to get it to work using version 45 (e.g. `pip3 install setuptools==45`) 
-5. Create and Seed the database
+2. Install [pipenv](https://pipenv.pypa.io/en/latest/#install-pipenv-today)
+    - Note: It is not necessary to install python before installing pipenv.
+    - Please install pipenv according to their docs for your OS.
+3. Install dependencies `pipenv install -d`
+   - Note: Pipenv may prompt you to install Python if it cannot find the correct version on your system. You should select Yes.
+
+   - Note: If you get the error `ImportError: cannot import name 'Feature' from 'setuptools'`, your setuptools version might be at 46 or later. You may be able to get it to work using version 45 (e.g. `pip3 install setuptools==45`)
+4. Create and Seed the database
    - Run: `pipenv run python manage.py create`
    - To re-seed the database from scratch, delete data.db before running the script
    - Look for the file data.db to be created in the root directory
    - If you get the error `ImportError: No module named flask` or similar, you may need to run `pipenv shell` to launch virtual environment.
-6. Start the server using the flask environment (required every time the project is re-opened):
+5. Start the server using the flask environment (required every time the project is re-opened):
    - Run: `pipenv run flask run`
    - Run + restart the server on changes: `pipenv run flask run --reload`
 
@@ -48,19 +47,13 @@ Python does not come by default for Windows users. Sometimes the PATH variable i
 
 If you are still having issues or if your command prompt is throwing an error that says `python is not a command` or `pip is not a command`, it is most likely a pathing issue where the ENV variable is pointing to the wrong directory. To try to troubleshoot, I suggest following this guide: ( https://github.com/LambdaSchool/CS-Wiki/wiki/Installing-Python-3-and-pipenv ).
 
-### Mac OS Alternative Setup Instructions (for those who have never used Python/having path errors)
+### Mac-OS-Troubleshooting
 
-1. Clone the repo (`git clone https://github.com/codeforpdx/dwellinglybackend.git`)
-2. Install Python ( https://realpython.com/installing-python/ )
-3. Install pipenv: `pip3 install --user pipenv`
-4. Shell into the environment configured by your Pipfile `pipenv shell`
-  - This brings you into a partitioned environment set up to spec with your Pipfile. Often people who skip this step will have path and version errors.
-5. Run: `pipenv run python manage.py create`
-6. Run: `pipenv run flask run`
-7. Login using one of the accounts below and you should be good to go!
+Check to see where the Python you're running is located (`which python`). You should see something like `/Users/your_account_shortname/.pyenv/shims/python`.
+If you don't see something similar, you may have several versions of Python installed elsewhere (via Anaconda or Homebrew). If (and only if) you'd like to clear out any previous homebrew-based installs, type `brew uninstall --ignore-dependencies python3 && brew uninstall --ignore-dependencies python`.
 
 
-### Database commands. 
+### Database commands.
 - Create and Seed the Database: `pipenv run python manage.py create`
 - Delete, create, Seed the Database: `pipenv run python manage.py recreate`
 - Delete the Database: `pipenv run python manage.py drop`

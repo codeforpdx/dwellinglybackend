@@ -1,4 +1,4 @@
-# Dwellingly App Backend 
+# Dwellingly App Backend
 [![Build Status](https://travis-ci.com/codeforpdx/dwellinglybackend.svg?branch=development)](https://travis-ci.com/codeforpdx/dwellinglybackend)
 
 _Looking for the [Dwellingly App front end?](https://github.com/codeforpdx/dwellingly-app)_
@@ -23,4 +23,3 @@ The nonprofit Join is currently working to help transition people out of homeles
 ### Thank You contributors. No contribution is too small.
 
 I plan to setup the contributor bot to auto add to this. We can also manually add for contributors who contribute in other ways.
-
