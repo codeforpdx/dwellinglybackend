@@ -2,6 +2,7 @@ from sqlalchemy.orm import relationship
 from db import db
 from models.tenant import TenantModel
 from models.base_model import BaseModel
+from models.user import UserModel
 
 
 class PropertyModel(BaseModel):
@@ -36,6 +37,8 @@ class PropertyModel(BaseModel):
         for tenant in self.tenants:
             property_tenants.append(tenant.id)
 
+        property_manager = UserModel.find_by_id(self.propertyManager)
+
         return {
             'id': self.id,
             'name':self.name,
@@ -45,6 +48,7 @@ class PropertyModel(BaseModel):
             'state': self.state,
             'zipcode': self.zipcode,
             'propertyManager': self.propertyManager,
+            'propertyManagerName': property_manager.full_name(),
             'tenantIDs': property_tenants,
             'dateAdded': self.dateAdded,
             'archived': self.archived
