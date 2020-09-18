@@ -61,9 +61,13 @@ class User(Resource):
 
         return user_info, 200
 
-    @admin_required
+    @jwt_required
     def patch(self,user_id):
+
+
         user = UserModel.find_by_id(user_id)
+
+
         parser = reqparse.RequestParser()
         parser.add_argument('role', type=int, required=False, help="This field is not required.")
         parser.add_argument('firstName',type=str, required=False, help="This field is not required.")
@@ -77,6 +81,12 @@ class User(Resource):
         if not user:
             return {"Message": "Unable to find user."}, 400
       
+        if user_id != get_jwt_identity() and not get_jwt_claims()['is_admin']:
+            return {"Message": "You cannot change another user's information unless you are an admin"}, 403
+
+        if data['role'] and not get_jwt_claims()['is_admin']:
+            return {"Message": "Only admins can change roles"}, 403
+
         if data['role']:
           user.role = RoleEnum(data['role'])
         if (data['firstName'] != None):
@@ -94,6 +104,15 @@ class User(Resource):
             user.save_to_db()
         except:
             return {'Message': 'An Error Has Occurred. Note that you can only update a user\'s role, email, phone, or password.'}, 500
+
+
+        if user_id == get_jwt_identity():
+            new_tokens = {
+                "access_token": create_access_token(identity=user.id, fresh=True),
+                "refresh_token": create_refresh_token(user.id)
+            }
+            user.update_last_active()
+            return {**user.json(), **new_tokens}, 201
 
         return user.json(), 201
 

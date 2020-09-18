@@ -2,6 +2,7 @@ from models.user import UserModel
 from conftest import is_valid, log
 from freezegun import freeze_time
 from models.user import RoleEnum
+from flask_jwt_extended import create_access_token, create_refresh_token
 
 def test_user_auth(client, test_database, admin_user):
     login_response = client.post("/api/login", json={
@@ -148,6 +149,40 @@ def test_patch_user(client, auth_headers, new_user):
     """The server responds with an error if a non-existent user id is used for the patch user by id route."""
     responseInvalidId = client.patch("/api/user/999999", json={"role": "new_role"}, headers=auth_headers["admin"])
     assert responseInvalidId.status_code == 400
+
+    """The server responds with a 403 error if a non-admin attempts to edit another user's information"""
+
+    newEmail = "unauthorizedpatch@test.com"
+
+    unauthorizedResponse = client.patch(f"/api/user/{userToPatch.id}", json={"email": newEmail}, headers=auth_headers["pm"])
+
+    assert unauthorizedResponse.status_code == 403
+
+    """The server responds with updated user information and a new jwt token when a user patches his own information"""
+
+    original_access_token = create_access_token(identity=userToPatch.id, fresh=True)
+    original_refresh_token = create_refresh_token(userToPatch.id)
+
+    newPhone = "555-555-5555"
+
+    tokenTestResponse = client.patch(f"/api/user/{userToPatch.id}", json={"phone": newPhone}, headers={"Authorization": f"Bearer {original_access_token}"})
+
+    new_access_token = tokenTestResponse.json["access_token"]
+    new_refresh_token = tokenTestResponse.json["refresh_token"]
+
+    assert newPhone == tokenTestResponse.json["phone"]
+    assert original_access_token != new_access_token
+    assert original_refresh_token != new_refresh_token
+
+    """Non-Admin users cannot change their own role"""
+
+    newRole =  RoleEnum.ADMIN.value
+
+    changeOwnRoleResponse = client.patch(f"/api/user/{userToPatch.id}", json={"role": newRole}, headers={"Authorization": f"Bearer {new_access_token}"})
+
+    assert changeOwnRoleResponse.status_code == 403
+
+
 
 def test_delete_user(client, auth_headers, new_user):
     userToDelete = UserModel.find_by_email(new_user.email)
