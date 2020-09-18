@@ -21,6 +21,7 @@ class Tenants(Resource):
     parser.add_argument('phone',type=str,required=True,help="This field cannot be blank.")
     parser.add_argument('propertyID',required=False,help="This field can be provided at a later time.")
     parser.add_argument('staffIDs',action='append',required=False,help="This field can be provided at a later time.")
+    parser.add_argument('unitNum' ,required=False,help="This field can be provided at a later time.")
 
     @admin_required
     def get(self, tenant_id=None):
@@ -76,6 +77,9 @@ class Tenants(Resource):
             for id in data.staffIDs: 
                 user = UserModel.find_by_id(id)
                 if user: tenantEntry.staff.append(user)
+        if(data.unitNum):
+            tenantEntry.unitNum = data.unitNum
+
         
         try:
             tenantEntry.save_to_db()
