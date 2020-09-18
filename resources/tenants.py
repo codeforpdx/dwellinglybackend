@@ -5,7 +5,6 @@ from resources.admin_required import admin_required
 from db import db
 from models.tenant import TenantModel
 from models.user import UserModel
-from datetime import datetime
 
 # | method | route                | action                    |
 # | :----- | :------------------- | :------------------------ |

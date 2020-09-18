@@ -1,5 +1,4 @@
 from models.tenant import TenantModel
-from datetime import datetime
 
 firstName = "Renty"
 lastName = "McRenter"

@@ -1,5 +1,4 @@
 from conftest import is_valid, log
-from datetime import datetime
 
 endpoint = '/api/tenants'
 
