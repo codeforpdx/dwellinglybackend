@@ -1,6 +1,6 @@
 ### What issue is this solving?
-<!-- replace ### with the issue number. This will ensure the issue is automatically closed when the PR is merged. -->
-Closes https://github.com/codeforpdx/dwellingly-app/issues/###
+<!-- replace ### with the issue number. This will ensure the issue in the FE repo is automatically closed when the PR is merged. -->
+Closes codeforpdx/dwellingly-app/issues/###
 
 ### Any helpful knowledge/context for the reviewer?
 Is a re-seeding of the database necessary?
