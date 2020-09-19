@@ -31,22 +31,6 @@ class UserRegister(Resource):
 
     def post(self):
         data = UserRegister.parser.parse_args()
-
-        # I think the above print statement will ALWAYS be false because upon saving - we're always hashing
-        # So we're NEVER seeing the plaintext password anymore
-        # I think there was a lot of learning here...but ultimately...we're not doing it right
-        # When we register
-        # We need to take the plain text password
-        # hash that
-        # store it in the db
-        # then when we login -
-        # we need to take that same plain text password
-        # hash it again --> don't think this needs to happen - because checkpw function can make the comparison
-        # then compare it to the db
-        # start here when you come back
-
-        # Let's start by hashing the password
-        # We'll convert the string into bytes for bcrypt to be able to process
         hashed_password = bcrypt.hashpw(bytes(data['password'], 'utf-8'), bcrypt.gensalt())
 
         if UserModel.find_by_email(data['email']):
@@ -171,7 +155,6 @@ class UserLogin(Resource):
     parser.add_argument('password', type=str, required=True, help="This field cannot be blank.")
 
     def post(self):
-        print('IN THE POST ENDPOINT')
         data = UserLogin.parser.parse_args()
 
         user = UserModel.find_by_email(data['email'])
@@ -180,12 +163,6 @@ class UserLogin(Resource):
             return {"message": "Not a valid user"}, 403
 
         # Now we need to login and compare the plaintext pw which is a string to the hashed pw
-        print('Passwords to compare: ')
-        print('Plain-text: ')
-        print(data['password'])
-        print('Hashed-password: ')
-        print(user.password)
-        print(bcrypt.checkpw(bytes(data['password'], 'utf-8'), user.password))
         if user and bcrypt.checkpw(bytes(data['password'], 'utf-8'), user.password):
             access_token = create_access_token(identity=user.id, fresh=True) 
             refresh_token = create_refresh_token(user.id)

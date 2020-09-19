@@ -7,6 +7,7 @@ from models.base_model import BaseModel
 from flask import current_app
 from jwt import ExpiredSignatureError
 
+
 class RoleEnum(Enum):
     PENDING = 0
     TENANT = 1

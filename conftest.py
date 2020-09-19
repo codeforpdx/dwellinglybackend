@@ -10,6 +10,7 @@ import bcrypt
 newPropertyName = "test1"
 newPropertyAddress = "123 NE FLanders St"
 hashed_password = bcrypt.hashpw(bytes('1234', 'utf-8'), bcrypt.gensalt())
+plaintext_password = "1234"
 
 # Note: this repo uses the "pytest-flask" plugin which exposes the following fixtures for use in tests:
 #   client: an instance of flask's app.test_client - for making requests i.e. client.get('/')
@@ -87,7 +88,7 @@ def test_database(app, admin_user, new_user, property_manager_user):
 def get_auth_header(client, userModel):
     login_response = client.post("/api/login", json={
         "email": userModel.email,
-        "password": userModel.password
+        "password": plaintext_password
     })
     auth_header = {"Authorization": f"Bearer {login_response.json['access_token']}"}
     return auth_header

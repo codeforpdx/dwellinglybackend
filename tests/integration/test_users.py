@@ -4,12 +4,14 @@ from freezegun import freeze_time
 from models.user import RoleEnum
 from flask_jwt_extended import create_access_token, create_refresh_token
 
+plaintext_password = "1234"
+
 def test_user_auth(client, test_database, admin_user):
     print(admin_user.email)
     print(admin_user.password)
     login_response = client.post("/api/login", json={
         "email": admin_user.email,
-        "password": "1234"
+        "password": plaintext_password
     })
     """When an admin user logs in, the request should succeed."""
     assert is_valid(login_response, 200) # OK
@@ -30,7 +32,7 @@ def test_last_active(client, test_database, admin_user):
     with freeze_time('2020-01-01'):
         login_response = client.post("/api/login", json={
             "email": admin_user.email,
-            "password": admin_user.password
+            "password": plaintext_password
         })
         user = UserModel.find_by_email(admin_user.email)
         assert user.lastActive.strftime('%Y-%m-%d %H:%M:%S') == '2020-01-01 00:00:00'
@@ -55,7 +57,7 @@ def test_register_duplicate_user(client, test_database):
 def test_refresh_user(client, test_database, admin_user):
     login_response = client.post("/api/login", json={
         "email": admin_user.email,
-        "password": admin_user.password
+        "password": plaintext_password
     })
     """The refresh route returns a successful response code."""
     refreshHeader = {"Authorization": f"Bearer {login_response.json['refresh_token']}"}
@@ -118,7 +120,7 @@ def test_archive_user(client, auth_headers, new_user):
     """An archived user is prevented from logging in."""
     data = {
         "email": new_user.email,
-        "password": new_user.password
+        "password": plaintext_password
     }
     responseLoginArchivedUser = client.post("/api/login", json=data)
     assert responseLoginArchivedUser.status_code == 403
