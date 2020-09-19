@@ -1,7 +1,7 @@
 # Dwellingly App Backend
 [![Build Status](https://travis-ci.com/codeforpdx/dwellinglybackend.svg?branch=development)](https://travis-ci.com/codeforpdx/dwellinglybackend)
 
-_Looking for the [Dwellingly App front end?](https://github.com/codeforpdx/dwellingly-app)_
+_Looking for the [Dwellingly App front end?](https://github.com/codeforpdx/dwellingly-app)__
 
 
 ## Description
