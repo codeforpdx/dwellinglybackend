@@ -79,7 +79,7 @@ class Lease(Resource):
             lease.delete_from_db()
             return{'Message': 'Lease Removed from Database'}, 200
         else: 
-            return{'Message': 'Lease Not In Database'}, 422
+            return{'Message': 'Lease Not Found'}, 422
 
 class Leases(Resource):
     @jwt_required    

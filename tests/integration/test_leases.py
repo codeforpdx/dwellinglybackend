@@ -119,7 +119,7 @@ class TestDeleteLease:
         response = self.client.delete(f'{self.endpoint}/504', headers=auth_headers["pm"])
 
         assert is_valid(response, 422) 
-        assert response.json == {'Message': 'Lease Not In Database'}
+        assert response.json == {'Message': 'Lease Not Found'}
         assert num_leases == len(LeaseModel.query.all())
 
 
