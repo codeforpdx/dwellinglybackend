@@ -5,12 +5,12 @@ from db import db
 from data.seedData import seedData
 from models.user import UserModel, RoleEnum
 from models.property import PropertyModel
-import bcrypt
+from utils.auth import hash_pw
 
 newPropertyName = "test1"
 newPropertyAddress = "123 NE FLanders St"
-hashed_password = bcrypt.hashpw(bytes('1234', 'utf-8'), bcrypt.gensalt())
 plaintext_password = "1234"
+hashed_password = hash_pw(plaintext_password)
 
 # Note: this repo uses the "pytest-flask" plugin which exposes the following fixtures for use in tests:
 #   client: an instance of flask's app.test_client - for making requests i.e. client.get('/')

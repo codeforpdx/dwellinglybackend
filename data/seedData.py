@@ -9,9 +9,9 @@ from models.notes import NotesModel
 from models.revoked_tokens import RevokedTokensModel
 from models.emergency_contact import EmergencyContactModel
 from models.lease import LeaseModel
-import bcrypt
+from utils.auth import hash_pw
 
-hashed_password = bcrypt.hashpw(bytes('1234', 'utf-8'), bcrypt.gensalt())
+hashed_password = hash_pw('1234')
 
 def seedData():
     now=datetime.now()

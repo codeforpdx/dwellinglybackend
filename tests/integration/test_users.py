@@ -7,8 +7,6 @@ from flask_jwt_extended import create_access_token, create_refresh_token
 plaintext_password = "1234"
 
 def test_user_auth(client, test_database, admin_user):
-    print(admin_user.email)
-    print(admin_user.password)
     login_response = client.post("/api/login", json={
         "email": admin_user.email,
         "password": plaintext_password

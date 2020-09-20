@@ -8,7 +8,7 @@ from models.revoked_tokens import RevokedTokensModel
 import json
 from werkzeug.security import safe_str_cmp
 from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt_claims, get_raw_jwt, get_jwt_identity, jwt_refresh_token_required
-import bcrypt
+from utils.auth import hash_pw, check_pw
 
 
 class UserRoles(Resource):
@@ -31,14 +31,13 @@ class UserRegister(Resource):
 
     def post(self):
         data = UserRegister.parser.parse_args()
-        hashed_password = bcrypt.hashpw(bytes(data['password'], 'utf-8'), bcrypt.gensalt())
 
         if UserModel.find_by_email(data['email']):
             return {"message": "A user with that email already exists"}, 400
 
         user = UserModel(firstName=data['firstName'],
                          lastName=data['lastName'], email=data['email'],
-                         password=hashed_password, phone=data['phone'],
+                         password=hash_pw(data['password']), phone=data['phone'],
                          role=RoleEnum(data['role']) if data['role'] else None, archived=data['archived'])
         # And we'll store it into the db as bytes
         user.save_to_db()
@@ -162,8 +161,7 @@ class UserLogin(Resource):
         if user and user.archived:
             return {"message": "Not a valid user"}, 403
 
-        # Now we need to login and compare the plaintext pw which is a string to the hashed pw
-        if user and bcrypt.checkpw(bytes(data['password'], 'utf-8'), user.password):
+        if user and check_pw(data['password'], user.password):
             access_token = create_access_token(identity=user.id, fresh=True) 
             refresh_token = create_refresh_token(user.id)
             user.update_last_active()
