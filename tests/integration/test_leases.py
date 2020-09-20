@@ -85,7 +85,7 @@ class TestCreateLease:
         num_leases = len(LeaseModel.query.all())
         response = self.client.post(self.endpoint, json=self.valid_payload, headers=auth_headers["pm"])
 
-        assert is_valid(response, 200)
+        assert is_valid(response, 201)
         assert response.json == 201
         assert num_leases + 1 == len(LeaseModel.query.all())
 
@@ -118,8 +118,8 @@ class TestDeleteLease:
         num_leases = len(LeaseModel.query.all())
         response = self.client.delete(f'{self.endpoint}/504', headers=auth_headers["pm"])
 
-        assert is_valid(response, 200)
-        assert response.json == {'Message': 'Lease Removed from Database'}
+        assert is_valid(response, 422) 
+        assert response.json == {'Message': 'Lease Not In Database'}
         assert num_leases == len(LeaseModel.query.all())
 
 
@@ -132,7 +132,7 @@ class TestUpdateLease:
     def test_valid_lease_id(self, auth_headers):
         response = self.client.put(f'{self.endpoint}/{self.lease.id}', headers=auth_headers["pm"])
 
-        assert is_valid(response, 201)
+        assert is_valid(response, 200)
         assert response.json == self.lease.json()
 
     def test_invalid_lease_id(self, auth_headers):
@@ -148,7 +148,7 @@ class TestUpdateLease:
         with freeze_time(Time.one_year_from_now()):
             response = self.client.put(f'{self.endpoint}/{self.lease.id}', json=payload, headers=auth_headers["pm"])
             
-            assert is_valid(response, 201)
+            assert is_valid(response, 200)
             assert response.json['dateUpdated'] != old_date
 
     def test_updatedDate_is_left_unchanged_when_given_invalid_params(self, auth_headers):
@@ -157,7 +157,7 @@ class TestUpdateLease:
         with freeze_time(Time.one_year_from_now()):
             response = self.client.put(f'{self.endpoint}/{self.lease.id}', json={}, headers=auth_headers["pm"])
 
-        assert is_valid(response, 201)
+        assert is_valid(response, 200)
         assert response.json['dateUpdated'] == old_date
         
     def test_invalid_attribute_ids(self, auth_headers):
@@ -189,7 +189,7 @@ class TestUpdateLease:
 
         response = self.client.put(f'{self.endpoint}/{self.lease.id}', json=payload, headers=auth_headers["pm"])
 
-        assert is_valid(response, 201)
+        assert is_valid(response, 200)
         assert response.json['name'] == 'I'
         assert response.json['landlordID']['id'] == 2
         assert response.json['propertyID']['id'] == 2
@@ -251,14 +251,16 @@ class TestLeaseAuthorizations:
             }
         for _, role in auth_headers.items():
             response = self.client.post('/api/lease', json=payload, headers=role)
-            assert is_valid(response, 200)
+            assert is_valid(response, 201)
 
     def test_authorized_delete_request(self, auth_headers):
+        id = 1
         for _, role in auth_headers.items():
-            response = self.client.delete('/api/lease/1', headers=role)
+            response = self.client.delete('/api/lease/{}'.format(id), headers=role)
             assert is_valid(response, 200)
+            id += 1
 
     def test_authorized_update_request(self, auth_headers):
         for _, role in auth_headers.items():
             response = self.client.put('/api/lease/1', headers=role)
-            assert is_valid(response, 201)
+            assert is_valid(response, 200)

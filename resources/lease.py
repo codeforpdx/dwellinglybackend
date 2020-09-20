@@ -70,15 +70,16 @@ class Lease(Resource):
         except:
             return {'Message': 'An Error Has Occured'}, 500
 
-        return baseLease.json(), 201
+        return baseLease.json(), 200
     
     @jwt_required
     def delete(self, id):
         lease = LeaseModel.find_by_id(id)
         if lease:
             lease.delete_from_db()
-
-        return{'Message': 'Lease Removed from Database'}
+            return{'Message': 'Lease Removed from Database'}, 200
+        else: 
+            return{'Message': 'Lease Not In Database'}, 422
 
 class Leases(Resource):
     @jwt_required    
@@ -101,4 +102,4 @@ class Leases(Resource):
         except:
             return {'Message': 'An Error Has Occured'}, 500
 
-        return 201
+        return 201, 201
