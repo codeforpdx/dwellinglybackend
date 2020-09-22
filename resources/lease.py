@@ -62,9 +62,11 @@ class Lease(Resource):
             baseLease.dateTimeEnd = datetime.strptime(data.dateTimeEnd, '%m/%d/%Y %H:%M:%S')
             update = True
 
-        if update == True:
+        if update == False:
+            return baseLease.json(), 400
+        else: 
             baseLease.dateUpdated = datetime.now()                         
-  
+
         try:
             baseLease.save_to_db()
         except:
@@ -79,7 +81,7 @@ class Lease(Resource):
             lease.delete_from_db()
             return{'Message': 'Lease Removed from Database'}, 200
         else: 
-            return{'Message': 'Lease Not Found'}, 422
+            return{'Message': 'Lease Not Found'}, 404
 
 class Leases(Resource):
     @jwt_required    

@@ -118,7 +118,7 @@ class TestDeleteLease:
         num_leases = len(LeaseModel.query.all())
         response = self.client.delete(f'{self.endpoint}/504', headers=auth_headers["pm"])
 
-        assert is_valid(response, 422) 
+        assert is_valid(response, 404) 
         assert response.json == {'Message': 'Lease Not Found'}
         assert num_leases == len(LeaseModel.query.all())
 
@@ -132,7 +132,7 @@ class TestUpdateLease:
     def test_valid_lease_id(self, auth_headers):
         response = self.client.put(f'{self.endpoint}/{self.lease.id}', headers=auth_headers["pm"])
 
-        assert is_valid(response, 200)
+        assert is_valid(response, 400)
         assert response.json == self.lease.json()
 
     def test_invalid_lease_id(self, auth_headers):
@@ -157,7 +157,7 @@ class TestUpdateLease:
         with freeze_time(Time.one_year_from_now()):
             response = self.client.put(f'{self.endpoint}/{self.lease.id}', json={}, headers=auth_headers["pm"])
 
-        assert is_valid(response, 200)
+        assert is_valid(response, 400)
         assert response.json['dateUpdated'] == old_date
         
     def test_invalid_attribute_ids(self, auth_headers):
@@ -261,6 +261,10 @@ class TestLeaseAuthorizations:
             id += 1
 
     def test_authorized_update_request(self, auth_headers):
+        payload = {
+                'dateTimeStart': Time.today(),
+                'dateTimeEnd': Time.one_year_from_now()
+            }
         for _, role in auth_headers.items():
-            response = self.client.put('/api/lease/1', headers=role)
+            response = self.client.put('/api/lease/1', json=payload, headers=role)
             assert is_valid(response, 200)
