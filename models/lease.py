@@ -32,14 +32,13 @@ class LeaseModel(BaseModel):
     def json(self):
         property = PropertyModel.find_by_id(self.propertyID)
         landlord = UserModel.find_by_id(self.landlordID)
-        tenant = TenantModel.find_by_id(self.tenantID)
 
         return {
           'id': self.id,
           'name':self.name,
           'propertyID': property.json(),
           'landlordID': landlord.json(),
-          'tenantID': tenant.json(),
+          'tenantID': self.tenant.json(),
           'dateTimeStart': self.dateTimeStart.strftime("%m/%d/%Y %H:%M:%S"),
           'dateTimeEnd': self.dateTimeEnd.strftime("%m/%d/%Y %H:%M:%S"),
           'dateUpdated': self.dateUpdated.strftime("%m/%d/%Y %H:%M:%S"),
