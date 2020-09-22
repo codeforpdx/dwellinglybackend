@@ -62,23 +62,26 @@ class Lease(Resource):
             baseLease.dateTimeEnd = datetime.strptime(data.dateTimeEnd, '%m/%d/%Y %H:%M:%S')
             update = True
 
-        if update == True:
+        if update == False:
+            return baseLease.json(), 400
+        else: 
             baseLease.dateUpdated = datetime.now()                         
-  
+
         try:
             baseLease.save_to_db()
         except:
             return {'Message': 'An Error Has Occured'}, 500
 
-        return baseLease.json(), 201
+        return baseLease.json(), 200
     
     @jwt_required
     def delete(self, id):
         lease = LeaseModel.find_by_id(id)
         if lease:
             lease.delete_from_db()
-
-        return{'Message': 'Lease Removed from Database'}
+            return{'Message': 'Lease Removed from Database'}, 200
+        else: 
+            return{'Message': 'Lease Not Found'}, 404
 
 class Leases(Resource):
     @jwt_required    
@@ -101,4 +104,4 @@ class Leases(Resource):
         except:
             return {'Message': 'An Error Has Occured'}, 500
 
-        return 201
+        return 201, 201
