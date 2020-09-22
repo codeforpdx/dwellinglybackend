@@ -80,22 +80,26 @@ def test_tenants_PUT(client, auth_headers):
     assert is_valid(response, 404)  # NOT FOUND
 
 
-def test_tenants_DELETE(client, auth_headers):
-    id = 1
+def test_unauthenticated_delete(client):
+    response = client.delete(f'{endpoint}/1')
 
-    response = client.delete(f'{endpoint}/{id}')
-    # UNAUTHORIZED - Missing Authorization Header
     assert is_valid(response, 401)
 
+def test_pending_role_is_unauthorized_to_delete(client, auth_headers):
     response = client.delete(
-        f'{endpoint}/{id}', headers=auth_headers["pending"])
-    assert is_valid(response, 401)  # UNAUTHORIZED - Admin Access Required
+        f'{endpoint}/1', headers=auth_headers["pending"])
 
-    response = client.delete(f'{endpoint}/{id}', headers=auth_headers["pm"])
-    assert is_valid(response, 401)  # UNAUTHORIZED - Admin Access Required
+    assert is_valid(response, 401)
 
-    response = client.delete(f'{endpoint}/{id}', headers=auth_headers["admin"])
-    assert is_valid(response, 200)  # OK
+def test_pm_role_is_unauthorized_to_delete(client, auth_headers):
+    response = client.delete(f'{endpoint}/1', headers=auth_headers["pm"])
 
-    response = client.delete(f'{endpoint}/{id}', headers=auth_headers["admin"])
-    assert is_valid(response, 404)  # NOT FOUND - Emergency Contact not found
+    assert is_valid(response, 401)
+
+def test_admin_is_authorized_to_delete(client, auth_headers):
+    response = client.delete(f'{endpoint}/1', headers=auth_headers["admin"])
+    assert is_valid(response, 200)
+
+def test_resource_not_found(client, auth_headers):
+    response = client.delete(f'{endpoint}/10000', headers=auth_headers["admin"])
+    assert is_valid(response, 404)
