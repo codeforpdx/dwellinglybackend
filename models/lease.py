@@ -13,7 +13,7 @@ class LeaseModel(BaseModel):
     name = db.Column(db.String(100))
     landlordID = db.Column(db.Integer(), db.ForeignKey('users.id'))
     propertyID = db.Column(db.Integer, db.ForeignKey('properties.id'))
-    tenantID = db.Column(db.Integer, db.ForeignKey('tenants.id'))
+    tenantID = db.Column(db.Integer, db.ForeignKey('tenants.id'), nullable=False)
     occupants = db.Column(db.Integer)
     dateTimeStart = db.Column(db.DateTime, default=datetime.datetime.utcnow)
     dateTimeEnd = db.Column(db.DateTime, default=datetime.datetime.utcnow)
