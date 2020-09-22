@@ -129,12 +129,6 @@ class TestUpdateLease:
         self.endpoint = '/api/lease'
         self.lease = LeaseModel.find_by_id(1)
 
-    def test_valid_lease_id(self, auth_headers):
-        response = self.client.put(f'{self.endpoint}/{self.lease.id}', headers=auth_headers["pm"])
-
-        assert is_valid(response, 400)
-        assert response.json == self.lease.json()
-
     def test_invalid_lease_id(self, auth_headers):
         response = self.client.put(f'{self.endpoint}/504', headers=auth_headers["pm"])
 
