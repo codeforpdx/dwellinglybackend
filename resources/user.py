@@ -66,9 +66,7 @@ class User(Resource):
     @jwt_required
     def patch(self,user_id):
 
-
         user = UserModel.find_by_id(user_id)
-
 
         parser = reqparse.RequestParser()
         parser.add_argument('role', type=int, required=False, help="This field is not required.")
@@ -100,7 +98,7 @@ class User(Resource):
         if data['phone']:
             user.phone = data['phone']
         if data['password']:
-            user.password = data['password']
+            user.password = hash_pw(data['password'])
 
         try:
             user.save_to_db()
