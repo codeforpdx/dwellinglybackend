@@ -46,7 +46,7 @@ def seedData():
                                 phone="555-555-5555",
                                 archived=0)
     user_mister_sir.save_to_db()
-    user_gray_pouponn = UserModel(email="user3@dwellingly.org",
+    user_gray_pouponn = UserModel(email="GrayPouponn@dwellingly.org",
                                   role=RoleEnum.PROPERTY_MANAGER,
                                   firstName="Gray",
                                   lastName="Pouponn",
