@@ -43,6 +43,11 @@ class UserRegister(Resource):
         return {"message": "User created successfully."}, 201
 
 class User(Resource):
+
+    @admin_required
+    def get(self):
+        return {}, 200
+
     @admin_required
     def get(self, user_id):
         user = UserModel.find_by_id(user_id)
