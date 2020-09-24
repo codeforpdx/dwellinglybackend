@@ -209,10 +209,15 @@ def test_get_user(client, auth_headers, new_user):
     staff_user_response = client.get('/api/user?r=3', headers=auth_headers["admin"])
     admin_user_response = client.get('/api/user?r=4', headers=auth_headers["admin"])
 
-    """Queries with a non-existing role returns a 404 response"""
+    assert is_valid(pending_user_response, 200)
+    assert all(staff.role == "staff" for staff in staff_user_response.json["staff"])
+
+    """Queries with a non-existing role returns a 400 response"""
 
     unknown_user_response = client.get('api/user?r=5', headers=auth_headers["admin"])
+    assert is_valid(unknown_user_response, 400)
 
-    """Non-admins cannot view a list of users"""
+    """Non-admin requests return a 401 status code"""
 
     unauthorized_user_reponse = client.get('api/user?r=3', headers=auth_headers["staff"])
+    assert is_valid(unauthorized_user_resopnse, 401)
