@@ -203,14 +203,14 @@ def test_delete_user(client, auth_headers, new_user):
 def test_get_user(client, auth_headers, new_user):
     """GET '/user' returns a list of all users queried by role"""
 
-    tenant_user_response = client.get('/api/user?r=1', headers=auth_headers["admin"])
     staff_user_response = client.get('/api/user?r=3', headers=auth_headers["admin"])
+    tenant_user_response = client.get('/api/user?r=4', headers=auth_headers["admin"])
 
-    assert is_valid(tenant_user_response, 200)
     assert is_valid(staff_user_response, 200)
+    assert is_valid(admin_user_response, 200)
     print(tenant_user_response)
-    assert all(tenant.role == "tenant" for tenant in tenant_user_response.json["tenants"])
-    assert all(staff.role == "staff" for staff in staff_user_response.json["staff"])
+    assert all(staff.role == "STAFF" for staff in staff_user_response.json["staff"])
+    assert all(admin.role == "ADMIN" for admin in admin_user_response.json["admin"])
 
     """Queries with a non-existing role returns a 400 response"""
 

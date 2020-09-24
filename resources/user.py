@@ -211,7 +211,16 @@ class Users(Resource):
     def get(self):
 
         role = RoleEnum(int(request.args["r"]))
-        users = UserModel.find_by_role(role)
-        ret = [user.json() for user in users]
+        users = [user.json() for user in UserModel.find_by_role(role)]
+        ret = [{
+            id: user.id,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email,
+            phone: user.phone,
+            role: user.phone,
+            tickets: "TODO",
+            tenants: "TODO"
+            } for user in users]
 
-        return {"message": ret}, 200
+        return {f"{role}": ret}, 200
