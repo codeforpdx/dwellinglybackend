@@ -198,3 +198,21 @@ def test_delete_user(client, auth_headers, new_user):
 
     response = client.delete("/api/user/999999", headers=auth_headers["admin"])
     assert is_valid(response, 400) # BAD REQUEST
+
+
+def test_get_user(client, auth_headers, new_user):
+    """GET '/user' returns a list of all users queried by role"""
+
+    pending_user_response = client.get('/api/user?r=0', headers=auth_headers["admin"])
+    tenant_user_response = client.get('/api/user?r=1', headers=auth_headers["admin"])
+    property_manager_user_response = client.get('/api/user?r=2', headers=auth_headers["admin"])
+    staff_user_response = client.get('/api/user?r=3', headers=auth_headers["admin"])
+    admin_user_response = client.get('/api/user?r=4', headers=auth_headers["admin"])
+
+    """Queries with a non-existing role returns a 404 response"""
+
+    unknown_user_response = client.get('api/user?r=5', headers=auth_headers["admin"])
+
+    """Non-admins cannot view a list of users"""
+
+    unauthorized_user_reponse = client.get('api/user?r=3', headers=auth_headers["staff"])
