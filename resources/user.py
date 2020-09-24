@@ -210,9 +210,13 @@ class Users(Resource):
     @admin_required
     def get(self):
 
-        role = RoleEnum(int(request.args["r"]))
+        role_query = int(request.args["r"])
+
+        if role_query not in range(0, 5):
+            return {"message": "Invalid role"}, 400
+
+        role = RoleEnum(role_query)
         users = [user.json() for user in UserModel.find_by_role(role)]
-        print(users)
         ret = [{
             "id": user["id"],
             "firstName": user["firstName"],
