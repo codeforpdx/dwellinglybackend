@@ -212,15 +212,16 @@ class Users(Resource):
 
         role = RoleEnum(int(request.args["r"]))
         users = [user.json() for user in UserModel.find_by_role(role)]
+        print(users)
         ret = [{
-            id: user.id,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            email: user.email,
-            phone: user.phone,
-            role: user.phone,
-            tickets: "TODO",
-            tenants: "TODO"
+            "id": user["id"],
+            "firstName": user["firstName"],
+            "lastName": user["lastName"],
+            "email": user["email"],
+            "phone": user["phone"],
+            "role": user["role"],
+            "tickets": "TODO",
+            "tenants": "TODO"
             } for user in users]
 
-        return {f"{role}": ret}, 200
+        return {"users": ret}, 200

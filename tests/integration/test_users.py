@@ -208,9 +208,8 @@ def test_get_user(client, auth_headers, new_user):
 
     assert is_valid(staff_user_response, 200)
     assert is_valid(admin_user_response, 200)
-    print(tenant_user_response)
-    assert all(staff.role == "STAFF" for staff in staff_user_response.json["staff"])
-    assert all(admin.role == "ADMIN" for admin in admin_user_response.json["admin"])
+    assert all(staff.role == "3" for staff in staff_user_response.json["staff"])
+    assert all(admin.role == "4" for admin in admin_user_response.json["admin"])
 
     """Queries with a non-existing role returns a 400 response"""
 
