@@ -15,3 +15,6 @@ class BaseModel(db.Model):
     def delete_from_db(self):
         db.session.delete(self)
         db.session.commit()
+
+    def __repr__(self):
+        return f'<{type(self).__name__} {self.json()}>'
