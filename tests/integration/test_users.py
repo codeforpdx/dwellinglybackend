@@ -218,5 +218,5 @@ def test_get_user(client, auth_headers, new_user):
 
     """Non-admin requests return a 401 status code"""
 
-    unauthorized_user_reponse = client.get('api/user?r=3', headers=auth_headers["staff"])
-    assert is_valid(unauthorized_user_resopnse, 401)
+    unauthorized_user_response = client.get('api/user?r=3', headers=auth_headers["pm"])
+    assert is_valid(unauthorized_user_response, 401)
