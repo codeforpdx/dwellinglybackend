@@ -214,7 +214,4 @@ class Users(Resource):
         users = UserModel.find_by_role(role)
         ret = [user.json() for user in users]
 
-        print("----------")
-        print(ret)
-
         return {"message": ret}, 200
