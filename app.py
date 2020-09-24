@@ -60,6 +60,7 @@ def create_routes(app):
     api.add_resource(Property,'properties/<string:name>') #TODO change to ID
     api.add_resource(Properties,'properties')
     api.add_resource(ArchiveProperty,'properties/archive/<int:id>')
+    api.add_resource(User, 'user')
     api.add_resource(User, 'user/<int:user_id>')
     api.add_resource(UsersRole, 'users/role')
     api.add_resource(ArchiveUser, 'user/archive/<int:user_id>')
