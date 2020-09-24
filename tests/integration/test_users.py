@@ -208,6 +208,7 @@ def test_get_user(client, auth_headers, new_user):
 
     assert is_valid(tenant_user_response, 200)
     assert is_valid(staff_user_response, 200)
+    print(tenant_user_response)
     assert all(tenant.role == "tenant" for tenant in tenant_user_response.json["tenants"])
     assert all(staff.role == "staff" for staff in staff_user_response.json["staff"])
 

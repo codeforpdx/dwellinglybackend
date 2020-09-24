@@ -1,4 +1,5 @@
 from flask_restful import Resource, reqparse
+from flask import request
 
 from models.property import PropertyModel
 from models.tenant import TenantModel
@@ -208,4 +209,12 @@ class UserAccessRefresh(Resource):
 class Users(Resource):
     @admin_required
     def get(self):
-        return {}, 200
+
+        role = RoleEnum(int(request.args["r"]))
+        users = UserModel.find_by_role(role)
+        ret = [user.json() for user in users]
+
+        print("----------")
+        print(ret)
+
+        return {"message": ret}, 200
