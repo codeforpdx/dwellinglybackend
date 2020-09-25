@@ -1,5 +1,7 @@
 from conftest import is_valid
 from datetime import datetime
+from freezegun import freeze_time
+from unittest.mock import patch
 
 endpoint = '/api/tickets'
 validID = 1
@@ -57,7 +59,10 @@ def test_tickets_POST(client, auth_headers):
         "assignedUser": 4,
     }
 
-    response = client.post(endpoint, json=newTicket, headers=auth_headers["admin"])
+    dt = datetime.now()
+    with freeze_time(dt):
+        with patch('flask_jwt_extended.view_decorators.verify_jwt_in_request') as mock_jwt_required:
+            response = client.post(endpoint, json=newTicket, headers=auth_headers["admin"])
     assert is_valid(response, 201)
     assert response.json['id'] != 0
     assert response.json['issue'] == 'Lead paint issue'
@@ -69,9 +74,12 @@ def test_tickets_POST(client, auth_headers):
     assert response.json['assigned'] == 'Mr. Sir'
     assert response.json['status'] == 'new'
     assert response.json['urgency'] == 'low'
-    assert response.json['opened'] == datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
-    assert response.json['updated'] == datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
+    assert response.json['opened'] == dt.strftime("%m/%d/%Y, %H:%M:%S")
+    assert response.json['updated'] == dt.strftime("%m/%d/%Y, %H:%M:%S")
 
+    # verify jwt only
+    response = client.post(endpoint, json=newTicket, headers=auth_headers["admin"])
+    assert is_valid(response, 201)
 
 
 def test_tickets_PUT(client, auth_headers):
@@ -84,7 +92,12 @@ def test_tickets_PUT(client, auth_headers):
         'issue': 'Leaky pipe',
         'note': 'Tenant has a service dog'
     }
-    response = client.put(f'{endpoint}/{validID}', json=updatedTicket, headers=auth_headers["admin"])
+
+    dt = datetime.now()
+    with freeze_time(dt):
+        with patch('flask_jwt_extended.view_decorators.verify_jwt_in_request') as mock_jwt_required:
+            response = client.put(f'{endpoint}/{validID}', json=updatedTicket, headers=auth_headers["admin"])
+
     assert is_valid(response, 200)
     assert response.json['issue'] == 'Leaky pipe'
     assert response.json['tenant'] == 'Soho Muless'
@@ -95,12 +108,16 @@ def test_tickets_PUT(client, auth_headers):
     assert response.json['assigned'] == 'user3 tester'
     assert response.json['status'] == 'in progress'
     assert response.json['urgency'] == 'high'
-    assert response.json['updated'] == datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
+    assert response.json['updated'] == dt.strftime("%m/%d/%Y, %H:%M:%S")
     # Ticket already had 2 notes to begin with - and with this PUT - it's +1
     assert len(response.json['notes']) == 3
     assert response.json['notes'][2]['ticketid'] == 1
     assert response.json['notes'][2]['text'] == 'Tenant has a service dog'
     assert response.json['notes'][2]['user'] == 'user2 tester'
+
+    # verify jwt only
+    response = client.put(f'{endpoint}/{validID}', json=updatedTicket, headers=auth_headers["admin"])
+    assert is_valid(response, 200)
 
     response = client.put(f'{endpoint}/{invalidID}', json=updatedTicket, headers=auth_headers["admin"])
     # NOT FOUND - Trying to update a non-existing ticket
