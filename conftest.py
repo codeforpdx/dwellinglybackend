@@ -5,9 +5,12 @@ from db import db
 from data.seedData import seedData
 from models.user import UserModel, RoleEnum
 from models.property import PropertyModel
+from utils.auth import hash_pw
 
 newPropertyName = "test1"
 newPropertyAddress = "123 NE FLanders St"
+plaintext_password = "1234"
+hashed_password = hash_pw(plaintext_password)
 
 # Note: this repo uses the "pytest-flask" plugin which exposes the following fixtures for use in tests:
 #   client: an instance of flask's app.test_client - for making requests i.e. client.get('/')
@@ -19,17 +22,17 @@ def app():
 
 @pytest.fixture
 def admin_user():
-    adminUser = UserModel(email="user4@dwellingly.org", password="1234", firstName="user4", lastName="admin", phone="555-867-5309", role=RoleEnum.ADMIN, archived=0)
+    adminUser = UserModel(email="user4@dwellingly.org", password=hashed_password, firstName="user4", lastName="admin", phone="555-867-5309", role=RoleEnum.ADMIN, archived=0)
     return adminUser
 
 @pytest.fixture
 def new_user():
-    newUser = UserModel(email="someone@domain.com", password="1234", firstName="user2", lastName="tester", phone="1-888-cal-saul", role=RoleEnum.PENDING, archived=0)
+    newUser = UserModel(email="someone@domain.com", password=hashed_password, firstName="user2", lastName="tester", phone="1-888-cal-saul", role=RoleEnum.PENDING, archived=0)
     return newUser
 
 @pytest.fixture
 def property_manager_user():
-    return UserModel(email="manager@domain.com", password="1234", firstName="Leslie", lastName="Knope", phone="505-503-4455", role=RoleEnum.PROPERTY_MANAGER, archived=0)
+    return UserModel(email="manager@domain.com", password=hashed_password, firstName="Leslie", lastName="Knope", phone="505-503-4455", role=RoleEnum.PROPERTY_MANAGER, archived=0)
 
 #Returns an object with authorization headers for users of all roles (admin, property-manager, pending)
 @pytest.fixture
@@ -85,7 +88,7 @@ def test_database(app, admin_user, new_user, property_manager_user):
 def get_auth_header(client, userModel):
     login_response = client.post("/api/login", json={
         "email": userModel.email,
-        "password": userModel.password
+        "password": plaintext_password
     })
     auth_header = {"Authorization": f"Bearer {login_response.json['access_token']}"}
     return auth_header
