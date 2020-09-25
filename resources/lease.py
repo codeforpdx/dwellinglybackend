@@ -21,27 +21,26 @@ class Lease(Resource):
         if lease:
             return lease.json()
 
-        return {'Message': 'Lease Not Found'}, 404
+        return {'message': 'Lease Not Found'}, 404
    
     @jwt_required
     def put(self,id):
         data = Lease.parser.parse_args()
         update = False
 
-        if not LeaseModel.find_by_id(id):
-            return {'Message': 'Lease Not Found'}, 404  
-            
         baseLease = LeaseModel.find_by_id(id)
-       
+        if not baseLease:
+            return {'message': 'Lease Not Found'}, 404
+
 
         if(data.occupants):
             baseLease.occupants = data.occupants
             update = True
-        
+
         if(data.name):
             baseLease.name = data.name
             update = True
-        
+
         if(data.landlordID):
             baseLease.landlordID = data.landlordID
             update = True
@@ -49,7 +48,7 @@ class Lease(Resource):
         if(data.propertyID):
             baseLease.propertyID = data.propertyID
             update = True
-    
+
         if(data.tenantID):
             baseLease.tenantID = data.tenantID
             update = True
@@ -64,34 +63,34 @@ class Lease(Resource):
 
         if update == False:
             return baseLease.json(), 400
-        else: 
-            baseLease.dateUpdated = datetime.now()                         
+        else:
+            baseLease.dateUpdated = datetime.now()
 
         try:
             baseLease.save_to_db()
         except:
-            return {'Message': 'An Error Has Occured'}, 500
+            return {'message': 'An Error Has Occured'}, 500
 
         return baseLease.json(), 200
-    
+
     @jwt_required
     def delete(self, id):
         lease = LeaseModel.find_by_id(id)
         if lease:
             lease.delete_from_db()
-            return{'Message': 'Lease Removed from Database'}, 200
-        else: 
-            return{'Message': 'Lease Not Found'}, 404
+            return{'message': 'Lease Removed from Database'}, 200
+        else:
+            return{'message': 'Lease Not Found'}, 404
 
 class Leases(Resource):
-    @jwt_required    
+    @jwt_required
     def get(self):
         return {'Leases': [lease.json() for lease in LeaseModel.query.all()]}
-    
+
     @jwt_required
     def post(self):
         data = Lease.parser.parse_args()
-        
+
         #convert strings to DateTime Object
         data.dateTimeStart = datetime.strptime(data.dateTimeStart, '%m/%d/%Y %H:%M:%S')
         data.dateTimeEnd = datetime.strptime(data.dateTimeEnd, '%m/%d/%Y %H:%M:%S')
@@ -102,6 +101,7 @@ class Leases(Resource):
         try:
             lease.save_to_db()
         except:
-            return {'Message': 'An Error Has Occured'}, 500
+            return {'message': 'An Error Has Occured'}, 500
 
-        return 201, 201
+        return {'message': 'Lease Created Successfully'}, 201
+

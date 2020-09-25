@@ -33,7 +33,7 @@ class TestGetLease:
             )
 
         assert is_valid(response, 404)
-        assert response.json == {'Message': 'Lease Not Found'}
+        assert response.json == {'message': 'Lease Not Found'}
 
     def test_unauthorized_request_for_a_lease(self):
         response = self.client.get(f'{self.endpoint}/{self.lease.id}')
@@ -85,8 +85,9 @@ class TestCreateLease:
         num_leases = len(LeaseModel.query.all())
         response = self.client.post(self.endpoint, json=self.valid_payload, headers=auth_headers["pm"])
 
+
         assert is_valid(response, 201)
-        assert response.json == 201
+        assert response.json == {'message': 'Lease Created Successfully'}
         assert num_leases + 1 == len(LeaseModel.query.all())
 
     def test_unauthorized_request_with_valid_payload(self):
@@ -111,7 +112,7 @@ class TestDeleteLease:
         response = self.client.delete(f'{self.endpoint}/1', headers=auth_headers["pm"])
 
         assert is_valid(response, 200)
-        assert response.json == {'Message': 'Lease Removed from Database'}
+        assert response.json == {'message': 'Lease Removed from Database'}
         assert num_leases - 1 == len(LeaseModel.query.all())
 
     def test_authorized_request_with_invalid_lease_id(self, auth_headers):
@@ -119,7 +120,7 @@ class TestDeleteLease:
         response = self.client.delete(f'{self.endpoint}/504', headers=auth_headers["pm"])
 
         assert is_valid(response, 404) 
-        assert response.json == {'Message': 'Lease Not Found'}
+        assert response.json == {'message': 'Lease Not Found'}
         assert num_leases == len(LeaseModel.query.all())
 
 
@@ -133,7 +134,7 @@ class TestUpdateLease:
         response = self.client.put(f'{self.endpoint}/504', headers=auth_headers["pm"])
 
         assert is_valid(response, 404)
-        assert response.json == {'Message': 'Lease Not Found'}
+        assert response.json == {'message': 'Lease Not Found'}
 
     def test_date_is_updated_with_valid_payload(self, auth_headers):
         payload = {'dateTimeEnd': Time.one_year_from_now()}
