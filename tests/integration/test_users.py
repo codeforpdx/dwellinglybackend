@@ -203,12 +203,9 @@ def test_delete_user(client, auth_headers, new_user):
 def test_get_user(client, auth_headers, new_user):
     """GET '/user' returns a list of all users queried by role"""
 
-    staff_user_response = client.get(f'/api/user?r={RoleEnum.STAFF.value}', headers=auth_headers["admin"])
     admin_user_response = client.get(f'/api/user?r={RoleEnum.ADMIN.value}', headers=auth_headers["admin"])
 
-    assert is_valid(staff_user_response, 200)
     assert is_valid(admin_user_response, 200)
-    assert all(staff["role"] == RoleEnum.STAFF.value for staff in staff_user_response.json["users"])
     assert all(admin["role"] == RoleEnum.ADMIN.value for admin in admin_user_response.json["users"])
 
     """Queries with a non-existing role returns a 400 response"""
@@ -218,5 +215,5 @@ def test_get_user(client, auth_headers, new_user):
 
     """Non-admin requests return a 401 status code"""
 
-    unauthorized_user_response = client.get('api/user?r=3', headers=auth_headers["pm"])
+    unauthorized_user_response = client.get(f'api/user?r={RoleEnum.PROPERTY_MANAGER.value}', headers=auth_headers["pm"])
     assert is_valid(unauthorized_user_response, 401)
