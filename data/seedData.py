@@ -172,11 +172,11 @@ def seedData():
     ticket_40_cats.save_to_db()
 
     note_not_responding = NotesModel(
-        0,
+        ticketid=ticket_roof_on_fire.id,
         text="Tenant not responding to phone calls.",
         user=user_1.id)
     note_not_responding.save_to_db()
-    note_over_40_cats = NotesModel(ticketid=ticket_roof_on_fire.id,
+    note_over_40_cats = NotesModel(ticketid=ticket_40_cats.id,
                                    text="Tenant has over 40 cats.",
                                    user=user_2.id)
     note_over_40_cats.save_to_db()
