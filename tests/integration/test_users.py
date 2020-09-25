@@ -203,8 +203,8 @@ def test_delete_user(client, auth_headers, new_user):
 def test_get_user(client, auth_headers, new_user):
     """GET '/user' returns a list of all users queried by role"""
 
-    staff_user_response = client.get('/api/user?r=3', headers=auth_headers["admin"])
-    admin_user_response = client.get('/api/user?r=4', headers=auth_headers["admin"])
+    staff_user_response = client.get(f'/api/user?r={RoleEnum.STAFF.value}', headers=auth_headers["admin"])
+    admin_user_response = client.get(f'/api/user?r={RoleEnum.ADMIN.value}', headers=auth_headers["admin"])
 
     assert is_valid(staff_user_response, 200)
     assert is_valid(admin_user_response, 200)
