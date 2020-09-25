@@ -9,7 +9,7 @@ from models.property import PropertyModel
 from models.tenant import TenantModel
 from models.tenant_staff_link import StaffTenantLink
 from models.revoked_tokens import RevokedTokensModel
-from resources.user import UserRegister, User, UserLogin, ArchiveUser, UsersRole, UserAccessRefresh, UserRoles
+from resources.user import UserRegister, User, UserLogin, ArchiveUser, UsersRole, UserAccessRefresh, UserRoles, Users
 from resources.reset_password import ResetPassword
 from resources.property import Properties, Property, ArchiveProperty
 from resources.tenants import Tenants
@@ -61,6 +61,7 @@ def create_routes(app):
     api.add_resource(Properties,'properties')
     api.add_resource(ArchiveProperty,'properties/archive/<int:id>')
     api.add_resource(User, 'user/<int:user_id>')
+    api.add_resource(Users, 'user')
     api.add_resource(UsersRole, 'users/role')
     api.add_resource(ArchiveUser, 'user/archive/<int:user_id>')
     api.add_resource(UserLogin, 'login')

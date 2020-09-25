@@ -1,4 +1,5 @@
 from flask_restful import Resource, reqparse
+from flask import request
 
 from models.property import PropertyModel
 from models.tenant import TenantModel
@@ -204,3 +205,27 @@ class UserAccessRefresh(Resource):
             'access_token': create_access_token(identity=current_user)
         }
         return ret, 200
+
+class Users(Resource):
+    @admin_required
+    def get(self):
+
+        role_query = int(request.args["r"])
+
+        if role_query not in range(0, 5):
+            return {"message": "Invalid role"}, 400
+
+        role = RoleEnum(role_query)
+        users = [user.json() for user in UserModel.find_by_role(role)]
+        ret = [{
+            "id": user["id"],
+            "firstName": user["firstName"],
+            "lastName": user["lastName"],
+            "email": user["email"],
+            "phone": user["phone"],
+            "role": user["role"],
+            "tickets": "TODO",
+            "tenants": "TODO"
+            } for user in users]
+
+        return {"users": ret}, 200
