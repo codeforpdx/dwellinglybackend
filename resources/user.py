@@ -8,6 +8,7 @@ from models.revoked_tokens import RevokedTokensModel
 import json
 from werkzeug.security import safe_str_cmp
 from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt_claims, get_raw_jwt, get_jwt_identity, jwt_refresh_token_required
+from utils.auth import hash_pw, check_pw
 
 
 class UserRoles(Resource):
@@ -36,8 +37,9 @@ class UserRegister(Resource):
 
         user = UserModel(firstName=data['firstName'],
                          lastName=data['lastName'], email=data['email'],
-                         password=data['password'], phone=data['phone'],
+                         password=hash_pw(data['password']), phone=data['phone'],
                          role=RoleEnum(data['role']) if data['role'] else None, archived=data['archived'])
+        # And we'll store it into the db as bytes
         user.save_to_db()
 
         return {"message": "User created successfully."}, 201
@@ -64,9 +66,7 @@ class User(Resource):
     @jwt_required
     def patch(self,user_id):
 
-
         user = UserModel.find_by_id(user_id)
-
 
         parser = reqparse.RequestParser()
         parser.add_argument('role', type=int, required=False, help="This field is not required.")
@@ -98,7 +98,7 @@ class User(Resource):
         if data['phone']:
             user.phone = data['phone']
         if data['password']:
-            user.password = data['password']
+            user.password = hash_pw(data['password'])
 
         try:
             user.save_to_db()
@@ -159,7 +159,7 @@ class UserLogin(Resource):
         if user and user.archived:
             return {"message": "Not a valid user"}, 403
 
-        if user and safe_str_cmp(user.password, data['password']):
+        if user and check_pw(data['password'], user.password):
             access_token = create_access_token(identity=user.id, fresh=True) 
             refresh_token = create_refresh_token(user.id)
             user.update_last_active()

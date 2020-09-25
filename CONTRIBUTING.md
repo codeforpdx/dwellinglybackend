@@ -12,7 +12,6 @@ NOTE: Database is SQLite3 via SQLAlchemy
     - Please install pipenv according to their docs for your OS.
 3. Install dependencies `pipenv install -d`
    - Note: Pipenv may prompt you to install Python if it cannot find the correct version on your system. You should select Yes.
-
    - Note: If you get the error `ImportError: cannot import name 'Feature' from 'setuptools'`, your setuptools version might be at 46 or later. You may be able to get it to work using version 45 (e.g. `pip3 install setuptools==45`)
 4. Create and Seed the database
    - Run: `pipenv run python manage.py create`
@@ -22,10 +21,14 @@ NOTE: Database is SQLite3 via SQLAlchemy
 5. Start the server using the flask environment (required every time the project is re-opened):
    - Run: `pipenv run flask run`
    - Run + restart the server on changes: `pipenv run flask run --reload`
-
 6. Test the server and view coverage reports. Use of coverage reporting is recommended to indicate test suite completeness and to locate defunct code in the code base.
-    - Run the tests: `pipenv run pytest --cov .`
-      - View coverage for a particular directory: `pipenv run pytest --cov [directory]`
+    - Run all the tests: `pipenv run pytest --cov .`
+      - Run tests in a particular directory: `pipenv run pytest --cov [path to directory]`
+        - Example: Just the integration tests: `pipenv run pytest --cov tests/integration`
+      - Run tests in a single file : `pipenv run pytest -s [path to test file]`
+        - Example: Just the users integration tests: `pipenv run pytest -s tests/integration/test_users.py`
+      - Run a specific test in a file: `pipenv run pytest -s [path to test file] -k '[test name]'`
+        - Example: Just test_archive_user from the users integration tests: `pipenv run pytest -s tests/integration/test_users.py -k 'test_archive_user'`
     - View detailed coverage reports, with listings for untested lines of code ...
       - As a web page: `pipenv run python view_coverage.py`
       - In the console: `pipenv run view_coverage`
@@ -52,17 +55,15 @@ If you are still having issues or if your command prompt is throwing an error th
 Check to see where the Python you're running is located (`which python`). You should see something like `/Users/your_account_shortname/.pyenv/shims/python`.
 If you don't see something similar, you may have several versions of Python installed elsewhere (via Anaconda or Homebrew). If (and only if) you'd like to clear out any previous homebrew-based installs, type `brew uninstall --ignore-dependencies python3 && brew uninstall --ignore-dependencies python`.
 
-
 ### Database commands.
+
 - Create and Seed the Database: `pipenv run python manage.py create`
 - Delete, create, Seed the Database: `pipenv run python manage.py recreate`
 - Delete the Database: `pipenv run python manage.py drop`
 
-
 ### Contributing
 
 How to contribute to this project.
-
 
 1. Set your origin to https://github.com/codeforpdx/dwellinglybackend.git
 2. The Main Branch is Development
@@ -76,5 +77,5 @@ How to contribute to this project.
 ```console
 ~$ git checkout -b <name of branch>
 ```
-(Step #3 creates a new branch titled <name of branch> and navigates you to that branch)
 
+(Step #3 creates a new branch titled <name of branch> and navigates you to that branch)

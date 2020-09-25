@@ -26,7 +26,7 @@ class UserModel(BaseModel):
     lastName = db.Column(db.String(80))
     fullName = db.column_property(firstName + ' ' + lastName)
     phone = db.Column(db.String(25))
-    password = db.Column(db.String(128))
+    password = db.Column(db.LargeBinary(60))
     archived = db.Column(db.Boolean)
     lastActive = db.Column(db.DateTime, default=datetime.utcnow)
     created = db.Column(db.DateTime, default=datetime.utcnow)
