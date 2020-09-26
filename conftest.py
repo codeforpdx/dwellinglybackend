@@ -1,11 +1,13 @@
 import pytest
 import os
+from flask import current_app
 from app import create_app
 from db import db
 from data.seedData import seedData
 from models.user import UserModel, RoleEnum
 from models.property import PropertyModel
 from utils.auth import hash_pw
+import jwt
 
 newPropertyName = "test1"
 newPropertyAddress = "123 NE FLanders St"
@@ -46,6 +48,38 @@ def auth_headers(client, test_database, admin_user, new_user, property_manager_u
         "pm": pm_auth_header,
         "pending": pending_auth_header
     }
+
+@pytest.fixture
+def valid_header():
+    token = jwt.encode(
+            {'identity': 'identity'},
+            current_app.secret_key,algorithm='HS256'
+        ).decode('utf-8')
+    return {"Authorization": f"Bearer {token}"}
+
+@pytest.fixture
+def admin_header():
+    token = jwt.encode(
+            {'identity': 'identity', 'user_claims': {'is_admin': True}},
+            current_app.secret_key,algorithm='HS256'
+        ).decode('utf-8')
+    return {"Authorization": f"Bearer {token}"}
+
+@pytest.fixture
+def staff_header():
+    token = jwt.encode(
+            {'identity': 'identity', 'user_claims': {'is_admin': False}},
+            current_app.secret_key,algorithm='HS256'
+        ).decode('utf-8')
+    return {"Authorization": f"Bearer {token}"}
+
+@pytest.fixture
+def pm_header():
+    token = jwt.encode(
+            {'identity': 'identity', 'user_claims': {'is_admin': False}},
+            current_app.secret_key,algorithm='HS256'
+        ).decode('utf-8')
+    return {"Authorization": f"Bearer {token}"}
 
 @pytest.fixture
 def new_property():
