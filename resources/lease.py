@@ -22,7 +22,7 @@ class Lease(Resource):
             return lease.json()
 
         return {'message': 'Lease Not Found'}, 404
-   
+
     @jwt_required
     def put(self,id):
         data = Lease.parser.parse_args()

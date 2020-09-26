@@ -6,11 +6,8 @@ from db import db
 from data.seedData import seedData
 from models.user import UserModel, RoleEnum
 from models.property import PropertyModel
-from models.lease import LeaseModel
-from models.tenant import TenantModel
 from utils.auth import hash_pw
 import jwt
-from datetime import datetime
 
 newPropertyName = "test1"
 newPropertyAddress = "123 NE FLanders St"
@@ -51,77 +48,6 @@ def auth_headers(client, test_database, admin_user, new_user, property_manager_u
         "pm": pm_auth_header,
         "pending": pending_auth_header
     }
-
-@pytest.fixture
-def create_tenant():
-    def _create_tenant():
-        tenant = TenantModel(
-                firstName="firstName",
-                lastName="lastName",
-                phone="phone",
-                propertyID=None,
-                staffIDs=[],
-                unitNum=3
-            )
-        tenant.save_to_db()
-        return tenant
-    yield _create_tenant
-
-@pytest.fixture
-def create_property():
-    def _create_property(pm):
-        property = PropertyModel(
-                name=newPropertyName,
-                address=newPropertyAddress,
-                city="Portland",
-                unit="101",
-                state="OR",
-                zipcode="97207",
-                propertyManager=pm.id,
-                dateAdded="2020-04-12",
-                archived=False
-            )
-        property.save_to_db()
-        return property
-    yield _create_property
-
-@pytest.fixture
-def create_landlord():
-    def _create_landlord():
-        landlord = UserModel(
-                email="manager@domain.com",
-                password=hashed_password,
-                firstName="Leslie",
-                lastName="Knope",
-                phone="505-503-4455",
-                role=RoleEnum.PROPERTY_MANAGER,
-                archived=False
-            )
-        landlord.save_to_db()
-        return landlord
-    yield _create_landlord
-
-def lease_attributes(name, tenant, landlord, property):
-    return {
-        "name": name,
-        "tenantID": tenant.id,
-        "landlordID": landlord.id,
-        "propertyID": property.id,
-        "dateTimeStart": datetime.now(),
-        "dateTimeEnd": datetime.now(),
-        "dateUpdated": datetime.now(),
-        "occupants": 3
-    }
-
-@pytest.fixture
-def create_lease(create_landlord, create_property, create_tenant):
-    def _create_lease(name="Hello World", tenant=create_tenant(), landlord=create_landlord(), property=None):
-        if not property:
-            property = create_property(landlord)
-        lease = LeaseModel(**lease_attributes(name, tenant, landlord, property))
-        lease.save_to_db()
-        return lease
-    yield _create_lease
 
 @pytest.fixture
 def valid_header():
