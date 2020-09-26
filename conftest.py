@@ -115,6 +115,14 @@ def test_database(app, admin_user, new_user, property_manager_user):
     db.drop_all()
 
 
+@pytest.fixture
+def empty_test_db(app):
+    db.create_all()
+
+    yield
+
+    db.drop_all()
+
 # -------------     NON-FIXTURE FUNCTIONS     --------------------
 
 # Logs a user in and returns their auth header
