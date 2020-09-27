@@ -14,10 +14,11 @@ NOTE: Database is SQLite3 via SQLAlchemy
    - Note: Pipenv may prompt you to install Python if it cannot find the correct version on your system. You should select Yes.
    - Note: If you get the error `ImportError: cannot import name 'Feature' from 'setuptools'`, your setuptools version might be at 46 or later. You may be able to get it to work using version 45 (e.g. `pip3 install setuptools==45`)
 4. Create and Seed the database
-   - Run: `pipenv run python manage.py create`
-   - To re-seed the database from scratch, delete data.db before running the script
+   - Run: `pipenv run flask db create`
+   - To re-seed the database from scratch run: `pipenv run flask db recreate`
    - Look for the file data.db to be created in the root directory
    - If you get the error `ImportError: No module named flask` or similar, you may need to run `pipenv shell` to launch virtual environment.
+   - To find other database set-up commands run: `pipenv run flask db --help`
 5. Start the server using the flask environment (required every time the project is re-opened):
    - Run: `pipenv run flask run`
    - Run + restart the server on changes: `pipenv run flask run --reload`

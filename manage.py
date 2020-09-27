@@ -1,38 +1,33 @@
-from app import create_app
-from flask_script import Manager, prompt_bool
+import click
 from db import db
 from data.seedData import seedData
+from flask import Blueprint
 
-app = create_app()
-manager = Manager(app)
-
+dbsetup = Blueprint('db', __name__)
 """
     *****Database Commands*****
 """
-
-@manager.command
+@dbsetup.cli.command("populate")
 def populate():
     """Seed the database with default data"""
     seedData()
 
-@manager.command
+@dbsetup.cli.command("create")
 def create():
     """Creates database tables and populates with seed data"""
     db.create_all()
-    populate()
+    seedData()
 
-@manager.command
+@dbsetup.cli.command("drop")
 def drop():
     """Drops all database tables"""
-    if prompt_bool("Are you sure you want to lose all your data"):
+    if click.confirm("Are you sure you want to lose all your data"):
         db.drop_all()
 
-@manager.command
+@dbsetup.cli.command("recreate")
 def recreate():
     """Recreates database table and populates with seed data. Know that this will reset your db to defaults"""
-    drop()
-    create()
-
-
-if __name__ == "__main__":
-    manager.run()
+    if click.confirm("Are you sure you want to lose all your data"):
+        db.drop_all()
+        db.create_all()
+        seedData()
