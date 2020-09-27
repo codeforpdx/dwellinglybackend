@@ -2,6 +2,7 @@ import click
 from db import db
 from data.seedData import seedData
 from flask import Blueprint
+import sys
 
 dbsetup = Blueprint('db', __name__)
 """
@@ -31,3 +32,9 @@ def recreate():
         db.drop_all()
         db.create_all()
         seedData()
+
+if __name__ == '__main__':
+    print("'pipenv run python manage.py {}' ".format(sys.argv[1])+
+          "has been deprecated\n" + 
+          "please use 'pipenv run flask db {}'".format(sys.argv[1]))
+
