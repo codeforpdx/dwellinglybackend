@@ -11,6 +11,7 @@ from models.tenant import TenantModel
 class TestLeaseModel(BaseInterfaceTest):
     def setup(self):
         self.object = LeaseModel.find(1)
+        self.custom_404_msg = 'Lease not found'
 
     def test_json(self):
         lease = LeaseModel.find_by_id(1)

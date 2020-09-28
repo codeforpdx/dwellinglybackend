@@ -32,7 +32,7 @@ class BaseInterfaceTest:
         with patch.object(self.object.__class__, 'query') as mock_query:
             self.object.__class__.find(1)
 
-        mock_query.get_or_404.assert_called_with(1, f"{class_name} not found")
+        mock_query.get_or_404.assert_called_with(1, self.custom_404_msg)
 
     def test_json(self):
         with patch.object(self.object, 'json') as mock_json:

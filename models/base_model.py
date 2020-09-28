@@ -10,7 +10,7 @@ class BaseModel(db.Model):
 
     @classmethod
     def find(cls, id):
-        return cls.query.get_or_404(id, f'{cls.__name__} not found')
+        return cls.query.get_or_404(id, f'{cls._name()} not found')
 
     @classmethod
     def delete(cls, id):
@@ -31,3 +31,7 @@ class BaseModel(db.Model):
 
     def __repr__(self):
         return f'<{type(self).__name__} {self.json()}>'
+
+    @classmethod
+    def _name(cls):
+        return cls.__name__.replace('Model', '')
