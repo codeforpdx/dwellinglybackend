@@ -16,11 +16,7 @@ class Lease(Resource):
 
     @jwt_required
     def get(self, id):
-        lease = LeaseModel.find_by_id(id)
-        if lease:
-            return lease.json()
-
-        return {'message': 'Lease not found'}, 404
+        return LeaseModel.find(id).json()
 
     @jwt_required
     def put(self,id):
