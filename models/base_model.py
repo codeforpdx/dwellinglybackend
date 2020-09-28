@@ -12,6 +12,12 @@ class BaseModel(db.Model):
     def find(cls, id):
         return cls.query.get_or_404(id, f'{cls.__name__} not found')
 
+    @classmethod
+    def delete(cls, id):
+        obj = cls.find(id)
+        db.session.delete(obj)
+        db.session.commit()
+
     def save_to_db(self):
         db.session.add(self)
         db.session.commit()
