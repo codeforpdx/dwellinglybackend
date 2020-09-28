@@ -21,6 +21,7 @@ from resources.lease import Lease, Leases
 from resources.widgets import Widgets
 import os
 from db import db
+from manage import dbsetup
 
 def config_app(app):
     #config DataBase
@@ -133,7 +134,7 @@ def create_app():
 
 
 app = create_app()
-
+app.register_blueprint(dbsetup)
 
 if __name__ == '__main__':
     app.run(port=5000, debug=True)
