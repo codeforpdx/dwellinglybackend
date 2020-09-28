@@ -66,12 +66,8 @@ class Lease(Resource):
 
     @jwt_required
     def delete(self, id):
-        lease = LeaseModel.find_by_id(id)
-        if lease:
-            lease.delete_from_db()
-            return{'message': 'Lease removed from database'}, 200
-        else:
-            return{'message': 'Lease not found'}, 404
+        LeaseModel.delete(id)
+        return {'message': 'Lease Removed from Database'}
 
 class Leases(Resource):
     @jwt_required
