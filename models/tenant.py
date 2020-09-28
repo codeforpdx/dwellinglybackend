@@ -13,12 +13,13 @@ class TenantModel(BaseModel):
     lastName = db.Column(db.String(100))
     phone = db.Column(db.String(20))
     propertyID = db.Column(db.Integer, db.ForeignKey('properties.id'))
-    # leaseID = db.Column(db.Integer, db.ForeignKey('lease.id'))
     addedOn = db.Column(db.Date())
     unitNum = db.Column(db.String(20))
 
     # relationships
     staff = relationship('UserModel', secondary='staff_tenant_links')
+    leases = db.relationship('LeaseModel',
+        backref='tenant', lazy=True, cascade="all, delete-orphan")
 
     def __init__(self, firstName, lastName, phone, propertyID, staffIDs, unitNum):
         self.firstName = firstName

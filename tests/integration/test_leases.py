@@ -139,7 +139,8 @@ class TestCreateLease:
 
         self.valid_payload = {
                 'dateTimeStart': Time.today(),
-                'dateTimeEnd': Time.one_year_from_now()
+                'dateTimeEnd': Time.one_year_from_now(),
+                'tenantID': 1
             }
         self.invalid_payload = {}
 
@@ -218,6 +219,7 @@ class TestUpdateLease:
 
     def test_invalid_attribute_ids(self, valid_header, create_lease):
         lease = create_lease('Hello')
+
         payload = {
                 'name': 'I',
                 'landlordID': '504',
@@ -264,6 +266,12 @@ class TestUpdateLease:
 
 @pytest.mark.usefixtures('client_class', 'empty_test_db')
 class TestLeaseAuthorizations:
+    def setup(self):
+        self.valid_payload = {
+                'dateTimeStart': Time.today(),
+                'dateTimeEnd': Time.one_year_from_now(),
+                'tenantID': 1
+            }
     # Test auth is in place at each endpoint
     def test_unauthorized_get_request(self):
         response = self.client.get('/api/lease/1')
@@ -333,27 +341,16 @@ class TestLeaseAuthorizations:
         assert is_valid(response, 200)
 
     def test_pm_is_authorized_to_create(self, pm_header):
-        payload = {
-                'dateTimeStart': Time.today(),
-                'dateTimeEnd': Time.one_year_from_now()
-            }
-        response = self.client.post('/api/lease', json=payload, headers=pm_header)
+        response = self.client.post('/api/lease', json=self.valid_payload, headers=pm_header)
+
         assert is_valid(response, 201)
 
     def test_staff_are_authorized_to_create(self, staff_header):
-        payload = {
-                'dateTimeStart': Time.today(),
-                'dateTimeEnd': Time.one_year_from_now()
-            }
-        response = self.client.post('/api/lease', json=payload, headers=staff_header)
+        response = self.client.post('/api/lease', json=self.valid_payload, headers=staff_header)
         assert is_valid(response, 201)
 
     def test_admin_is_authorized_to_create(self, admin_header):
-        payload = {
-                'dateTimeStart': Time.today(),
-                'dateTimeEnd': Time.one_year_from_now()
-            }
-        response = self.client.post('/api/lease', json=payload, headers=admin_header)
+        response = self.client.post('/api/lease', json=self.valid_payload, headers=admin_header)
         assert is_valid(response, 201)
 
     def test_pm_is_authorized_to_delete_lease(self, pm_header, create_lease):
