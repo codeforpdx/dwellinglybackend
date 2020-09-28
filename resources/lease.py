@@ -67,7 +67,7 @@ class Lease(Resource):
     @jwt_required
     def delete(self, id):
         LeaseModel.delete(id)
-        return {'message': 'Lease Removed from Database'}
+        return {'message': 'Lease deleted'}
 
 class Leases(Resource):
     @jwt_required

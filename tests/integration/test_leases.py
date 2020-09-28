@@ -102,7 +102,7 @@ class TestDeleteLease:
         response = self.client.delete(f'{self.endpoint}/{lease.id}', headers=valid_header)
 
         assert is_valid(response, 200)
-        assert response.json == {'message': 'Lease removed from database'}
+        assert response.json == {'message': 'Lease deleted'}
         assert len(LeaseModel.query.all()) == 0
 
     def test_authorized_request_with_invalid_lease_id(self, valid_header):
