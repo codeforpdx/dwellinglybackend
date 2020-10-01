@@ -40,6 +40,9 @@ def config_app(app):
     app.config['JWT_BLACKLIST_ENABLED'] = True
     app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = ['access', 'refresh']
 
+    # Change default error message from 'msg' to 'message'
+    app.config['JWT_ERROR_MESSAGE_KEY'] = 'message'
+
     #configure mail server
     app.config['MAIL_SERVER'] = 'smtp.gmail.com'
     app.config['MAIL_PORT'] = 465
@@ -128,6 +131,12 @@ def create_app():
     def check_if_token_in_blacklist(decrypted_token):
         jti = decrypted_token['jti']
         return RevokedTokensModel.is_jti_blacklisted(jti)
+
+    # Format jwt "Missing authorization header" messages
+    @app.jwt.unauthorized_loader
+    def format_unauthorized_message(message):
+        return {app.config['JWT_ERROR_MESSAGE_KEY']:
+                message.capitalize()}, 401
 
     db.init_app(app)
     return app

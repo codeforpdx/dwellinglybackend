@@ -18,10 +18,15 @@ def test_user_auth(client, test_database, admin_user):
     """The server responds with an error when a user attempts to login with an incorrect password."""
     responseBadPassword = client.post("/api/login", json={"email": admin_user.email, "password": "incorrect"})
     assert responseBadPassword.status_code == 401
+    assert responseBadPassword.json == \
+            {'message': 'Invalid credentials'}
+
 
     """The server responds with an error when a request is made (to a protected route) without the admin token provided."""
     responseMissingToken = client.get(f"/api/user/1", headers={})
     assert responseMissingToken.status_code == 401
+    assert responseMissingToken.json == \
+            {'message': 'Missing authorization header'}
 
 def test_last_active(client, test_database, admin_user):
     user = UserModel.find_by_email(admin_user.email)
@@ -51,6 +56,9 @@ def test_register_duplicate_user(client, test_database):
     duplicateUser = genericUser
     responseDuplicate = client.post("/api/register", json=duplicateUser)
     assert responseDuplicate.status_code == 400
+    assert responseDuplicate.json == \
+            {'message':
+             'A user with that email already exists'}
 
 def test_refresh_user(client, test_database, admin_user):
     login_response = client.post("/api/login", json={
@@ -71,6 +79,8 @@ def test_get_user_by_id(client, auth_headers, admin_user):
     """The server responds with an error if a non-existent user id is requested from the get user by id route."""
     responseBadUserId = client.get("/api/user/000000", headers=auth_headers["admin"])
     assert responseBadUserId.status_code == 404
+    assert responseBadUserId.json == \
+            {'message': 'User not found'}
 
 def test_get_user_by_property_manager_id(client, auth_headers, new_property):
     """The get user by property manager id return properties and tenants list"""
@@ -122,11 +132,15 @@ def test_archive_user(client, auth_headers, new_user):
     }
     responseLoginArchivedUser = client.post("/api/login", json=data)
     assert responseLoginArchivedUser.status_code == 403
+    assert responseLoginArchivedUser.json == \
+            {'message': 'Invalid user'}
 
 def test_archive_user_failure(client, auth_headers):
     """The server responds with an error if a non-existent user id is used for the archive user by id route."""
     responseInvalidId = client.post("/api/user/archive/999999", json={}, headers=auth_headers["admin"])
     assert responseInvalidId.status_code == 400
+    assert responseInvalidId.json == \
+            {'message': 'User cannot be archived'}
 
 def test_patch_user(client, auth_headers, new_user):
     """The route to patch a user by id returns a successful response code and the expected data is patched."""
@@ -136,13 +150,13 @@ def test_patch_user(client, auth_headers, new_user):
     expectedPhone = "503-867-5309"
 
     userToPatch = UserModel.find_by_email(new_user.email)
-    response = client.patch(f"/api/user/{userToPatch.id}", json={"role": expectedRole, "email": expectedEmail, "phone": expectedPhone}, 
+    response = client.patch(f"/api/user/{userToPatch.id}", json={"role": expectedRole, "email": expectedEmail, "phone": expectedPhone},
         headers=auth_headers["admin"])
-    
+
     actualRole = int(response.json["role"])
     actualEmail = response.json["email"]
     actualPhone = response.json["phone"]
-    
+
     assert response.status_code == 201
     assert expectedRole == actualRole
     assert expectedEmail == actualEmail
@@ -183,6 +197,8 @@ def test_patch_user(client, auth_headers, new_user):
     changeOwnRoleResponse = client.patch(f"/api/user/{userToPatch.id}", json={"role": newRole}, headers={"Authorization": f"Bearer {new_access_token}"})
 
     assert changeOwnRoleResponse.status_code == 403
+    assert changeOwnRoleResponse.json == \
+            {'message': 'Only admins can change roles'}
 
 
 
@@ -191,9 +207,11 @@ def test_delete_user(client, auth_headers, new_user):
 
     response = client.delete(f"/api/user/{userToDelete.id}", headers=auth_headers["pm"])
     assert is_valid(response, 401) # UNAUTHORIZED - Admin Access Required
-    
+    assert response.json == {'message': 'Admin access required'}
+
     response = client.delete(f"/api/user/{userToDelete.id}", headers=auth_headers["pending"])
     assert is_valid(response, 401) # UNAUTHORIZED - Admin Access Required
+    assert response.json == {'message': 'Admin access required'}
 
     response = client.delete(f"/api/user/{userToDelete.id}", headers=auth_headers["admin"])
     assert is_valid(response, 200) # OK
@@ -219,3 +237,5 @@ def test_get_user(client, auth_headers, new_user):
 
     unauthorized_user_response = client.get(f'api/user?r={RoleEnum.PROPERTY_MANAGER.value}', headers=auth_headers["pm"])
     assert is_valid(unauthorized_user_response, 401)
+    assert unauthorized_user_response.json == \
+            {'message': 'Admin access required'}

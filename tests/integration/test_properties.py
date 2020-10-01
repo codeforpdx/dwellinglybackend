@@ -43,6 +43,7 @@ def test_get_property_by_name(client, auth_headers, test_database):
     """The server responds with an error if the URL contains a non-existent property name"""
     responseBadPropertyName = client.get("/api/properties/this_property_does_not_exist", headers=auth_headers["admin"])
     assert responseBadPropertyName == 404
+    assert responseBadPropertyName.json == {'message': 'Property not found'}
 
 def test_archive_property_by_id(client, auth_headers, new_property, test_database):
     test_property = PropertyModel.find_by_name(new_property.name)
@@ -50,6 +51,7 @@ def test_archive_property_by_id(client, auth_headers, new_property, test_databas
     """The server responds with a 401 error if a non-admin tries to archive"""
     responseNoAdmin = client.post(f"/api/properties/archive/{test_property.id}")
     assert responseNoAdmin == 401
+    assert responseNoAdmin.json == {'message': 'Missing authorization header'}
 
     """The archive property endpoint should return a 201 code when successful"""
     responseSuccess = client.post(f'/api/properties/archive/{test_property.id}', headers=auth_headers["admin"])
@@ -73,14 +75,17 @@ def test_delete_property_by_name(client, auth_headers, new_property, test_databa
 
     response = client.delete(f"/api/properties/{test_property.name}", headers=auth_headers["admin"])
     assert response.status_code == 200
+    assert response.json == {'message': 'Property deleted'}
 
     """Now verify that the property no longer exists"""
     response = client.get(f"/api/properties/{test_property.name}", headers=auth_headers["admin"])
     assert response.status_code == 404
+    assert response.json == {'message': 'Property not found'}
 
     """The server responds with a 401 error if a non-admin tries to delete"""
     responseNoAdmin = client.delete(f"/api/properties/{test_property.name}")
     assert responseNoAdmin == 401
+    assert responseNoAdmin.json == {'message': 'Missing authorization header'}
 
     """The server responds with a 404 error if property not exist"""
     response = client.delete(f"/api/properties/propertyNotInDB", headers=auth_headers["admin"])

@@ -21,15 +21,15 @@ class Ticket(Resource):
         ticket = TicketModel.find_by_id(id)
         if ticket:
             return ticket.json()
-        return {'Message': 'Ticket Not Found'}, 404
+        return {'message': 'Ticket not found'}, 404
 
     @jwt_required
     def delete(self, id):
         ticket = TicketModel.find_by_id(id)
         if ticket:
             ticket.delete_from_db()
-            return {'Message': 'Ticket Removed from Database'}
-        return {'Message': 'Ticket Not Found'}, 404
+            return {'message': 'Ticket removed from database'}
+        return {'message': 'Ticket not found'}, 404
 
     @jwt_required
     def put(self, id):
@@ -52,7 +52,7 @@ class Ticket(Resource):
                 if updated:
                     ticket.status = data.status
                     ticket.updated = datetime.now()
-                    
+
             if(data.urgency):
                 ticket.urgency = data.urgency
 
@@ -64,15 +64,15 @@ class Ticket(Resource):
                 try:
                     note.save_to_db()
                 except:
-                    return {'Message': 'An Error Has Occured'}, 500
+                    return {'message': 'An error has occured'}, 500
 
             try:
                 ticket.save_to_db()
             except:
-                return{"message": "An error has occured updating the Ticket"}, 500
+                return{"message": "An error has occured updating the ticket"}, 500
 
             return ticket.json()
-        return {'Message': 'Ticket Not Found'}, 404
+        return {'message': 'Ticket not found'}, 404
 
 class Tickets(Resource):
     parser = reqparse.RequestParser()
@@ -99,5 +99,5 @@ class Tickets(Resource):
         try:
             ticket.save_to_db()
         except:
-            return {'Message': 'An Error Has Occured'}, 500
+            return {'message': 'An error has occured'}, 500
         return ticket.json(), 201

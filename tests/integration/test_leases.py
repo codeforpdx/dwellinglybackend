@@ -103,13 +103,13 @@ class TestGetLease:
             )
 
         assert is_valid(response, 404)
-        assert response.json == {'message': 'Lease Not Found'}
+        assert response.json == {'message': 'Lease not found'}
 
     def test_unauthorized_request_for_a_lease(self):
         response = self.client.get(f'{self.endpoint}/1')
 
         assert is_valid(response, 401)
-        assert response.json == {'msg': 'Missing Authorization Header'}
+        assert response.json == {'message': 'Missing authorization header'}
 
     def test_authorized_request_for_all_leases(self, valid_header, create_lease):
         lease = create_lease()
@@ -129,7 +129,7 @@ class TestGetLease:
         response = self.client.get(self.endpoint)
 
         assert is_valid(response, 401)
-        assert response.json == {'msg': 'Missing Authorization Header'}
+        assert response.json == {'message': 'Missing authorization header'}
 
 
 @pytest.mark.usefixtures('client_class', 'empty_test_db')
@@ -149,14 +149,14 @@ class TestCreateLease:
 
 
         assert is_valid(response, 201)
-        assert response.json == {'message': 'Lease Created Successfully'}
+        assert response.json == {'message': 'Lease created successfully'}
         assert len(LeaseModel.query.all()) == 1
 
     def test_unauthorized_request_with_valid_payload(self):
         response = self.client.post(self.endpoint, json=self.valid_payload)
 
         assert is_valid(response, 401)
-        assert response.json == {'msg': 'Missing Authorization Header'}
+        assert response.json == {'message': 'Missing authorization header'}
 
     def test_authorized_request_with_invalid_payload(self, valid_header):
         with pytest.raises(TypeError):
@@ -174,14 +174,14 @@ class TestDeleteLease:
         response = self.client.delete(f'{self.endpoint}/{lease.id}', headers=valid_header)
 
         assert is_valid(response, 200)
-        assert response.json == {'message': 'Lease Removed from Database'}
+        assert response.json == {'message': 'Lease removed from database'}
         assert len(LeaseModel.query.all()) == 0
 
     def test_authorized_request_with_invalid_lease_id(self, valid_header):
         response = self.client.delete(f'{self.endpoint}/504', headers=valid_header)
 
         assert is_valid(response, 404)
-        assert response.json == {'message': 'Lease Not Found'}
+        assert response.json == {'message': 'Lease not found'}
 
 
 @pytest.mark.usefixtures('client_class', 'empty_test_db')
@@ -193,7 +193,7 @@ class TestUpdateLease:
         response = self.client.put(f'{self.endpoint}/504', headers=valid_header)
 
         assert is_valid(response, 404)
-        assert response.json == {'message': 'Lease Not Found'}
+        assert response.json == {'message': 'Lease not found'}
 
     def test_date_is_updated_with_valid_payload(self, valid_header, create_lease):
         lease = create_lease()
@@ -277,31 +277,31 @@ class TestLeaseAuthorizations:
         response = self.client.get('/api/lease/1')
 
         assert is_valid(response, 401)
-        assert response.json == {'msg': 'Missing Authorization Header'}
+        assert response.json == {'message': 'Missing authorization header'}
 
     def test_unauthorized_get_all_request(self):
         response = self.client.get('/api/lease')
 
         assert is_valid(response, 401)
-        assert response.json == {'msg': 'Missing Authorization Header'}
+        assert response.json == {'message': 'Missing authorization header'}
 
     def test_unauthorized_create_request(self):
         response = self.client.post('/api/lease')
 
         assert is_valid(response, 401)
-        assert response.json == {'msg': 'Missing Authorization Header'}
+        assert response.json == {'message': 'Missing authorization header'}
 
     def test_unauthorized_delete_request(self):
         response = self.client.delete('/api/lease/1')
 
         assert is_valid(response, 401)
-        assert response.json == {'msg': 'Missing Authorization Header'}
+        assert response.json == {'message': 'Missing authorization header'}
 
     def test_unauthorized_update_request(self):
         response = self.client.put('/api/lease/1')
 
         assert is_valid(response, 401)
-        assert response.json == {'msg': 'Missing Authorization Header'}
+        assert response.json == {'message': 'Missing authorization header'}
 
     # Test all roles are authorized to access each endpoint
     def test_pm_authorized_to_get(self, pm_header, create_lease):

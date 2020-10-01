@@ -23,9 +23,9 @@ def parseContactNumbersFromJson(json_data):
 
 class EmergencyContacts(Resource):
     parser = reqparse.RequestParser()
-    parser.add_argument('name',type=str,required=True,help="This field cannot be blank.")
-    parser.add_argument('description',type=str,required=False,help="This field is for the description of the emergency contact.")
-    parser.add_argument('contact_numbers',action='append',required=True,help="This field cannot be blank.")
+    parser.add_argument('name',type=str,required=True,help="This field cannot be blank")
+    parser.add_argument('description',type=str,required=False,help="This field is for the description of the emergency contact")
+    parser.add_argument('contact_numbers',action='append',required=True,help="This field cannot be blank")
 
     def get(self, id=None):
         # GET /emergencynumbers
@@ -35,7 +35,7 @@ class EmergencyContacts(Resource):
         # GET /emergencynumbers/<id>
         emergencyEntry = EmergencyContactModel.find_by_id(id)
         if not emergencyEntry:
-            return {'message': 'Emergency Contact not found'}, 404
+            return {'message': 'Emergency contact not found'}, 404
         return emergencyEntry.json()
 
     @admin_required
@@ -55,7 +55,7 @@ class EmergencyContacts(Resource):
         try:
             EmergencyContactModel.save_to_db(contactEntry)
         except:
-            return {"Message": "An Internal Error has Occured. Unable to insert emergency contact"}, 500
+            return {"message": "An internal error has occured. Unable to insert emergency contact"}, 500
 
         return contactEntry.json(), 201
 
@@ -68,9 +68,9 @@ class EmergencyContacts(Resource):
 
         contactEntry = EmergencyContactModel.find_by_id(id)
         if not contactEntry:
-            return {'message': 'Emergency Contact not found.'}, 404
+            return {'message': 'Emergency contact not found'}, 404
 
-        #variable statements allow for only updated fields to be transmitted 
+        #variable statements allow for only updated fields to be transmitted
         if(data.name):
             contactEntry.name = data.name
         if('description' in data.keys()):
@@ -90,7 +90,7 @@ class EmergencyContacts(Resource):
                 if "numtype" in number.keys(): contactToModify.numtype = number["numtype"]
                 if "extension" in number.keys(): contactToModify.extension = number["extension"]
                 contactToModify.save_to_db()
-        
+
         try:
             contactEntry.save_to_db()
         except:
@@ -102,7 +102,7 @@ class EmergencyContacts(Resource):
     def delete(self, id):
         contact = EmergencyContactModel.find_by_id(id)
         if not contact:
-            return {'message': 'Emergency Contact not found.'}, 404
+            return {'message': 'Emergency contact not found'}, 404
 
         contact.delete_from_db()
-        return {'message': 'Emergency Contact deleted.'}
+        return {'message': 'Emergency contact deleted'}

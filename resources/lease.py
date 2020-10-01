@@ -21,7 +21,7 @@ class Lease(Resource):
         if lease:
             return lease.json()
 
-        return {'message': 'Lease Not Found'}, 404
+        return {'message': 'Lease not found'}, 404
 
     @jwt_required
     def put(self,id):
@@ -30,7 +30,7 @@ class Lease(Resource):
 
         baseLease = LeaseModel.find_by_id(id)
         if not baseLease:
-            return {'message': 'Lease Not Found'}, 404
+            return {'message': 'Lease not found'}, 404
 
 
         if(data.occupants):
@@ -69,7 +69,7 @@ class Lease(Resource):
         try:
             baseLease.save_to_db()
         except:
-            return {'message': 'An Error Has Occured'}, 500
+            return {'message': 'An error has occured'}, 500
 
         return baseLease.json(), 200
 
@@ -78,9 +78,9 @@ class Lease(Resource):
         lease = LeaseModel.find_by_id(id)
         if lease:
             lease.delete_from_db()
-            return{'message': 'Lease Removed from Database'}, 200
+            return{'message': 'Lease removed from database'}, 200
         else:
-            return{'message': 'Lease Not Found'}, 404
+            return{'message': 'Lease not found'}, 404
 
 class Leases(Resource):
     @jwt_required
@@ -101,7 +101,7 @@ class Leases(Resource):
         try:
             lease.save_to_db()
         except:
-            return {'message': 'An Error Has Occured'}, 500
+            return {'message': 'An error has occured'}, 500
 
-        return {'message': 'Lease Created Successfully'}, 201
+        return {'message': 'Lease created successfully'}, 201
 

@@ -21,7 +21,7 @@ class Email(Resource):
         message.recipients = [user.email]
 
         current_app.mail.send(message)
-        return {"Message": "Message Sent"}
+        return {"message": "Message sent"}
 
 
     @staticmethod

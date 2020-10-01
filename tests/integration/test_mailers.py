@@ -17,7 +17,7 @@ class TestPostEmail:
                 'subject': 'Some email subject',
                 'body': 'Some body'
             }
-        
+
         response = self.client.post(
                 self.endpoint,
                 json=payload,
@@ -25,7 +25,7 @@ class TestPostEmail:
             )
         assert is_valid(response, 200)
         send_mail_msg.assert_called()
-        assert response.json == {"Message": "Message Sent"}
+        assert response.json == {"message": "Message sent"}
 
     @patch.object(Mail, 'send')
     def test_user_id_param_is_required(self, send_mail_msg, auth_headers):
@@ -80,9 +80,9 @@ class TestEmailAuthorizations:
 
     def test_auth_header_is_required(self):
         response = self.client.post(self.endpoint)
-    
+
         assert is_valid(response, 401)
-        assert response.json == {'msg': 'Missing Authorization Header'}
+        assert response.json == {'message': 'Missing authorization header'}
 
     def test_all_roles_except_admin_are_denied_access(self, auth_headers):
         payload = {
@@ -94,7 +94,7 @@ class TestEmailAuthorizations:
             if role != 'admin':
                 response = self.client.post(self.endpoint, json=payload, headers=token)
                 assert is_valid(response, 401)
-                assert response.json == {'message': "Admin Access Required"}
+                assert response.json == {'message': "Admin access required"}
 
 
 @pytest.mark.usefixtures('test_database')
