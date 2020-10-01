@@ -18,15 +18,6 @@ class LeaseModel(BaseModel):
     dateTimeEnd = db.Column(db.DateTime, default=datetime.datetime.utcnow)
     dateUpdated = db.Column(db.DateTime, default=datetime.datetime.utcnow)
 
-    def __init__(self, name, tenantID, propertyID, dateTimeStart, dateTimeEnd, dateUpdated, occupants):
-        self.name = name
-        self.propertyID = propertyID
-        self.tenantID = tenantID
-        self.dateTimeStart = dateTimeStart
-        self.dateTimeEnd = dateTimeEnd
-        self.dateUpdated = dateUpdated
-        self.occupants = occupants
-
     def json(self):
         property = PropertyModel.find_by_id(self.propertyID)
 
