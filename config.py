@@ -7,7 +7,6 @@ class Default(object):
     SECRET_KEY = os.environ.get('SECRET_KEY')
     JWT_SECRET_KEY = os.environ.get('JWT_SECRET_KEY')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    PROPAGATE_EXCEPTIONS = True
     JWT_AUTH_USERNAME_KEY = os.environ.get('JWT_AUTH_USERNAME_KEY')
     JWT_ACCESS_TOKEN_EXPIRES = os.environ.get('JWT_ACCESS_TOKEN_EXPIRES')
     JWT_REFRESH_TOKEN_EXPIRES = os.environ.get('JWT_REFRESH_TOKEN_EXPIRES')
