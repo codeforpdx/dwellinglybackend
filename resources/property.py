@@ -43,7 +43,7 @@ class Properties(Resource):
         try:
             PropertyModel.save_to_db(rentalproperty)
         except:
-            return{"Message": "An internal error has occured. Unable to insert property"}, 500
+            return{"message": "An internal error has occured. Unable to insert property"}, 500
 
         return rentalproperty.json(), 201
 

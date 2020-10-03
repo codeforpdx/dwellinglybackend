@@ -80,7 +80,7 @@ class User(Resource):
         data = parser.parse_args()
 
         if not user:
-            return {"Message": "User not found"}, 400
+            return {"message": "User not found"}, 400
 
         if user_id != get_jwt_identity() and not get_jwt_claims()['is_admin']:
             return {"message": "You cannot change another user's information unless you are an admin"}, 403

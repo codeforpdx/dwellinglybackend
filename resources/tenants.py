@@ -46,7 +46,7 @@ class Tenants(Resource):
         try:
             TenantModel.save_to_db(tenantEntry)
         except:
-            return{"Message": "An internal error has occured. Unable to insert tenant"}, 500
+            return{"message": "An internal error has occured. Unable to insert tenant"}, 500
 
         return tenantEntry.json(), 201
 
