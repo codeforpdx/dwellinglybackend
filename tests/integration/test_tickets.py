@@ -38,10 +38,10 @@ def test_tickets_GET_one(client, test_database, auth_headers):
     assert response.json['status'] == 'In Progress'
     assert response.json['urgency'] == 'Low'
     assert len(response.json['notes']) == 2
-    assert response.json['notes'][0]['ticketID'] == 1
+    assert response.json['notes'][0]['ticketid'] == 1
     assert response.json['notes'][0]['text'] == 'Tenant has over 40 cats.'
     assert response.json['notes'][0]['user'] == 'user2 tester'
-    assert response.json['notes'][1]['ticketID'] == 1
+    assert response.json['notes'][1]['ticketid'] == 1
     assert response.json['notes'][1]['text'] == 'Issue Resolved with phone call'
     assert response.json['notes'][1]['user'] == 'user3 tester'
 
@@ -112,7 +112,7 @@ def test_tickets_PUT(client, auth_headers):
     assert response.json['updated'] == dt.strftime("%m/%d/%Y, %H:%M:%S")
     # Ticket already had 2 notes to begin with - and with this PUT - it's +1
     assert len(response.json['notes']) == 3
-    assert response.json['notes'][2]['ticketID'] == 1
+    assert response.json['notes'][2]['ticketid'] == 1
     assert response.json['notes'][2]['text'] == 'Tenant has a service dog'
     assert response.json['notes'][2]['user'] == 'user2 tester'
 
