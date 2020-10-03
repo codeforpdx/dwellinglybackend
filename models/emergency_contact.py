@@ -32,7 +32,7 @@ class EmergencyContactModel(BaseModel):
             'id': self.id,
             'name':self.name,
             'description': self.description,
-            'contactNumbers': [number.json() for number in self.contact_numbers]
+            'contact_numbers': [number.json() for number in self.contact_numbers]
         }
 
     @classmethod

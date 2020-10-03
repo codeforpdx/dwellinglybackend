@@ -28,7 +28,7 @@ class NotesModel(BaseModel):
 
         return {
             'id':self.id,
-            'ticketID': self.ticketid,
+            'ticketid': self.ticketid,
             'created': self.created,
             'text': self.text,
             'user': user.fullName
