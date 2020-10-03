@@ -2,9 +2,9 @@ import click
 from db import db
 from data.seedData import seedData
 from flask import Blueprint
-import sys
 
 dbsetup = Blueprint('db', __name__)
+
 """
     *****Database Commands*****
 """

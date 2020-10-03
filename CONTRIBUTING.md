@@ -1,3 +1,4 @@
+# Contributing
 ## Installation
 Set up Dwelling Flask Testing Backend (for the first time)
 NOTE: Database is SQLite3 via SQLAlchemy
@@ -13,16 +14,17 @@ NOTE: Database is SQLite3 via SQLAlchemy
 3. Install dependencies `pipenv install -d`
    - Note: Pipenv may prompt you to install Python if it cannot find the correct version on your system. You should select Yes.
    - Note: If you get the error `ImportError: cannot import name 'Feature' from 'setuptools'`, your setuptools version might be at 46 or later. You may be able to get it to work using version 45 (e.g. `pip3 install setuptools==45`)
-4. Create and Seed the database
+4. copy the contents of the `.env.example` to a new file called `.env`
+    - `cp .env.example .env`
+5. Create and Seed the database
    - Run: `pipenv run flask db create`
    - To re-seed the database from scratch run: `pipenv run flask db recreate`
    - Look for the file data.db to be created in the root directory
-   - If you get the error `ImportError: No module named flask` or similar, you may need to run `pipenv shell` to launch virtual environment.
    - To find other database set-up commands run: `pipenv run flask db --help`
-5. Start the server using the flask environment (required every time the project is re-opened):
+6. Start the server using the flask environment (required every time the project is re-opened):
    - Run: `pipenv run flask run`
-   - Run + restart the server on changes: `pipenv run flask run --reload`
-6. Test the server and view coverage reports. Use of coverage reporting is recommended to indicate test suite completeness and to locate defunct code in the code base.
+   - Run and restart the server on changes: `pipenv run flask run --reload`
+7. Test the server and view coverage reports. Use of coverage reporting is recommended to indicate test suite completeness and to locate defunct code in the code base.
     - Run all the tests: `pipenv run pytest --cov .`
       - Run tests in a particular directory: `pipenv run pytest --cov [path to directory]`
         - Example: Just the integration tests: `pipenv run pytest --cov tests/integration`
