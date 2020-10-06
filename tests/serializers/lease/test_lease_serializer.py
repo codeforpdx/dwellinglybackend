@@ -24,26 +24,8 @@ def create_tenant():
     yield _create_tenant
 
 @pytest.fixture
-def create_property():
-    def _create_property(pm):
-        property = PropertyModel(
-                name='the heights',
-                address='111 SW Harrison',
-                city="Portland",
-                unit="101",
-                state="OR",
-                zipcode="97207",
-                propertyManager=pm.id,
-                dateAdded="2020-04-12",
-                archived=False
-            )
-        property.save_to_db()
-        return property
-    yield _create_property
-
-@pytest.fixture
-def create_landlord():
-    def _create_landlord():
+def create_property_manager():
+    def _create_property_manager():
         landlord = UserModel(
                 email="manager@domain.com",
                 password=b'asdf',
@@ -55,13 +37,30 @@ def create_landlord():
             )
         landlord.save_to_db()
         return landlord
-    yield _create_landlord
+    yield _create_property_manager
 
-def lease_attributes(name, tenant, landlord, property):
+@pytest.fixture
+def create_property(create_property_manager):
+    def _create_property():
+        property = PropertyModel(
+                name='the heights',
+                address='111 SW Harrison',
+                city="Portland",
+                unit="101",
+                state="OR",
+                zipcode="97207",
+                propertyManager=create_property_manager().id,
+                dateAdded="2020-04-12",
+                archived=False
+            )
+        property.save_to_db()
+        return property
+    yield _create_property
+
+def lease_attributes(name, tenant, property):
     return {
         "name": name,
         "tenantID": tenant.id,
-        "landlordID": landlord.id,
         "propertyID": property.id,
         "dateTimeStart": datetime.now(),
         "dateTimeEnd": datetime.now(),
@@ -70,11 +69,9 @@ def lease_attributes(name, tenant, landlord, property):
     }
 
 @pytest.fixture
-def create_lease(create_landlord, create_property, create_tenant):
-    def _create_lease(name="Hello World", tenant=create_tenant(), landlord=create_landlord(), property=None):
-        if not property:
-            property = create_property(landlord)
-        lease = LeaseModel(**lease_attributes(name, tenant, landlord, property))
+def create_lease(create_property, create_tenant):
+    def _create_lease(name="Hello World", tenant=create_tenant(), property=create_property()):
+        lease = LeaseModel(**lease_attributes(name, tenant, property))
         lease.save_to_db()
         return lease
     yield _create_lease
@@ -88,7 +85,6 @@ class TestLeaseSerializer:
     def test_serializer(self, create_lease):
         lease = create_lease()
         property = LeaseModel.find_by_id(lease.propertyID)
-        landlord = UserModel.find_by_id(lease.landlordID)
 
         assert LeaseSerializer.serialize(lease) == {
                 'id': lease.id,

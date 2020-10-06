@@ -24,26 +24,8 @@ def create_tenant():
     yield _create_tenant
 
 @pytest.fixture
-def create_property():
-    def _create_property(pm):
-        property = PropertyModel(
-                name='the heights',
-                address='111 SW Harrison',
-                city="Portland",
-                unit="101",
-                state="OR",
-                zipcode="97207",
-                propertyManager=pm.id,
-                dateAdded="2020-04-12",
-                archived=False
-            )
-        property.save_to_db()
-        return property
-    yield _create_property
-
-@pytest.fixture
-def create_landlord():
-    def _create_landlord():
+def create_property_manager():
+    def _create_property_manager():
         landlord = UserModel(
                 email="manager@domain.com",
                 password=b'asdf',
@@ -55,13 +37,30 @@ def create_landlord():
             )
         landlord.save_to_db()
         return landlord
-    yield _create_landlord
+    yield _create_property_manager
 
-def lease_attributes(name, tenant, landlord, property):
+@pytest.fixture
+def create_property(create_property_manager):
+    def _create_property():
+        property = PropertyModel(
+                name='the heights',
+                address='111 SW Harrison',
+                city="Portland",
+                unit="101",
+                state="OR",
+                zipcode="97207",
+                propertyManager=create_property_manager().id,
+                dateAdded="2020-04-12",
+                archived=False
+            )
+        property.save_to_db()
+        return property
+    yield _create_property
+
+def lease_attributes(name, tenant, property):
     return {
         "name": name,
         "tenantID": tenant.id,
-        "landlordID": landlord.id,
         "propertyID": property.id,
         "dateTimeStart": datetime.now(),
         "dateTimeEnd": datetime.now(),
@@ -70,11 +69,9 @@ def lease_attributes(name, tenant, landlord, property):
     }
 
 @pytest.fixture
-def create_lease(create_landlord, create_property, create_tenant):
-    def _create_lease(name="Hello World", tenant=create_tenant(), landlord=create_landlord(), property=None):
-        if not property:
-            property = create_property(landlord)
-        lease = LeaseModel(**lease_attributes(name, tenant, landlord, property))
+def create_lease(create_property, create_tenant):
+    def _create_lease(name="Hello World", tenant=create_tenant(), property=create_property()):
+        lease = LeaseModel(**lease_attributes(name, tenant, property))
         lease.save_to_db()
         return lease
     yield _create_lease
@@ -222,7 +219,6 @@ class TestUpdateLease:
 
         payload = {
                 'name': 'I',
-                'landlordID': '504',
                 'propertyID': '504',
                 'tenantID': '504',
                 'occupants': '504',
@@ -233,17 +229,15 @@ class TestUpdateLease:
         with pytest.raises(AttributeError):
             response = self.client.put(f'{self.endpoint}/{lease.id}', json=payload, headers=valid_header)
 
-    def test_valid_attrs_are_all_updated(self, valid_header, create_lease, create_tenant, create_property, create_landlord):
+    def test_valid_attrs_are_all_updated(self, valid_header, create_lease, create_tenant, create_property):
         lease = create_lease()
-        new_landlord = create_landlord()
         new_tenant = create_tenant()
-        new_property = create_property(new_landlord)
+        new_property = create_property()
         start_date = Time.one_year_from_now()
         end_date = Time.today()
 
         payload = {
                 'name': 'I',
-                'landlordID': new_landlord.id,
                 'propertyID': new_property.id,
                 'tenantID': new_tenant.id,
                 'occupants': '200',
@@ -255,7 +249,6 @@ class TestUpdateLease:
 
         assert is_valid(response, 200)
         assert response.json['name'] == 'I'
-        assert response.json['landlordID']['id'] == new_landlord.id
         assert response.json['propertyID']['id'] == new_property.id
         assert response.json['tenantID']['id'] == new_tenant.id
         assert response.json['occupants'] == 200
