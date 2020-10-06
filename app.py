@@ -22,41 +22,7 @@ from resources.widgets import Widgets
 import os
 from db import db
 from manage import dbsetup
-
-def config_app(app):
-    #config DataBase
-    app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DATABASE_URL", default = 'sqlite:///data.db')
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    app.config['PROPAGATE_EXCEPTIONS'] = True
-    app.secret_key = 'dwellingly' #Replace with Random Hash
-    app.config['JWT_AUTH_USERNAME_KEY'] = 'email'
-
-    # During development, it makes sense to allow permanent token validity
-    # Replace these configs before production release.
-    app.config['JWT_ACCESS_TOKEN_EXPIRES'] = False
-    app.config['JWT_REFRESH_TOKEN_EXPIRES'] = False
-
-    # Enable blacklisting and specify what kind of tokens to check against the blacklist
-    app.config['JWT_BLACKLIST_ENABLED'] = True
-    app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = ['access', 'refresh']
-
-    # Change default error message from 'msg' to 'message'
-    app.config['JWT_ERROR_MESSAGE_KEY'] = 'message'
-
-    #configure mail server
-    app.config['MAIL_SERVER'] = 'smtp.gmail.com'
-    app.config['MAIL_PORT'] = 465
-    app.config['MAIL_USE_TLS'] = False
-    app.config['MAIL_USE_SSL'] = True
-    app.config['MAIL_DEBUG'] = True #same as app
-    app.config['MAIL_USERNAME'] = "dwellingly@gmail.com" #not active
-    app.config['MAIL_PASSWORD'] = "1234567thisisnotreal"
-    # app.config['MAIL_USERNAME'] = os.environ['EMAIL_USERNAME']
-    # app.config['MAIL_PASSWORD'] = os.environ['EMAIL_PASSWORD']
-    # app.config['MAIL_DEFAULT_SENDER'] = 'noreply@dwellingly.com'
-    app.config['MAIL_MAX_EMAILS'] = 3
-    app.config['MAIL_ASCII_ATTACHMENTS'] = False
-
+from config import app_config
 
 def create_routes(app):
     api = Api(app, prefix="/api/")
@@ -81,27 +47,11 @@ def create_routes(app):
     api.add_resource(Ticket, 'tickets/<int:id>')
     api.add_resource(ResetPassword, 'reset-password', 'reset-password/<string:token>')
 
-def check_for_admins():
-    errorMsg = (
-        "\n\n=-=-=-=-=-=-=-=\n"
-        "WARNING! Database unusable. Did you forget to create and seed your database? `python manage.py create`"
-        "\n=-=-=-=-=-=-=-=\n\n"
-    )
-    assert (os.path.isfile('./data.db')), errorMsg
-    try:
-        admins = UserModel.find_by_role(RoleEnum.ADMIN)
-    except:
-        print(errorMsg)
-    else:
-        if(not len(admins)):
-            print(errorMsg)
-
-
-def create_app():
+def create_app(env):
     app = Flask(__name__)
 
-    #configure the flask settings
-    config_app(app)
+    app.config.from_object(app_config[env])
+    app.register_blueprint(dbsetup)
 
     #declare the available routes
     create_routes(app)
@@ -114,10 +64,6 @@ def create_app():
 
     # initialize Mail
     app.mail = Mail(app)
-
-    # ensure the database has been initialized (development only)
-    @app.before_first_request
-    def decorated_check_for_admins(): check_for_admins()
 
     # check the user role in the JSON Web Token (JWT)
     @app.jwt.user_claims_loader
@@ -140,10 +86,3 @@ def create_app():
 
     db.init_app(app)
     return app
-
-
-app = create_app()
-app.register_blueprint(dbsetup)
-
-if __name__ == '__main__':
-    app.run(port=5000, debug=True)

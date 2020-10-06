@@ -10,6 +10,7 @@ pytest-cov = "*"
 flake8 = "*"
 freezegun = "*"
 pytest-watch = "*"
+python-dotenv = "*"
 
 [packages]
 aniso8601 = "==8.0.0"
