@@ -18,8 +18,9 @@ def lease_attributes():
 
 @pytest.fixture
 def create_lease(lease_attributes, create_property, create_tenant):
-    def _create_lease(name="Hello World", tenant=create_tenant(), property=create_property()):
-        lease = LeaseModel(**lease_attributes(name, tenant, property))
+    def _create_lease(name="Hello World"):
+        tenant = create_tenant()
+        lease = LeaseModel(**lease_attributes(name, tenant, tenant.property))
         lease.save_to_db()
         return lease
     yield _create_lease

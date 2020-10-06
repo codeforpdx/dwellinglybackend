@@ -2,13 +2,13 @@ import pytest
 from models.tenant import TenantModel
 
 @pytest.fixture
-def create_tenant():
-    def _create_tenant():
+def create_tenant(create_property):
+    def _create_tenant(property=create_property()):
         tenant = TenantModel(
                 firstName="firstName",
                 lastName="lastName",
                 phone="phone",
-                propertyID=None,
+                propertyID=property.id,
                 staffIDs=[],
                 unitNum=3
             )

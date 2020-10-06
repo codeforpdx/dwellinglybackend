@@ -3,7 +3,7 @@ from models.property import PropertyModel
 
 @pytest.fixture
 def create_property(create_property_manager):
-    def _create_property():
+    def _create_property(pm=create_property_manager()):
         property = PropertyModel(
                 name='the heights',
                 address='111 SW Harrison',
@@ -11,7 +11,7 @@ def create_property(create_property_manager):
                 unit="101",
                 state="OR",
                 zipcode="97207",
-                propertyManager=create_property_manager().id,
+                propertyManager=pm.id,
                 dateAdded="2020-04-12",
                 archived=False
             )
