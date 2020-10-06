@@ -47,6 +47,7 @@ def test_tickets_GET_one(client, test_database, auth_headers):
 
     response = client.get(f'{endpoint}/{invalidID}', headers=auth_headers["admin"])
     assert is_valid(response, 404)
+    assert response.json == {'message': 'Ticket not found'}
 
 
 def test_tickets_POST(client, auth_headers):
@@ -122,6 +123,7 @@ def test_tickets_PUT(client, auth_headers):
     response = client.put(f'{endpoint}/{invalidID}', json=updatedTicket, headers=auth_headers["admin"])
     # NOT FOUND - Trying to update a non-existing ticket
     assert is_valid(response, 404)
+    assert response.json == {'message': 'Ticket not found'}
 
 
 def test_tickets_DELETE(client, auth_headers):
@@ -129,10 +131,13 @@ def test_tickets_DELETE(client, auth_headers):
     response = client.delete(f'{endpoint}/{validID}')
     # UNAUTHORIZED - Missing Authorization Header
     assert is_valid(response, 401)
+    assert response.json == {'message': 'Missing authorization header'}
 
     response = client.delete(f'{endpoint}/{validID}', headers=auth_headers["admin"])
     assert is_valid(response, 200)
+    assert response.json == {'message': 'Ticket removed from database'}
 
     response = client.delete(f'{endpoint}/{validID}', headers=auth_headers["admin"])
     # NOT FOUND - Trying to delete a non-existing ticket or an already deleted ticket
     assert is_valid(response, 404)
+    assert response.json == {'message': 'Ticket not found'}

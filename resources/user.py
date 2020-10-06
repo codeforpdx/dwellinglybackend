@@ -22,13 +22,13 @@ class UserRoles(Resource):
 
 class UserRegister(Resource):
     parser = reqparse.RequestParser()
-    parser.add_argument('firstName',type=str,required=True,help="This field cannot be blank.")
-    parser.add_argument('lastName',type=str,required=True,help="This field cannot be blank.")
-    parser.add_argument('email',type=str,required=True,help="This field cannot be blank.")
-    parser.add_argument('password', type=str, required=True, help="This field cannot be blank.")
-    parser.add_argument('role',type=int,required=False,help="This field is not required.")
-    parser.add_argument('archived',type=str,required=False,help="This field is not required.")
-    parser.add_argument('phone',type=str,required=True,help="This field cannot be blank.")
+    parser.add_argument('firstName',type=str,required=True,help="This field cannot be blank")
+    parser.add_argument('lastName',type=str,required=True,help="This field cannot be blank")
+    parser.add_argument('email',type=str,required=True,help="This field cannot be blank")
+    parser.add_argument('password', type=str, required=True, help="This field cannot be blank")
+    parser.add_argument('role',type=int,required=False,help="This field is not required")
+    parser.add_argument('archived',type=str,required=False,help="This field is not required")
+    parser.add_argument('phone',type=str,required=True,help="This field cannot be blank")
 
     def post(self):
         data = UserRegister.parser.parse_args()
@@ -51,13 +51,13 @@ class User(Resource):
         user = UserModel.find_by_id(user_id)
 
         if not user:
-            return {'message': 'User Not Found'}, 404
+            return {'message': 'User not found'}, 404
 
         user_info = user.json()
 
         if user.role == RoleEnum.PROPERTY_MANAGER:
             user_info['properties'], tenant_list = zip(*((p.json(), p.tenants) for p in PropertyModel.find_by_manager(user_id) if p))
-            
+
             tenant_IDs = [tenant.id for sublist in tenant_list for tenant in sublist]
             tenants_list = [TenantModel.find_by_id(t) for t in set(tenant_IDs)]
             user_info['tenants'] = [t.json() for t in tenants_list if t]
@@ -70,23 +70,23 @@ class User(Resource):
         user = UserModel.find_by_id(user_id)
 
         parser = reqparse.RequestParser()
-        parser.add_argument('role', type=int, required=False, help="This field is not required.")
-        parser.add_argument('firstName',type=str, required=False, help="This field is not required.")
-        parser.add_argument('lastName',type=str, required=False, help="This field is not required.")
-        parser.add_argument('email',type=str, required=False, help="This field is not required.")
-        parser.add_argument('phone',type=str, required=False,help="This field is not required.")
-        parser.add_argument('password',type=str, required=False,help="This field is not required.")
+        parser.add_argument('role', type=int, required=False, help="This field is not required")
+        parser.add_argument('firstName',type=str, required=False, help="This field is not required")
+        parser.add_argument('lastName',type=str, required=False, help="This field is not required")
+        parser.add_argument('email',type=str, required=False, help="This field is not required")
+        parser.add_argument('phone',type=str, required=False,help="This field is not required")
+        parser.add_argument('password',type=str, required=False,help="This field is not required")
 
         data = parser.parse_args()
 
         if not user:
-            return {"Message": "Unable to find user."}, 400
-      
+            return {"message": "User not found"}, 400
+
         if user_id != get_jwt_identity() and not get_jwt_claims()['is_admin']:
-            return {"Message": "You cannot change another user's information unless you are an admin"}, 403
+            return {"message": "You cannot change another user's information unless you are an admin"}, 403
 
         if data['role'] and not get_jwt_claims()['is_admin']:
-            return {"Message": "Only admins can change roles"}, 403
+            return {"message": "Only admins can change roles"}, 403
 
         if data['role']:
           user.role = RoleEnum(data['role'])
@@ -104,7 +104,7 @@ class User(Resource):
         try:
             user.save_to_db()
         except:
-            return {'Message': 'An Error Has Occurred. Note that you can only update a user\'s role, email, phone, or password.'}, 500
+            return {'message': 'An error has occurred. Note that you can only update a user\'s role, email, phone, or password.'}, 500
 
 
         if user_id == get_jwt_identity():
@@ -121,9 +121,9 @@ class User(Resource):
     def delete(self, user_id):
         user = UserModel.find_by_id(user_id)
         if not user:
-            return {"Message": "Unable to delete User"}, 400
+            return {"message": "Unable to delete User"}, 400
         user.delete_from_db()
-        return {"Message": "User deleted"}, 200
+        return {"message": "User deleted"}, 200
 
 class ArchiveUser(Resource):
 
@@ -131,13 +131,13 @@ class ArchiveUser(Resource):
     def post(self, user_id):
         user = UserModel.find_by_id(user_id)
         if(not user):
-            return{'Message': 'User cannot be archived'}, 400
+            return{'message': 'User cannot be archived'}, 400
 
         user.archived = not user.archived
         try:
             user.save_to_db()
         except:
-            return {'Message': 'An Error Has Occured'}, 500
+            return {'message': 'An error has occured'}, 500
 
         if user.archived:
             # invalidate access token
@@ -149,8 +149,8 @@ class ArchiveUser(Resource):
 
 class UserLogin(Resource):
     parser = reqparse.RequestParser()
-    parser.add_argument('email',type=str,required=True,help="This field cannot be blank.")
-    parser.add_argument('password', type=str, required=True, help="This field cannot be blank.")
+    parser.add_argument('email',type=str,required=True,help="This field cannot be blank")
+    parser.add_argument('password', type=str, required=True, help="This field cannot be blank")
 
     def post(self):
         data = UserLogin.parser.parse_args()
@@ -158,10 +158,10 @@ class UserLogin(Resource):
         user = UserModel.find_by_email(data['email'])
 
         if user and user.archived:
-            return {"message": "Not a valid user"}, 403
+            return {"message": "Invalid user"}, 403
 
         if user and check_pw(data['password'], user.password):
-            access_token = create_access_token(identity=user.id, fresh=True) 
+            access_token = create_access_token(identity=user.id, fresh=True)
             refresh_token = create_refresh_token(user.id)
             user.update_last_active()
             return {
@@ -169,11 +169,11 @@ class UserLogin(Resource):
                 'refresh_token': refresh_token
             }, 200
 
-        return {"message": "Invalid Credentials!"}, 401       
+        return {"message": "Invalid credentials"}, 401
 
 class UsersRole(Resource):
     parser = reqparse.RequestParser()
-    parser.add_argument('userrole',type=int,required=True,help="This field cannot be blank.")
+    parser.add_argument('userrole',type=int,required=True,help="This field cannot be blank")
     parser.add_argument('name',type=str,required=False)
 
     @admin_required
@@ -190,9 +190,9 @@ class UsersRole(Resource):
             users_info.append(info)
         return {'users': users_info}
 
-# This endpoint allows the app to use a refresh token to get a new access token 
+# This endpoint allows the app to use a refresh token to get a new access token
 class UserAccessRefresh(Resource):
-    
+
     # The jwt_refresh_token_required decorator insures a valid refresh
     # token is present in the request before calling this endpoint. We
     # can use the get_jwt_identity() function to get the identity of

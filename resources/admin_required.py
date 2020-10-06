@@ -4,9 +4,9 @@ def admin_required(func):
     @jwt_required
     def check_admin_wrapper(*args, **kwargs):
         #check if is_admin exist. If not discontinue function
-        claims = get_jwt_claims() 
+        claims = get_jwt_claims()
         if not claims['is_admin']:
-            return {'message': "Admin Access Required"}, 401
+            return {'message': "Admin access required"}, 401
 
         return func(*args, **kwargs)
 

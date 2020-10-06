@@ -21,15 +21,15 @@ class Ticket(Resource):
         ticket = TicketModel.find_by_id(id)
         if ticket:
             return ticket.json()
-        return {'Message': 'Ticket Not Found'}, 404
+        return {'message': 'Ticket not found'}, 404
 
     @jwt_required
     def delete(self, id):
         ticket = TicketModel.find_by_id(id)
         if ticket:
             ticket.delete_from_db()
-            return {'Message': 'Ticket Removed from Database'}
-        return {'Message': 'Ticket Not Found'}, 404
+            return {'message': 'Ticket removed from database'}
+        return {'message': 'Ticket not found'}, 404
 
     @jwt_required
     def put(self, id):
@@ -52,7 +52,7 @@ class Ticket(Resource):
                 if updated:
                     ticket.status = data.status
                     ticket.updated = datetime.now()
-                    
+
             if(data.urgency):
                 ticket.urgency = data.urgency
 
@@ -65,7 +65,7 @@ class Ticket(Resource):
 
             ticket.save_to_db()
             return ticket.json()
-        return {'Message': 'Ticket Not Found'}, 404
+        return {'message': 'Ticket not found'}, 404
 
 class Tickets(Resource):
     parser = reqparse.RequestParser()
@@ -88,6 +88,6 @@ class Tickets(Resource):
     def post(self):
         data = Tickets.parser.parse_args()
         ticket = TicketModel(**data)
-        
+
         ticket.save_to_db()
         return ticket.json(), 201

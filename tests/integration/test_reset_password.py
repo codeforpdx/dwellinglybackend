@@ -45,7 +45,7 @@ class TestResetPasswordGET:
     def test_request_with_invalid_params(self):
         response = self.client.get(f'{self.endpoint}/garbage_request')
         assert response.status == '422 UNPROCESSABLE ENTITY'
-        assert response.json == {'msg': 'Not enough segments'}
+        assert response.json == {'message': 'Not enough segments'}
 
     def test_request_with_expired_token(self, new_user):
         with freeze_time(Time.yesterday()):

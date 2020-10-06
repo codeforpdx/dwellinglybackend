@@ -78,5 +78,11 @@ def create_app(env):
         jti = decrypted_token['jti']
         return RevokedTokensModel.is_jti_blacklisted(jti)
 
+    # Format jwt "Missing authorization header" messages
+    @app.jwt.unauthorized_loader
+    def format_unauthorized_message(message):
+        return {app.config['JWT_ERROR_MESSAGE_KEY']:
+                message.capitalize()}, 401
+
     db.init_app(app)
     return app

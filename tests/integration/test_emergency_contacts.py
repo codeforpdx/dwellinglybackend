@@ -30,10 +30,11 @@ def test_emergency_contacts_GET_one(client, test_database):
   response = client.get(f'{endpoint}/{id}')
   assert is_valid(response, 200) # OK
   assert response.json['name'] == 'Narcotics Anonymous'
-  
+
   id = 100
   response = client.get(f'{endpoint}/{id}')
   assert is_valid(response, 404) # NOT FOUND - 'Emergency Contact not found'
+  assert response.json == {'message': 'Emergency contact not found'}
 
 
 def test_emergency_contacts_POST(client, auth_headers):
@@ -47,16 +48,22 @@ def test_emergency_contacts_POST(client, auth_headers):
   }
 
   response = client.post(endpoint, json=newContact, headers=auth_headers["admin"])
-  assert is_valid(response, 401) # UNAUTHORIZED - An emergency contact with this name already exists
+  assert is_valid(response, 401) # UNAUTHORIZED - Emergency Contact With This Name Already Exists
+  assert response.json == \
+          {'message':
+           'An emergency contact with this name already exists'}
 
   response = client.post(endpoint, json=newContact, headers=auth_headers["pm"])
   assert is_valid(response, 401) # UNAUTHORIZED - Admin Access Required
+  assert response.json == {'message': 'Admin access required'}
 
   response = client.post(endpoint, json=newContact, headers=auth_headers["pending"]) 
   assert is_valid(response, 401) # UNAUTHORIZED - Admin Access Required
+  assert response.json == {'message': 'Admin access required'}
 
   response = client.post(endpoint, json=newContact)
   assert is_valid(response, 401) # UNAUTHORIZED - Missing Authorization Header
+  assert response.json == {'message': 'Missing authorization header'}
 
   newContact['name'] = 'Cooler Name'
   response = client.post(endpoint, json=newContact, headers=auth_headers["admin"])
@@ -65,7 +72,8 @@ def test_emergency_contacts_POST(client, auth_headers):
 
   newContact = {}
   response = client.post(endpoint, json=newContact, headers=auth_headers["admin"])
-  assert is_valid(response, 400) # BAD REQUEST - {'name': 'This field cannot be blank.'}
+  assert is_valid(response, 400) # BAD REQUEST - {'name': 'This Field Cannot Be Blank.'}
+  assert response.json == {'message': {'name': 'This field cannot be blank'}}
 
 
 def test_emergency_contacts_PUT(client, auth_headers):
@@ -84,6 +92,7 @@ def test_emergency_contacts_PUT(client, auth_headers):
   id = 100
   response = client.put(f'{endpoint}/{id}', json=updatedInfo, headers=auth_headers["admin"])
   assert is_valid(response, 404) # NOT FOUND
+  assert response.json == {'message': 'Emergency contact not found'}
 
 
 def test_emergency_contacts_DELETE(client, auth_headers):
@@ -91,15 +100,19 @@ def test_emergency_contacts_DELETE(client, auth_headers):
 
   response = client.delete(f'{endpoint}/{id}')
   assert is_valid(response, 401) # UNAUTHORIZED - Missing Authorization Header
+  assert response.json == {'message': 'Missing authorization header'}
 
   response = client.delete(f'{endpoint}/{id}', headers=auth_headers["pending"])
   assert is_valid(response, 401) # UNAUTHORIZED - Admin Access Required
+  assert response.json == {'message': 'Admin access required'}
 
   response = client.delete(f'{endpoint}/{id}', headers=auth_headers["pm"])
   assert is_valid(response, 401) # UNAUTHORIZED - Admin Access Required
+  assert response.json == {'message': 'Admin access required'}
 
   response = client.delete(f'{endpoint}/{id}', headers=auth_headers["admin"])
   assert is_valid(response, 200) # OK
 
   response = client.delete(f'{endpoint}/{id}', headers=auth_headers["admin"])
-  assert is_valid(response, 404) # NOT FOUND - Emergency Contact not found
+  assert is_valid(response, 404) # NOT FOUND - Emergency Contact Not Found
+  assert response.json == {'message': 'Emergency contact not found'}

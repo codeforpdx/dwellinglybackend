@@ -16,12 +16,12 @@ from models.user import UserModel
 
 class Tenants(Resource):
     parser = reqparse.RequestParser()
-    parser.add_argument('firstName',type=str,required=True,help="This field cannot be blank.")
-    parser.add_argument('lastName',type=str,required=True,help="This field cannot be blank.")
-    parser.add_argument('phone',type=str,required=True,help="This field cannot be blank.")
-    parser.add_argument('propertyID',required=False,help="This field can be provided at a later time.")
-    parser.add_argument('staffIDs',action='append',required=False,help="This field can be provided at a later time.")
-    parser.add_argument('unitNum' ,required=False,help="This field can be provided at a later time.")
+    parser.add_argument('firstName',type=str,required=True,help="This field cannot be blank")
+    parser.add_argument('lastName',type=str,required=True,help="This field cannot be blank")
+    parser.add_argument('phone',type=str,required=True,help="This field cannot be blank")
+    parser.add_argument('propertyID',required=False,help="This field can be provided at a later time")
+    parser.add_argument('staffIDs',action='append',required=False,help="This field can be provided at a later time")
+    parser.add_argument('unitNum' ,required=False,help="This field can be provided at a later time")
 
     @admin_required
     def get(self, tenant_id=None):
@@ -46,7 +46,7 @@ class Tenants(Resource):
         try:
             TenantModel.save_to_db(tenantEntry)
         except:
-            return{"Message": "An Internal Error has Occured. Unable to insert tenant"}, 500
+            return{"message": "An internal error has occured. Unable to insert tenant"}, 500
 
         return tenantEntry.json(), 201
 
@@ -61,11 +61,11 @@ class Tenants(Resource):
 
         tenantEntry = TenantModel.find_by_id(tenant_id)
         if not tenantEntry:
-            return {'message': 'Tenant not found.'}, 404
+            return {'message': 'Tenant not found'}, 404
 
         #variable statements allow for only updated fields to be transmitted 
         if(data.firstName):
-            tenantEntry.firstName = data.firstName            
+            tenantEntry.firstName = data.firstName
         if(data.lastName):
             tenantEntry.lastName = data.lastName
         if(data.phone):
@@ -74,13 +74,13 @@ class Tenants(Resource):
             tenantEntry.propertyID = data.propertyID
         if(data.staffIDs and len(data.staffIDs)):
             tenantEntry.staff[:] = []
-            for id in data.staffIDs: 
+            for id in data.staffIDs:
                 user = UserModel.find_by_id(id)
                 if user: tenantEntry.staff.append(user)
         if(data.unitNum):
             tenantEntry.unitNum = data.unitNum
 
-        
+
         try:
             tenantEntry.save_to_db()
         except:
@@ -93,8 +93,8 @@ class Tenants(Resource):
     def delete(self, tenant_id):
         tenant = TenantModel.find_by_id(tenant_id)
         if not tenant:
-            return {'message': 'Tenant not found.'}, 404
+            return {'message': 'Tenant not found'}, 404
 
         tenant.delete_from_db()
-        return {'message': 'Tenant deleted.'}
+        return {'message': 'Tenant deleted'}
 
