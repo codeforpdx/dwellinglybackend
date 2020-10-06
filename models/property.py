@@ -48,7 +48,7 @@ class PropertyModel(BaseModel):
             'state': self.state,
             'zipcode': self.zipcode,
             'propertyManager': self.propertyManager,
-            'propertyManagerName': property_manager.full_name(),
+            'propertyManagerName': property_manager.full_name() if property_manager else None,
             'tenantIDs': property_tenants,
             'dateAdded': self.dateAdded,
             'archived': self.archived

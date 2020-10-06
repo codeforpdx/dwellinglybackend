@@ -61,16 +61,9 @@ class Ticket(Resource):
 
             if(data.note):
                 note = NotesModel(id, data.note, ticket.sender)
-                try:
-                    note.save_to_db()
-                except:
-                    return {'message': 'An error has occured'}, 500
+                note.save_to_db()
 
-            try:
-                ticket.save_to_db()
-            except:
-                return{"message": "An error has occured updating the ticket"}, 500
-
+            ticket.save_to_db()
             return ticket.json()
         return {'message': 'Ticket not found'}, 404
 
@@ -96,8 +89,5 @@ class Tickets(Resource):
         data = Tickets.parser.parse_args()
         ticket = TicketModel(**data)
 
-        try:
-            ticket.save_to_db()
-        except:
-            return {'message': 'An error has occured'}, 500
+        ticket.save_to_db()
         return ticket.json(), 201
