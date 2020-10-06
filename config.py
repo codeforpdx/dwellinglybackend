@@ -27,6 +27,8 @@ class Default(object):
     MAIL_ASCII_ATTACHMENTS = os.environ.get('MAIL_ASCII_ATTACHMENTS', False)
     MAIL_SUPPRESS_SEND = os.environ.get('MAIL_SUPPRESS_SEND', False)
 
+    # Configure JWT error message key
+    JWT_ERROR_MESSAGE_KEY = 'message'
 
 class Development(Default):
     SQLALCHEMY_DATABASE_URI = os.environ.get('DEV_DATABASE_URL') or \
