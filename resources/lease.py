@@ -71,7 +71,10 @@ class Lease(Resource):
         except:
             return {'message': 'An error has occured'}, 500
 
-        return baseLease.json(), 200
+        try:
+            return baseLease.json(), 200
+        except AttributeError:
+            return {'message': 'Invalid Attribute ID'}, 404
 
     @jwt_required
     def delete(self, id):
@@ -92,9 +95,12 @@ class Leases(Resource):
         data = Lease.parser.parse_args()
 
         #convert strings to DateTime Object
-        data.dateTimeStart = datetime.strptime(data.dateTimeStart, '%m/%d/%Y %H:%M:%S')
-        data.dateTimeEnd = datetime.strptime(data.dateTimeEnd, '%m/%d/%Y %H:%M:%S')
-        data.dateUpdated = datetime.now()
+        try:
+            data.dateTimeStart = datetime.strptime(data.dateTimeStart, '%m/%d/%Y %H:%M:%S')
+            data.dateTimeEnd = datetime.strptime(data.dateTimeEnd, '%m/%d/%Y %H:%M:%S')
+            data.dateUpdated = datetime.now()
+        except TypeError:
+            return {'message': 'Missing Lease Information'}, 400
 
         lease = LeaseModel(**data)
 
