@@ -61,10 +61,7 @@ class Lease(Resource):
         else:
             baseLease.dateUpdated = datetime.now()
 
-        try:
-            baseLease.save_to_db()
-        except:
-            return {'message': 'An error has occured'}, 500
+        baseLease.save_to_db()
 
         try:
             return baseLease.json(), 200
@@ -99,10 +96,7 @@ class Leases(Resource):
 
         lease = LeaseModel(**data)
 
-        try:
-            lease.save_to_db()
-        except:
-            return {'message': 'An error has occured'}, 500
+        lease.save_to_db()
 
         return {'message': 'Lease created successfully'}, 201
 

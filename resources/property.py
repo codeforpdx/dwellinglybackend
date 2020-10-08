@@ -40,10 +40,7 @@ class Properties(Resource):
 
         rentalproperty = PropertyModel(**data)
 
-        try:
-            PropertyModel.save_to_db(rentalproperty)
-        except:
-            return{"message": "An internal error has occured. Unable to insert property"}, 500
+        PropertyModel.save_to_db(rentalproperty)
 
         return rentalproperty.json(), 201
 
@@ -56,10 +53,8 @@ class ArchiveProperty(Resource):
             return{'message': 'Property cannot be archived'}, 400
 
         property.archived = not property.archived
-        try:
-            property.save_to_db()
-        except:
-            return {'message': 'An error has occured'}, 500
+
+        property.save_to_db()
 
         return property.json(), 201
 
@@ -126,9 +121,6 @@ class Property(Resource):
         if(data.archived == True or data.archived == False):
             rentalProperty.archived = data.archived
 
-        try:
-            rentalProperty.save_to_db()
-        except:
-            return{"message": "An error has occured updating the property"}, 500
+        rentalProperty.save_to_db()
 
         return rentalProperty.json()

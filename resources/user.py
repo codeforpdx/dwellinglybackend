@@ -101,10 +101,7 @@ class User(Resource):
         if data['password']:
             user.password = hash_pw(data['password'])
 
-        try:
-            user.save_to_db()
-        except:
-            return {'message': 'An error has occurred. Note that you can only update a user\'s role, email, phone, or password.'}, 500
+        user.save_to_db()
 
 
         if user_id == get_jwt_identity():
@@ -134,10 +131,8 @@ class ArchiveUser(Resource):
             return{'message': 'User cannot be archived'}, 400
 
         user.archived = not user.archived
-        try:
-            user.save_to_db()
-        except:
-            return {'message': 'An error has occured'}, 500
+        
+        user.save_to_db()
 
         if user.archived:
             # invalidate access token
