@@ -11,7 +11,6 @@ class LeaseModel(BaseModel):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100))
-    landlordID = db.Column(db.Integer(), db.ForeignKey('users.id'))
     propertyID = db.Column(db.Integer, db.ForeignKey('properties.id'))
     tenantID = db.Column(db.Integer, db.ForeignKey('tenants.id'), nullable=False)
     occupants = db.Column(db.Integer)
@@ -19,9 +18,8 @@ class LeaseModel(BaseModel):
     dateTimeEnd = db.Column(db.DateTime, default=datetime.datetime.utcnow)
     dateUpdated = db.Column(db.DateTime, default=datetime.datetime.utcnow)
 
-    def __init__(self, name, tenantID, landlordID, propertyID, dateTimeStart, dateTimeEnd, dateUpdated, occupants):
+    def __init__(self, name, tenantID, propertyID, dateTimeStart, dateTimeEnd, dateUpdated, occupants):
         self.name = name
-        self.landlordID = landlordID
         self.propertyID = propertyID
         self.tenantID = tenantID
         self.dateTimeStart = dateTimeStart
@@ -31,13 +29,11 @@ class LeaseModel(BaseModel):
 
     def json(self):
         property = PropertyModel.find_by_id(self.propertyID)
-        landlord = UserModel.find_by_id(self.landlordID)
 
         return {
           'id': self.id,
           'name':self.name,
           'propertyID': property.json(),
-          'landlordID': landlord.json(),
           'tenantID': self.tenant.json(),
           'dateTimeStart': self.dateTimeStart.strftime("%m/%d/%Y %H:%M:%S"),
           'dateTimeEnd': self.dateTimeEnd.strftime("%m/%d/%Y %H:%M:%S"),

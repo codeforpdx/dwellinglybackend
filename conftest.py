@@ -8,6 +8,7 @@ from models.user import UserModel, RoleEnum
 from models.property import PropertyModel
 from utils.auth import hash_pw
 import jwt
+from tests.factory_fixtures import *
 
 newPropertyName = "test1"
 newPropertyAddress = "123 NE FLanders St"

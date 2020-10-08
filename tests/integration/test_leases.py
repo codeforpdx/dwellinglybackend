@@ -1,83 +1,9 @@
 import pytest
 from freezegun import freeze_time
 from conftest import is_valid
-from models.user import UserModel, RoleEnum
-from models.property import PropertyModel
 from models.lease import LeaseModel
-from models.tenant import TenantModel
 from tests.time import Time
 from datetime import datetime
-
-@pytest.fixture
-def create_tenant():
-    def _create_tenant():
-        tenant = TenantModel(
-                firstName="firstName",
-                lastName="lastName",
-                phone="phone",
-                propertyID=None,
-                staffIDs=[],
-                unitNum=3
-            )
-        tenant.save_to_db()
-        return tenant
-    yield _create_tenant
-
-@pytest.fixture
-def create_property():
-    def _create_property(pm):
-        property = PropertyModel(
-                name='the heights',
-                address='111 SW Harrison',
-                city="Portland",
-                unit="101",
-                state="OR",
-                zipcode="97207",
-                propertyManager=pm.id,
-                dateAdded="2020-04-12",
-                archived=False
-            )
-        property.save_to_db()
-        return property
-    yield _create_property
-
-@pytest.fixture
-def create_landlord():
-    def _create_landlord():
-        landlord = UserModel(
-                email="manager@domain.com",
-                password=b'asdf',
-                firstName="Leslie",
-                lastName="Knope",
-                phone="505-503-4455",
-                role=RoleEnum.PROPERTY_MANAGER,
-                archived=False
-            )
-        landlord.save_to_db()
-        return landlord
-    yield _create_landlord
-
-def lease_attributes(name, tenant, landlord, property):
-    return {
-        "name": name,
-        "tenantID": tenant.id,
-        "landlordID": landlord.id,
-        "propertyID": property.id,
-        "dateTimeStart": datetime.now(),
-        "dateTimeEnd": datetime.now(),
-        "dateUpdated": datetime.now(),
-        "occupants": 3
-    }
-
-@pytest.fixture
-def create_lease(create_landlord, create_property, create_tenant):
-    def _create_lease(name="Hello World", tenant=create_tenant(), landlord=create_landlord(), property=None):
-        if not property:
-            property = create_property(landlord)
-        lease = LeaseModel(**lease_attributes(name, tenant, landlord, property))
-        lease.save_to_db()
-        return lease
-    yield _create_lease
 
 
 @pytest.mark.usefixtures('client_class', 'empty_test_db')
@@ -224,7 +150,6 @@ class TestUpdateLease:
 
         payload = {
                 'name': 'I',
-                'landlordID': '504',
                 'propertyID': '504',
                 'tenantID': '504',
                 'occupants': '504',
@@ -236,17 +161,15 @@ class TestUpdateLease:
         assert is_valid(response, 404)
         assert response.json == {'message': 'Invalid Attribute ID'}
 
-    def test_valid_attrs_are_all_updated(self, valid_header, create_lease, create_tenant, create_property, create_landlord):
+    def test_valid_attrs_are_all_updated(self, valid_header, create_lease, create_tenant, create_property):
         lease = create_lease()
-        new_landlord = create_landlord()
         new_tenant = create_tenant()
-        new_property = create_property(new_landlord)
+        new_property = create_property()
         start_date = Time.one_year_from_now()
         end_date = Time.today()
 
         payload = {
                 'name': 'I',
-                'landlordID': new_landlord.id,
                 'propertyID': new_property.id,
                 'tenantID': new_tenant.id,
                 'occupants': '200',
@@ -258,7 +181,6 @@ class TestUpdateLease:
 
         assert is_valid(response, 200)
         assert response.json['name'] == 'I'
-        assert response.json['landlordID']['id'] == new_landlord.id
         assert response.json['propertyID']['id'] == new_property.id
         assert response.json['tenantID']['id'] == new_tenant.id
         assert response.json['occupants'] == 200
