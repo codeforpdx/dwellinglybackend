@@ -52,10 +52,9 @@ class EmergencyContacts(Resource):
         data["contact_numbers"] = numbersData
 
         contactEntry = EmergencyContactModel(**data)
-        try:
-            EmergencyContactModel.save_to_db(contactEntry)
-        except:
-            return {"message": "An internal error has occured. Unable to insert emergency contact"}, 500
+        
+        EmergencyContactModel.save_to_db(contactEntry)
+        
 
         return contactEntry.json(), 201
 
@@ -91,10 +90,7 @@ class EmergencyContacts(Resource):
                 if "extension" in number.keys(): contactToModify.extension = number["extension"]
                 contactToModify.save_to_db()
 
-        try:
-            contactEntry.save_to_db()
-        except:
-            return {"message": "An error has occured updating the emergency contact"}, 500
+        contactEntry.save_to_db()
 
         return contactEntry.json()
 

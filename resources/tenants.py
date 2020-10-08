@@ -43,10 +43,8 @@ class Tenants(Resource):
             return { 'message': 'A tenant with this first and last name already exists'}, 401
 
         tenantEntry = TenantModel(**data) 
-        try:
-            TenantModel.save_to_db(tenantEntry)
-        except:
-            return{"message": "An internal error has occured. Unable to insert tenant"}, 500
+        
+        TenantModel.save_to_db(tenantEntry)
 
         return tenantEntry.json(), 201
 
@@ -81,10 +79,7 @@ class Tenants(Resource):
             tenantEntry.unitNum = data.unitNum
 
 
-        try:
-            tenantEntry.save_to_db()
-        except:
-            return{"message": "An error has occured updating the tenant"}, 500
+        tenantEntry.save_to_db()
 
         return tenantEntry.json()
 
