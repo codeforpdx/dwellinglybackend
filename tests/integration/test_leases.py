@@ -159,8 +159,10 @@ class TestCreateLease:
         assert response.json == {'message': 'Missing authorization header'}
 
     def test_authorized_request_with_invalid_payload(self, valid_header):
-        with pytest.raises(TypeError):
-            response = self.client.post(self.endpoint, json=self.invalid_payload, headers=valid_header)
+        response = self.client.post(self.endpoint, json=self.invalid_payload, headers=valid_header)
+        
+        assert is_valid(response, 400)
+        assert response.json == {'message': 'Missing Lease Information'}
 
 
 @pytest.mark.usefixtures('client_class', 'empty_test_db')
@@ -230,8 +232,9 @@ class TestUpdateLease:
                 'dateTimeEnd': Time.today()
             }
 
-        with pytest.raises(AttributeError):
-            response = self.client.put(f'{self.endpoint}/{lease.id}', json=payload, headers=valid_header)
+        response = self.client.put(f'{self.endpoint}/{lease.id}', json=payload, headers=valid_header)
+        assert is_valid(response, 404)
+        assert response.json == {'message': 'Invalid Attribute ID'}
 
     def test_valid_attrs_are_all_updated(self, valid_header, create_lease, create_tenant, create_property, create_landlord):
         lease = create_lease()
