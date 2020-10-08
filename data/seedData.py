@@ -218,7 +218,6 @@ def seedData():
     future = now + timedelta(days=365)
 
     lease_1 = LeaseModel(name="Lease 1",
-                         landlordID=user_1.id,
                          propertyID=property_test1.id,
                          tenantID=tenant_renty_mcrenter.id,
                          dateTimeStart=now,
@@ -227,7 +226,6 @@ def seedData():
                          occupants=3)
     lease_1.save_to_db()
     lease_2 = LeaseModel(name="Lease 2",
-                         landlordID=user_1.id,
                          propertyID=property_meerkat_manor.id,
                          tenantID=tenant_soho_muless.id,
                          dateTimeStart=now,
@@ -236,7 +234,6 @@ def seedData():
                          occupants=2)
     lease_2.save_to_db()
     lease_3 = LeaseModel(name="Lease 3",
-                         landlordID=user_2.id,
                          propertyID=property_the_reginald.id,
                          tenantID=tenant_starvin_artist.id,
                          dateTimeStart=now,

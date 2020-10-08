@@ -8,7 +8,6 @@ class Lease(Resource):
     parser = reqparse.RequestParser()
     parser.add_argument('name')
     parser.add_argument('occupants')
-    parser.add_argument('landlordID')
     parser.add_argument('propertyID')
     parser.add_argument('tenantID')
     parser.add_argument('dateTimeStart')
@@ -39,10 +38,6 @@ class Lease(Resource):
 
         if(data.name):
             baseLease.name = data.name
-            update = True
-
-        if(data.landlordID):
-            baseLease.landlordID = data.landlordID
             update = True
 
         if(data.propertyID):

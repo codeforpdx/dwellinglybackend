@@ -5,7 +5,7 @@ from dateutil.relativedelta import relativedelta
 class Time:
     @staticmethod
     def format_date(date):
-        return date.strftime("%m/%d/%Y %H:%M:%S")
+        return date.strftime("%m/%d/%Y %H:%M:%S") if date else None
 
     @staticmethod
     def today():

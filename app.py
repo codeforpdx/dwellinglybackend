@@ -21,6 +21,7 @@ from resources.lease import Lease, Leases
 from resources.widgets import Widgets
 import os
 from db import db
+from ma import ma
 from manage import dbsetup
 from config import app_config
 
@@ -85,4 +86,5 @@ def create_app(env):
                 message.capitalize()}, 401
 
     db.init_app(app)
+    ma.init_app(app)
     return app
