@@ -1,3 +1,5 @@
+from flask import abort
+from marshmallow import ValidationError, EXCLUDE
 from db import db
 from datetime import datetime
 
@@ -20,6 +22,16 @@ class BaseModel(db.Model):
     def delete(cls, id):
         obj = cls.find(id)
         db.session.delete(obj)
+        db.session.commit()
+
+    @classmethod
+    def create(cls, schema, attributes):
+        try:
+            attrs = schema.load(attributes, unknown=EXCLUDE)
+        except ValidationError as err:
+            abort(400, err.messages)
+
+        db.session.add(cls(**attrs))
         db.session.commit()
 
     def save_to_db(self):
