@@ -1,8 +1,11 @@
+from flask import request
 from flask_restful import Resource, reqparse
 from models.lease import LeaseModel
+from schemas.lease import LeaseSchema
 from models.property import PropertyModel
 from datetime import datetime
 from flask_jwt_extended import jwt_required
+
 
 class Lease(Resource):
     parser = reqparse.RequestParser()
@@ -76,19 +79,5 @@ class Leases(Resource):
 
     @jwt_required
     def post(self):
-        data = Lease.parser.parse_args()
-
-        #convert strings to DateTime Object
-        try:
-            data.dateTimeStart = datetime.strptime(data.dateTimeStart, '%m/%d/%Y %H:%M:%S')
-            data.dateTimeEnd = datetime.strptime(data.dateTimeEnd, '%m/%d/%Y %H:%M:%S')
-            data.dateUpdated = datetime.now()
-        except TypeError:
-            return {'message': 'Missing Lease Information'}, 400
-
-        lease = LeaseModel(**data)
-
-        lease.save_to_db()
-
+        LeaseModel.create(LeaseSchema(), request.json)
         return {'message': 'Lease created successfully'}, 201
-

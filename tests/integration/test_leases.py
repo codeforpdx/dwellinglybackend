@@ -86,9 +86,8 @@ class TestCreateLease:
 
     def test_authorized_request_with_invalid_payload(self, valid_header):
         response = self.client.post(self.endpoint, json=self.invalid_payload, headers=valid_header)
-        
+
         assert is_valid(response, 400)
-        assert response.json == {'message': 'Missing Lease Information'}
 
 
 @pytest.mark.usefixtures('client_class', 'empty_test_db')
