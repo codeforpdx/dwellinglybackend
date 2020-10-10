@@ -3,6 +3,7 @@ from conftest import is_valid, log
 from freezegun import freeze_time
 from models.user import RoleEnum
 from flask_jwt_extended import create_access_token, create_refresh_token
+import pytest
 
 plaintext_password = "1234"
 
@@ -200,7 +201,13 @@ def test_patch_user(client, auth_headers, new_user):
     assert changeOwnRoleResponse.json == \
             {'message': 'Only admins can change roles'}
 
-
+def test_unique_user_constraint(client, auth_headers, new_user):
+    """Emails must be unique, otherwise an Exception is thrown"""
+    with pytest.raises(Exception) as e_info:
+        userToPatch = UserModel.find_by_email(new_user.email)
+        response = client.patch(f"/api/user/{userToPatch.id}",
+                           json = {"email": "user1@dwellingly.org"},
+                           headers=auth_headers["admin"])
 
 def test_delete_user(client, auth_headers, new_user):
     userToDelete = UserModel.find_by_email(new_user.email)
