@@ -8,6 +8,10 @@ class Time:
         return date.strftime("%m/%d/%Y %H:%M:%S") if date else None
 
     @staticmethod
+    def format_date_by_year(date):
+        return date.strftime("%Y/%m/%d %H:%M:%S")
+
+    @staticmethod
     def today():
         return Time.format_date(datetime.today())
 

@@ -8,8 +8,8 @@ class LeaseSchema(ma.SQLAlchemyAutoSchema):
   class Meta:
     model = LeaseModel
 
-  dateTimeStart = fields.DateTime(time_format)
-  dateTimeEnd = fields.DateTime(time_format)
+  dateTimeStart = fields.DateTime(time_format, required=True)
+  dateTimeEnd = fields.DateTime(time_format, required=True)
   dateUpdated = fields.DateTime(time_format)
   created_at = fields.DateTime(time_format)
   updated_at = fields.DateTime(time_format)
