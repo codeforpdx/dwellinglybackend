@@ -30,11 +30,8 @@ class BaseModel(db.Model):
         db.session.delete(self)
         db.session.commit()
 
-    def json(self):
-        raise NotImplementedError(f"This {self.__class__} must implement a <json> method")
-
     def __repr__(self):
-        return f'<{type(self).__name__} {self.json()}>'
+        return "<{!r} {!r}>".format(type(self).__name__, self.__dict__)
 
     @classmethod
     def _name(cls):

@@ -33,9 +33,3 @@ class BaseInterfaceTest:
             self.object.__class__.find(1)
 
         mock_query.get_or_404.assert_called_with(1, self.custom_404_msg)
-
-    def test_json(self):
-        with patch.object(self.object, 'json') as mock_json:
-            self.object.json()
-
-        mock_json.assert_called()
