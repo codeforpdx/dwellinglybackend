@@ -32,14 +32,14 @@ class UserModel(BaseModel):
     created = db.Column(db.DateTime, default=datetime.utcnow)
 
 
-    def __init__(self, firstName, lastName, email, password, phone, role, archived):
+    def __init__(self, firstName, lastName, email, password, phone, role, archived=False):
         self.firstName = firstName
         self.lastName = lastName
         self.email = email
         self.phone = phone
         self.password = password
         self.role = role
-        self.archived = False
+        self.archived = archived
         self.lastActive = datetime.utcnow()
         self.created = datetime.utcnow()
 

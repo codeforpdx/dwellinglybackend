@@ -3,6 +3,7 @@ from db import db
 from models.tenant import TenantModel
 from models.base_model import BaseModel
 from models.user import UserModel
+from models.manager_property_link import ManagerPropertyLink
 
 
 class PropertyModel(BaseModel):
@@ -20,6 +21,7 @@ class PropertyModel(BaseModel):
     archived = db.Column(db.Boolean)
 
     tenants = db.relationship(TenantModel, backref="property")
+    managers = relationship('UserModel', secondary='manager_property_links', backref='properties')
 
     def __init__(self, name, address, unit, city, state, zipcode, propertyManager, dateAdded, archived):
         self.name = name
