@@ -122,7 +122,7 @@ def seedData():
                                    city="Portland",
                                    state="OR",
                                    zipcode="97207",
-                                   propertyManager=user_gray_pouponn.id,
+                                   propertyManagerIDs=[user_gray_pouponn.id],
                                    archived=False)
     property_test1.save_to_db()
     property_meerkat_manor = PropertyModel(name="Meerkat Manor",
@@ -131,7 +131,7 @@ def seedData():
                                            city="Portland",
                                            state="OR",
                                            zipcode="97207",
-                                           propertyManager=user_mister_sir.id,
+                                           propertyManagerIDs=[user_mister_sir.id],
                                            archived=False)
     property_meerkat_manor.save_to_db()
     property_the_reginald = PropertyModel(name="The Reginald",
@@ -140,7 +140,7 @@ def seedData():
                                           city="Portland",
                                           state="OR",
                                           zipcode="97207",
-                                          propertyManager=user_gray_pouponn.id,
+                                          propertyManagerIDs=[user_gray_pouponn.id, user_mister_sir.id],
                                           archived=False)
     property_the_reginald.save_to_db()
 

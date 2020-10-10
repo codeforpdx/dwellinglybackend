@@ -1,4 +1,5 @@
 from models.property import PropertyModel
+from models.user import UserModel
 import json
 
 def test_get_properties(client, test_database):
@@ -27,6 +28,7 @@ def test_get_property_by_name(client, auth_headers, test_database):
     """The get property by name returns a successful response code."""
     response = client.get("/api/properties/test1", headers=auth_headers["admin"])
     property_info = response.get_json()
+    user_json = UserModel.find_by_id(5).json()
     assert response.status_code == 200
     assert property_info['name'] == 'test1'
     assert property_info['address'] == '123 NE FLanders St'
@@ -34,8 +36,8 @@ def test_get_property_by_name(client, auth_headers, test_database):
     assert property_info['city'] == 'Portland'
     assert property_info['state'] == 'OR'
     assert property_info['zipcode'] == '97207'
-    assert property_info['propertyManager'] == 5
-    assert property_info['propertyManagerName'] == 'Gray Pouponn'
+    assert property_info['propertyManager'] == [user_json]
+    assert property_info['propertyManagerName'] == ['Gray Pouponn']
     assert property_info['tenantIDs'] == [1]
     assert property_info['archived'] == 0
 
@@ -65,8 +67,8 @@ def test_archive_property_by_id(client, auth_headers, new_property, test_databas
     assert responseBadPropertyID.get_json() == {'message': 'Property cannot be archived'}
     assert responseBadPropertyID.status_code == 400
 
-def test_delete_property_by_name(client, auth_headers, new_property, test_database):
-    test_property = PropertyModel.find_by_name(new_property.name)
+def test_delete_property_by_name(client, auth_headers, test_database):
+    test_property = PropertyModel.find_by_name("The Reginald")
 
     """First verify that the property exists"""
     response = client.get(f"/api/properties/{test_property.name}", headers=auth_headers["admin"])
