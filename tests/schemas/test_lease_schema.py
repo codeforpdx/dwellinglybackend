@@ -55,3 +55,8 @@ class TestLeaseValidations:
         )
 
         assert 'updated_at' in validation_errors
+
+    def test_tenantID_is_required(self):
+        validation_errors = LeaseSchema().validate({})
+
+        assert 'tenantID' in validation_errors

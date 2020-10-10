@@ -7,6 +7,7 @@ from marshmallow import fields
 class LeaseSchema(ma.SQLAlchemyAutoSchema):
   class Meta:
     model = LeaseModel
+    include_fk = True
 
   dateTimeStart = fields.DateTime(time_format, required=True)
   dateTimeEnd = fields.DateTime(time_format, required=True)
