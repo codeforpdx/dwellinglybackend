@@ -122,28 +122,6 @@ class TestUpdateLease:
         assert is_valid(response, 404)
         assert response.json == {'message': 'Lease not found'}
 
-    def test_date_is_updated_with_valid_payload(self, valid_header, create_lease):
-        lease = create_lease()
-
-        payload = {'dateTimeEnd': Time.one_year_from_now()}
-        old_date = Time.format_date(lease.dateUpdated)
-
-        with freeze_time(Time.one_year_from_now()):
-            response = self.client.put(f'{self.endpoint}/{lease.id}', json=payload, headers=valid_header)
-
-            assert is_valid(response, 200)
-            assert response.json['dateUpdated'] != old_date
-
-    def test_updatedDate_is_left_unchanged_when_given_invalid_params(self, valid_header, create_lease):
-        lease = create_lease()
-        old_date = Time.format_date(lease.dateUpdated)
-
-        with freeze_time(Time.one_year_from_now()):
-            response = self.client.put(f'{self.endpoint}/{lease.id}', json={}, headers=valid_header)
-
-        assert is_valid(response, 400)
-        assert response.json['dateUpdated'] == old_date
-
     def test_invalid_attribute_ids(self, valid_header, create_lease):
         lease = create_lease('Hello')
 

@@ -25,6 +25,5 @@ class TestLeaseModel():
                 'tenantID': lease.tenant.json(),
                 'dateTimeStart': Time.format_date(lease.dateTimeStart),
                 'dateTimeEnd': Time.format_date(lease.dateTimeEnd),
-                'dateUpdated': Time.format_date(lease.dateUpdated),
                 'occupants': lease.occupants
             }

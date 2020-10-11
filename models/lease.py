@@ -16,7 +16,6 @@ class LeaseModel(BaseModel):
     occupants = db.Column(db.Integer)
     dateTimeStart = db.Column(db.DateTime, default=datetime.datetime.utcnow)
     dateTimeEnd = db.Column(db.DateTime, default=datetime.datetime.utcnow)
-    dateUpdated = db.Column(db.DateTime, default=datetime.datetime.utcnow)
 
     def json(self):
         property = PropertyModel.find_by_id(self.propertyID)
@@ -28,6 +27,5 @@ class LeaseModel(BaseModel):
           'tenantID': self.tenant.json(),
           'dateTimeStart': self.dateTimeStart.strftime("%m/%d/%Y %H:%M:%S"),
           'dateTimeEnd': self.dateTimeEnd.strftime("%m/%d/%Y %H:%M:%S"),
-          'dateUpdated': self.dateUpdated.strftime("%m/%d/%Y %H:%M:%S"),
           'occupants': self.occupants
         }
