@@ -13,7 +13,6 @@ class TenantModel(BaseModel):
     lastName = db.Column(db.String(100))
     phone = db.Column(db.String(20))
     propertyID = db.Column(db.Integer, db.ForeignKey('properties.id'))
-    created_at = db.Column(db.Date())
     unitNum = db.Column(db.String(20))
 
     # relationships
@@ -31,7 +30,6 @@ class TenantModel(BaseModel):
             user = UserModel.find_by_id(id)
             if user: self.staff.append(user)
         self.unitNum = unitNum
-        self.created_at = datetime.date(datetime.now())
 
 
     def json(self):
