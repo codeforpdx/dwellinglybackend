@@ -1,3 +1,4 @@
+import pytest
 from schemas import LeaseSchema
 from datetime import datetime
 from tests.time import Time
@@ -60,3 +61,16 @@ class TestLeaseValidations:
         validation_errors = LeaseSchema().validate({})
 
         assert 'tenantID' in validation_errors
+
+
+@pytest.mark.usefixtures('empty_test_db')
+class TestForeignKeyValidations:
+    def test_tenantID_must_be_valid(self):
+        validation_errors = LeaseSchema().validate({'tenantID': '500'})
+
+        assert 'tenantID' in validation_errors
+
+    def test_propertyID_must_be_valid(self):
+        validation_errors = LeaseSchema().validate({'propertyID': '500'})
+
+        assert 'propertyID' in validation_errors
