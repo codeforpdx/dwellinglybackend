@@ -34,6 +34,22 @@ class BaseModel(db.Model):
         db.session.add(cls(**attrs))
         db.session.commit()
 
+    @classmethod
+    def update(cls, schema, id, attributes):
+        obj = cls.find(id)
+        try:
+            attrs = schema.load(attributes, unknown=EXCLUDE, partial=True)
+        except ValidationError as err:
+            abort(400, err.messages)
+
+        for k, v in attrs.items():
+            setattr(obj, k, v)
+
+        db.session.add(obj)
+        db.session.commit()
+
+        return obj
+
     def save_to_db(self):
         db.session.add(self)
         db.session.commit()
