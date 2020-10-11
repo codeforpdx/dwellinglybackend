@@ -14,7 +14,6 @@ class TestTenantSerializer:
                 'lastName':tenant.lastName,
                 'phone': tenant.phone,
                 'unitNum': tenant.unitNum,
-                'addedOn': Time.format_date(tenant.addedOn),
                 'created_at': Time.format_date(tenant.created_at),
                 'updated_at': Time.format_date(tenant.updated_at)
             }
