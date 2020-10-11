@@ -20,7 +20,7 @@ class UserModel(BaseModel):
     __tablename__ = 'users'
 
     id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(100))
+    email = db.Column(db.String(100), unique=True, nullable=False)
     role = db.Column(db.Enum(RoleEnum), default=RoleEnum.PENDING)
     firstName = db.Column(db.String(80))
     lastName = db.Column(db.String(80))
