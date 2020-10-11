@@ -135,8 +135,7 @@ class TestUpdateLease:
             }
 
         response = self.client.put(f'{self.endpoint}/{lease.id}', json=payload, headers=valid_header)
-        assert is_valid(response, 404)
-        assert response.json == {'message': 'Invalid Attribute ID'}
+        assert is_valid(response, 400)
 
     def test_valid_attrs_are_all_updated(self, valid_header, create_lease, create_tenant, create_property):
         lease = create_lease()
