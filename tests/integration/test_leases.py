@@ -16,7 +16,7 @@ class TestGetLease:
     def setup(self):
         self.endpoint = '/api/lease'
 
-    def test_authorized_request_for_a_lease(self, valid_header, create_lease):
+    def test_get_a_lease(self, valid_header, create_lease):
         lease = create_lease()
 
         response = self.client.get(
@@ -27,22 +27,7 @@ class TestGetLease:
         assert is_valid(response, 200)
         assert response.json == lease.json()
 
-    def test_authorized_request_for_a_non_existent_lease(self, valid_header):
-        response = self.client.get(
-                f'{self.endpoint}/504',
-                headers=valid_header
-            )
-
-        assert is_valid(response, 404)
-        assert response.json == {'message': 'Lease not found'}
-
-    def test_unauthorized_request_for_a_lease(self):
-        response = self.client.get(f'{self.endpoint}/1')
-
-        assert is_valid(response, 401)
-        assert response.json == {'message': 'Missing authorization header'}
-
-    def test_authorized_request_for_all_leases(self, valid_header, create_lease):
+    def test_get_all_leases(self, valid_header, create_lease):
         lease = create_lease()
         another_lease = create_lease(name='World')
 
@@ -56,111 +41,39 @@ class TestGetLease:
                 ]
             }
 
-    def test_unauthorized_request_for_all_leases(self):
-        response = self.client.get(self.endpoint)
-
-        assert is_valid(response, 401)
-        assert response.json == {'message': 'Missing authorization header'}
-
 
 @pytest.mark.usefixtures('client_class', 'empty_test_db')
 class TestCreateLease:
-    def setup(self):
-        self.endpoint = '/api/lease'
-        self.invalid_payload = {}
-
-    def test_authorized_request_with_valid_payload(self, valid_header, create_tenant):
-        response = self.client.post(self.endpoint, json=valid_payload(create_tenant().id), headers=valid_header)
+    def test_create_lease(self, valid_header, create_tenant):
+        response = self.client.post('/api/lease', json=valid_payload(create_tenant().id), headers=valid_header)
 
         assert is_valid(response, 201)
         assert response.json == {'message': 'Lease created successfully'}
-        assert len(LeaseModel.query.all()) == 1
-
-    def test_unauthorized_request_with_valid_payload(self, create_tenant):
-        response = self.client.post(self.endpoint, json=valid_payload(create_tenant().id))
-
-        assert is_valid(response, 401)
-        assert response.json == {'message': 'Missing authorization header'}
-
-    def test_authorized_request_with_invalid_payload(self, valid_header):
-        response = self.client.post(self.endpoint, json=self.invalid_payload, headers=valid_header)
-
-        assert is_valid(response, 400)
 
 
 @pytest.mark.usefixtures('client_class', 'empty_test_db')
 class TestDeleteLease:
-    def setup(self):
-        self.endpoint = '/api/lease'
-
-    def test_authorized_request_with_valid_lease_id(self, valid_header, create_lease):
+    def test_delete_lease(self, valid_header, create_lease):
         lease = create_lease()
 
-        response = self.client.delete(f'{self.endpoint}/{lease.id}', headers=valid_header)
+        response = self.client.delete(f'/api/lease/{lease.id}', headers=valid_header)
 
         assert is_valid(response, 200)
         assert response.json == {'message': 'Lease deleted'}
-        assert len(LeaseModel.query.all()) == 0
-
-    def test_authorized_request_with_invalid_lease_id(self, valid_header):
-        response = self.client.delete(f'{self.endpoint}/504', headers=valid_header)
-
-        assert is_valid(response, 404)
-        assert response.json == {'message': 'Lease not found'}
 
 
 @pytest.mark.usefixtures('client_class', 'empty_test_db')
 class TestUpdateLease:
-    def setup(self):
-        self.endpoint = '/api/lease'
-
-    def test_invalid_lease_id(self, valid_header):
-        response = self.client.put(f'{self.endpoint}/504', headers=valid_header)
-
-        assert is_valid(response, 404)
-        assert response.json == {'message': 'Lease not found'}
-
-    def test_invalid_attribute_ids(self, valid_header, create_lease):
-        lease = create_lease('Hello')
-
-        payload = {
-                'name': 'I',
-                'propertyID': '504',
-                'tenantID': '504',
-                'occupants': '504',
-                'dateTimeStart': Time.one_year_from_now(),
-                'dateTimeEnd': Time.today()
-            }
-
-        response = self.client.put(f'{self.endpoint}/{lease.id}', json=payload, headers=valid_header)
-        assert is_valid(response, 400)
-
-    def test_valid_attrs_are_all_updated(self, valid_header, create_lease, create_tenant, create_property):
+    def test_update_lease(self, valid_header, create_lease):
         lease = create_lease()
-        new_tenant = create_tenant()
-        new_property = create_property()
-        start_date = Time.one_year_from_now()
-        end_date = Time.today()
-
-        payload = {
-                'name': 'I',
-                'propertyID': new_property.id,
-                'tenantID': new_tenant.id,
-                'occupants': '200',
-                'dateTimeStart': start_date,
-                'dateTimeEnd': end_date
-            }
-
-        response = self.client.put(f'{self.endpoint}/{lease.id}', json=payload, headers=valid_header)
+        response = self.client.put(
+            f'/api/lease/{lease.id}',
+            json={'name': 'I'},
+            headers=valid_header
+        )
 
         assert is_valid(response, 200)
         assert response.json['name'] == 'I'
-        assert response.json['propertyID']['id'] == new_property.id
-        assert response.json['tenantID']['id'] == new_tenant.id
-        assert response.json['occupants'] == 200
-        assert response.json['dateTimeStart'] == start_date
-        assert response.json['dateTimeEnd'] == end_date
-        assert response.json == lease.json()
 
 
 @pytest.mark.usefixtures('client_class', 'empty_test_db')
