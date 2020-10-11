@@ -1,9 +1,14 @@
 import pytest
-from freezegun import freeze_time
 from conftest import is_valid
 from models.lease import LeaseModel
 from tests.time import Time
-from datetime import datetime
+
+def valid_payload(tenant_id):
+    return {
+            'dateTimeStart': Time.today(),
+            'dateTimeEnd': Time.one_year_from_now(),
+            'tenantID': tenant_id
+        }
 
 
 @pytest.mark.usefixtures('client_class', 'empty_test_db')
@@ -62,24 +67,17 @@ class TestGetLease:
 class TestCreateLease:
     def setup(self):
         self.endpoint = '/api/lease'
-
-        self.valid_payload = {
-                'dateTimeStart': Time.today(),
-                'dateTimeEnd': Time.one_year_from_now(),
-                'tenantID': 1
-            }
         self.invalid_payload = {}
 
-    def test_authorized_request_with_valid_payload(self, valid_header):
-        response = self.client.post(self.endpoint, json=self.valid_payload, headers=valid_header)
-
+    def test_authorized_request_with_valid_payload(self, valid_header, create_tenant):
+        response = self.client.post(self.endpoint, json=valid_payload(create_tenant().id), headers=valid_header)
 
         assert is_valid(response, 201)
         assert response.json == {'message': 'Lease created successfully'}
         assert len(LeaseModel.query.all()) == 1
 
-    def test_unauthorized_request_with_valid_payload(self):
-        response = self.client.post(self.endpoint, json=self.valid_payload)
+    def test_unauthorized_request_with_valid_payload(self, create_tenant):
+        response = self.client.post(self.endpoint, json=valid_payload(create_tenant().id))
 
         assert is_valid(response, 401)
         assert response.json == {'message': 'Missing authorization header'}
@@ -167,12 +165,6 @@ class TestUpdateLease:
 
 @pytest.mark.usefixtures('client_class', 'empty_test_db')
 class TestLeaseAuthorizations:
-    def setup(self):
-        self.valid_payload = {
-                'dateTimeStart': Time.today(),
-                'dateTimeEnd': Time.one_year_from_now(),
-                'tenantID': 1
-            }
     # Test auth is in place at each endpoint
     def test_unauthorized_get_request(self):
         response = self.client.get('/api/lease/1')
@@ -241,17 +233,17 @@ class TestLeaseAuthorizations:
         response = self.client.get('/api/lease', headers=admin_header)
         assert is_valid(response, 200)
 
-    def test_pm_is_authorized_to_create(self, pm_header):
-        response = self.client.post('/api/lease', json=self.valid_payload, headers=pm_header)
+    def test_pm_is_authorized_to_create(self, pm_header, create_tenant):
+        response = self.client.post('/api/lease', json=valid_payload(create_tenant().id), headers=pm_header)
 
         assert is_valid(response, 201)
 
-    def test_staff_are_authorized_to_create(self, staff_header):
-        response = self.client.post('/api/lease', json=self.valid_payload, headers=staff_header)
+    def test_staff_are_authorized_to_create(self, staff_header, create_tenant):
+        response = self.client.post('/api/lease', json=valid_payload(create_tenant().id), headers=staff_header)
         assert is_valid(response, 201)
 
-    def test_admin_is_authorized_to_create(self, admin_header):
-        response = self.client.post('/api/lease', json=self.valid_payload, headers=admin_header)
+    def test_admin_is_authorized_to_create(self, admin_header, create_tenant):
+        response = self.client.post('/api/lease', json=valid_payload(create_tenant().id), headers=admin_header)
         assert is_valid(response, 201)
 
     def test_pm_is_authorized_to_delete_lease(self, pm_header, create_lease):
