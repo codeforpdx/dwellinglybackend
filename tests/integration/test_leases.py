@@ -12,7 +12,7 @@ def valid_payload(tenant_id):
 
 
 @pytest.mark.usefixtures('client_class', 'empty_test_db')
-class TestGetLease:
+class TestLease:
     def setup(self):
         self.endpoint = '/api/lease'
 
@@ -41,18 +41,16 @@ class TestGetLease:
                 ]
             }
 
-
-@pytest.mark.usefixtures('client_class', 'empty_test_db')
-class TestCreateLease:
     def test_create_lease(self, valid_header, create_tenant):
-        response = self.client.post('/api/lease', json=valid_payload(create_tenant().id), headers=valid_header)
+        response = self.client.post(
+            '/api/lease',
+            json=valid_payload(create_tenant().id),
+            headers=valid_header
+        )
 
         assert is_valid(response, 201)
         assert response.json == {'message': 'Lease created successfully'}
 
-
-@pytest.mark.usefixtures('client_class', 'empty_test_db')
-class TestDeleteLease:
     def test_delete_lease(self, valid_header, create_lease):
         lease = create_lease()
 
@@ -61,9 +59,6 @@ class TestDeleteLease:
         assert is_valid(response, 200)
         assert response.json == {'message': 'Lease deleted'}
 
-
-@pytest.mark.usefixtures('client_class', 'empty_test_db')
-class TestUpdateLease:
     def test_update_lease(self, valid_header, create_lease):
         lease = create_lease()
         response = self.client.put(
