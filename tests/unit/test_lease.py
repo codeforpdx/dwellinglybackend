@@ -6,10 +6,9 @@ from tests.time import Time
 from models.property import PropertyModel
 
 
-@pytest.mark.usefixtures('test_database')
 class TestBaseLeaseModel(BaseInterfaceTest):
     def setup(self):
-        self.object = LeaseModel.query.first()
+        self.object = LeaseModel()
         self.custom_404_msg = 'Lease not found'
         self.schema = LeaseSchema()
 
