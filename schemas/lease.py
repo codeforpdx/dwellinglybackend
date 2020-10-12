@@ -17,6 +17,7 @@ class LeaseSchema(ma.SQLAlchemyAutoSchema):
     updated_at = fields.DateTime(time_format)
 
     tenant = fields.Nested("TenantSchema")
+    property = fields.Nested("PropertySchema")
 
     @validates("tenantID")
     def validate_tenantID(self, value):
