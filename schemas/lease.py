@@ -16,6 +16,8 @@ class LeaseSchema(ma.SQLAlchemyAutoSchema):
     created_at = fields.DateTime(time_format)
     updated_at = fields.DateTime(time_format)
 
+    tenant = fields.Nested("TenantSchema")
+
     @validates("tenantID")
     def validate_tenantID(self, value):
         if not TenantModel.query.get(value):

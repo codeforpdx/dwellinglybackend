@@ -1,5 +1,6 @@
 import pytest
 from serializers.lease import LeaseSerializer
+from serializers.tenant import TenantSerializer
 from tests.time import Time
 
 
@@ -15,5 +16,6 @@ class TestLeaseSerializer:
                 'dateTimeEnd': Time.format_date(lease.dateTimeEnd),
                 'occupants': lease.occupants,
                 'created_at': Time.format_date(lease.created_at),
-                'updated_at': Time.format_date(lease.updated_at)
+                'updated_at': Time.format_date(lease.updated_at),
+                'tenant': TenantSerializer.serialize(lease.tenant)
             }
