@@ -2,6 +2,7 @@ import pytest
 from conftest import is_valid
 from models.lease import LeaseModel
 from schemas.lease import LeaseSchema
+from serializers.lease import LeaseSerializer
 from tests.time import Time
 from unittest.mock import patch
 
@@ -21,7 +22,7 @@ class TestLease:
 
         mock_find.assert_called_once_with(1)
         assert response.status_code == 200
-        assert response.json == lease.json()
+        assert response.json == LeaseSerializer.serialize(lease)
 
     def test_get_all_leases(self, valid_header, create_lease):
         lease = create_lease()
@@ -31,9 +32,9 @@ class TestLease:
 
         assert response.status_code == 200
         assert response.json == {
-            "Leases": [
-                lease.json(),
-                second_lease.json()
+            "leases": [
+                LeaseSerializer.serialize(lease),
+                LeaseSerializer.serialize(second_lease)
             ]
         }
 
@@ -42,7 +43,7 @@ class TestLease:
 
         assert response.status_code == 200
         assert response.json == {
-            "Leases": []
+            "leases": []
         }
 
     def test_create_lease(self, valid_header):
@@ -79,7 +80,7 @@ class TestLease:
 
         mock_update.assert_called_once_with(LeaseSchema, 1, {'hello': 'world'})
         assert response.status_code == 200
-        assert response.json == lease.json()
+        assert response.json == LeaseSerializer.serialize(lease)
 
 
 @pytest.mark.usefixtures('client_class', 'empty_test_db')

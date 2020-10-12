@@ -2,17 +2,20 @@ from flask import request
 from flask_restful import Resource
 from models.lease import LeaseModel
 from schemas.lease import LeaseSchema
+from serializers.lease import LeaseSerializer
 from flask_jwt_extended import jwt_required
 
 
 class Lease(Resource):
     @jwt_required
     def get(self, id):
-        return LeaseModel.find(id).json()
+        return LeaseSerializer.serialize(LeaseModel.find(id))
 
     @jwt_required
     def put(self,id):
-        return LeaseModel.update(LeaseSchema, id, request.json).json()
+        return LeaseSerializer.serialize(
+            LeaseModel.update(LeaseSchema, id, request.json)
+        )
 
     @jwt_required
     def delete(self, id):
@@ -22,7 +25,10 @@ class Lease(Resource):
 class Leases(Resource):
     @jwt_required
     def get(self):
-        return {'Leases': [lease.json() for lease in LeaseModel.query.all()]}
+        return {'leases': LeaseSerializer.serialize(
+                LeaseModel.query.all(), many=True
+            )
+        }
 
     @jwt_required
     def post(self):
