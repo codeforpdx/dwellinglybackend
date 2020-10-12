@@ -7,4 +7,4 @@ class TestBaseModel(BaseInterfaceTest):
     def setup(self):
         self.object = BaseModel()
         self.custom_404_msg = 'Base not found'
-        self.schema = Schema()
+        self.schema = Schema

@@ -27,7 +27,7 @@ class BaseModel(db.Model):
     @classmethod
     def create(cls, schema, attributes):
         try:
-            attrs = schema.load(attributes, unknown=EXCLUDE)
+            attrs = schema().load(attributes, unknown=EXCLUDE)
         except ValidationError as err:
             abort(400, err.messages)
 
@@ -38,7 +38,7 @@ class BaseModel(db.Model):
     def update(cls, schema, id, attributes):
         obj = cls.find(id)
         try:
-            attrs = schema.load(attributes, unknown=EXCLUDE, partial=True)
+            attrs = schema().load(attributes, unknown=EXCLUDE, partial=True)
         except ValidationError as err:
             abort(400, err.messages)
 

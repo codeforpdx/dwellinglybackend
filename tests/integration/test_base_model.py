@@ -20,7 +20,7 @@ class DummySchema(ma.SQLAlchemyAutoSchema):
 class TestDummyModel(BaseInterfaceTest):
     def setup(self):
         self.object = DummyModel(**{'first_name': 'Bye'})
-        self.schema = DummySchema()
+        self.schema = DummySchema
         self.custom_404_msg = "Dummy not found"
 
 @pytest.mark.usefixtures('empty_test_db')
@@ -31,7 +31,7 @@ class TestBaseModel:
         self.id = DummyModel.query.first().id
 
     def test_partial_update(self):
-        DummyModel.update(DummySchema(), self.id, {'last_name': 'World'})
+        DummyModel.update(DummySchema, self.id, {'last_name': 'World'})
         obj = DummyModel.query.first()
 
         assert obj.first_name == 'Bye'
@@ -39,7 +39,7 @@ class TestBaseModel:
         assert obj.updated_at != None
 
     def test_full_update(self):
-        DummyModel.update(DummySchema(), self.id, {'first_name': 'Hello', 'last_name': 'World'})
+        DummyModel.update(DummySchema, self.id, {'first_name': 'Hello', 'last_name': 'World'})
         obj = DummyModel.query.first()
 
         assert obj.first_name == 'Hello'
@@ -47,7 +47,7 @@ class TestBaseModel:
         assert obj.updated_at != None
 
     def test_no_update(self):
-        DummyModel.update(DummySchema(), self.id, {})
+        DummyModel.update(DummySchema, self.id, {})
         obj = DummyModel.query.first()
 
         assert obj.first_name == 'Bye'

@@ -12,7 +12,7 @@ class Lease(Resource):
 
     @jwt_required
     def put(self,id):
-        return LeaseModel.update(LeaseSchema(), id, request.json).json()
+        return LeaseModel.update(LeaseSchema, id, request.json).json()
 
     @jwt_required
     def delete(self, id):
@@ -26,5 +26,5 @@ class Leases(Resource):
 
     @jwt_required
     def post(self):
-        LeaseModel.create(LeaseSchema(), request.json)
+        LeaseModel.create(LeaseSchema, request.json)
         return {'message': 'Lease created successfully'}, 201
