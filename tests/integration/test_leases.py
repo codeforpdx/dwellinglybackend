@@ -85,11 +85,12 @@ class TestLease:
 
 @pytest.mark.usefixtures('client_class', 'empty_test_db')
 class TestLeaseAuthorizations:
-    def valid_payload(self, tenant_id):
+    def valid_payload(self, tenant_id, property_id):
         return {
                 'dateTimeStart': Time.today(),
                 'dateTimeEnd': Time.one_year_from_now(),
-                'tenantID': tenant_id
+                'tenantID': tenant_id,
+                'propertyID': property_id
             }
 
     # Test auth is in place at each endpoint
@@ -155,17 +156,17 @@ class TestLeaseAuthorizations:
         response = self.client.get('/api/lease', headers=admin_header)
         assert response.status_code == 200
 
-    def test_pm_is_authorized_to_create(self, pm_header, create_tenant):
-        response = self.client.post('/api/lease', json=self.valid_payload(create_tenant().id), headers=pm_header)
+    def test_pm_is_authorized_to_create(self, pm_header, create_tenant, create_property):
+        response = self.client.post('/api/lease', json=self.valid_payload(create_tenant().id, create_property().id), headers=pm_header)
 
         assert response.status_code == 201
 
-    def test_staff_are_authorized_to_create(self, staff_header, create_tenant):
-        response = self.client.post('/api/lease', json=self.valid_payload(create_tenant().id), headers=staff_header)
+    def test_staff_are_authorized_to_create(self, staff_header, create_tenant, create_property):
+        response = self.client.post('/api/lease', json=self.valid_payload(create_tenant().id, create_property().id), headers=staff_header)
         assert response.status_code == 201
 
-    def test_admin_is_authorized_to_create(self, admin_header, create_tenant):
-        response = self.client.post('/api/lease', json=self.valid_payload(create_tenant().id), headers=admin_header)
+    def test_admin_is_authorized_to_create(self, admin_header, create_tenant, create_property):
+        response = self.client.post('/api/lease', json=self.valid_payload(create_tenant().id, create_property().id), headers=admin_header)
         assert response.status_code == 201
 
     def test_pm_is_authorized_to_delete_lease(self, pm_header, create_lease):

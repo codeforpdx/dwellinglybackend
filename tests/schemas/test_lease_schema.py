@@ -5,11 +5,12 @@ from tests.time import Time
 
 
 class TestLeaseValidations:
-    def test_valid_payload(self, empty_test_db, create_tenant):
+    def test_valid_payload(self, empty_test_db, create_tenant, create_property):
         valid_payload = {
             'dateTimeStart': Time.today(),
             'dateTimeEnd': Time.one_year_from_now(),
-            'tenantID': create_tenant().id
+            'tenantID': create_tenant().id,
+            'propertyID': create_property().id
         }
 
         no_validation_errors = {}
@@ -72,6 +73,11 @@ class TestLeaseValidations:
         validation_errors = LeaseSchema().validate({})
 
         assert 'tenantID' in validation_errors
+
+    def test_propertyID_is_required(self):
+        validation_errors = LeaseSchema().validate({})
+
+        assert 'propertyID' in validation_errors
 
 
 @pytest.mark.usefixtures('empty_test_db')
