@@ -5,6 +5,17 @@ from tests.time import Time
 
 
 class TestLeaseValidations:
+    def test_valid_payload(self, empty_test_db, create_tenant):
+        valid_payload = {
+            'dateTimeStart': Time.today(),
+            'dateTimeEnd': Time.one_year_from_now(),
+            'tenantID': create_tenant().id
+        }
+
+        no_validation_errors = {}
+
+        assert no_validation_errors == LeaseSchema().validate(valid_payload)
+
     def test_dateTimeStart_is_required(self):
         validation_errors = LeaseSchema().validate({})
 

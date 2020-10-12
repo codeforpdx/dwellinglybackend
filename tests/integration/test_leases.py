@@ -1,14 +1,9 @@
 import pytest
 from conftest import is_valid
 from models.lease import LeaseModel
+from schemas.lease import LeaseSchema
 from tests.time import Time
-
-def valid_payload(tenant_id):
-    return {
-            'dateTimeStart': Time.today(),
-            'dateTimeEnd': Time.one_year_from_now(),
-            'tenantID': tenant_id
-        }
+from unittest.mock import patch
 
 
 @pytest.mark.usefixtures('client_class', 'empty_test_db')
@@ -18,18 +13,19 @@ class TestLease:
 
     def test_get_a_lease(self, valid_header, create_lease):
         lease = create_lease()
+        with patch.object(LeaseModel, 'find', return_value=lease) as mock_find:
+            response = self.client.get(
+                    f'{self.endpoint}/1',
+                    headers=valid_header
+                )
 
-        response = self.client.get(
-                f'{self.endpoint}/{lease.id}',
-                headers=valid_header
-            )
-
+        mock_find.assert_called_once_with(1)
         assert response.status_code == 200
         assert response.json == lease.json()
 
     def test_get_all_leases(self, valid_header, create_lease):
         lease = create_lease()
-        another_lease = create_lease(name='World')
+        second_lease = create_lease(name='World')
 
         response = self.client.get(self.endpoint, headers=valid_header)
 
@@ -37,42 +33,64 @@ class TestLease:
         assert response.json == {
             "Leases": [
                 lease.json(),
-                another_lease.json()
+                second_lease.json()
             ]
         }
 
-    def test_create_lease(self, valid_header, create_tenant):
-        response = self.client.post(
-            '/api/lease',
-            json=valid_payload(create_tenant().id),
-            headers=valid_header
-        )
+    def test_get_all_leases_when_no_leases(self, valid_header):
+        response = self.client.get(self.endpoint, headers=valid_header)
 
+        assert response.status_code == 200
+        assert response.json == {
+            "Leases": []
+        }
+
+    def test_create_lease(self, valid_header):
+        with patch.object(LeaseModel, 'create') as mock_create:
+            response = self.client.post(
+                self.endpoint,
+                json={'yes': 'ok'},
+                headers=valid_header
+            )
+
+        mock_create.assert_called_once_with(LeaseSchema, {'yes': 'ok'})
         assert response.status_code == 201
         assert response.json == {'message': 'Lease created successfully'}
 
-    def test_delete_lease(self, valid_header, create_lease):
-        lease = create_lease()
+    def test_delete_lease(self, valid_header):
+        with patch.object(LeaseModel, 'delete') as mock_delete:
+            response = self.client.delete(
+                f'{self.endpoint}/1',
+                headers=valid_header
+            )
 
-        response = self.client.delete(f'/api/lease/{lease.id}', headers=valid_header)
-
+        mock_delete.assert_called_once_with(1)
         assert response.status_code == 200
         assert response.json == {'message': 'Lease deleted'}
 
     def test_update_lease(self, valid_header, create_lease):
         lease = create_lease()
-        response = self.client.put(
-            f'/api/lease/{lease.id}',
-            json={'name': 'I'},
-            headers=valid_header
-        )
+        with patch.object(LeaseModel, 'update', return_value=lease) as mock_update:
+            response = self.client.put(
+                f'{self.endpoint}/1',
+                json={'hello': 'world'},
+                headers=valid_header
+            )
 
+        mock_update.assert_called_once_with(LeaseSchema, 1, {'hello': 'world'})
         assert response.status_code == 200
-        assert response.json['name'] == 'I'
+        assert response.json == lease.json()
 
 
 @pytest.mark.usefixtures('client_class', 'empty_test_db')
 class TestLeaseAuthorizations:
+    def valid_payload(self, tenant_id):
+        return {
+                'dateTimeStart': Time.today(),
+                'dateTimeEnd': Time.one_year_from_now(),
+                'tenantID': tenant_id
+            }
+
     # Test auth is in place at each endpoint
     def test_unauthorized_get_request(self):
         response = self.client.get('/api/lease/1')
@@ -137,16 +155,16 @@ class TestLeaseAuthorizations:
         assert response.status_code == 200
 
     def test_pm_is_authorized_to_create(self, pm_header, create_tenant):
-        response = self.client.post('/api/lease', json=valid_payload(create_tenant().id), headers=pm_header)
+        response = self.client.post('/api/lease', json=self.valid_payload(create_tenant().id), headers=pm_header)
 
         assert response.status_code == 201
 
     def test_staff_are_authorized_to_create(self, staff_header, create_tenant):
-        response = self.client.post('/api/lease', json=valid_payload(create_tenant().id), headers=staff_header)
+        response = self.client.post('/api/lease', json=self.valid_payload(create_tenant().id), headers=staff_header)
         assert response.status_code == 201
 
     def test_admin_is_authorized_to_create(self, admin_header, create_tenant):
-        response = self.client.post('/api/lease', json=valid_payload(create_tenant().id), headers=admin_header)
+        response = self.client.post('/api/lease', json=self.valid_payload(create_tenant().id), headers=admin_header)
         assert response.status_code == 201
 
     def test_pm_is_authorized_to_delete_lease(self, pm_header, create_lease):
