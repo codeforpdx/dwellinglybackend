@@ -31,8 +31,11 @@ class BaseModel(db.Model):
         except ValidationError as err:
             abort(400, err.messages)
 
-        db.session.add(cls(**attrs))
+        obj = cls(**attrs)
+        db.session.add(obj)
         db.session.commit()
+
+        return obj
 
     @classmethod
     def update(cls, schema, id, attributes):

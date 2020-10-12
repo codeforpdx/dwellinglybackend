@@ -24,7 +24,7 @@ class TestDummyModel(BaseInterfaceTest):
         self.custom_404_msg = "Dummy not found"
 
 @pytest.mark.usefixtures('empty_test_db')
-class TestBaseModel:
+class TestUpdate:
     def setup(self):
         db.session.add(DummyModel(**{'first_name': 'Bye'}))
         db.session.commit()
@@ -53,3 +53,11 @@ class TestBaseModel:
         assert obj.first_name == 'Bye'
         assert obj.last_name == None
         assert obj.updated_at == None
+
+
+@pytest.mark.usefixtures('empty_test_db')
+class TestCreate:
+    def test_it_returns_the_created_object(self):
+        obj = DummyModel.create(DummySchema, {'first_name': 'Hello'})
+
+        assert obj.id != None

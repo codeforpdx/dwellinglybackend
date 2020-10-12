@@ -41,12 +41,14 @@ class BaseInterfaceTest:
     @patch.object(db, 'session')
     def test_create_with_valid_attributes(self, mock_session):
         with patch.object(self.schema, 'load', return_value={}) as mock_load:
-            self.object.__class__.create(self.schema, {})
+            response = self.object.__class__.create(self.schema, {})
 
         mock_load.assert_called_with({}, unknown=EXCLUDE)
 
         mock_session.add.assert_called()
         mock_session.commit.assert_called()
+
+        assert response
 
     @patch.object(db, 'session')
     def test_create_with_invalid_attributes(self, mock_session):
