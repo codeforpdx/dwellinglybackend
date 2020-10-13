@@ -90,6 +90,30 @@ def seedData():
                                    phone="555-555-5555",
                                    archived=0)
     user_jeremy_quazar.save_to_db()
+    user_janice_joinstaff = UserModel(email="janice@joinpdx.org",
+                                      role=RoleEnum.STAFF,
+                                      firstName="Janice",
+                                      lastName="Joinstaff",
+                                      password=hashed_password,
+                                      phone="555-555-5555",
+                                      archived=0)
+    user_janice_joinstaff.save_to_db()
+    user_hector_chen = UserModel(email="hector@joinpdx.org",
+                                 role=RoleEnum.STAFF,
+                                 firstName="Hector",
+                                 lastName="Chen",
+                                 password=hashed_password,
+                                 phone="555-555-5555",
+                                 archived=0)
+    user_hector_chen.save_to_db()
+    user_xander_dander = UserModel(email="xander@joinpdx.org",
+                                   role=RoleEnum.STAFF,
+                                   firstName="Xander",
+                                   lastName="Dander",
+                                   password=hashed_password,
+                                   phone="555-555-5555",
+                                   archived=0)
+    user_xander_dander.save_to_db()
 
     property_test1 = PropertyModel(name="test1",
                                    address="123 NE FLanders St",
