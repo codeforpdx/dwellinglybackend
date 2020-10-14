@@ -85,7 +85,7 @@ def test_get_user_by_id(client, auth_headers, admin_user):
 
 def test_get_user_by_property_manager_id(client, auth_headers, new_property):
     """The get user by property manager id return properties and tenants list"""
-    user = UserModel.find_by_id(new_property.propertyManager)
+    user = UserModel.find_by_id(new_property.managers[0].id)
     response = client.get(f"/api/user/{user.id}", headers=auth_headers["admin"])
     user_info = response.get_json()
     assert 'properties' in user_info.keys()

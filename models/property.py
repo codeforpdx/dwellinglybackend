@@ -1,4 +1,3 @@
-from sqlalchemy.orm import relationship
 from db import db
 from models.tenant import TenantModel
 from models.base_model import BaseModel
@@ -16,21 +15,24 @@ class PropertyModel(BaseModel):
     city = db.Column(db.String(50))
     state = db.Column(db.String(50))
     zipcode = db.Column(db.String(20))
-    propertyManager = db.Column(db.Integer(), db.ForeignKey('users.id'))
     dateAdded = db.Column(db.String(50))
     archived = db.Column(db.Boolean)
 
     tenants = db.relationship(TenantModel, backref="property")
-    managers = relationship('UserModel', secondary='manager_property_links', backref='properties')
+    managers = db.relationship('UserModel', secondary='manager_property_links', backref='properties')
 
-    def __init__(self, name, address, unit, city, state, zipcode, propertyManager, dateAdded, archived):
+    def __init__(self, name, address, unit, city, state, zipcode, propertyManagerIDs, dateAdded, archived):
         self.name = name
         self.address = address
         self.unit = unit
         self.city = city
         self.state = state
         self.zipcode = zipcode
-        self.propertyManager = propertyManager
+        self.managers = []
+        if propertyManagerIDs:
+            for id in propertyManagerIDs:
+                user = UserModel.find_by_id(id)
+                if user: self.managers.append(user)
         self.dateAdded = dateAdded
         self.archived = False
 
@@ -39,7 +41,7 @@ class PropertyModel(BaseModel):
         for tenant in self.tenants:
             property_tenants.append(tenant.id)
 
-        property_manager = UserModel.find_by_id(self.propertyManager)
+        managers_name = [manager.fullName for manager in self.managers]
 
         return {
             'id': self.id,
@@ -49,8 +51,8 @@ class PropertyModel(BaseModel):
             'city': self.city,
             'state': self.state,
             'zipcode': self.zipcode,
-            'propertyManager': self.propertyManager,
-            'propertyManagerName': property_manager.full_name() if property_manager else None,
+            'propertyManager': [user.json() for user in self.managers] if self.managers else None,
+            'propertyManagerName': managers_name if managers_name else None,
             'tenantIDs': property_tenants,
             'dateAdded': self.dateAdded,
             'archived': self.archived
@@ -62,4 +64,5 @@ class PropertyModel(BaseModel):
 
     @classmethod
     def find_by_manager(cls, manager_id):
+        return cls.query.filter_by()
         return cls.query.filter_by(propertyManager=manager_id).all()

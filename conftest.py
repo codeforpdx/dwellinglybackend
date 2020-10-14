@@ -84,16 +84,17 @@ def pm_header():
 
 @pytest.fixture
 def new_property():
-    newProperty = PropertyModel( name=newPropertyName
-                               , address=newPropertyAddress
-                               , city="Portland"
-                               , unit="101"
-                               , state="OR"
-                               , zipcode="97207"
-                               , propertyManager=5
-                               , dateAdded="2020-04-12"
-                               , archived=0
-                               )
+    newProperty = PropertyModel(
+        name=newPropertyName,
+        address=newPropertyAddress,
+        city="Portland",
+        unit="101",
+        state="OR",
+        zipcode="97207",
+        propertyManagerIDs=[5],
+        dateAdded="2020-04-12",
+        archived=0
+    )
     return newProperty
 
 @pytest.fixture

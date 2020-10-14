@@ -97,7 +97,7 @@ def seedData():
                                    city="Portland",
                                    state="OR",
                                    zipcode="97207",
-                                   propertyManager=user_gray_pouponn.id,
+                                   propertyManagerIDs=[user_gray_pouponn.id],
                                    dateAdded="2020-04-12",
                                    archived=0)
     property_test1.save_to_db()
@@ -107,7 +107,7 @@ def seedData():
                                            city="Portland",
                                            state="OR",
                                            zipcode="97207",
-                                           propertyManager=user_mister_sir.id,
+                                           propertyManagerIDs=[user_mister_sir.id],
                                            dateAdded="2020-04-12",
                                            archived=0)
     property_meerkat_manor.save_to_db()
@@ -117,7 +117,7 @@ def seedData():
                                           city="Portland",
                                           state="OR",
                                           zipcode="97207",
-                                          propertyManager=user_gray_pouponn.id,
+                                          propertyManagerIDs=[user_gray_pouponn.id],
                                           dateAdded="2020-04-12",
                                           archived=0)
     property_the_reginald.save_to_db()

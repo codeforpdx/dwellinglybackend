@@ -8,7 +8,7 @@ from models.user import UserModel
 # | method | route                | action                     |
 # | :----- | :------------------- | :------------------------- |
 # | POST   | `v1/properties/`     | Creates a new property     |
-# | GET    | `v1/properties/`   | Gets all properties        |
+# | GET    | `v1/properties/`     | Gets all properties        |
 # | GET    | `v1/property/:name`  | Gets a single property     |
 # | PUT    | `v1/property/:name`  | Updates a single property  |
 # | DELETE | `v1/property/:name`  | Deletes a single property  |
@@ -24,7 +24,7 @@ class Properties(Resource):
     parser.add_argument('city')
     parser.add_argument('zipcode')
     parser.add_argument('state')
-    parser.add_argument('propertyManager')
+    parser.add_argument('propertyManagerIDs')
     parser.add_argument('dateAdded')
     parser.add_argument('archived')
 
@@ -67,7 +67,7 @@ class Property(Resource):
     parser.add_argument('city')
     parser.add_argument('zipcode')
     parser.add_argument('state')
-    parser.add_argument('propertyManager')
+    parser.add_argument('propertyManagerIDs')
     parser.add_argument('tenants')
     parser.add_argument('dateAdded')
     parser.add_argument('archived')
@@ -109,8 +109,11 @@ class Property(Resource):
         if(data.state):
             rentalProperty.state = data.state
 
-        if(data.propertyManager):
-            rentalProperty.propertyManager = data.propertyManager
+        if data.propertyManagerIDs:
+            rentalProperty.managers = []
+            for id in data.propertyManagerIDs:
+                user = UserModel.find_by_id(id)
+                if user: rentalProperty.managers.append(user)
 
         if(data.dateAdded):
             rentalProperty.dateAdded = data.dateAdded
