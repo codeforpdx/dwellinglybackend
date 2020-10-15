@@ -25,9 +25,9 @@ class BaseModel(db.Model):
         db.session.commit()
 
     @classmethod
-    def create(cls, schema, attributes):
+    def create(cls, schema, payload):
         try:
-            attrs = schema().load(attributes, unknown=EXCLUDE)
+            attrs = schema().load(payload, unknown=EXCLUDE)
         except ValidationError as err:
             abort(400, err.messages)
 
@@ -38,10 +38,10 @@ class BaseModel(db.Model):
         return obj
 
     @classmethod
-    def update(cls, schema, id, attributes):
+    def update(cls, schema, id, payload):
         obj = cls.find(id)
         try:
-            attrs = schema().load(attributes, unknown=EXCLUDE, partial=True)
+            attrs = schema().load(payload, unknown=EXCLUDE, partial=True)
         except ValidationError as err:
             abort(400, err.messages)
 
