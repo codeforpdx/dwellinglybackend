@@ -54,7 +54,7 @@ class TestLease:
                 headers=valid_header
             )
 
-        mock_create.assert_called_once_with(LeaseSchema, {'yes': 'ok'})
+        mock_create.assert_called_once_with(schema=LeaseSchema, payload={'yes': 'ok'})
         assert response.status_code == 201
         assert response.json == {'message': 'Lease created successfully'}
 
@@ -78,7 +78,7 @@ class TestLease:
                 headers=valid_header
             )
 
-        mock_update.assert_called_once_with(LeaseSchema, 1, {'hello': 'world'})
+        mock_update.assert_called_once_with(schema=LeaseSchema, id=1, payload={'hello': 'world'})
         assert response.status_code == 200
         assert response.json == LeaseSerializer.serialize(lease)
 

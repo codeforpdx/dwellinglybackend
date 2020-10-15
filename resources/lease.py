@@ -9,12 +9,17 @@ from flask_jwt_extended import jwt_required
 class Lease(Resource):
     @jwt_required
     def get(self, id):
-        return LeaseSerializer.serialize(LeaseModel.find(id))
+        return LeaseSerializer.serialize(
+            LeaseModel.find(id)
+        )
 
     @jwt_required
     def put(self,id):
         return LeaseSerializer.serialize(
-            LeaseModel.update(LeaseSchema, id, request.json)
+            LeaseModel.update(
+                schema=LeaseSchema,
+                id=id,
+                payload=request.json)
         )
 
     @jwt_required
@@ -32,5 +37,8 @@ class Leases(Resource):
 
     @jwt_required
     def post(self):
-        LeaseModel.create(LeaseSchema, request.json)
+        LeaseModel.create(
+            schema=LeaseSchema,
+            payload=request.json
+        )
         return {'message': 'Lease created successfully'}, 201
