@@ -1,5 +1,4 @@
 import pytest
-from conftest import is_valid
 from models.lease import LeaseModel
 from schemas.lease import LeaseSchema
 from serializers.lease import LeaseSerializer

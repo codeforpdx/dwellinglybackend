@@ -1,8 +1,4 @@
-import datetime
 from db import db
-from models.property import PropertyModel
-from models.user import UserModel
-from models.tenant import TenantModel
 from models.base_model import BaseModel
 
 

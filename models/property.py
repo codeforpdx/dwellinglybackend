@@ -1,4 +1,3 @@
-from sqlalchemy.orm import relationship
 from db import db
 from models.tenant import TenantModel
 from models.base_model import BaseModel
