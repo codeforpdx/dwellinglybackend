@@ -6,6 +6,7 @@ from enum import Enum
 from models.base_model import BaseModel
 from flask import current_app
 from jwt import ExpiredSignatureError
+from utils.time import Time
 
 
 class RoleEnum(Enum):
@@ -70,9 +71,9 @@ class UserModel(BaseModel):
             'phone': self.phone,
             'role': self.role.value,
             'archived': self.archived,
-            'lastActive': self.lastActive.strftime("%m/%d/%Y %H:%M:%S") if self.lastActive else None,
-            'created_at': self.created_at.strftime("%m/%d/%Y %H:%M:%S") if self.created_at else None,
-            'updated_at': self.updated_at.strftime("%m/%d/%Y %H:%M:%S") if self.updated_at else None
+            'lastActive': Time.format_date(self.lastActive) if self.lastActive else None,
+            'created_at': Time.format_date(self.created_at) if self.created_at else None,
+            'updated_at': Time.format_date(self.updated_at) if self.updated_at else None
         }
     
     def widgetJson(self, propertyName, date):          

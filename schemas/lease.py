@@ -2,7 +2,7 @@ from ma import ma
 from models.lease import LeaseModel
 from models.tenant import TenantModel
 from models.property import PropertyModel
-from schemas.time_format import time_format
+from utils.time import time_format
 from marshmallow import fields, validates, ValidationError
 
 

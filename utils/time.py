@@ -1,11 +1,12 @@
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 
+time_format = "%m/%d/%Y %H:%M:%S"
 
 class Time:
     @staticmethod
     def format_date(date):
-        return date.strftime("%m/%d/%Y %H:%M:%S") if date else None
+        return date.strftime(time_format) if date else None
     
     @staticmethod
     def serialized_date_format(date):

@@ -2,7 +2,7 @@ import pytest
 from serializers.lease import LeaseSerializer
 from serializers.tenant import TenantSerializer
 from serializers.property import PropertySerializer
-from tests.time import Time
+from utils.time import Time
 
 
 @pytest.mark.usefixtures('empty_test_db')

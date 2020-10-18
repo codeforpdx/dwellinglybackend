@@ -10,6 +10,7 @@ from models.revoked_tokens import RevokedTokensModel
 from models.emergency_contact import EmergencyContactModel
 from models.lease import LeaseModel
 from utils.auth import hash_pw
+from utils.time import time_format
 
 hashed_password = hash_pw('1234')
 
@@ -262,4 +263,4 @@ def seedData():
     except:
         print("Error updating database")
 
-    print("Database sucessfully seeded: " + now.strftime("%m/%d/%Y %H:%M:%S"))
+    print("Database sucessfully seeded: " + now.strftime(time_format))

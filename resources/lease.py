@@ -4,6 +4,7 @@ from models.lease import LeaseModel
 from schemas.lease import LeaseSchema
 from serializers.lease import LeaseSerializer
 from flask_jwt_extended import jwt_required
+from utils.time import time_format
 
 
 class Lease(Resource):

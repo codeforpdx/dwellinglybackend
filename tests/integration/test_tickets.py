@@ -2,6 +2,7 @@ from conftest import is_valid
 from datetime import datetime
 from freezegun import freeze_time
 from unittest.mock import patch
+from utils.time import time_format
 
 endpoint = '/api/tickets'
 validID = 1
@@ -75,7 +76,7 @@ def test_tickets_POST(client, auth_headers):
     assert response.json['assigned'] == 'Mr. Sir'
     assert response.json['status'] == 'new'
     assert response.json['urgency'] == 'low'
-    assert response.json['created_at'] == dt.strftime("%m/%d/%Y %H:%M:%S")
+    assert response.json['created_at'] == dt.strftime(time_format)
 
     # verify jwt only
     response = client.post(endpoint, json=newTicket, headers=auth_headers["admin"])

@@ -2,7 +2,7 @@ import pytest
 from models.lease import LeaseModel
 from schemas.lease import LeaseSchema
 from serializers.lease import LeaseSerializer
-from tests.time import Time
+from utils.time import Time
 from unittest.mock import patch
 
 

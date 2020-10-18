@@ -6,6 +6,7 @@ from models.notes import NotesModel
 from models.tenant import TenantModel
 from datetime import datetime, timedelta
 from models.base_model import BaseModel
+from utils.time import Time
 
 
 class TicketModel(BaseModel):
@@ -67,8 +68,8 @@ class TicketModel(BaseModel):
             'minsPastUpdate': minsPastUpdate,
             'urgency': self.urgency,
             'notes': message_notes,
-            'created_at': self.created_at.strftime("%m/%d/%Y %H:%M:%S") if self.created_at else None,
-            'updated_at': self.updated_at.strftime("%m/%d/%Y %H:%M:%S") if self.updated_at else None
+            'created_at': Time.format_date(self.created_at) if self.created_at else None,
+            'updated_at': Time.format_date(self.updated_at) if self.updated_at else None
         }
 
     @classmethod

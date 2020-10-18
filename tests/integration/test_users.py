@@ -4,6 +4,7 @@ from freezegun import freeze_time
 from models.user import RoleEnum
 from flask_jwt_extended import create_access_token, create_refresh_token
 import pytest
+from utils.time import time_format
 
 plaintext_password = "1234"
 
@@ -31,7 +32,7 @@ def test_user_auth(client, test_database, admin_user):
 
 def test_last_active(client, test_database, admin_user):
     user = UserModel.find_by_email(admin_user.email)
-    assert user.lastActive.strftime('%Y-%m-%d %H:%M:%S') != '2020-01-01 00:00:00'
+    assert user.lastActive.strftime(time_format) != '01/01/2020 00:00:00'
 
     with freeze_time('2020-01-01'):
         login_response = client.post("/api/login", json={
@@ -39,7 +40,7 @@ def test_last_active(client, test_database, admin_user):
             "password": plaintext_password
         })
         user = UserModel.find_by_email(admin_user.email)
-        assert user.lastActive.strftime('%Y-%m-%d %H:%M:%S') == '2020-01-01 00:00:00'
+        assert user.lastActive.strftime(time_format) == '01/01/2020 00:00:00'
 
 def test_register_duplicate_user(client, test_database):
     """When a user first registers, the server responds successfully."""

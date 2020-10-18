@@ -1,6 +1,7 @@
 from db import db
 from models.user import UserModel
 from models.base_model import BaseModel
+from utils.time import Time
 
 
 class NotesModel(BaseModel):
@@ -26,6 +27,6 @@ class NotesModel(BaseModel):
             'ticketid': self.ticketid,
             'text': self.text,
             'user': user.fullName,
-            'created_at': self.created_at.strftime("%m/%d/%Y %H:%M:%S") if self.created_at else None,
-            'updated_at': self.updated_at.strftime("%m/%d/%Y %H:%M:%S") if self.updated_at else None
+            'created_at': Time.format_date(self.created_at) if self.created_at else None,
+            'updated_at': Time.format_date(self.updated_at) if self.updated_at else None
         }
