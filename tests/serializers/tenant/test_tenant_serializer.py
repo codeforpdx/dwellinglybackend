@@ -9,11 +9,11 @@ class TestTenantSerializer:
         tenant = create_tenant()
 
         assert TenantSerializer.serialize(tenant) == {
-                'id': tenant.id,
                 'firstName':tenant.firstName,
+                'id': tenant.id,
                 'lastName':tenant.lastName,
                 'phone': tenant.phone,
                 'unitNum': tenant.unitNum,
-                'created_at': Time.format_date(tenant.created_at),
-                'updated_at': Time.format_date(tenant.updated_at)
+                'created_at': Time.serialized_date_format(tenant.created_at),
+                'updated_at': None
             }
