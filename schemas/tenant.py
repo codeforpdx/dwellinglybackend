@@ -7,7 +7,3 @@ from marshmallow import fields
 class TenantSchema(ma.SQLAlchemyAutoSchema):
   class Meta:
     model = TenantModel
-
-  addedOn = fields.DateTime(time_format)
-  created_at = fields.DateTime(time_format)
-  updated_at = fields.DateTime(time_format)

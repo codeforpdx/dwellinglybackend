@@ -18,4 +18,11 @@ class ContactNumberModel(BaseModel):
         self.extension = extension if extension else ''
 
     def json(self):
-        return {'id': self.id, 'number':self.number, 'numtype': self.numtype, 'extension': self.extension}
+        return {
+            'id': self.id,
+            'number':self.number,
+            'numtype': self.numtype,
+            'extension': self.extension,
+            'created_at': self.created_at.strftime("%m/%d/%Y %H:%M:%S") if self.created_at else None,
+            'updated_at': self.updated_at.strftime("%m/%d/%Y %H:%M:%S") if self.updated_at else None
+        }

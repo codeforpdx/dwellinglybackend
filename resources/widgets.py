@@ -45,7 +45,7 @@ class Widgets(Resource):
             }
 
         for user in users:
-            date = self.dateStringConversion(user.created)
+            date = self.dateStringConversion(user.created_at)
             propertyName = self.returnPropertyName(user.id)           
             projectManagers.append(user.widgetJson(propertyName, date))
 

@@ -29,7 +29,6 @@ class UserModel(BaseModel):
     password = db.Column(db.LargeBinary(60))
     archived = db.Column(db.Boolean)
     lastActive = db.Column(db.DateTime, default=datetime.utcnow)
-    created = db.Column(db.DateTime, default=datetime.utcnow)
 
 
     def __init__(self, firstName, lastName, email, password, phone, role, archived):
@@ -41,7 +40,6 @@ class UserModel(BaseModel):
         self.role = role
         self.archived = False
         self.lastActive = datetime.utcnow()
-        self.created = datetime.utcnow()
 
     def update_last_active(self):
         self.lastActive = datetime.utcnow()
@@ -71,9 +69,10 @@ class UserModel(BaseModel):
             'email': self.email,
             'phone': self.phone,
             'role': self.role.value,
-            'created': self.created.strftime('%Y-%m-%d %H:%M:%S %Z'),
             'archived': self.archived,
-            'lastActive': self.lastActive.strftime('%Y-%m-%d %H:%M:%S %Z')
+            'lastActive': self.lastActive.strftime("%m/%d/%Y %H:%M:%S") if self.lastActive else None,
+            'created_at': self.created_at.strftime("%m/%d/%Y %H:%M:%S") if self.created_at else None,
+            'updated_at': self.updated_at.strftime("%m/%d/%Y %H:%M:%S") if self.updated_at else None
         }
     
     def widgetJson(self, propertyName, date):          
@@ -95,7 +94,7 @@ class UserModel(BaseModel):
     @classmethod
     def find_recent_role(cls, role, days):
         dateTime = datetime.now() - timedelta(days = days)
-        return db.session.query(UserModel).filter(UserModel.role == role).order_by(UserModel.created.desc()).limit(3).all()
+        return db.session.query(UserModel).filter(UserModel.role == role).order_by(UserModel.created_at.desc()).limit(3).all()
       
     @classmethod
     def find_by_role_and_name(cls, role, name):

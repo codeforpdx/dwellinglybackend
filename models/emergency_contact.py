@@ -32,7 +32,9 @@ class EmergencyContactModel(BaseModel):
             'id': self.id,
             'name':self.name,
             'description': self.description,
-            'contact_numbers': [number.json() for number in self.contact_numbers]
+            'contact_numbers': [number.json() for number in self.contact_numbers],
+            'created_at': self.created_at.strftime("%m/%d/%Y %H:%M:%S") if self.created_at else None,
+            'updated_at': self.updated_at.strftime("%m/%d/%Y %H:%M:%S") if self.updated_at else None
         }
 
     @classmethod

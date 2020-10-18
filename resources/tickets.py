@@ -48,10 +48,7 @@ class Ticket(Resource):
                 ticket.assignedUser = data.assignedUser
 
             if(data.status):
-                updated = not (ticket.status == data.status)
-                if updated:
-                    ticket.status = data.status
-                    ticket.updated = datetime.now()
+                ticket.status = data.status
 
             if(data.urgency):
                 ticket.urgency = data.urgency

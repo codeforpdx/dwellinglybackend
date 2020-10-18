@@ -15,14 +15,13 @@ class PropertyModel(BaseModel):
     state = db.Column(db.String(50))
     zipcode = db.Column(db.String(20))
     propertyManager = db.Column(db.Integer(), db.ForeignKey('users.id'))
-    dateAdded = db.Column(db.String(50))
     archived = db.Column(db.Boolean)
 
     tenants = db.relationship(TenantModel, backref="property")
     leases = db.relationship('LeaseModel',
         backref='property', lazy=True, cascade="all, delete-orphan")
 
-    def __init__(self, name, address, unit, city, state, zipcode, propertyManager, dateAdded, archived):
+    def __init__(self, name, address, unit, city, state, zipcode, propertyManager, archived):
         self.name = name
         self.address = address
         self.unit = unit
@@ -30,7 +29,6 @@ class PropertyModel(BaseModel):
         self.state = state
         self.zipcode = zipcode
         self.propertyManager = propertyManager
-        self.dateAdded = dateAdded
         self.archived = False
 
     def json(self):
@@ -51,8 +49,9 @@ class PropertyModel(BaseModel):
             'propertyManager': self.propertyManager,
             'propertyManagerName': property_manager.full_name() if property_manager else None,
             'tenantIDs': property_tenants,
-            'dateAdded': self.dateAdded,
-            'archived': self.archived
+            'archived': self.archived,
+            'created_at': self.created_at.strftime("%m/%d/%Y %H:%M:%S") if self.created_at else None,
+            'updated_at': self.updated_at.strftime("%m/%d/%Y %H:%M:%S") if self.updated_at else None
         }
 
     @classmethod

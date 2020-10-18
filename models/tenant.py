@@ -43,7 +43,8 @@ class TenantModel(BaseModel):
             'propertyName': self.property.name if self.property else None,
             'staff': [user.json() for user in self.staff] if self.staff else None,
             'unitNum': self.unitNum,
-            'created_at': self.created_at.strftime("%m/%d/%Y, %H:%M:%S")
+            'created_at': self.created_at.strftime("%m/%d/%Y %H:%M:%S") if self.created_at else None,
+            'updated_at': self.updated_at.strftime("%m/%d/%Y %H:%M:%S") if self.updated_at else None
         }
 
     @classmethod
