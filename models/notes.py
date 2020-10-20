@@ -27,6 +27,6 @@ class NotesModel(BaseModel):
             'ticketid': self.ticketid,
             'text': self.text,
             'user': user.fullName,
-            'created_at': Time.format_date(self.created_at) if self.created_at else None,
-            'updated_at': Time.format_date(self.updated_at) if self.updated_at else None
+            'created_at': Time.format_date(self.created_at),
+            'updated_at': Time.format_date(self.updated_at)
         }

@@ -15,5 +15,5 @@ class TestTenantSerializer:
                 'phone': tenant.phone,
                 'unitNum': tenant.unitNum,
                 'created_at': Time.serialized_date_format(tenant.created_at),
-                'updated_at': None
+                'updated_at': Time.serialized_date_format(tenant.updated_at)
             }

@@ -48,11 +48,11 @@ class PropertyModel(BaseModel):
             'state': self.state,
             'zipcode': self.zipcode,
             'propertyManager': self.propertyManager,
-            'propertyManagerName': property_manager.full_name() if property_manager else None,
+            'propertyManagerName': property_manager.full_name(),
             'tenantIDs': property_tenants,
             'archived': self.archived,
-            'created_at': Time.format_date(self.created_at) if self.created_at else None,
-            'updated_at': Time.format_date(self.updated_at) if self.updated_at else None
+            'created_at': Time.format_date(self.created_at),
+            'updated_at': Time.format_date(self.updated_at)
         }
 
     @classmethod

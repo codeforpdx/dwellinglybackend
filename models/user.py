@@ -71,9 +71,9 @@ class UserModel(BaseModel):
             'phone': self.phone,
             'role': self.role.value,
             'archived': self.archived,
-            'lastActive': Time.format_date(self.lastActive) if self.lastActive else None,
-            'created_at': Time.format_date(self.created_at) if self.created_at else None,
-            'updated_at': Time.format_date(self.updated_at) if self.updated_at else None
+            'lastActive': Time.format_date(self.lastActive),
+            'created_at': Time.format_date(self.created_at),
+            'updated_at': Time.format_date(self.updated_at)
         }
     
     def widgetJson(self, propertyName, date):          

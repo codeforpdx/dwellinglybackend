@@ -10,7 +10,7 @@ class Time:
     
     @staticmethod
     def serialized_date_format(date):
-        return date.strftime("%Y-%m-%dT%H:%M:%S.%f")
+        return date.strftime("%Y-%m-%dT%H:%M:%S.%f") if date else None
 
     @staticmethod
     def format_date_by_year(date):
