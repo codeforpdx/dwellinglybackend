@@ -21,8 +21,7 @@ class Email(Resource):
         message.recipients = [user.email]
 
         current_app.mail.send(message)
-        return {"message": "Message sent"}
-
+        return {"Message": "Message Sent"}
 
     @staticmethod
     def send_reset_password_msg(user):
@@ -32,3 +31,19 @@ class Email(Resource):
         msg.html = render_template('emails/reset_msg.html', user=user, token=token)
 
         current_app.mail.send(msg)
+
+        return {"Message": "Message Sent"}
+
+class InviteEmail(Resource):
+    parser = reqparse.RequestParser()
+    parser.add_argument('email', type=str, required=True, help="This field is not required.")
+
+    def post(self):
+        data = InviteEmail.parser.parse_args()
+
+        message = Message("You've been invited to join Dwellingly!", sender="noreply@codeforpdx.org", html="<a href=\"http://localhost:3000/signup\">Sign up for Dwellingly</a>")
+        message.recipients = [data.email]
+
+        current_app.mail.send(message)
+
+        return {"message": "Invite email sent successfully"}, 200

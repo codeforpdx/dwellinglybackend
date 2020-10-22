@@ -15,7 +15,7 @@ from resources.property import Properties, Property, ArchiveProperty
 from resources.tenants import Tenants
 from resources.emergency_contacts import EmergencyContacts
 from flask_mail import Mail
-from resources.email import Email
+from resources.email import Email, InviteEmail
 from resources.tickets import Ticket, Tickets
 from resources.lease import Lease, Leases
 from resources.widgets import Widgets
@@ -39,6 +39,7 @@ def create_routes(app):
     api.add_resource(UserRoles, 'roles')
     api.add_resource(Widgets, 'widgets')
     api.add_resource(Email, 'user/message')
+    api.add_resource(InviteEmail, '/email/invite')
     api.add_resource(UserAccessRefresh, 'refresh')
     api.add_resource(Tenants, 'tenants', 'tenants/<int:tenant_id>')
     api.add_resource(EmergencyContacts, 'emergencycontacts', 'emergencycontacts/<int:id>')
