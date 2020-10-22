@@ -10,7 +10,7 @@ class Widgets(Resource):
 
     def dateStringConversion(self, date):
         stat = date.strftime('%m/%d')
-        today = datetime.now()
+        today = datetime.utcnow()
         yesterday = today - timedelta(days = 1)
         week = today - timedelta(days = 1)
 

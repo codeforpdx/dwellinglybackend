@@ -94,7 +94,7 @@ class UserModel(BaseModel):
     
     @classmethod
     def find_recent_role(cls, role, days):
-        dateTime = datetime.now() - timedelta(days = days)
+        dateTime = datetime.utcnow() - timedelta(days = days)
         return db.session.query(UserModel).filter(UserModel.role == role).order_by(UserModel.created_at.desc()).limit(3).all()
       
     @classmethod

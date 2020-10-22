@@ -15,7 +15,7 @@ from utils.time import time_format
 hashed_password = hash_pw('1234')
 
 def seedData():
-    now=datetime.now()
+    now=datetime.utcnow()
     future = now + timedelta(days=365)
 
     user_1 = UserModel(email="user1@dwellingly.org",

@@ -52,8 +52,8 @@ class TicketModel(BaseModel):
         if self.updated_at is None:
             minsPastUpdate = 0
         else:
-            dateTimeNow = datetime.now()
-            minsPastUpdate = int((datetime.now() - self.updated_at).total_seconds() / 60)
+            dateTimeNow = datetime.utcnow()
+            minsPastUpdate = int((datetime.utcnow() - self.updated_at).total_seconds() / 60)
         
         return {
             'id': self.id,
@@ -79,7 +79,7 @@ class TicketModel(BaseModel):
     @classmethod
     def find_count_by_age_status(cls, status, minutes):
         #calculated in minutes: 1 day = 1440, 1 week = 10080
-        dateTime = datetime.now() - timedelta(minutes = minutes)
+        dateTime = datetime.utcnow() - timedelta(minutes = minutes)
         return db.session.query(TicketModel).filter(TicketModel.updated_at >= dateTime).filter(TicketModel.status == status).count()
     
     @classmethod

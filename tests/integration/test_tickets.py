@@ -94,7 +94,7 @@ def test_tickets_PUT(client, auth_headers):
         'note': 'Tenant has a service dog'
     }
 
-    dt = datetime.now()
+    dt = datetime.utcnow()
     with freeze_time(dt):
         with patch('flask_jwt_extended.view_decorators.verify_jwt_in_request') as mock_jwt_required:
             response = client.put(f'{endpoint}/{validID}', json=updatedTicket, headers=auth_headers["admin"])
