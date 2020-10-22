@@ -34,6 +34,7 @@ def recreate():
         seedData()
 
 if __name__ == '__main__':
+    import sys
     print("'pipenv run python manage.py {}' ".format(sys.argv[1])+
           "has been deprecated\n" + 
           "please use 'pipenv run flask db {}'".format(sys.argv[1]))
