@@ -214,7 +214,7 @@ All endpoints are prefixed with `/api/`
                     "desc": 'New',
                 },
                 {
-                    "stat": TicketModel.find_count_by_age_status("New", 1440),
+                    "stat": TicketModel.find_count_by_update_status("New", 1440),
                     "desc": "Unseen for > 24 hours",
                 }
             ],
@@ -224,7 +224,7 @@ All endpoints are prefixed with `/api/`
                     "desc": 'In Progress'
                 },
                 {
-                    "stat": TicketModel.find_count_by_age_status("In Progress", 10080),
+                    "stat": TicketModel.find_count_by_update_status("In Progress", 10080),
                     "desc": 'In progress for > 1 week',
                 }
             ]]

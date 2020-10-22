@@ -72,16 +72,19 @@ class TicketModel(BaseModel):
             'updated_at': Time.format_date(self.updated_at)
         }
 
+    #Get tickets with the given status
     @classmethod
     def find_count_by_status(cls, status):
         return cls.query.filter_by(status=status).count()
 
+    #Get tickets updated with the given time and with the given status
     @classmethod
-    def find_count_by_age_status(cls, status, minutes):
+    def find_count_by_update_status(cls, status, minutes):
         #calculated in minutes: 1 day = 1440, 1 week = 10080
         dateTime = datetime.utcnow() - timedelta(minutes = minutes)
         return db.session.query(TicketModel).filter(TicketModel.updated_at >= dateTime).filter(TicketModel.status == status).count()
     
+    #Get tenant by ID
     @classmethod
     def find_by_tenantID(cls, tenantID):
         return cls.query.filter_by(tenant=tenantID).all()
