@@ -17,6 +17,6 @@ class TestPropertySerializer:
             'state': property.state,
             'zipcode': property.zipcode,
             'archived': property.archived,
-            'created_at': Time.serialized_date_format(property.created_at),
-            'updated_at': Time.serialized_date_format(property.updated_at)
+            'created_at': Time.format_date(property.created_at),
+            'updated_at': Time.format_date(property.updated_at)
         }
