@@ -21,7 +21,7 @@ class Email(Resource):
         message.recipients = [user.email]
 
         current_app.mail.send(message)
-        return {"Message": "Message Sent"}
+        return {"message": "Message sent"}
 
     @staticmethod
     def send_reset_password_msg(user):
@@ -32,7 +32,7 @@ class Email(Resource):
 
         current_app.mail.send(msg)
 
-        return {"Message": "Message Sent"}
+        return {"message": "Message sent"}
 
 class InviteEmail(Resource):
     parser = reqparse.RequestParser()
