@@ -11,7 +11,6 @@ def lease_attributes():
             "propertyID": property.id,
             "dateTimeStart": datetime.now(),
             "dateTimeEnd": datetime.now(),
-            "dateUpdated": datetime.now(),
             "occupants": 3
         }
     yield _lease_attributes

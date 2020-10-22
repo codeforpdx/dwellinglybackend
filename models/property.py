@@ -1,4 +1,3 @@
-from sqlalchemy.orm import relationship
 from db import db
 from models.tenant import TenantModel
 from models.base_model import BaseModel
@@ -20,6 +19,8 @@ class PropertyModel(BaseModel):
     archived = db.Column(db.Boolean)
 
     tenants = db.relationship(TenantModel, backref="property")
+    leases = db.relationship('LeaseModel',
+        backref='property', lazy=True, cascade="all, delete-orphan")
 
     def __init__(self, name, address, unit, city, state, zipcode, propertyManager, dateAdded, archived):
         self.name = name
