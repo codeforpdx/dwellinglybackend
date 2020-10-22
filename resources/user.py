@@ -74,7 +74,9 @@ class User(Resource):
         parser.add_argument('lastName',type=str, required=False, help="This field is not required")
         parser.add_argument('email',type=str, required=False, help="This field is not required")
         parser.add_argument('phone',type=str, required=False,help="This field is not required")
-        parser.add_argument('password',type=str, required=False,help="This field is not required")
+        parser.add_argument('current_password',type=str, required=False,help="This field is not required")
+        parser.add_argument('new_password', type=str, required=False, help="This field is not required")
+        parser.add_argument('confirm_password', type=str, required=False, help="This field is not required")
 
         data = parser.parse_args()
 
@@ -89,16 +91,28 @@ class User(Resource):
 
         if data['role']:
           user.role = RoleEnum(data['role'])
-        if (data['firstName'] != None):
+        if data['firstName'] is not None:
             user.firstName = data['firstName']
-        if (data['lastName'] != None):
+        if data['lastName'] is not None:
             user.lastName = data['lastName']
         if data['email']:
             user.email = data['email']
         if data['phone']:
             user.phone = data['phone']
-        if data['password']:
-            user.password = data['password']
+
+        # Reset Password
+        if data['current_password'] and data['new_password'] and data['confirm_password']:
+
+          # Step #1: Check if current password matches the one in the db
+          if not user.check_pw(data['current_password']):
+            return {"message": "Password does not match."}, 401
+
+          # Step #2: Check if new password and confirm password match
+          if data['new_password'] != data['confirm_password']:
+            return {"message": "New password does not match."}, 422
+
+          # Step #3: Set the new password
+          user.hash_digest = UserModel.hash_pw(data['new_password'])
 
         user.save_to_db()
 
