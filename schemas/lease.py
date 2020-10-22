@@ -1,3 +1,4 @@
+from ma import ma
 from models.lease import LeaseModel
 from models.tenant import TenantModel
 from models.property import PropertyModel

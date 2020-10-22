@@ -1,7 +1,12 @@
 from ma import ma
 from models.tenant import TenantModel
-from .base_schema import BaseSchema
+from marshmallow import fields
+from utils.time import time_format
 
-class TenantSchema(BaseSchema):
+class TenantSchema(ma.SQLAlchemyAutoSchema):
   class Meta:
     model = TenantModel
+
+  addedOn = fields.DateTime(time_format)
+  created_at = fields.DateTime(time_format)
+  updated_at = fields.DateTime(time_format)

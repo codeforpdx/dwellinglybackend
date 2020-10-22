@@ -1,6 +1,7 @@
 from db import db
 from models.base_model import BaseModel
 from utils.time import Time
+from datetime import datetime
 
 
 class LeaseModel(BaseModel):
@@ -11,5 +12,5 @@ class LeaseModel(BaseModel):
     propertyID = db.Column(db.Integer, db.ForeignKey('properties.id'), nullable=False)
     tenantID = db.Column(db.Integer, db.ForeignKey('tenants.id'), nullable=False)
     occupants = db.Column(db.Integer)
-    dateTimeStart = db.Column(db.DateTime, nullable=False, default=datetime.datetime.utcnow)
-    dateTimeEnd = db.Column(db.DateTime, nullable=False, default=datetime.datetime.utcnow)
+    dateTimeStart = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    dateTimeEnd = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)

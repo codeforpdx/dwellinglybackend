@@ -52,7 +52,7 @@ class TestUpdate:
 
         assert obj.first_name == 'Bye'
         assert obj.last_name == None
-        assert obj.updated_at == None
+        assert obj.updated_at != None
 
 
 @pytest.mark.usefixtures('empty_test_db')
