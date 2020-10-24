@@ -48,12 +48,7 @@ class TicketModel(BaseModel):
 
         assignedUserData = UserModel.find_by_id(self.assignedUser)
         assignedUser = "{} {}".format(assignedUserData.firstName, assignedUserData.lastName)
-
-        if self.updated_at is None:
-            minsPastUpdate = 0
-        else:
-            dateTimeNow = datetime.utcnow()
-            minsPastUpdate = int((datetime.utcnow() - self.updated_at).total_seconds() / 60)
+        minsPastUpdate = int((datetime.utcnow() - self.updated_at).total_seconds() / 60)
         
         return {
             'id': self.id,

@@ -3,6 +3,7 @@ from models.property import PropertyModel
 from marshmallow import fields
 from utils.time import time_format
 
+
 class PropertySchema(ma.SQLAlchemyAutoSchema):
   class Meta:
     model = PropertyModel

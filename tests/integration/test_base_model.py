@@ -36,7 +36,6 @@ class TestUpdate:
 
         assert obj.first_name == 'Bye'
         assert obj.last_name == 'World'
-        assert obj.updated_at != None
 
     def test_full_update(self):
         DummyModel.update(DummySchema, self.id, {'first_name': 'Hello', 'last_name': 'World'})
@@ -44,7 +43,6 @@ class TestUpdate:
 
         assert obj.first_name == 'Hello'
         assert obj.last_name == 'World'
-        assert obj.updated_at != None
 
     def test_no_update(self):
         DummyModel.update(DummySchema, self.id, {})
@@ -52,7 +50,6 @@ class TestUpdate:
 
         assert obj.first_name == 'Bye'
         assert obj.last_name == None
-        assert obj.updated_at != None
 
 
 @pytest.mark.usefixtures('empty_test_db')

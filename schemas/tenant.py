@@ -3,6 +3,7 @@ from models.tenant import TenantModel
 from marshmallow import fields
 from utils.time import time_format
 
+
 class TenantSchema(ma.SQLAlchemyAutoSchema):
   class Meta:
     model = TenantModel
