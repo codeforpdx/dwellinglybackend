@@ -36,12 +36,15 @@ class Email(Resource):
 
 class InviteEmail(Resource):
     parser = reqparse.RequestParser()
-    parser.add_argument('email', type=str, required=True, help="This field is not required.")
+    parser.add_argument('email', type=str, required=True, help="This field is required.")
 
     def post(self):
         data = InviteEmail.parser.parse_args()
 
-        message = Message("You've been invited to join Dwellingly!", sender="noreply@codeforpdx.org", html="<a href=\"http://localhost:3000/signup\">Sign up for Dwellingly</a>")
+        print(current_app.config)
+        print(current_app.config['ENV'])
+        print(current_app.config['FE_SERVER_NAME'])
+        message = Message("You've been invited to join Dwellingly!", sender="noreply@codeforpdx.org", html="<a href="+ current_app.config['FE_SERVER_NAME'] +"/signup\">Sign up for Dwellingly</a>")
         message.recipients = [data.email]
 
         current_app.mail.send(message)

@@ -15,6 +15,9 @@ class Default(object):
     JWT_BLACKLIST_ENABLED = True
     JWT_BLACKLIST_TOKEN_CHECKS = ['access', 'refresh']
 
+    # Get server domain for Front End
+    FE_SERVER_NAME = os.environ.get('FE_SERVER_NAME')
+
     #configure mail server
     MAIL_SERVER = os.environ.get('MAIL_SERVER', 'smtp.gmail.com')
     MAIL_PORT = os.environ.get('MAIL_PORT', 465)
