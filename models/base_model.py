@@ -8,7 +8,7 @@ class BaseModel(db.Model):
     __abstract__ = True
 
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, onupdate=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, onupdate=datetime.utcnow, default=datetime.utcnow, nullable=False)
 
     @classmethod
     def find_by_id(cls, id):

@@ -12,7 +12,6 @@ def create_property(create_property_manager):
                 state="OR",
                 zipcode="97207",
                 propertyManager=pm.id,
-                dateAdded="2020-04-12",
                 archived=False
             )
         property.save_to_db()

@@ -37,7 +37,6 @@ def test_get_property_by_name(client, auth_headers, test_database):
     assert property_info['propertyManager'] == 5
     assert property_info['propertyManagerName'] == 'Gray Pouponn'
     assert property_info['tenantIDs'] == [1]
-    assert property_info['dateAdded'] == '2020-04-12'
     assert property_info['archived'] == 0
 
     """The server responds with an error if the URL contains a non-existent property name"""

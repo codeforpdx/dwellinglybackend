@@ -1,7 +1,7 @@
 import pytest
 from schemas import LeaseSchema
 from datetime import datetime
-from tests.time import Time
+from utils.time import Time
 
 
 class TestLeaseValidations:

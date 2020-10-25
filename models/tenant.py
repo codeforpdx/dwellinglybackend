@@ -2,7 +2,7 @@ from sqlalchemy.orm import relationship
 from db import db
 from models.user import UserModel
 from models.base_model import BaseModel
-from datetime import datetime
+from utils.time import Time
 
 
 class TenantModel(BaseModel):
@@ -43,7 +43,8 @@ class TenantModel(BaseModel):
             'propertyName': self.property.name if self.property else None,
             'staff': [user.json() for user in self.staff] if self.staff else None,
             'unitNum': self.unitNum,
-            'created_at': self.created_at.strftime("%m/%d/%Y, %H:%M:%S")
+            'created_at': Time.format_date(self.created_at),
+            'updated_at': Time.format_date(self.updated_at)
         }
 
     @classmethod

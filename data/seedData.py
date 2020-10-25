@@ -10,11 +10,12 @@ from models.revoked_tokens import RevokedTokensModel
 from models.emergency_contact import EmergencyContactModel
 from models.lease import LeaseModel
 from utils.auth import hash_pw
+from utils.time import time_format
 
 hashed_password = hash_pw('1234')
 
 def seedData():
-    now=datetime.now()
+    now=datetime.utcnow()
     future = now + timedelta(days=365)
 
     user_1 = UserModel(email="user1@dwellingly.org",
@@ -122,7 +123,6 @@ def seedData():
                                    state="OR",
                                    zipcode="97207",
                                    propertyManager=user_gray_pouponn.id,
-                                   dateAdded="2020-04-12",
                                    archived=False)
     property_test1.save_to_db()
     property_meerkat_manor = PropertyModel(name="Meerkat Manor",
@@ -132,7 +132,6 @@ def seedData():
                                            state="OR",
                                            zipcode="97207",
                                            propertyManager=user_mister_sir.id,
-                                           dateAdded="2020-04-12",
                                            archived=False)
     property_meerkat_manor.save_to_db()
     property_the_reginald = PropertyModel(name="The Reginald",
@@ -142,7 +141,6 @@ def seedData():
                                           state="OR",
                                           zipcode="97207",
                                           propertyManager=user_gray_pouponn.id,
-                                          dateAdded="2020-04-12",
                                           archived=False)
     property_the_reginald.save_to_db()
 
@@ -169,7 +167,7 @@ def seedData():
     tenant_starvin_artist.save_to_db()
 
     ticket_roof_on_fire = TicketModel(
-        issue="The roof, the roof, the roof is one fire.",
+        issue="The roof, the roof, the roof is on fire.",
         tenant=tenant_renty_mcrenter.id,
         sender=user_1.id,
         status="In Progress",
@@ -238,9 +236,6 @@ def seedData():
                               "number": "503-730-3100"
                           }]).save_to_db()
 
-    now=datetime.now()
-    future = now + timedelta(days=365)
-
     lease_1 = LeaseModel(name="Lease 1",
                          propertyID=property_test1.id,
                          tenantID=tenant_renty_mcrenter.id,
@@ -268,4 +263,4 @@ def seedData():
     except:
         print("Error updating database")
 
-    print("Database sucessfully seeded: " + now.strftime("%m/%d/%Y, %H:%M:%S"))
+    print("Database sucessfully seeded: " + now.strftime(time_format))

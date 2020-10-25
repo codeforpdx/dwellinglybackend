@@ -1,6 +1,6 @@
 import pytest
 from serializers.tenant import TenantSerializer
-from tests.time import Time
+from utils.time import Time
 
 
 @pytest.mark.usefixtures('empty_test_db')
@@ -9,8 +9,8 @@ class TestTenantSerializer:
         tenant = create_tenant()
 
         assert TenantSerializer.serialize(tenant) == {
-                'id': tenant.id,
                 'firstName':tenant.firstName,
+                'id': tenant.id,
                 'lastName':tenant.lastName,
                 'phone': tenant.phone,
                 'unitNum': tenant.unitNum,
