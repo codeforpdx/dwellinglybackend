@@ -15,14 +15,9 @@ def contact_number_attributes():
 def create_contact_number(contact_number_attributes, create_emergency_contact):
     def _create_contact_number(emergency_contact=create_emergency_contact()):
         contact_number = ContactNumberModel(
-            number="503-555-5555",
-            numtype="mobile",
-            extension="1",
+            **contact_number_attributes,
             emergency_contact_id=emergency_contact.id
         )
         contact_number.save_to_db()
         return contact_number
-
     yield _create_contact_number
-
-
