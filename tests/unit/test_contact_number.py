@@ -1,3 +1,4 @@
+import pytest
 from models.contact_number import ContactNumberModel
 
 emergency_contact_id = 1
@@ -12,3 +13,9 @@ def test_contact_number():
   assert contact_number.numtype == numtype
   assert contact_number.extension == extension
 
+
+@pytest.mark.usefixtures("empty_test_db")
+class TestFixtures:
+    def test_create_contact_number(self, create_contact_number):
+        assert create_contact_number()
+        
