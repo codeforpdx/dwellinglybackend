@@ -20,9 +20,10 @@ class EmergencyContactSchema(ma.SQLAlchemyAutoSchema):
         if not ContactNumberModel.query.get(value):
             raise ValidationError(f"{value} is not a valid contact number")
 
+# TODO: This should raise validation error when name is found? as it would not be unique?
     @validates("name")
     def validate_name(self, value):
         if not EmergencyContactModel.query.get(value):
-            raise ValidationError(f"{value} is not a valid contact number")
+            raise ValidationError(f"{value} is already an emergency contact")
 
 
