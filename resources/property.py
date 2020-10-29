@@ -24,8 +24,7 @@ class Properties(Resource):
     parser.add_argument('city')
     parser.add_argument('zipcode')
     parser.add_argument('state')
-    parser.add_argument('propertyManager')
-    parser.add_argument('dateAdded')
+    parser.add_argument('propertyManagerIDs')
     parser.add_argument('archived')
 
     def get(self):
@@ -67,9 +66,8 @@ class Property(Resource):
     parser.add_argument('city')
     parser.add_argument('zipcode')
     parser.add_argument('state')
-    parser.add_argument('propertyManager')
+    parser.add_argument('propertyManagerIDs')
     parser.add_argument('tenants')
-    parser.add_argument('dateAdded')
     parser.add_argument('archived')
 
     @admin_required
@@ -109,11 +107,8 @@ class Property(Resource):
         if(data.state):
             rentalProperty.state = data.state
 
-        if(data.propertyManager):
-            rentalProperty.propertyManager = data.propertyManager
-
-        if(data.dateAdded):
-            rentalProperty.dateAdded = data.dateAdded
+        if data.propertyManagerIDs:
+            rentalProperty.managers = PropertyModel.set_property_managers(data.propertyManagerIDs)
 
         #the reported purpose of this route is toggling the "archived" status
         #but an explicit value of "archive" in the request body will override

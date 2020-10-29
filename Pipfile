@@ -12,6 +12,7 @@ freezegun = "*"
 pytest-watch = "*"
 python-dotenv = "*"
 pytest = "*"
+atomicwrites = "*"
 
 [packages]
 Flask = "==1.1.1"

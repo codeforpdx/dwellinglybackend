@@ -90,8 +90,7 @@ def new_property():
                                , unit="101"
                                , state="OR"
                                , zipcode="97207"
-                               , propertyManager=5
-                               , dateAdded="2020-04-12"
+                               , propertyManagerIDs=[5]
                                , archived=0
                                )
     return newProperty

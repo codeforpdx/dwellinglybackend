@@ -1,7 +1,7 @@
 from ma import ma
 from models.tenant import TenantModel
-from schemas.time_format import time_format
 from marshmallow import fields
+from utils.time import time_format
 
 
 class TenantSchema(ma.SQLAlchemyAutoSchema):

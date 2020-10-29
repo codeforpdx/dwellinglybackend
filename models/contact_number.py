@@ -1,5 +1,6 @@
 from db import db
 from models.base_model import BaseModel
+from utils.time import Time
 
 
 class ContactNumberModel(BaseModel):
@@ -18,4 +19,11 @@ class ContactNumberModel(BaseModel):
         self.extension = extension if extension else ''
 
     def json(self):
-        return {'id': self.id, 'number':self.number, 'numtype': self.numtype, 'extension': self.extension}
+        return {
+            'id': self.id,
+            'number':self.number,
+            'numtype': self.numtype,
+            'extension': self.extension,
+            'created_at': Time.format_date(self.created_at),
+            'updated_at': Time.format_date(self.updated_at)
+        }
