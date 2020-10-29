@@ -1,3 +1,4 @@
+import pytest
 from models.contact_number import ContactNumberModel
 from schemas.contact_number import ContactNumberSchema
 from tests.unit.base_interface_test import BaseInterfaceTest
@@ -22,3 +23,9 @@ class TestContactNumberModel():
         assert contact_number.number == number
         assert contact_number.numtype == numtype
         assert contact_number.extension == extension
+
+@pytest.mark.usefixtures("empty_test_db")
+class TestFixtures:
+    def test_create_contact_number(self, create_contact_number):
+        assert create_contact_number()
+
