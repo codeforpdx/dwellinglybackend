@@ -241,9 +241,9 @@ def test_get_user(client, auth_headers, new_user):
             {'message': 'Admin access required'}
 
 @pytest.mark.usefixtures('client_class', 'empty_test_db')
-class TestUsers:
+class TestUser:
     def setup(self):
-        self.endpoint = '/api/users'
+        self.endpoint = '/api/user'
 
     def test_invite_user(self, valid_header):
         property_manager_json = {
