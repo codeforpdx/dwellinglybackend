@@ -239,3 +239,26 @@ def test_get_user(client, auth_headers, new_user):
     assert is_valid(unauthorized_user_response, 401)
     assert unauthorized_user_response.json == \
             {'message': 'Admin access required'}
+
+@pytest.mark.usefixtures('client_class', 'empty_test_db')
+class TestUsers:
+    def setup(self):
+        self.endpoint = '/api/users'
+
+
+    def test_get_a_lease(self, valid_header, create_lease):
+        lease = create_lease()
+        with patch.object(LeaseModel, 'find', return_value=lease) as mock_find:
+            response = self.client.get(
+                    f'{self.endpoint}/1',
+                    headers=valid_header
+                )
+
+        mock_find.assert_called_once_with(1)
+        assert response.status_code == 200
+        assert response.json == LeaseSerializer.serialize(lease)
+
+    def test_invite_user(self, valid_header, create_property_manager):
+        lease = create_property_manager()
+        response = self.client.post(self.endpoint + '/invite', headers=auth_headers["admin"], json={**create_property_manager(), email: "new_email@email.com"})
+        assert true
