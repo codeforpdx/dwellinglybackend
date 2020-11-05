@@ -10,6 +10,8 @@ import json
 from werkzeug.security import safe_str_cmp
 from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt_claims, get_raw_jwt, get_jwt_identity, jwt_refresh_token_required
 from utils.auth import hash_pw, check_pw
+import string
+import random
 
 
 class UserRoles(Resource):
@@ -113,6 +115,16 @@ class User(Resource):
             return {**user.json(), **new_tokens}, 201
 
         return user.json(), 201
+
+    def post(self, email, firstName, lastName, phone):
+        temp_password = ''.join(random.choice(string.ascii_lowercase) for i in range(8))
+        user = UserModel.create({
+            "email": email,
+            "firstName": firstName,
+            "lastName": lastName,
+            "phone": phone,
+            password: temp_password
+            })
 
     @admin_required
     def delete(self, user_id):
