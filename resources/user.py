@@ -116,21 +116,6 @@ class User(Resource):
 
         return user.json(), 201
 
-    def post(self, email, firstName, lastName, phone):
-        temp_password = ''.join(random.choice(string.ascii_lowercase) for i in range(8))
-        user = UserModel.create({
-            "email": email,
-            "firstName": firstName,
-            "lastName": lastName,
-            "phone": phone,
-            password: temp_password
-            })
-        if user:
-            Email.send_user_invite_msg(user)
-            return {"message": "User Invited"}, 200
-        else:
-            return {"message": "Could not create user"}, 400
-
     @admin_required
     def delete(self, user_id):
         user = UserModel.find_by_id(user_id)
@@ -241,3 +226,21 @@ class Users(Resource):
             } for user in users]
 
         return {"users": ret}, 200
+
+class UserInvite(Resource):
+    @jwt_required
+    def post(self):
+        user_info = request.json
+        temp_password = ''.join(random.choice(string.ascii_lowercase) for i in range(8))
+        new_user = UserModel.create({
+            "email": user_info["email"],
+            "firstName": user_info["firstName"],
+            "lastName": user_info["lastName"],
+            "phone": user_info["phone"],
+            "password": temp_password
+            })
+        if user:
+            Email.send_user_invite_msg(user)
+            return {"message": "User Invited"}, 200
+        else:
+            return {"message": "Could not create user"}, 400
