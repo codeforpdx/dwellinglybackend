@@ -19,7 +19,7 @@ def property_manager_attributes():
 @pytest.fixture
 def create_property_manager(property_manager_attributes):
     def _create_property_manager():
-        pm = UserModel(property_manager_attributes())
+        pm = UserModel(**property_manager_attributes())
         pm.save_to_db()
         return pm
     yield _create_property_manager
