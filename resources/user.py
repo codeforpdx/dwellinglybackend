@@ -10,6 +10,7 @@ import json
 from werkzeug.security import safe_str_cmp
 from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt_claims, get_raw_jwt, get_jwt_identity, jwt_refresh_token_required
 from utils.auth import hash_pw, check_pw
+from resources.email import Email
 import string
 import random
 
@@ -230,16 +231,18 @@ class Users(Resource):
 class UserInvite(Resource):
     @jwt_required
     def post(self):
-        user_info = request.json
+        data = request.json
         temp_password = ''.join(random.choice(string.ascii_lowercase) for i in range(8))
-        new_user = UserModel.create({
-            "email": user_info["email"],
-            "firstName": user_info["firstName"],
-            "lastName": user_info["lastName"],
-            "phone": user_info["phone"],
-            "password": temp_password
-            })
-        if user:
+        user = UserModel(
+            email=data["email"],
+            firstName=data["firstName"],
+            lastName=data["lastName"],
+            phone=data["phone"],
+            password=temp_password,
+            role=RoleEnum.STAFF,
+            archived=False
+            )
+        if user.save_to_db:
             Email.send_user_invite_msg(user)
             return {"message": "User Invited"}, 200
         else:
