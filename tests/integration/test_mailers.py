@@ -103,3 +103,7 @@ class TesttEmail:
     def test_reset_password_msg(self, send_mail_msg, new_user):
         Email.send_reset_password_msg(new_user)
         send_mail_msg.assert_called()
+
+    def test_send_user_invite_msg(self, send_mail_msg, new_user):
+        Email.send_user_invite_msg
+        send_mail_msg.assert_called()

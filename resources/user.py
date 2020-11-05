@@ -125,6 +125,11 @@ class User(Resource):
             "phone": phone,
             password: temp_password
             })
+        if user:
+            Email.send_user_invite_msg(user)
+            return {"message": "Email sent"}, 200
+        else:
+            return {"message": "Invalid email"}, 400
 
     @admin_required
     def delete(self, user_id):
