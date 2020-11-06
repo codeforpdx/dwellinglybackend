@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+import bcrypt
 import time
 import jwt
 from db import db
@@ -37,7 +38,7 @@ class UserModel(BaseModel):
         self.lastName = lastName
         self.email = email
         self.phone = phone
-        self.password = password
+        self.password = UserModel.hash_pw(password)
         self.role = role
         self.archived = False
         self.lastActive = datetime.utcnow()
@@ -61,6 +62,13 @@ class UserModel(BaseModel):
             return UserModel.find_by_id(token['user_id'])
         except ExpiredSignatureError:
             return None
+
+    @staticmethod
+    def hash_pw(plaintext_password):
+        return bcrypt.hashpw(bytes(plaintext_password, 'utf-8'), bcrypt.gensalt())
+
+    def check_pw(self, plaintext_password):
+        return bcrypt.checkpw(bytes(plaintext_password, 'utf-8'), self.password)
 
     def json(self):
         return {

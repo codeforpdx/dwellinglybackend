@@ -47,7 +47,7 @@ def test_register_duplicate_user(client, test_database):
     genericUser = {
         "firstName": "first",
         "lastName": "last",
-        "password": "1234",
+        "password": plaintext_password,
         "email": "email@mail.com",
         "phone": "123 123 5555"
     }
