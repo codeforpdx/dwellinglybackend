@@ -1,6 +1,5 @@
 from sqlalchemy.orm import relationship
 from db import db
-from models.contact_number import ContactNumberModel
 from models.base_model import BaseModel
 from utils.time import Time
 
@@ -10,23 +9,14 @@ class EmergencyContactModel(BaseModel):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False, unique=True, index=True)
-    description = db.Column(db.String(256), nullable=False)
-    #relationships
-    contact_numbers = relationship('ContactNumberModel', backref='contact_numbers', lazy=True)
+    description = db.Column(db.String(256))
 
-    def __init__(self, name, contact_numbers, description=None):
-        self.name = name
-        self.description = description if description else ''
-        self.contact_numbers = []
-        for number in contact_numbers:
-            item = ContactNumberModel(
-                emergency_contact_id = self.id,
-                number = number['number'],
-                numtype = number['numtype'] if 'numtype' in number.keys() else '',
-                extension = number['extension'] if 'extension' in number.keys() else '',
-            )
-            db.session.add(item)
-            self.contact_numbers.append(item)
+    contact_numbers = relationship(
+        'ContactNumberModel',
+        backref='contact_numbers',
+        lazy=True,
+        cascade="all, delete-orphan"
+    )
 
     def json(self):
         return {

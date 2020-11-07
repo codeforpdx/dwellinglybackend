@@ -1,17 +1,10 @@
-import pytest
 from schemas.contact_number import ContactNumberSchema
-from utils.time import Time
 
 
 class TestContactNumberValidation:
-    def test_valid_payload(self, create_tenant, create_contact_number):
+    def test_valid_payload(self, empty_test_db):
         valid_payload = {
-            'id': create_tenant().id,
-            'number': create_tenant().number,
-            'numtype': create_contact_number().numtype,
-            'extension': create_contact_number().extension,
-            'created_at': Time.yesterday(),
-            'updated_at': Time.today()
+            "number": "503-503-503"
         }
 
         no_validation_errors = {}

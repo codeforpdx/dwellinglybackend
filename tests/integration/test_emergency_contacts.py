@@ -57,7 +57,7 @@ def test_emergency_contacts_POST(client, auth_headers):
   assert is_valid(response, 401) # UNAUTHORIZED - Admin Access Required
   assert response.json == {'message': 'Admin access required'}
 
-  response = client.post(endpoint, json=newContact, headers=auth_headers["pending"]) 
+  response = client.post(endpoint, json=newContact, headers=auth_headers["pending"])
   assert is_valid(response, 401) # UNAUTHORIZED - Admin Access Required
   assert response.json == {'message': 'Admin access required'}
 
@@ -85,9 +85,14 @@ def test_emergency_contacts_PUT(client, auth_headers):
       {"number": "503-555-3321", "numtype": "Text"}
     ]
   }
+
   response = client.put(f'{endpoint}/{id}', json=updatedInfo, headers=auth_headers["admin"])
   assert is_valid(response, 200) # OK
   assert response.json['name'] == 'Greg'
+  # assert response.json['contact_numbers'][0]['number'] == '503-291-9111'
+  # This test will fail, Contact Numbers need an id in order to be updated.
+  # The request is not submitting an id.
+  # TODO: Create issue to address non restful behavior.
 
   id = 100
   response = client.put(f'{endpoint}/{id}', json=updatedInfo, headers=auth_headers["admin"])

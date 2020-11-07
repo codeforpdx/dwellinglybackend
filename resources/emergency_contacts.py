@@ -11,7 +11,7 @@ def parseContactNumbersFromJson(json_data):
     error = None
     json_data = request.get_json(force=True)
     for number in json_data["contact_numbers"]:
-        if not 'number' in number.keys(): 
+        if not 'number' in number.keys():
             error = "One of the contact_numbers for the emergency contact is missing a number"
             break
         newNumber = { "number": number['number'], "id": "unavailable" }
@@ -49,12 +49,15 @@ class EmergencyContacts(Resource):
         numbersData, numbersError = parseContactNumbersFromJson(request.get_json(force=True))
         if numbersError:
             return {'message': numbersError}, 401
-        data["contact_numbers"] = numbersData
+
+        data["contact_numbers"] = []
+        for number in request.get_json()["contact_numbers"]:
+            data["contact_numbers"].append(ContactNumberModel(**number))
 
         contactEntry = EmergencyContactModel(**data)
-        
+
         EmergencyContactModel.save_to_db(contactEntry)
-        
+
 
         return contactEntry.json(), 201
 
@@ -74,6 +77,8 @@ class EmergencyContacts(Resource):
             contactEntry.name = data.name
         if('description' in data.keys()):
             contactEntry.description = data.description if data.description else ""
+
+        # TODO: We should/need to create a ContactNumber resource to update this
         if(data.contact_numbers):
             numbersData, numbersError = parseContactNumbersFromJson(request.get_json(force=True))
             if numbersError:
