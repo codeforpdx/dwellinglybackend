@@ -1,9 +1,9 @@
 from ma import ma
 from models.emergency_contact import EmergencyContactModel
-from models.contact_number import ContactNumberModel
 from schemas.contact_number import ContactNumberSchema
 from utils.time import time_format
-from marshmallow import fields, validates, ValidationError, EXCLUDE
+from marshmallow import fields, validates, ValidationError
+
 
 class EmergencyContactSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
@@ -12,11 +12,11 @@ class EmergencyContactSchema(ma.SQLAlchemyAutoSchema):
     created_at = fields.DateTime(time_format)
     updated_at = fields.DateTime(time_format)
 
-    contact_numbers = fields.Nested("ContactNumberSchema")
+    contact_numbers = fields.Nested("ContactNumberSchema", many=True)
 
     @validates("contact_numbers")
     def validate_contact_numbers(self, value):
-        ContactNumberSchema().validate(value, many=True, unknown=EXCLUDE)
+        ContactNumberSchema().validate(value, many=True)
 
 
     @validates("name")
