@@ -9,8 +9,8 @@ class EmergencyContactModel(BaseModel):
     __tablename__ = "emergency_contacts"
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100))
-    description = db.Column(db.String(256))
+    name = db.Column(db.String(100), nullable=False, unique=True, index=True)
+    description = db.Column(db.String(256), nullable=False)
     #relationships
     contact_numbers = relationship('ContactNumberModel', backref='contact_numbers', lazy=True)
 
@@ -30,7 +30,6 @@ class EmergencyContactModel(BaseModel):
 
     def json(self):
         return {
-            'id': self.id,
             'name':self.name,
             'description': self.description,
             'contact_numbers': [number.json() for number in self.contact_numbers],

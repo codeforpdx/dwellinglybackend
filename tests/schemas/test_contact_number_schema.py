@@ -4,14 +4,14 @@ from utils.time import Time
 
 
 class TestContactNumberValidation:
-    def test_valid_payload(self, create_tenant, create_property):
+    def test_valid_payload(self, create_tenant, create_contact_number):
         valid_payload = {
             'id': create_tenant().id,
             'number': create_tenant().number,
-            'numtype': "home",
-            'extension': "ext",
-            'created_at': Time.format_date(Time.yesterday()),
-            'updated_at': Time.format_date(Time.today())
+            'numtype': create_contact_number().numtype,
+            'extension': create_contact_number().extension,
+            'created_at': Time.yesterday(),
+            'updated_at': Time.today()
         }
 
         no_validation_errors = {}
