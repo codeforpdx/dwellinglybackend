@@ -133,6 +133,3 @@ data.db
 
 # Jetbrains pyCharm ide
 .idea
-
-# Database migrations
-migrations/versions/*.py
