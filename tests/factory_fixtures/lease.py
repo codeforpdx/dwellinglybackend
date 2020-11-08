@@ -9,9 +9,8 @@ def lease_attributes():
             "name": name,
             "tenantID": tenant.id,
             "propertyID": property.id,
-            "dateTimeStart": datetime.now(),
-            "dateTimeEnd": datetime.now(),
-            "dateUpdated": datetime.now(),
+            "dateTimeStart": datetime.utcnow(),
+            "dateTimeEnd": datetime.utcnow(),
             "occupants": 3
         }
     yield _lease_attributes

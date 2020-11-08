@@ -184,14 +184,14 @@ All endpoints are prefixed with `/api/`
     assigned: "Mr. Sir",
     status: "new",
     urgency: "Low",
-    opened: "01-Jul-2020 (21:29)",
-    updated: "01-Jul-2020 (22:20)",
+    created_at: "07-01-2020 21:29:29",
+    updated_at: "07-08-2020 22:20:29",
     minsPastUpdate: 745,
     notes: [
         {
             id: 2,
             ticketid: 1,
-            created: "01-Jul-2020 (21:29:10.086958)",
+            created_at: "07-01-2020 21:29:29",
             text: "Tenant has over 40 cats.",
             user: "user2 tester"
         },
@@ -214,7 +214,7 @@ All endpoints are prefixed with `/api/`
                     "desc": 'New',
                 },
                 {
-                    "stat": TicketModel.find_count_by_age_status("New", 1440),
+                    "stat": TicketModel.find_count_by_update_status("New", 1440),
                     "desc": "Unseen for > 24 hours",
                 }
             ],
@@ -224,7 +224,7 @@ All endpoints are prefixed with `/api/`
                     "desc": 'In Progress'
                 },
                 {
-                    "stat": TicketModel.find_count_by_age_status("In Progress", 10080),
+                    "stat": TicketModel.find_count_by_update_status("In Progress", 10080),
                     "desc": 'In progress for > 1 week',
                 }
             ]]

@@ -10,11 +10,12 @@ from models.revoked_tokens import RevokedTokensModel
 from models.emergency_contact import EmergencyContactModel
 from models.lease import LeaseModel
 from utils.auth import hash_pw
+from utils.time import time_format
 
 hashed_password = hash_pw('1234')
 
 def seedData():
-    now=datetime.now()
+    now=datetime.utcnow()
     future = now + timedelta(days=365)
 
     user_1 = UserModel(email="user1@dwellingly.org",
@@ -23,7 +24,7 @@ def seedData():
                        lastName="tester",
                        password=hashed_password,
                        phone="555-555-5555",
-                       archived=0)
+                       archived=False)
     user_1.save_to_db()
     user_2 = UserModel(email="user2@dwellingly.org",
                        role=RoleEnum.ADMIN,
@@ -31,7 +32,7 @@ def seedData():
                        lastName="tester",
                        password=hashed_password,
                        phone="555-555-5555",
-                       archived=0)
+                       archived=False)
     user_2.save_to_db()
     user_3 = UserModel(email="user3@dwellingly.org",
                        role=RoleEnum.ADMIN,
@@ -39,7 +40,7 @@ def seedData():
                        lastName="tester",
                        password=hashed_password,
                        phone="555-555-5555",
-                       archived=0)
+                       archived=False)
     user_3.save_to_db()
     user_mister_sir = UserModel(email="MisterSir@dwellingly.org",
                                 role=RoleEnum.PROPERTY_MANAGER,
@@ -47,7 +48,7 @@ def seedData():
                                 lastName="Sir",
                                 password=hashed_password,
                                 phone="555-555-5555",
-                                archived=0)
+                                archived=False)
     user_mister_sir.save_to_db()
     user_gray_pouponn = UserModel(email="GrayPouponn@dwellingly.org",
                                   role=RoleEnum.PROPERTY_MANAGER,
@@ -55,7 +56,7 @@ def seedData():
                                   lastName="Pouponn",
                                   password=hashed_password,
                                   phone="555-555-5555",
-                                  archived=0)
+                                  archived=False)
     user_gray_pouponn.save_to_db()
 
     user_anthony_redding = UserModel(email="pending1@dwellingly.org",
@@ -64,7 +65,7 @@ def seedData():
                                      lastName="Redding",
                                      password=hashed_password,
                                      phone="555-555-5555",
-                                     archived=0)
+                                     archived=False)
     user_anthony_redding.save_to_db()
     user_ryan_dander = UserModel(email="pending2@dwellingly.org",
                                  role=RoleEnum.PENDING,
@@ -72,7 +73,7 @@ def seedData():
                                  lastName="Dander",
                                  password=hashed_password,
                                  phone="555-555-5555",
-                                 archived=0)
+                                 archived=False)
     user_ryan_dander.save_to_db()
     user_amber_lemming = UserModel(email="pending3@dwellingly.org",
                                    role=RoleEnum.PENDING,
@@ -80,7 +81,7 @@ def seedData():
                                    lastName="Lemming",
                                    password=hashed_password,
                                    phone="555-555-5555",
-                                   archived=0)
+                                   archived=False)
     user_amber_lemming.save_to_db()
     user_jeremy_quazar = UserModel(email="pending4@dwellingly.org",
                                    role=RoleEnum.PENDING,
@@ -88,8 +89,32 @@ def seedData():
                                    lastName="Quazar",
                                    password=hashed_password,
                                    phone="555-555-5555",
-                                   archived=0)
+                                   archived=False)
     user_jeremy_quazar.save_to_db()
+    user_janice_joinstaff = UserModel(email="janice@joinpdx.org",
+                                      role=RoleEnum.STAFF,
+                                      firstName="Janice",
+                                      lastName="Joinstaff",
+                                      password=hashed_password,
+                                      phone="555-555-5555",
+                                      archived=False)
+    user_janice_joinstaff.save_to_db()
+    user_hector_chen = UserModel(email="hector@joinpdx.org",
+                                 role=RoleEnum.STAFF,
+                                 firstName="Hector",
+                                 lastName="Chen",
+                                 password=hashed_password,
+                                 phone="555-555-5555",
+                                 archived=False)
+    user_hector_chen.save_to_db()
+    user_xander_dander = UserModel(email="xander@joinpdx.org",
+                                   role=RoleEnum.STAFF,
+                                   firstName="Xander",
+                                   lastName="Dander",
+                                   password=hashed_password,
+                                   phone="555-555-5555",
+                                   archived=False)
+    user_xander_dander.save_to_db()
 
     property_test1 = PropertyModel(name="test1",
                                    address="123 NE FLanders St",
@@ -97,9 +122,8 @@ def seedData():
                                    city="Portland",
                                    state="OR",
                                    zipcode="97207",
-                                   propertyManager=user_gray_pouponn.id,
-                                   dateAdded="2020-04-12",
-                                   archived=0)
+                                   propertyManagerIDs=[user_gray_pouponn.id],
+                                   archived=False)
     property_test1.save_to_db()
     property_meerkat_manor = PropertyModel(name="Meerkat Manor",
                                            address="Privet Drive",
@@ -107,9 +131,8 @@ def seedData():
                                            city="Portland",
                                            state="OR",
                                            zipcode="97207",
-                                           propertyManager=user_mister_sir.id,
-                                           dateAdded="2020-04-12",
-                                           archived=0)
+                                           propertyManagerIDs=[user_mister_sir.id],
+                                           archived=False)
     property_meerkat_manor.save_to_db()
     property_the_reginald = PropertyModel(name="The Reginald",
                                           address="Aristocrat Avenue",
@@ -117,9 +140,8 @@ def seedData():
                                           city="Portland",
                                           state="OR",
                                           zipcode="97207",
-                                          propertyManager=user_gray_pouponn.id,
-                                          dateAdded="2020-04-12",
-                                          archived=0)
+                                          propertyManagerIDs=[user_gray_pouponn.id, user_mister_sir.id],
+                                          archived=False)
     property_the_reginald.save_to_db()
 
     tenant_renty_mcrenter = TenantModel(firstName="Renty",
@@ -145,7 +167,7 @@ def seedData():
     tenant_starvin_artist.save_to_db()
 
     ticket_roof_on_fire = TicketModel(
-        issue="The roof, the roof, the roof is one fire.",
+        issue="The roof, the roof, the roof is on fire.",
         tenant=tenant_renty_mcrenter.id,
         sender=user_1.id,
         status="In Progress",
@@ -214,15 +236,11 @@ def seedData():
                               "number": "503-730-3100"
                           }]).save_to_db()
 
-    now=datetime.now()
-    future = now + timedelta(days=365)
-
     lease_1 = LeaseModel(name="Lease 1",
                          propertyID=property_test1.id,
                          tenantID=tenant_renty_mcrenter.id,
                          dateTimeStart=now,
                          dateTimeEnd=future,
-                         dateUpdated=now,
                          occupants=3)
     lease_1.save_to_db()
     lease_2 = LeaseModel(name="Lease 2",
@@ -230,7 +248,6 @@ def seedData():
                          tenantID=tenant_soho_muless.id,
                          dateTimeStart=now,
                          dateTimeEnd=future,
-                         dateUpdated=now,
                          occupants=2)
     lease_2.save_to_db()
     lease_3 = LeaseModel(name="Lease 3",
@@ -238,7 +255,6 @@ def seedData():
                          tenantID=tenant_starvin_artist.id,
                          dateTimeStart=now,
                          dateTimeEnd=future,
-                         dateUpdated=now,
                          occupants=1)
     lease_3.save_to_db()
 
@@ -247,4 +263,4 @@ def seedData():
     except:
         print("Error updating database")
 
-    print("Database sucessfully seeded: " + now.strftime("%m/%d/%Y, %H:%M:%S"))
+    print("Database sucessfully seeded: " + now.strftime(time_format))

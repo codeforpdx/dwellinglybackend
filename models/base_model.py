@@ -1,3 +1,5 @@
+from flask import abort
+from marshmallow import ValidationError, EXCLUDE
 from db import db
 from datetime import datetime
 
@@ -6,7 +8,7 @@ class BaseModel(db.Model):
     __abstract__ = True
 
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, onupdate=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, onupdate=datetime.utcnow, default=datetime.utcnow, nullable=False)
 
     @classmethod
     def find_by_id(cls, id):
@@ -22,6 +24,35 @@ class BaseModel(db.Model):
         db.session.delete(obj)
         db.session.commit()
 
+    @classmethod
+    def create(cls, schema, payload):
+        try:
+            attrs = schema().load(payload, unknown=EXCLUDE)
+        except ValidationError as err:
+            abort(400, err.messages)
+
+        obj = cls(**attrs)
+        db.session.add(obj)
+        db.session.commit()
+
+        return obj
+
+    @classmethod
+    def update(cls, schema, id, payload):
+        obj = cls.find(id)
+        try:
+            attrs = schema().load(payload, unknown=EXCLUDE, partial=True)
+        except ValidationError as err:
+            abort(400, err.messages)
+
+        for k, v in attrs.items():
+            setattr(obj, k, v)
+
+        db.session.add(obj)
+        db.session.commit()
+
+        return obj
+
     def save_to_db(self):
         db.session.add(self)
         db.session.commit()
@@ -30,11 +61,8 @@ class BaseModel(db.Model):
         db.session.delete(self)
         db.session.commit()
 
-    def json(self):
-        raise NotImplementedError(f"This {self.__class__} must implement a <json> method")
-
     def __repr__(self):
-        return f'<{type(self).__name__} {self.json()}>'
+        return "<{!r} {!r}>".format(type(self).__name__, self.__dict__)
 
     @classmethod
     def _name(cls):

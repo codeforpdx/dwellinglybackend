@@ -4,7 +4,7 @@ from conftest import is_valid
 from unittest.mock import patch
 from resources.email import Email
 from freezegun import freeze_time
-from tests.time import Time
+from utils.time import Time
 
 
 @pytest.mark.usefixtures('client_class', 'test_database')

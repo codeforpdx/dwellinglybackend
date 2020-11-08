@@ -1,3 +1,4 @@
+import pytest
 from models.emergency_contact import EmergencyContactModel
 
 emergency_contact_name = "Washington Co. Crisis Team"
@@ -13,3 +14,10 @@ def test_emergency_contact(app):
     assert emergency_contact.description == emergency_contact_description
     assert emergency_contact.contact_numbers[0].number == contact_number
     assert emergency_contact.contact_numbers[0].numtype == contact_numtype
+
+
+@pytest.mark.usefixtures("empty_test_db")
+class TestFixtures:
+    def test_create_emergency_contact(self, create_emergency_contact):
+        assert create_emergency_contact()
+        

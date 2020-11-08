@@ -6,6 +6,7 @@ from enum import Enum
 from models.base_model import BaseModel
 from flask import current_app
 from jwt import ExpiredSignatureError
+from utils.time import Time
 
 
 class RoleEnum(Enum):
@@ -29,7 +30,6 @@ class UserModel(BaseModel):
     password = db.Column(db.LargeBinary(60))
     archived = db.Column(db.Boolean)
     lastActive = db.Column(db.DateTime, default=datetime.utcnow)
-    created = db.Column(db.DateTime, default=datetime.utcnow)
 
 
     def __init__(self, firstName, lastName, email, password, phone, role, archived):
@@ -41,7 +41,6 @@ class UserModel(BaseModel):
         self.role = role
         self.archived = False
         self.lastActive = datetime.utcnow()
-        self.created = datetime.utcnow()
 
     def update_last_active(self):
         self.lastActive = datetime.utcnow()
@@ -71,9 +70,10 @@ class UserModel(BaseModel):
             'email': self.email,
             'phone': self.phone,
             'role': self.role.value,
-            'created': self.created.strftime('%Y-%m-%d %H:%M:%S %Z'),
             'archived': self.archived,
-            'lastActive': self.lastActive.strftime('%Y-%m-%d %H:%M:%S %Z')
+            'lastActive': Time.format_date(self.lastActive),
+            'created_at': Time.format_date(self.created_at),
+            'updated_at': Time.format_date(self.updated_at)
         }
     
     def widgetJson(self, propertyName, date):          
@@ -94,8 +94,8 @@ class UserModel(BaseModel):
     
     @classmethod
     def find_recent_role(cls, role, days):
-        dateTime = datetime.now() - timedelta(days = days)
-        return db.session.query(UserModel).filter(UserModel.role == role).order_by(UserModel.created.desc()).limit(3).all()
+        dateTime = datetime.utcnow() - timedelta(days = days)
+        return db.session.query(UserModel).filter(UserModel.role == role).order_by(UserModel.created_at.desc()).limit(3).all()
       
     @classmethod
     def find_by_role_and_name(cls, role, name):

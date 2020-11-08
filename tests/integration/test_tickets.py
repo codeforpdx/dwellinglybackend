@@ -2,6 +2,7 @@ from conftest import is_valid
 from datetime import datetime
 from freezegun import freeze_time
 from unittest.mock import patch
+from utils.time import time_format
 
 endpoint = '/api/tickets'
 validID = 1
@@ -28,7 +29,7 @@ def test_tickets_GET_one(client, test_database, auth_headers):
     response = client.get(f'{endpoint}/{validID}', headers=auth_headers["admin"])
     assert is_valid(response, 200)
     assert response.json['id'] == 1
-    assert response.json['issue'] == 'The roof, the roof, the roof is one fire.'
+    assert response.json['issue'] == 'The roof, the roof, the roof is on fire.'
     assert response.json['tenant'] == 'Renty McRenter'
     assert response.json['senderID'] == 1
     assert response.json['tenantID'] == 1
@@ -60,7 +61,7 @@ def test_tickets_POST(client, auth_headers):
         "assignedUser": 4,
     }
 
-    dt = datetime.now()
+    dt = datetime.utcnow()
     with freeze_time(dt):
         with patch('flask_jwt_extended.view_decorators.verify_jwt_in_request') as mock_jwt_required:
             response = client.post(endpoint, json=newTicket, headers=auth_headers["admin"])
@@ -75,8 +76,7 @@ def test_tickets_POST(client, auth_headers):
     assert response.json['assigned'] == 'Mr. Sir'
     assert response.json['status'] == 'new'
     assert response.json['urgency'] == 'low'
-    assert response.json['opened'] == dt.strftime("%m/%d/%Y, %H:%M:%S")
-    assert response.json['updated'] == dt.strftime("%m/%d/%Y, %H:%M:%S")
+    assert response.json['created_at'] == dt.strftime(time_format)
 
     # verify jwt only
     response = client.post(endpoint, json=newTicket, headers=auth_headers["admin"])
@@ -94,7 +94,7 @@ def test_tickets_PUT(client, auth_headers):
         'note': 'Tenant has a service dog'
     }
 
-    dt = datetime.now()
+    dt = datetime.utcnow()
     with freeze_time(dt):
         with patch('flask_jwt_extended.view_decorators.verify_jwt_in_request') as mock_jwt_required:
             response = client.put(f'{endpoint}/{validID}', json=updatedTicket, headers=auth_headers["admin"])
@@ -109,7 +109,6 @@ def test_tickets_PUT(client, auth_headers):
     assert response.json['assigned'] == 'user3 tester'
     assert response.json['status'] == 'in progress'
     assert response.json['urgency'] == 'high'
-    assert response.json['updated'] == dt.strftime("%m/%d/%Y, %H:%M:%S")
     # Ticket already had 2 notes to begin with - and with this PUT - it's +1
     assert len(response.json['notes']) == 3
     assert response.json['notes'][2]['ticketid'] == 1

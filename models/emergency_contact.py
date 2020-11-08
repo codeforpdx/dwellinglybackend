@@ -2,6 +2,7 @@ from sqlalchemy.orm import relationship
 from db import db
 from models.contact_number import ContactNumberModel
 from models.base_model import BaseModel
+from utils.time import Time
 
 
 class EmergencyContactModel(BaseModel):
@@ -32,7 +33,9 @@ class EmergencyContactModel(BaseModel):
             'id': self.id,
             'name':self.name,
             'description': self.description,
-            'contact_numbers': [number.json() for number in self.contact_numbers]
+            'contact_numbers': [number.json() for number in self.contact_numbers],
+            'created_at': Time.format_date(self.created_at),
+            'updated_at': Time.format_date(self.updated_at)
         }
 
     @classmethod
