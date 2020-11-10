@@ -37,7 +37,7 @@ def test_tickets_GET_one(client, test_database, auth_headers):
     assert response.json['assignedUserID'] == 4
     assert response.json['sender'] == 'user1 tester'
     assert response.json['assigned'] == 'Mr. Sir'
-    assert response.json['status'] == 'In Progress'
+    assert response.json['status'] == TicketStatus.In_Progress
     assert response.json['urgency'] == 'Low'
     assert len(response.json['notes']) == 2
     assert response.json['notes'][0]['ticketid'] == 1
@@ -75,7 +75,7 @@ def test_tickets_POST(client, auth_headers):
     assert response.json['assignedUserID'] == 4
     assert response.json['sender'] == 'user1 tester'
     assert response.json['assigned'] == 'Mr. Sir'
-    assert response.json['status'] == 'New'
+    assert response.json['status'] == TicketStatus.New
     assert response.json['urgency'] == 'low'
     assert response.json['created_at'] == dt.strftime(time_format)
 
@@ -108,7 +108,7 @@ def test_tickets_PUT(client, auth_headers):
     assert response.json['assignedUserID'] == 3
     assert response.json['sender'] == 'user2 tester'
     assert response.json['assigned'] == 'user3 tester'
-    assert response.json['status'] == 'In Progress'
+    assert response.json['status'] == TicketStatus.In_Progress
     assert response.json['urgency'] == 'high'
     # Ticket already had 2 notes to begin with - and with this PUT - it's +1
     assert len(response.json['notes']) == 3
