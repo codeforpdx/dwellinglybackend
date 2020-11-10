@@ -6,6 +6,9 @@ from resources.admin_required import admin_required
 
 # Helper function: Extract contact number info from an array of JSON objects
 # Return a tuple with the parsed data and any error messages
+from schemas.emergency_contact import EmergencyContactSchema
+
+
 def parseContactNumbersFromJson(json_data):
     parsedData = []
     error = None
@@ -22,44 +25,37 @@ def parseContactNumbersFromJson(json_data):
     return parsedData, error
 
 class EmergencyContacts(Resource):
-    parser = reqparse.RequestParser()
-    parser.add_argument('name',type=str,required=True,help="This field cannot be blank")
-    parser.add_argument('description',type=str,required=False,help="This field is for the description of the emergency contact")
-    parser.add_argument('contact_numbers',action='append',required=True,help="This field cannot be blank")
+    # parser = reqparse.RequestParser()
+    # parser.add_argument('name',type=str,required=True,help="This field cannot be blank")
+    # parser.add_argument('description',type=str,required=False,help="This field is for the description of the emergency contact")
+    # parser.add_argument('contact_numbers',action='append',required=True,help="This field cannot be blank")
 
-    def get(self, id=None):
-        # GET /emergencynumbers
-        if not id:
-            return {'emergency_contacts': [e.json() for e in EmergencyContactModel.query.all()]}
-
-        # GET /emergencynumbers/<id>
-        emergencyEntry = EmergencyContactModel.find_by_id(id)
-        if not emergencyEntry:
-            return {'message': 'Emergency contact not found'}, 404
-        return emergencyEntry.json()
+    def get(self, id):
+        return EmergencyContactModel.find(id).json()
 
     @admin_required
     def post(self):
-        data = EmergencyContacts.parser.parse_args()
-        if EmergencyContactModel.find_by_name(data["name"]):
-            return {'message': 'An emergency contact with this name already exists'}, 401
-
-        # In the JSON body, contact_numbers is expected to be an array of dictionaries
-        # But, reqparser is not able to extract nested JSON data (see https://github.com/flask-restful/flask-restful/issues/517)
-        numbersData, numbersError = parseContactNumbersFromJson(request.get_json(force=True))
-        if numbersError:
-            return {'message': numbersError}, 401
-
-        data["contact_numbers"] = []
-        for number in request.get_json()["contact_numbers"]:
-            data["contact_numbers"].append(ContactNumberModel(**number))
-
-        contactEntry = EmergencyContactModel(**data)
-
-        EmergencyContactModel.save_to_db(contactEntry)
-
-
-        return contactEntry.json(), 201
+        return EmergencyContactModel.create(EmergencyContactSchema, request.json)
+        # data = EmergencyContacts.parser.parse_args()
+        # if EmergencyContactModel.find_by_name(data["name"]):
+        #     return {'message': 'An emergency contact with this name already exists'}, 400
+        #
+        # # In the JSON body, contact_numbers is expected to be an array of dictionaries
+        # # But, reqparser is not able to extract nested JSON data (see https://github.com/flask-restful/flask-restful/issues/517)
+        # numbersData, numbersError = parseContactNumbersFromJson(request.get_json(force=True))
+        # if numbersError:
+        #     return {'message': numbersError}, 400
+        #
+        # data["contact_numbers"] = []
+        # for number in request.get_json()["contact_numbers"]:
+        #     data["contact_numbers"].append(ContactNumberModel(**number))
+        #
+        # contactEntry = EmergencyContactModel(**data)
+        #
+        # EmergencyContactModel.save_to_db(contactEntry)
+        #
+        #
+        # return contactEntry.json(), 201
 
     @admin_required
     def put(self, id):
@@ -82,7 +78,7 @@ class EmergencyContacts(Resource):
         if(data.contact_numbers):
             numbersData, numbersError = parseContactNumbersFromJson(request.get_json(force=True))
             if numbersError:
-                return {'message': numbersError}, 401
+                return {'message': numbersError}, 400
             for number in numbersData:
                 contactToModify = ContactNumberModel.find_by_id(number["id"])
                 if not contactToModify:
@@ -101,9 +97,10 @@ class EmergencyContacts(Resource):
 
     @admin_required
     def delete(self, id):
-        contact = EmergencyContactModel.find_by_id(id)
-        if not contact:
-            return {'message': 'Emergency contact not found'}, 404
-
-        contact.delete_from_db()
+        EmergencyContactModel.delete(id)
+        # contact = EmergencyContactModel.find_by_id(id)
+        # if not contact:
+        #     return {'message': 'Emergency contact not found'}, 404
+        #
+        # contact.delete_from_db()
         return {'message': 'Emergency contact deleted'}

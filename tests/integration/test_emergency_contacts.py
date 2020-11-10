@@ -34,7 +34,7 @@ def test_emergency_contacts_GET_one(client, test_database):
   id = 100
   response = client.get(f'{endpoint}/{id}')
   assert is_valid(response, 404) # NOT FOUND - 'Emergency Contact not found'
-  assert response.json == {'message': 'Emergency contact not found'}
+  assert response.json == {'message': 'EmergencyContact not found'}
 
 
 def test_emergency_contacts_POST(client, auth_headers):
@@ -48,10 +48,10 @@ def test_emergency_contacts_POST(client, auth_headers):
   }
 
   response = client.post(endpoint, json=newContact, headers=auth_headers["admin"])
-  assert is_valid(response, 401) # UNAUTHORIZED - Emergency Contact With This Name Already Exists
+  assert is_valid(response, 400) # UNAUTHORIZED - Emergency Contact With This Name Already Exists
   assert response.json == \
           {'message':
-           'An emergency contact with this name already exists'}
+           'Narcotics Anonymous is already an emergency contact'}
 
   response = client.post(endpoint, json=newContact, headers=auth_headers["pm"])
   assert is_valid(response, 401) # UNAUTHORIZED - Admin Access Required
@@ -120,4 +120,4 @@ def test_emergency_contacts_DELETE(client, auth_headers):
 
   response = client.delete(f'{endpoint}/{id}', headers=auth_headers["admin"])
   assert is_valid(response, 404) # NOT FOUND - Emergency Contact Not Found
-  assert response.json == {'message': 'Emergency contact not found'}
+  assert response.json == {'message': 'EmergencyContact not found'}
