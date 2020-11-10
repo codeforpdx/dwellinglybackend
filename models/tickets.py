@@ -10,9 +10,9 @@ from utils.time import Time
 import enum
 
 class TicketStatus(str, enum.Enum):
-    New: str = "New"
-    In_Progress: str = "In Progress"
-    Closed: str = "Closed"
+    New = "New"
+    In_Progress = "In Progress"
+    Closed = "Closed"
 
 class TicketModel(BaseModel):
     __tablename__ = "tickets"
