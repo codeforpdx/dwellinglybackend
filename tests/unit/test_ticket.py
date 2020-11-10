@@ -1,4 +1,4 @@
-from models.tickets import TicketModel
+from models.tickets import TicketModel, TicketStatus
 from models.notes import NotesModel
 
 def test_ticket():
@@ -6,7 +6,7 @@ def test_ticket():
     testIssue = 'Property Damage'
     testSender = 'user1 tester'
     testTenant = 'Renty McRenter'
-    testStatus = 'new'
+    testStatus = TicketStatus.New
     testUrgency = 'low'
     testAssignedUser = 4
 

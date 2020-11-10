@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 from models.user import UserModel, RoleEnum
 from models.property import PropertyModel
 from models.tenant import TenantModel
-from models.tickets import TicketModel
+from models.tickets import TicketModel, TicketStatus
 from models.notes import NotesModel
 from models.revoked_tokens import RevokedTokensModel
 from models.emergency_contact import EmergencyContactModel
@@ -170,28 +170,28 @@ def seedData():
         issue="The roof, the roof, the roof is on fire.",
         tenant=tenant_renty_mcrenter.id,
         sender=user_1.id,
-        status="In Progress",
+        status=TicketStatus.In_Progress,
         urgency="Low",
         assignedUser=user_mister_sir.id)
     ticket_roof_on_fire.save_to_db()
     ticket_dumpster_fire = TicketModel(issue="Flaming Dumpster Fire.",
                                        tenant=tenant_soho_muless.id,
                                        sender=user_3.id,
-                                       status="New",
+                                       status=TicketStatus.New,
                                        urgency="Critical",
                                        assignedUser=user_mister_sir.id)
     ticket_dumpster_fire.save_to_db()
     ticket_unpaid_rent = TicketModel(issue="Unpaid Rent",
                                      tenant=tenant_renty_mcrenter.id,
                                      sender=user_1.id,
-                                     status="New",
+                                     status=TicketStatus.New,
                                      urgency="High",
                                      assignedUser=user_mister_sir.id)
     ticket_unpaid_rent.save_to_db()
     ticket_40_cats = TicketModel(issue="Over 40 cats in domicile.",
                                  tenant=tenant_soho_muless.id,
                                  sender=user_3.id,
-                                 status="Closed",
+                                 status=TicketStatus.Closed,
                                  urgency="Low",
                                  assignedUser=user_mister_sir.id)
     ticket_40_cats.save_to_db()
