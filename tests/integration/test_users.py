@@ -139,12 +139,15 @@ def test_archive_user_failure(client, auth_headers):
 def test_patch_user(client, auth_headers, new_user):
     """The route to patch a user by id returns a successful response code and the expected data is patched."""
 
-    expectedRole =  RoleEnum.PROPERTY_MANAGER.value
-    expectedEmail = "patch@test.com"
-    expectedPhone = "503-867-5309"
+    payload= {
+        'role':  RoleEnum.PROPERTY_MANAGER.value,
+        'email': 'patch@test.com',
+        'phone': '503-867-5309',
+        'password': 'NewPassword'
+    }
 
     userToPatch = UserModel.find_by_email(new_user.email)
-    response = client.patch(f"/api/user/{userToPatch.id}", json={"role": expectedRole, "email": expectedEmail, "phone": expectedPhone},
+    response = client.patch(f"/api/user/{userToPatch.id}", json=payload,
         headers=auth_headers["admin"])
 
     actualRole = int(response.json["role"])
@@ -152,9 +155,9 @@ def test_patch_user(client, auth_headers, new_user):
     actualPhone = response.json["phone"]
 
     assert response.status_code == 201
-    assert expectedRole == actualRole
-    assert expectedEmail == actualEmail
-    assert expectedPhone == actualPhone
+    assert payload["role"] == actualRole
+    assert payload["email"] == actualEmail
+    assert payload["phone"] == actualPhone
 
     """The server responds with an error if a non-existent user id is used for the patch user by id route."""
     responseInvalidId = client.patch("/api/user/999999", json={"role": "new_role"}, headers=auth_headers["admin"])
