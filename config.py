@@ -5,6 +5,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 class Default(object):
     #config DataBase
     SECRET_KEY = os.environ.get('SECRET_KEY')
+    WORK_FACTOR = 12
     JWT_SECRET_KEY = os.environ.get('JWT_SECRET_KEY')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     JWT_AUTH_USERNAME_KEY = os.environ.get('JWT_AUTH_USERNAME_KEY')
@@ -42,6 +43,7 @@ class Testing(Default):
     TESTING = True
     SQLALCHEMY_DATABASE_URI = os.environ.get('TEST_DATABASE_URL') or \
         'sqlite://'
+    WORK_FACTOR = 4
     JWT_ACCESS_TOKEN_EXPIRES = False
     JWT_REFRESH_TOKEN_EXPIRES = False
     MAIL_SUPPRESS_SEND = True

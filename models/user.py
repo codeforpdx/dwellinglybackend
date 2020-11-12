@@ -1,3 +1,4 @@
+from flask import current_app
 from datetime import datetime, timedelta
 import bcrypt
 import time
@@ -74,7 +75,7 @@ class UserModel(BaseModel):
 
     @staticmethod
     def hash_pw(plaintext_password):
-        return bcrypt.hashpw(bytes(plaintext_password, 'utf-8'), bcrypt.gensalt())
+        return bcrypt.hashpw(bytes(plaintext_password, 'utf-8'), bcrypt.gensalt(current_app.config['WORK_FACTOR']))
 
     def check_pw(self, plaintext_password):
         return bcrypt.checkpw(bytes(plaintext_password, 'utf-8'), self.hash_digest)
