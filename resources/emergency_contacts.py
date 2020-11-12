@@ -25,17 +25,22 @@ def parseContactNumbersFromJson(json_data):
     return parsedData, error
 
 class EmergencyContacts(Resource):
-    # parser = reqparse.RequestParser()
-    # parser.add_argument('name',type=str,required=True,help="This field cannot be blank")
-    # parser.add_argument('description',type=str,required=False,help="This field is for the description of the emergency contact")
-    # parser.add_argument('contact_numbers',action='append',required=True,help="This field cannot be blank")
+    # Keeping this here until PUT endpoint has been refactored
+    parser = reqparse.RequestParser()
+    parser.add_argument('name',type=str,required=True,help="This field cannot be blank")
+    parser.add_argument('description',type=str,required=False,help="This field is for the description of the emergency contact")
+    parser.add_argument('contact_numbers',action='append',required=True,help="This field cannot be blank")
 
-    def get(self, id):
-        return EmergencyContactModel.find(id).json()
+    def get(self, id=None):
+        if id:
+            return EmergencyContactModel.find(id).json()
+        else:
+            return {'emergency_contacts': [e.json() for e in EmergencyContactModel.query.all()]}
 
     @admin_required
     def post(self):
-        return EmergencyContactModel.create(EmergencyContactSchema, request.json)
+        EmergencyContactModel.create(schema=EmergencyContactSchema, payload=request.json)
+        return {'message' : "EmergencyContact created successfully!"}, 201
         # data = EmergencyContacts.parser.parse_args()
         # if EmergencyContactModel.find_by_name(data["name"]):
         #     return {'message': 'An emergency contact with this name already exists'}, 400
@@ -98,9 +103,4 @@ class EmergencyContacts(Resource):
     @admin_required
     def delete(self, id):
         EmergencyContactModel.delete(id)
-        # contact = EmergencyContactModel.find_by_id(id)
-        # if not contact:
-        #     return {'message': 'Emergency contact not found'}, 404
-        #
-        # contact.delete_from_db()
         return {'message': 'Emergency contact deleted'}

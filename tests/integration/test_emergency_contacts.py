@@ -50,8 +50,7 @@ def test_emergency_contacts_POST(client, auth_headers):
   response = client.post(endpoint, json=newContact, headers=auth_headers["admin"])
   assert is_valid(response, 400) # UNAUTHORIZED - Emergency Contact With This Name Already Exists
   assert response.json == \
-          {'message':
-           'Narcotics Anonymous is already an emergency contact'}
+         {'message': {'name': ['Narcotics Anonymous is already an emergency contact']}}
 
   response = client.post(endpoint, json=newContact, headers=auth_headers["pm"])
   assert is_valid(response, 401) # UNAUTHORIZED - Admin Access Required
