@@ -15,6 +15,6 @@ def test_reset_password_token(stubbed_encode, app, test_database):
         assert user.reset_password_token()
         stubbed_encode.assert_called_once_with(payload, app.secret_key, algorithm='HS256')
 
-def test_full_name():
-    admin_user = UserModel(email=adminUserEmail, password="1234", firstName="first", lastName="last", phone=phone, role=adminRole, archived=0)
-    assert admin_user.full_name() == 'first last'
+def test_full_name(empty_test_db, create_admin_user):
+    admin= create_admin_user(firstName='first', lastName='last')
+    assert admin.full_name() == 'first last'
