@@ -34,16 +34,11 @@ class UserModel(BaseModel):
     lastActive = db.Column(db.DateTime, default=datetime.utcnow)
 
 
-    def __init__(self, firstName, lastName, email, password, phone, role, archived):
-        self.firstName = firstName
-        self.lastName = lastName
-        self.email = email
-        self.phone = phone
-        self.hash_digest = UserModel.hash_pw(password)
+    def __init__(self, **kwargs):
+        super(UserModel, self).__init__(**kwargs)
+        self.hash_digest = UserModel.hash_pw(kwargs['password'])
         self._password = None
-        self.role = role
         self.archived = False
-        self.lastActive = datetime.utcnow()
 
     @property
     def password(self):
@@ -93,8 +88,8 @@ class UserModel(BaseModel):
             'created_at': Time.format_date(self.created_at),
             'updated_at': Time.format_date(self.updated_at)
         }
-    
-    def widgetJson(self, propertyName, date):          
+
+    def widgetJson(self, propertyName, date):
         return{
             'id': self.id,
             'stat': date,
@@ -109,12 +104,12 @@ class UserModel(BaseModel):
     @classmethod
     def find_by_role(cls, role):
         return cls.query.filter_by(role=role).all()
-    
+
     @classmethod
     def find_recent_role(cls, role, days):
         dateTime = datetime.utcnow() - timedelta(days = days)
         return db.session.query(UserModel).filter(UserModel.role == role).order_by(UserModel.created_at.desc()).limit(3).all()
-      
+
     @classmethod
     def find_by_role_and_name(cls, role, name):
         likeName = f'%{name}%'
