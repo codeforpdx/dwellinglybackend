@@ -1,3 +1,4 @@
+import schemas
 from ma import ma
 from models.emergency_contact import EmergencyContactModel
 from schemas.contact_number import ContactNumberSchema
