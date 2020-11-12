@@ -47,7 +47,7 @@ def test_register_duplicate_user(client, test_database):
     genericUser = {
         "firstName": "first",
         "lastName": "last",
-        "password": plaintext_password,
+        "password": "1234",
         "email": "email@mail.com",
         "phone": "123 123 5555"
     }
@@ -139,15 +139,12 @@ def test_archive_user_failure(client, auth_headers):
 def test_patch_user(client, auth_headers, new_user):
     """The route to patch a user by id returns a successful response code and the expected data is patched."""
 
-    payload = {
-        'role':  RoleEnum.PROPERTY_MANAGER.value,
-        'email': 'patch@test.com',
-        'phone': '503-867-5309',
-        'password': 'NewPassword'
-    }
+    expectedRole =  RoleEnum.PROPERTY_MANAGER.value
+    expectedEmail = "patch@test.com"
+    expectedPhone = "503-867-5309"
 
     userToPatch = UserModel.find_by_email(new_user.email)
-    response = client.patch(f"/api/user/{userToPatch.id}", json=payload,
+    response = client.patch(f"/api/user/{userToPatch.id}", json={"role": expectedRole, "email": expectedEmail, "phone": expectedPhone},
         headers=auth_headers["admin"])
 
     actualRole = int(response.json["role"])
@@ -155,9 +152,9 @@ def test_patch_user(client, auth_headers, new_user):
     actualPhone = response.json["phone"]
 
     assert response.status_code == 201
-    assert payload["role"] == actualRole
-    assert payload["email"] == actualEmail
-    assert payload["phone"] == actualPhone
+    assert expectedRole == actualRole
+    assert expectedEmail == actualEmail
+    assert expectedPhone == actualPhone
 
     """The server responds with an error if a non-existent user id is used for the patch user by id route."""
     responseInvalidId = client.patch("/api/user/999999", json={"role": "new_role"}, headers=auth_headers["admin"])
