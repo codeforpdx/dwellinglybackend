@@ -28,7 +28,7 @@ class UserModel(BaseModel):
     lastName = db.Column(db.String(80))
     fullName = db.column_property(firstName + ' ' + lastName)
     phone = db.Column(db.String(25))
-    password = db.Column(db.LargeBinary(60))
+    hash_digest = db.Column(db.LargeBinary(60))
     archived = db.Column(db.Boolean)
     lastActive = db.Column(db.DateTime, default=datetime.utcnow)
 
@@ -38,14 +38,15 @@ class UserModel(BaseModel):
         self.lastName = lastName
         self.email = email
         self.phone = phone
-        self._password = UserModel.hash_pw(password)
+        self.hash_digest = UserModel.hash_pw(password)
+        self._password = None
         self.role = role
         self.archived = False
         self.lastActive = datetime.utcnow()
 
     @property
     def password(self):
-        return self._password
+        return self.hash_digest
 
     @password.setter
     def password(self, new_password):
@@ -76,7 +77,7 @@ class UserModel(BaseModel):
         return bcrypt.hashpw(bytes(plaintext_password, 'utf-8'), bcrypt.gensalt())
 
     def check_pw(self, plaintext_password):
-        return bcrypt.checkpw(bytes(plaintext_password, 'utf-8'), self._password)
+        return bcrypt.checkpw(bytes(plaintext_password, 'utf-8'), self.hash_digest)
 
     def json(self):
         return {
@@ -120,3 +121,11 @@ class UserModel(BaseModel):
 
     def full_name(self):
         return '{} {}'.format(self.firstName, self.lastName)
+
+    def save_to_db(self):
+        if self._password:
+            self.hash_digest = self._password
+        db.session.add(self)
+        db.session.commit()
+        self._password = None
+
