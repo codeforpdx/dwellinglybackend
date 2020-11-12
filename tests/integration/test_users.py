@@ -139,7 +139,7 @@ def test_archive_user_failure(client, auth_headers):
 def test_patch_user(client, auth_headers, new_user):
     """The route to patch a user by id returns a successful response code and the expected data is patched."""
 
-    payload= {
+    payload = {
         'role':  RoleEnum.PROPERTY_MANAGER.value,
         'email': 'patch@test.com',
         'phone': '503-867-5309',

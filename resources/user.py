@@ -102,7 +102,6 @@ class User(Resource):
 
         user.save_to_db()
 
-
         if user_id == get_jwt_identity():
             new_tokens = {
                 "access_token": create_access_token(identity=user.id, fresh=True),

@@ -38,10 +38,18 @@ class UserModel(BaseModel):
         self.lastName = lastName
         self.email = email
         self.phone = phone
-        self.password = UserModel.hash_pw(password)
+        self._password = UserModel.hash_pw(password)
         self.role = role
         self.archived = False
         self.lastActive = datetime.utcnow()
+
+    @property
+    def password(self):
+        return self._password
+
+    @password.setter
+    def password(self, new_password):
+        self._password = UserModel.hash_pw(new_password)
 
     def update_last_active(self):
         self.lastActive = datetime.utcnow()
@@ -68,7 +76,7 @@ class UserModel(BaseModel):
         return bcrypt.hashpw(bytes(plaintext_password, 'utf-8'), bcrypt.gensalt())
 
     def check_pw(self, plaintext_password):
-        return bcrypt.checkpw(bytes(plaintext_password, 'utf-8'), self.password)
+        return bcrypt.checkpw(bytes(plaintext_password, 'utf-8'), self._password)
 
     def json(self):
         return {
