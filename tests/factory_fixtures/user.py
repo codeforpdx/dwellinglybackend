@@ -6,7 +6,7 @@ def create_property_manager():
     def _create_property_manager():
         pm = UserModel(
                 email="manager@domain.com",
-                password=b'asdf',
+                password="asdf",
                 firstName="Leslie",
                 lastName="Knope",
                 phone="505-503-4455",
