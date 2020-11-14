@@ -33,7 +33,7 @@ class Default(object):
     JWT_ERROR_MESSAGE_KEY = 'message'
 
     # Configure CORS origins
-    CORS_ORIGINS = re.split(r'[,;\s]', os.environ.get('CORS_ORIGINS', '*'))
+    CORS_ORIGINS = re.split(r'[,;\s]', os.environ.get('CORS_ORIGINS'))
 
 class Development(Default):
     SQLALCHEMY_DATABASE_URI = os.environ.get('DEV_DATABASE_URL') or \
