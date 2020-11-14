@@ -61,6 +61,8 @@ If you don't see something similar, you may have several versions of Python inst
 
 ### Database migrations.
 
+Database migrations are not used for development. Please ignore do not use migrations during development.  
+
 Database migrations are managed through [Alembic](https://alembic.sqlalchemy.org/en/latest/index.html). After making a change to a model, a database migration is necessary. 
 
 - The first step is to create a revision: `pipenv run alembic revision --autogenerate -m "message"`
