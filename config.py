@@ -1,4 +1,5 @@
 import os
+import re
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 
@@ -30,6 +31,9 @@ class Default(object):
 
     # Configure JWT error message key
     JWT_ERROR_MESSAGE_KEY = 'message'
+
+    # Configure CORS origins
+    CORS_ORIGINS = re.split(r'[,;\s]', os.environ.get('CORS_ORIGINS', '*'))
 
 class Development(Default):
     SQLALCHEMY_DATABASE_URI = os.environ.get('DEV_DATABASE_URL') or \
