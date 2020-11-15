@@ -4,16 +4,13 @@ from datetime import datetime, timedelta
 from models.user import UserModel, RoleEnum
 from models.property import PropertyModel
 from models.tenant import TenantModel
-from models.tickets import TicketModel
+from models.tickets import TicketModel, TicketStatus
 from models.notes import NotesModel
 from models.revoked_tokens import RevokedTokensModel
 from models.emergency_contact import EmergencyContactModel
 from models.contact_number import ContactNumberModel
 from models.lease import LeaseModel
-from utils.auth import hash_pw
 from utils.time import time_format
-
-hashed_password = hash_pw('1234')
 
 def seedData():
     now=datetime.utcnow()
@@ -23,7 +20,7 @@ def seedData():
                        role=RoleEnum.ADMIN,
                        firstName="user1",
                        lastName="tester",
-                       password=hashed_password,
+                       password="1234",
                        phone="555-555-5555",
                        archived=False)
     user_1.save_to_db()
@@ -31,7 +28,7 @@ def seedData():
                        role=RoleEnum.ADMIN,
                        firstName="user2",
                        lastName="tester",
-                       password=hashed_password,
+                       password="1234",
                        phone="555-555-5555",
                        archived=False)
     user_2.save_to_db()
@@ -39,7 +36,7 @@ def seedData():
                        role=RoleEnum.ADMIN,
                        firstName="user3",
                        lastName="tester",
-                       password=hashed_password,
+                       password="1234",
                        phone="555-555-5555",
                        archived=False)
     user_3.save_to_db()
@@ -47,7 +44,7 @@ def seedData():
                                 role=RoleEnum.PROPERTY_MANAGER,
                                 firstName="Mr.",
                                 lastName="Sir",
-                                password=hashed_password,
+                                password="1234",
                                 phone="555-555-5555",
                                 archived=False)
     user_mister_sir.save_to_db()
@@ -55,7 +52,7 @@ def seedData():
                                   role=RoleEnum.PROPERTY_MANAGER,
                                   firstName="Gray",
                                   lastName="Pouponn",
-                                  password=hashed_password,
+                                  password="1234",
                                   phone="555-555-5555",
                                   archived=False)
     user_gray_pouponn.save_to_db()
@@ -64,7 +61,7 @@ def seedData():
                                      role=RoleEnum.PENDING,
                                      firstName="Anthony",
                                      lastName="Redding",
-                                     password=hashed_password,
+                                     password="1234",
                                      phone="555-555-5555",
                                      archived=False)
     user_anthony_redding.save_to_db()
@@ -72,7 +69,7 @@ def seedData():
                                  role=RoleEnum.PENDING,
                                  firstName="Ryan",
                                  lastName="Dander",
-                                 password=hashed_password,
+                                 password="1234",
                                  phone="555-555-5555",
                                  archived=False)
     user_ryan_dander.save_to_db()
@@ -80,7 +77,7 @@ def seedData():
                                    role=RoleEnum.PENDING,
                                    firstName="Amber",
                                    lastName="Lemming",
-                                   password=hashed_password,
+                                   password="1234",
                                    phone="555-555-5555",
                                    archived=False)
     user_amber_lemming.save_to_db()
@@ -88,7 +85,7 @@ def seedData():
                                    role=RoleEnum.PENDING,
                                    firstName="Jeremy",
                                    lastName="Quazar",
-                                   password=hashed_password,
+                                   password="1234",
                                    phone="555-555-5555",
                                    archived=False)
     user_jeremy_quazar.save_to_db()
@@ -96,7 +93,7 @@ def seedData():
                                       role=RoleEnum.STAFF,
                                       firstName="Janice",
                                       lastName="Joinstaff",
-                                      password=hashed_password,
+                                      password="1234",
                                       phone="555-555-5555",
                                       archived=False)
     user_janice_joinstaff.save_to_db()
@@ -104,7 +101,7 @@ def seedData():
                                  role=RoleEnum.STAFF,
                                  firstName="Hector",
                                  lastName="Chen",
-                                 password=hashed_password,
+                                 password="1234",
                                  phone="555-555-5555",
                                  archived=False)
     user_hector_chen.save_to_db()
@@ -112,7 +109,7 @@ def seedData():
                                    role=RoleEnum.STAFF,
                                    firstName="Xander",
                                    lastName="Dander",
-                                   password=hashed_password,
+                                   password="1234",
                                    phone="555-555-5555",
                                    archived=False)
     user_xander_dander.save_to_db()
@@ -171,28 +168,28 @@ def seedData():
         issue="The roof, the roof, the roof is on fire.",
         tenant=tenant_renty_mcrenter.id,
         sender=user_1.id,
-        status="In Progress",
+        status=TicketStatus.In_Progress,
         urgency="Low",
         assignedUser=user_mister_sir.id)
     ticket_roof_on_fire.save_to_db()
     ticket_dumpster_fire = TicketModel(issue="Flaming Dumpster Fire.",
                                        tenant=tenant_soho_muless.id,
                                        sender=user_3.id,
-                                       status="New",
+                                       status=TicketStatus.New,
                                        urgency="Critical",
                                        assignedUser=user_mister_sir.id)
     ticket_dumpster_fire.save_to_db()
     ticket_unpaid_rent = TicketModel(issue="Unpaid Rent",
                                      tenant=tenant_renty_mcrenter.id,
                                      sender=user_1.id,
-                                     status="New",
+                                     status=TicketStatus.New,
                                      urgency="High",
                                      assignedUser=user_mister_sir.id)
     ticket_unpaid_rent.save_to_db()
     ticket_40_cats = TicketModel(issue="Over 40 cats in domicile.",
                                  tenant=tenant_soho_muless.id,
                                  sender=user_3.id,
-                                 status="Closed",
+                                 status=TicketStatus.Closed,
                                  urgency="Low",
                                  assignedUser=user_mister_sir.id)
     ticket_40_cats.save_to_db()

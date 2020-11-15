@@ -39,6 +39,12 @@ class EmergencyContacts(Resource):
 
     @admin_required
     def post(self):
+        contact_numbers = []
+        for number in request.get_json()["contact_numbers"]:
+            contact_numbers.append(ContactNumberModel(**number))
+
+        request.get_json()["contact_numbers"] = contact_numbers
+
         EmergencyContactModel.create(schema=EmergencyContactSchema, payload=request.json)
         return {'message' : "EmergencyContact created successfully!"}, 201
         # data = EmergencyContacts.parser.parse_args()
