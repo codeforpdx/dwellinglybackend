@@ -5,13 +5,18 @@ from models.property import PropertyModel
 from models.user import UserModel, RoleEnum
 from schemas.property import PropertySchema
 
-@pytest.mark.usefixtures('empty_test_db')
+
 class TestBasePropertyModel(BaseInterfaceTest):
     def setup(self):
-        self.setup_fixture()
-        self.object = self.property
+        self.object = PropertyModel()
         self.custom_404_msg = 'Property not found'
         self.schema = PropertySchema
+
+
+@pytest.mark.usefixtures('empty_test_db')
+class TestPropertyModel:
+    def setup(self):
+        self.setup_fixture()
 
     def test_set_property_manager_raise_exception_when_id_not_found(self):
         with pytest.raises(ValidationError) as e:

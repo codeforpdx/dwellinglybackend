@@ -25,14 +25,10 @@ class PropertyModel(BaseModel):
         backref='property', lazy=True, cascade="all, delete-orphan")
     managers = db.relationship(UserModel, secondary='property_assignments', backref='properties')
 
-    def __init__(self, name, address, unit, city, state, zipcode, propertyManagerIDs, archived):
-        self.name = name
-        self.address = address
-        self.unit = unit
-        self.city = city
-        self.state = state
-        self.zipcode = zipcode
-        self.managers = self.set_property_managers(propertyManagerIDs)
+    def __init__(self, **kwargs):
+        property_managers = kwargs.pop('propertyManagerIDs', None)
+        super(PropertyModel, self).__init__(**kwargs)
+        self.managers = self.set_property_managers(property_managers)
         self.archived = False
 
     def json(self):
