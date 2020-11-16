@@ -14,11 +14,6 @@ class NotesModel(BaseModel):
     ticketid = db.Column(db.Integer, db.ForeignKey('tickets.id'),
         nullable=False)
 
-    def __init__(self, ticketid, text, user):
-        self.ticketid = ticketid
-        self.text = text
-        self.user = user
-
     def json(self):
         user = UserModel.find_by_id(self.user)
 

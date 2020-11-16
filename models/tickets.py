@@ -33,15 +33,6 @@ class TicketModel(BaseModel):
             cascade='all, delete-orphan'
         )
 
-    def __init__(self, issue, sender, tenant, status, urgency, assignedUser):
-        self.issue = issue
-        self.sender = sender
-        self.tenant = tenant
-        self.assignedUser = assignedUser
-        self.status = status
-        self.urgency = urgency
-
-
     def json(self):
         message_notes = []
         for note in self.notes:
