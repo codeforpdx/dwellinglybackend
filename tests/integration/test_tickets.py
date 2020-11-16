@@ -16,7 +16,7 @@ def test_tickets_GET_all(client, test_database, auth_headers):
     assert len(response.json['tickets']) == 4
     assert len(response.json['tickets'][0]['notes']) == 2
     assert len(response.json['tickets'][1]['notes']) == 1
-    assert len(response.json['tickets'][2]['notes']) == 0
+    assert len(response.json['tickets'][2]['notes']) == 1
     assert len(response.json['tickets'][3]['notes']) == 0
 
 def test_tickets_GET_byTenant(client, test_database, auth_headers):

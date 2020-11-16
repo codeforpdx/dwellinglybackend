@@ -27,8 +27,12 @@ class TicketModel(BaseModel):
     urgency = db.Column(db.String(12))
     notelog = db.Column(db.Text)
 
-    #relationships
-    notes = db.relationship(NotesModel)
+    notes = db.relationship(
+            'NotesModel',
+            backref='ticket',
+            lazy=False,
+            cascade='all, delete-orphan'
+        )
 
     def __init__(self, issue, sender, tenant, status, urgency, assignedUser):
         self.issue = issue

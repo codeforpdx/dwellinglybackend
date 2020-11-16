@@ -11,8 +11,8 @@ class NotesModel(BaseModel):
     text = db.Column(db.Text)
     user = db.Column(db.Integer, db.ForeignKey('users.id'))
 
-    ticket = db.relationship('TicketModel')
-    ticketid = db.Column(db.Integer, db.ForeignKey('tickets.id'))
+    ticketid = db.Column(db.Integer, db.ForeignKey('tickets.id'),
+        nullable=False)
 
     def __init__(self, ticketid, text, user):
         self.ticketid = ticketid
