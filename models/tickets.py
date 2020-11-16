@@ -22,7 +22,6 @@ class TicketModel(BaseModel):
     tenant = db.Column(db.Integer, db.ForeignKey('tenants.id'))
     assignedUser = db.Column(db.Integer, db.ForeignKey('users.id'))
     sender = db.Column(db.Integer, db.ForeignKey('users.id'))
-    minsPastUpdate = db.Column(db.Integer, default=0)
     status = db.Column(db.Enum(TicketStatus))
     urgency = db.Column(db.String(12))
     notelog = db.Column(db.Text)
@@ -38,7 +37,6 @@ class TicketModel(BaseModel):
         self.issue = issue
         self.sender = sender
         self.tenant = tenant
-        self.minsPastUpdate = 0
         self.assignedUser = assignedUser
         self.status = status
         self.urgency = urgency
