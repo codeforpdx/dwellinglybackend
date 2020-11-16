@@ -137,7 +137,7 @@ def test_archive_user_failure(client, auth_headers):
     assert responseInvalidId.json == \
             {'message': 'User cannot be archived'}
 
-def test_patch_user(client, auth_headers, new_user):
+def test_patch_user(client, auth_headers, new_user, create_admin_user):
     """The route to patch a user by id returns a successful response code and the expected data is patched."""
 
     payload = {
@@ -147,7 +147,7 @@ def test_patch_user(client, auth_headers, new_user):
     }
 
     userToPatch = UserModel.find_by_email(new_user.email)
-    response = client.patch(f"/api/user/{userToPatch.id}", json=payload,
+    response = client.patch(f"/api/user/{create_admin_user().id}", json=payload,
         headers=auth_headers["admin"])
 
     actualRole = int(response.json["role"])
