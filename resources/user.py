@@ -112,7 +112,7 @@ class User(Resource):
             return {"message": "New password does not match."}, 422
 
           # Step #3: Set the new password
-          user.hash_digest = UserModel.hash_pw(data['new_password'])
+          user.password = data['new_password']
 
         user.save_to_db()
 
