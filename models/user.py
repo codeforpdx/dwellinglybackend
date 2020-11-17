@@ -30,23 +30,15 @@ class UserModel(BaseModel):
     fullName = db.column_property(firstName + ' ' + lastName)
     phone = db.Column(db.String(25))
     hash_digest = db.Column(db.LargeBinary(60))
+    password = db.Column(db.String(), default=None, onupdate=None)
     archived = db.Column(db.Boolean)
     lastActive = db.Column(db.DateTime, default=datetime.utcnow)
 
 
     def __init__(self, **kwargs):
         super(UserModel, self).__init__(**kwargs)
-        self.hash_digest = UserModel.hash_pw(kwargs['password'])
-        self._password = None
+        self.hash_digest = UserModel._hash_pw(kwargs['password'])
         self.archived = False
-
-    @property
-    def password(self):
-        return self.hash_digest
-
-    @password.setter
-    def password(self, new_password):
-        self._password = UserModel.hash_pw(new_password)
 
     def update_last_active(self):
         self.lastActive = datetime.utcnow()
@@ -69,7 +61,7 @@ class UserModel(BaseModel):
             return None
 
     @staticmethod
-    def hash_pw(plaintext_password):
+    def _hash_pw(plaintext_password):
         return bcrypt.hashpw(bytes(plaintext_password, 'utf-8'), bcrypt.gensalt(current_app.config['WORK_FACTOR']))
 
     def check_pw(self, plaintext_password):
@@ -119,9 +111,8 @@ class UserModel(BaseModel):
         return '{} {}'.format(self.firstName, self.lastName)
 
     def save_to_db(self):
-        if self._password:
-            self.hash_digest = self._password
+        if self.password:
+            self.hash_digest = UserModel._hash_pw(self.password)
         db.session.add(self)
         db.session.commit()
-        self._password = None
 
