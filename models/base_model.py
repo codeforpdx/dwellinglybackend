@@ -32,8 +32,7 @@ class BaseModel(db.Model):
             abort(400, err.messages)
 
         obj = cls(**attrs)
-        db.session.add(obj)
-        db.session.commit()
+        obj.save_to_db()
 
         return obj
 
@@ -48,8 +47,7 @@ class BaseModel(db.Model):
         for k, v in attrs.items():
             setattr(obj, k, v)
 
-        db.session.add(obj)
-        db.session.commit()
+        obj.save_to_db()
 
         return obj
 

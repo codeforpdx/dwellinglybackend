@@ -7,6 +7,7 @@ import pytest
 from utils.time import time_format
 
 plaintext_password = "1234"
+new_password = "newPassword"
 
 def test_user_auth(client, test_database, admin_user):
     login_response = client.post("/api/login", json={
@@ -47,7 +48,7 @@ def test_register_duplicate_user(client, test_database):
     genericUser = {
         "firstName": "first",
         "lastName": "last",
-        "password": "1234",
+        "password": plaintext_password,
         "email": "email@mail.com",
         "phone": "123 123 5555"
     }
@@ -136,15 +137,17 @@ def test_archive_user_failure(client, auth_headers):
     assert responseInvalidId.json == \
             {'message': 'User cannot be archived'}
 
-def test_patch_user(client, auth_headers, new_user):
+def test_patch_user(client, auth_headers, new_user, create_admin_user):
     """The route to patch a user by id returns a successful response code and the expected data is patched."""
 
-    expectedRole =  RoleEnum.PROPERTY_MANAGER.value
-    expectedEmail = "patch@test.com"
-    expectedPhone = "503-867-5309"
+    payload = {
+        'role':  RoleEnum.PROPERTY_MANAGER.value,
+        'email': 'patch@test.com',
+        'phone': '503-867-5309'
+    }
 
     userToPatch = UserModel.find_by_email(new_user.email)
-    response = client.patch(f"/api/user/{userToPatch.id}", json={"role": expectedRole, "email": expectedEmail, "phone": expectedPhone},
+    response = client.patch(f"/api/user/{create_admin_user().id}", json=payload,
         headers=auth_headers["admin"])
 
     actualRole = int(response.json["role"])
@@ -152,9 +155,27 @@ def test_patch_user(client, auth_headers, new_user):
     actualPhone = response.json["phone"]
 
     assert response.status_code == 201
-    assert expectedRole == actualRole
-    assert expectedEmail == actualEmail
-    assert expectedPhone == actualPhone
+    assert payload["role"] == actualRole
+    assert payload["email"] == actualEmail
+    assert payload["phone"] == actualPhone
+
+    """The server responds with a 401 if a patch for a pw reset is made and the current pw does not match the pw in the db"""
+    responseInvalidCurrentPassword = client.patch(f"api/user/{userToPatch.id}",
+        json={"current_password": "incorrect", "new_password": new_password, "confirm_password": new_password},
+        headers=auth_headers["admin"])
+    assert responseInvalidCurrentPassword.status_code == 401
+
+    """The server responds with a 422 if a patch for a pw reset is made and the current pw matches but the new and confirm pw does not"""
+    responseInvalidConfirmPassword = client.patch(f"api/user/{userToPatch.id}",
+        json={"current_password": plaintext_password, "new_password": new_password, "confirm_password": "not_new_password"},
+        headers=auth_headers["admin"])
+    assert responseInvalidConfirmPassword.status_code == 422
+
+    """The server responds with a 201 if a patch for a pw reset is made and the current pw matches the pw in the db"""
+    responseValidCurrentPassword = client.patch(f"api/user/{userToPatch.id}",
+        json={"current_password": plaintext_password, "new_password": new_password, "confirm_password": new_password},
+        headers=auth_headers["admin"])
+    assert responseValidCurrentPassword.status_code == 201
 
     """The server responds with an error if a non-existent user id is used for the patch user by id route."""
     responseInvalidId = client.patch("/api/user/999999", json={"role": "new_role"}, headers=auth_headers["admin"])
