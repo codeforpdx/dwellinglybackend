@@ -151,7 +151,7 @@ class UserLogin(Resource):
         if user and user.archived:
             return {"message": "Invalid user"}, 403
 
-        if user.check_pw(data['password']):
+        if user and user.check_pw(data['password']):
             access_token = create_access_token(identity=user.id, fresh=True)
             refresh_token = create_refresh_token(user.id)
             user.update_last_active()
