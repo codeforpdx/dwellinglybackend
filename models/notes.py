@@ -26,7 +26,7 @@ class NotesModel(BaseModel):
             'id':self.id,
             'ticketid': self.ticketid,
             'text': self.text,
-            'user': user.fullName,
+            'user': user.full_name(),
             'created_at': Time.format_date(self.created_at),
             'updated_at': Time.format_date(self.updated_at)
         }

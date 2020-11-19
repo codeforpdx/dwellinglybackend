@@ -26,7 +26,6 @@ class UserModel(BaseModel):
     role = db.Column(db.Enum(RoleEnum), default=RoleEnum.PENDING)
     firstName = db.Column(db.String(80))
     lastName = db.Column(db.String(80))
-    fullName = db.column_property(firstName + ' ' + lastName)
     phone = db.Column(db.String(25))
     hash_digest = db.Column(db.LargeBinary(60))
     password = db.Column(db.String(), default=None, onupdate=None)
