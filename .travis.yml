@@ -3,8 +3,8 @@ python:
   - "3.8"
 env:
   - SECRET_KEY=somethinghereforciprtoexecuteintestbuilds
+  - CORS_ORIGINS="*"
 install:
   - pip install pipenv --upgrade-strategy=only-if-needed
   - pipenv install --dev
-  - cp .env.example .env
 script: pytest
