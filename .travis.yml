@@ -6,4 +6,5 @@ env:
 install:
   - pip install pipenv --upgrade-strategy=only-if-needed
   - pipenv install --dev
+  - cp .env.example .env
 script: pytest
