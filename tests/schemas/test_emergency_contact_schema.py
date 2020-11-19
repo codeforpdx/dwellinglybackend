@@ -1,12 +1,10 @@
 from schemas.emergency_contact import EmergencyContactSchema
 
-
-#TODO: Write a test for validation methods and for properties being validated correctly
 class TestEmergencyContactValidations:
     def test_valid_payload(self, empty_test_db):
         valid_payload = {
             'name': 'emergency contact name',
-            'contact_numbers': [{"number": "some number"}]
+            'contact_numbers': [{"number": "some number"}, {"number1" : "some other number"}]
         }
 
         no_validation_errors = {}

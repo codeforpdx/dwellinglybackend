@@ -1,28 +1,21 @@
 from flask_restful import Resource, reqparse
 from flask import request
+
+import schemas
 from models.emergency_contact import EmergencyContactModel
 from models.contact_number import ContactNumberModel
 from resources.admin_required import admin_required
-
-# Helper function: Extract contact number info from an array of JSON objects
-# Return a tuple with the parsed data and any error messages
 from schemas.emergency_contact import EmergencyContactSchema
 
+# Helper function to parse nested ContactNumber dicts from EmergencyContact JSON object into ContactNumberModel
+# instances that can be used by SQLAlchemy
+def parse_contact_numbers(json_req):
+    contact_numbers = []
+    for number in json_req.get_json()["contact_numbers"]:
+        contact_numbers.append(ContactNumberModel(**number))
 
-def parseContactNumbersFromJson(json_data):
-    parsedData = []
-    error = None
-    json_data = request.get_json(force=True)
-    for number in json_data["contact_numbers"]:
-        if not 'number' in number.keys():
-            error = "One of the contact_numbers for the emergency contact is missing a number"
-            break
-        newNumber = { "number": number['number'], "id": "unavailable" }
-        if 'id' in number.keys(): newNumber['id'] = number['id']
-        if 'numtype' in number.keys(): newNumber['numtype'] = number['numtype']
-        if 'extension' in number.keys(): newNumber['extension'] = number['extension']
-        parsedData.append(newNumber)
-    return parsedData, error
+    json_req.get_json()["contact_numbers"] = contact_numbers
+    return json_req
 
 class EmergencyContacts(Resource):
     # Keeping this here until PUT endpoint has been refactored
@@ -39,34 +32,10 @@ class EmergencyContacts(Resource):
 
     @admin_required
     def post(self):
-        contact_numbers = []
-        for number in request.get_json()["contact_numbers"]:
-            contact_numbers.append(ContactNumberModel(**number))
-
-        request.get_json()["contact_numbers"] = contact_numbers
-
-        EmergencyContactModel.create(schema=EmergencyContactSchema, payload=request.json)
-        return {'message' : "EmergencyContact created successfully!"}, 201
-        # data = EmergencyContacts.parser.parse_args()
-        # if EmergencyContactModel.find_by_name(data["name"]):
-        #     return {'message': 'An emergency contact with this name already exists'}, 400
-        #
-        # # In the JSON body, contact_numbers is expected to be an array of dictionaries
-        # # But, reqparser is not able to extract nested JSON data (see https://github.com/flask-restful/flask-restful/issues/517)
-        # numbersData, numbersError = parseContactNumbersFromJson(request.get_json(force=True))
-        # if numbersError:
-        #     return {'message': numbersError}, 400
-        #
-        # data["contact_numbers"] = []
-        # for number in request.get_json()["contact_numbers"]:
-        #     data["contact_numbers"].append(ContactNumberModel(**number))
-        #
-        # contactEntry = EmergencyContactModel(**data)
-        #
-        # EmergencyContactModel.save_to_db(contactEntry)
-        #
-        #
-        # return contactEntry.json(), 201
+        EmergencyContactModel.validate_payload(EmergencyContactSchema, request.json)
+        validated_request = parse_contact_numbers(request.json)
+        EmergencyContactModel.create(validated_request)
+        return {'message' : "EmergencyContact created successfully"}, 201
 
     @admin_required
     def put(self, id):
@@ -87,7 +56,7 @@ class EmergencyContacts(Resource):
 
         # TODO: We should/need to create a ContactNumber resource to update this
         if(data.contact_numbers):
-            numbersData, numbersError = parseContactNumbersFromJson(request.get_json(force=True))
+            numbersData, numbersError = parse_contact_numbers(request.get_json(force=True))
             if numbersError:
                 return {'message': numbersError}, 400
             for number in numbersData:

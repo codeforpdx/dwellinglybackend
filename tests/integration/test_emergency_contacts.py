@@ -66,13 +66,13 @@ def test_emergency_contacts_POST(client, auth_headers):
 
   newContact['name'] = 'Cooler Name'
   response = client.post(endpoint, json=newContact, headers=auth_headers["admin"])
-  assert is_valid(response, 201) # CREATED
-  assert response.json['name'] == 'Cooler Name'
+  assert response.status_code == 201 # CREATED
+  assert response.json == {'message': 'EmergencyContact created successfully'}
 
   newContact = {}
   response = client.post(endpoint, json=newContact, headers=auth_headers["admin"])
   assert is_valid(response, 400) # BAD REQUEST - {'name': 'This Field Cannot Be Blank.'}
-  assert response.json == {'message': {'name': 'This field cannot be blank'}}
+  assert response.json == {'message': {'name': ['Missing data for required field.']}}
 
 
 def test_emergency_contacts_PUT(client, auth_headers):
