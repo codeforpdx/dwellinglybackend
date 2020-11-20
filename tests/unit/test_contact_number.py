@@ -10,8 +10,6 @@ class TestBaseContactNumberModel(BaseInterfaceTest):
         self.object = ContactNumberModel()
         self.custom_404_msg = 'ContactNumber not found'
         self.schema = ContactNumberSchema
-<<<<<<< HEAD
-=======
 
 @pytest.mark.usefixtures("empty_test_db")
 class TestContactNumberModel:
@@ -25,8 +23,7 @@ class TestContactNumberModel:
             "created_at": Time.format_date(contact_number.created_at),
             "updated_at": Time.format_date(contact_number.updated_at)
         }
->>>>>>> fb26308a14f4f25bbea69e5f6d1a06c04ea0d83f
-
+        
 @pytest.mark.usefixtures("empty_test_db")
 class TestContactNumberModel:
     def test_contact_number_json_method(self, create_contact_number):

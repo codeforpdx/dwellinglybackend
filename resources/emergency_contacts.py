@@ -34,8 +34,7 @@ class EmergencyContacts(Resource):
     def post(self):
         EmergencyContactModel.validate_payload(EmergencyContactSchema, request.json)
         validated_request = parse_contact_numbers(request.json)
-        EmergencyContactModel.create(validated_request)
-        return {'message' : "EmergencyContact created successfully"}, 201
+        return EmergencyContactModel.create(validated_request), 201
 
     @admin_required
     def put(self, id):
