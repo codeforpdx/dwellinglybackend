@@ -7,7 +7,7 @@ from resources.admin_required import admin_required
 from models.user import UserModel, RoleEnum
 from models.property import PropertyModel
 from models.tenant import TenantModel
-from models.tenant_staff_link import StaffTenantLink
+from models.staff_tenant_link import StaffTenantLink
 from models.revoked_tokens import RevokedTokensModel
 from resources.user import UserRegister, User, UserLogin, ArchiveUser, UsersRole, UserAccessRefresh, UserRoles, Users
 from resources.reset_password import ResetPassword
