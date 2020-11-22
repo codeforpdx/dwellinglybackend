@@ -32,9 +32,6 @@ class Default(object):
     # Configure JWT error message key
     JWT_ERROR_MESSAGE_KEY = 'message'
 
-    # Configure CORS origins
-    CORS_ORIGINS = re.split(r'[,;\s]', os.environ.get('CORS_ORIGINS'))
-
 class Development(Default):
     SQLALCHEMY_DATABASE_URI = os.environ.get('DEV_DATABASE_URL') or \
         'sqlite:///' + os.path.join(basedir, 'data-dev.sqlite')
@@ -42,6 +39,7 @@ class Development(Default):
     JWT_REFRESH_TOKEN_EXPIRES = False
     MAIL_DEBUG = True
     MAIL_SUPPRESS_SEND = True
+    CORS_ORIGINS = ["*"]
 
 class Testing(Default):
     TESTING = True
@@ -51,10 +49,12 @@ class Testing(Default):
     JWT_ACCESS_TOKEN_EXPIRES = False
     JWT_REFRESH_TOKEN_EXPIRES = False
     MAIL_SUPPRESS_SEND = True
+    CORS_ORIGINS = ["*"]
 
 class Production(Default):
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
         'sqlite:///' + os.path.join(basedir, 'data.sqlite')
+    CORS_ORIGINS = ["UPDATE THIS WITH FRONTEND ORIGINS"]
 
 app_config = {
     "development": Development,
