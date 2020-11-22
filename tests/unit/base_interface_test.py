@@ -43,7 +43,7 @@ class BaseInterfaceTest:
         with patch.object(self.schema, 'load', return_value={}) as mock_load:
             response = self.object.__class__.create(self.schema, {})
 
-        mock_load.assert_called_with({}, unknown=EXCLUDE)
+        mock_load.assert_called_with({}, unknown=EXCLUDE, partial=False)
 
         mock_session.add.assert_called()
         mock_session.commit.assert_called()

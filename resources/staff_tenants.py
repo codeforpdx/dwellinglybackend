@@ -1,7 +1,6 @@
 from flask_restful import Resource
-from flask import request, abort
+from flask import request
 from db import db
-from marshmallow import ValidationError
 from schemas.staff_tenants import StaffTenantSchema
 from models.staff_tenant_link import StaffTenantLink
 from resources.admin_required import admin_required
@@ -10,10 +9,7 @@ from resources.admin_required import admin_required
 class StaffTenants(Resource):
     @admin_required
     def patch(self):
-        try:
-            data = StaffTenantSchema().load(request.json)
-        except ValidationError as err:
-            abort(400, err.messages)
+        data = StaffTenantLink.validate(StaffTenantSchema, request.json)
 
         StaffTenantLink.query.filter(
             StaffTenantLink.tenant_id.in_(data['tenants'])
