@@ -116,6 +116,20 @@ All endpoints are prefixed with `/api/`
 ```
 
 
+#### ENDPOINT: StaffTenants
+
+| method | route                        | action                                              |
+| :----- | :--------------------------- | :-------------------------------------------------- |
+| PATCH  | `/staff-tenants`             | Bulk action to update Staff/Tenant relationships    |
+
+```javascript
+	{
+	staff: [<int:staff_id>, ...],
+	tenants: [<int:tenant_id>, ...]
+	}
+```
+
+
 #### ENDPOINT: EMERGENCY NUMBERS
 
 | method | route                        | action                                              |
