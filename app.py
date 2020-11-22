@@ -12,6 +12,7 @@ from models.revoked_tokens import RevokedTokensModel
 from resources.user import UserRegister, User, UserLogin, ArchiveUser, UsersRole, UserAccessRefresh, UserRoles, Users
 from resources.reset_password import ResetPassword
 from resources.property import Properties, Property, ArchiveProperty
+from resources.staff_tenants import StaffTenants
 from resources.tenants import Tenants
 from resources.emergency_contacts import EmergencyContacts
 from flask_mail import Mail
@@ -40,6 +41,7 @@ def create_routes(app):
     api.add_resource(Widgets, 'widgets')
     api.add_resource(Email, 'user/message')
     api.add_resource(UserAccessRefresh, 'refresh')
+    api.add_resource(StaffTenants, 'staff-tenants')
     api.add_resource(Tenants, 'tenants', 'tenants/<int:tenant_id>')
     api.add_resource(EmergencyContacts, 'emergencycontacts', 'emergencycontacts/<int:id>')
     api.add_resource(Lease, 'lease/<int:id>')
