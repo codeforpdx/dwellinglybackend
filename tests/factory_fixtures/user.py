@@ -2,49 +2,55 @@ import pytest
 from models.user import UserModel, RoleEnum
 
 @pytest.fixture
-def create_admin_user():
-    def _create_admin_user(firstName="Dwellingly", lastName="Admin"):
-        admin = UserModel(
-                email="admin@dwellingly.com",
-                password="asdf",
-                firstName=firstName,
-                lastName=lastName,
-                phone="505-503-1111",
-                role=RoleEnum.ADMIN,
-                archived=False
-            )
+def user_attributes(faker):
+    def _user_attributes(role=None, archived=False, firstName=None, lastName=None):
+        return {
+            "email": faker.unique.email(),
+            "password": faker.password(),
+            "firstName": firstName if firstName else faker.first_name(),
+            "lastName": lastName if lastName else faker.last_name(),
+            "phone": faker.phone_number(),
+            "role": role,
+            "archived": archived
+        }
+    yield _user_attributes
+
+@pytest.fixture
+def create_admin_user(user_attributes):
+    def _create_admin_user(firstName=None, lastName=None):
+        admin = UserModel(**user_attributes(
+            role=RoleEnum.ADMIN,
+            firstName=firstName,
+            lastName=lastName)
+        )
         admin.save_to_db()
         return admin
+
     yield _create_admin_user
 
 @pytest.fixture
-def create_join_staff():
+def create_join_staff(user_attributes):
     def _create_join_staff():
-        staff = UserModel(
-                email="staffer@example.com",
-                password="asdf",
-                firstName="File",
-                lastName="Last",
-                phone="503-555-hello",
-                role=RoleEnum.STAFF,
-                archived=False
-            )
+        staff = UserModel(**user_attributes(role=RoleEnum.STAFF))
         staff.save_to_db()
         return staff
+
     yield _create_join_staff
 
 @pytest.fixture
-def create_property_manager():
+def create_property_manager(user_attributes):
     def _create_property_manager():
-        pm = UserModel(
-                email="manager@domain.com",
-                password="asdf",
-                firstName="Leslie",
-                lastName="Knope",
-                phone="505-503-4455",
-                role=RoleEnum.PROPERTY_MANAGER,
-                archived=False
-            )
+        pm = UserModel(**user_attributes(role=RoleEnum.PROPERTY_MANAGER))
         pm.save_to_db()
         return pm
+
     yield _create_property_manager
+
+@pytest.fixture
+def create_unauthorized_user(user_attributes):
+    def _create_unauthorized_user():
+        user = UserModel(**user_attributes())
+        user.save_to_db()
+        return user
+
+    yield _create_unauthorized_user
