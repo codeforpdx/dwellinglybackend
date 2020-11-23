@@ -51,14 +51,6 @@ class BaseInterfaceTest:
         assert response
 
     @patch.object(db, 'session')
-    def test_create_with_invalid_attributes(self, mock_session):
-        validation_error = mock.Mock()
-        validation_error.side_effect = ValidationError(message='Invalid attributes', field_name='foo')
-        with patch.object(self.schema, 'load', validation_error):
-            with pytest.raises(BadRequest):
-                self.object.__class__.create(self.schema, {})
-
-    @patch.object(db, 'session')
     def test_update(self, mock_session):
         with patch.object(self.object.__class__, 'find', return_value=self.object) as mock_find:
             with patch.object(self.object.__class__, 'validate', return_value={}) as mock_validate:
@@ -72,15 +64,6 @@ class BaseInterfaceTest:
         assert response == self.object
 
     @patch.object(db, 'session')
-    def test_update_with_validation_errors(self, mock_session):
-        validation_error = mock.Mock()
-        validation_error.side_effect = ValidationError(message='Invalid attributes', field_name='foo')
-        with patch.object(self.object.__class__, 'find', return_value=self.object) as mock_find:
-            with patch.object(self.schema, 'load', validation_error):
-                with pytest.raises(BadRequest):
-                    self.object.__class__.update(self.schema, 1, {})
-
-    @patch.object(db, 'session')
     def test_validate_with_valid_attributes(self, mock_session):
         with patch.object(self.schema, 'load', return_value={}) as mock_load:
             response = self.object.__class__.validate(self.schema, {})
@@ -88,3 +71,11 @@ class BaseInterfaceTest:
         mock_load.assert_called_with({}, unknown=EXCLUDE, partial=False)
 
         assert response == {}
+
+    @patch.object(db, 'session')
+    def test_validate_with_invalid_attributes(self, mock_session):
+        validation_error = mock.Mock()
+        validation_error.side_effect = ValidationError(message='Invalid attributes', field_name='foo')
+        with patch.object(self.schema, 'load', validation_error):
+            with pytest.raises(BadRequest):
+                self.object.__class__.validate(self.schema, {})
