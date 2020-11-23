@@ -10,11 +10,7 @@ from schemas.emergency_contact import EmergencyContactSchema
 # Helper function to parse nested ContactNumber dicts from EmergencyContact JSON object into ContactNumberModel
 # instances that can be used by SQLAlchemy
 def parse_contact_numbers(json_req):
-    contact_numbers = []
-    for number in json_req.get_json()["contact_numbers"]:
-        contact_numbers.append(ContactNumberModel(**number))
 
-    json_req.get_json()["contact_numbers"] = contact_numbers
     return json_req
 
 class EmergencyContacts(Resource):
@@ -33,9 +29,14 @@ class EmergencyContacts(Resource):
     @admin_required
     def post(self):
         EmergencyContactModel.validate_payload(EmergencyContactSchema, request.json)
-        validated_request = parse_contact_numbers(request.json)
-        EmergencyContactModel.create(validated_request)
-        return {'message' : "EmergencyContact created successfully"}, 201
+        # validated_request = parse_contact_numbers(request.json)
+        contact_numbers = []
+        for number in request.get_json()["contact_numbers"]:
+            contact_numbers.append(ContactNumberModel(**number))
+
+        request.get_json()["contact_numbers"] = contact_numbers
+        response = EmergencyContactModel.create(validated=request.json)
+        return response, 201
 
     @admin_required
     def put(self, id):

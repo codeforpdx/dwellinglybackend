@@ -66,8 +66,8 @@ def test_emergency_contacts_POST(client, auth_headers):
 
   newContact['name'] = 'Cooler Name'
   response = client.post(endpoint, json=newContact, headers=auth_headers["admin"])
-  assert response.status_code == 201 # CREATED
-  assert response.json == {'message': 'EmergencyContact created successfully'}
+  assert is_valid(response, 201)  # CREATED
+  assert response.json['name'] == 'Cooler Name'
 
   newContact = {}
   response = client.post(endpoint, json=newContact, headers=auth_headers["admin"])
