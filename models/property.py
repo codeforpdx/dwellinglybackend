@@ -40,7 +40,7 @@ class PropertyModel(BaseModel):
         for tenant in self.tenants:
             property_tenants.append(tenant.id)
 
-        managers_name = [manager.fullName for manager in self.managers]
+        managers_name = [manager.full_name() for manager in self.managers]
 
         return {
             'id': self.id,
@@ -75,7 +75,7 @@ class PropertyModel(BaseModel):
                 if user and user.role == RoleEnum.PROPERTY_MANAGER:
                     managers.append(user)
                 elif user and user.role != RoleEnum.PROPERTY_MANAGER:
-                    raise ValidationError(f'{user.fullName} is not a property manager')
+                    raise ValidationError(f'{user.full_name()} is not a property manager')
                 else:
                     raise ValidationError(f'{id} is not a valid user id')
         return managers

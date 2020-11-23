@@ -51,7 +51,12 @@ def auth_headers(client, test_database, admin_user, new_user, property_manager_u
 @pytest.fixture
 def valid_header():
     token = jwt.encode(
-            {'identity': 'identity'},
+            {
+                'identity': 'identity',
+                'user_claims': {
+                    'is_admin': True
+                }
+            },
             current_app.secret_key,algorithm='HS256'
         ).decode('utf-8')
     return {"Authorization": f"Bearer {token}"}

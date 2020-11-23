@@ -57,7 +57,11 @@ class Ticket(Resource):
                 ticket.issue = data.issue
 
             if(data.note):
-                note = NotesModel(id, data.note, ticket.sender)
+                note = NotesModel(
+                    ticketid=id,
+                    text=data.note,
+                    user=ticket.sender
+                )
                 note.save_to_db()
 
             ticket.save_to_db()
