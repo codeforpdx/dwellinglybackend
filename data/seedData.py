@@ -195,7 +195,7 @@ def seedData():
     ticket_40_cats.save_to_db()
 
     note_not_responding = NotesModel(
-        0,
+        ticketid=ticket_unpaid_rent.id,
         text="Tenant not responding to phone calls.",
         user=user_1.id)
     note_not_responding.save_to_db()

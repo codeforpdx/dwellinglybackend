@@ -21,6 +21,7 @@ NOTE: Database is SQLite3 via SQLAlchemy
    - To re-seed the database from scratch run: `pipenv run flask db recreate`
    - Look for the file data.db to be created in the root directory
    - To find other database set-up commands run: `pipenv run flask db --help`
+   - To drop the database run: `pipenv run flask db drop`
 6. Start the server using the flask environment (required every time the project is re-opened):
    - Run: `pipenv run flask run`
    - Run and restart the server on changes: `pipenv run flask run --reload`
@@ -58,11 +59,21 @@ If you are still having issues or if your command prompt is throwing an error th
 Check to see where the Python you're running is located (`which python`). You should see something like `/Users/your_account_shortname/.pyenv/shims/python`.
 If you don't see something similar, you may have several versions of Python installed elsewhere (via Anaconda or Homebrew). If (and only if) you'd like to clear out any previous homebrew-based installs, type `brew uninstall --ignore-dependencies python3 && brew uninstall --ignore-dependencies python`.
 
-### Database commands.
+### Database migrations.
 
-- Create and Seed the Database: `pipenv run python manage.py create`
-- Delete, create, Seed the Database: `pipenv run python manage.py recreate`
-- Delete the Database: `pipenv run python manage.py drop`
+Database migrations are not used for development. Please ignore do not use migrations during development.  
+
+Database migrations are managed through [Alembic](https://alembic.sqlalchemy.org/en/latest/index.html). After making a change to a model, a database migration is necessary. 
+
+- The first step is to create a revision: `pipenv run alembic revision --autogenerate -m "message"`
+- The second step is to upgrade: `pipenv run alembic upgrade head`
+
+To return to a previous version, a downgrade is necessary. Run: 
+`pipenv run alembic downgrade -n` where n is the number of versions to downgrade.
+
+To downgrade to the very beginning run: `pipenv run alembic downgrade base` 
+
+The reversion are maintained as Python files in ``./migrations/versions/` 
 
 ### Contributing
 

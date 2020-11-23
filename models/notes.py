@@ -11,13 +11,8 @@ class NotesModel(BaseModel):
     text = db.Column(db.Text)
     user = db.Column(db.Integer, db.ForeignKey('users.id'))
 
-    ticket = db.relationship('TicketModel')
-    ticketid = db.Column(db.Integer, db.ForeignKey('tickets.id'))
-
-    def __init__(self, ticketid, text, user):
-        self.ticketid = ticketid
-        self.text = text
-        self.user = user
+    ticketid = db.Column(db.Integer, db.ForeignKey('tickets.id'),
+        nullable=False)
 
     def json(self):
         user = UserModel.find_by_id(self.user)
@@ -26,7 +21,7 @@ class NotesModel(BaseModel):
             'id':self.id,
             'ticketid': self.ticketid,
             'text': self.text,
-            'user': user.fullName,
+            'user': user.full_name(),
             'created_at': Time.format_date(self.created_at),
             'updated_at': Time.format_date(self.updated_at)
         }

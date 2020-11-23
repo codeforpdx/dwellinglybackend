@@ -2,23 +2,6 @@ import pytest
 from models.user import UserModel, RoleEnum
 
 @pytest.fixture
-def create_property_manager():
-    def _create_property_manager():
-        pm = UserModel(
-                email="manager@domain.com",
-                password="asdf",
-                firstName="Leslie",
-                lastName="Knope",
-                phone="505-503-4455",
-                role=RoleEnum.PROPERTY_MANAGER,
-                archived=False
-            )
-        pm.save_to_db()
-        return pm
-    yield _create_property_manager
-
-
-@pytest.fixture
 def create_admin_user():
     def _create_admin_user(firstName="Dwellingly", lastName="Admin"):
         admin = UserModel(
@@ -33,3 +16,35 @@ def create_admin_user():
         admin.save_to_db()
         return admin
     yield _create_admin_user
+
+@pytest.fixture
+def create_join_staff():
+    def _create_join_staff():
+        staff = UserModel(
+                email="staffer@example.com",
+                password="asdf",
+                firstName="File",
+                lastName="Last",
+                phone="503-555-hello",
+                role=RoleEnum.STAFF,
+                archived=False
+            )
+        staff.save_to_db()
+        return staff
+    yield _create_join_staff
+
+@pytest.fixture
+def create_property_manager():
+    def _create_property_manager():
+        pm = UserModel(
+                email="manager@domain.com",
+                password="asdf",
+                firstName="Leslie",
+                lastName="Knope",
+                phone="505-503-4455",
+                role=RoleEnum.PROPERTY_MANAGER,
+                archived=False
+            )
+        pm.save_to_db()
+        return pm
+    yield _create_property_manager
