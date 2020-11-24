@@ -25,13 +25,6 @@ class BaseModel(db.Model):
         db.session.commit()
 
     @classmethod
-    def validate_payload(cls, schema, payload):
-        try:
-            schema().load(payload, unknown=EXCLUDE)
-        except ValidationError as err:
-            abort(400, err.messages)
-
-    @classmethod
     def create(cls, validated):
         obj = cls(**validated)
         obj.save_to_db()
@@ -52,6 +45,13 @@ class BaseModel(db.Model):
         obj.save_to_db()
 
         return obj
+
+    @staticmethod
+    def validate(schema, payload, partial=False):
+        try:
+            return schema().load(payload, unknown=EXCLUDE, partial=partial)
+        except ValidationError as err:
+            abort(400, err.messages)
 
     def save_to_db(self):
         db.session.add(self)
