@@ -17,7 +17,6 @@ from resources.emergency_contacts import EmergencyContacts
 from flask_mail import Mail
 from resources.email import Email
 from resources.tickets import Ticket, Tickets
-from resources.lease import Lease, Leases
 from resources.widgets import Widgets
 import os
 from db import db
@@ -42,8 +41,6 @@ def create_routes(app):
     api.add_resource(UserAccessRefresh, 'refresh')
     api.add_resource(Tenants, 'tenants', 'tenants/<int:tenant_id>')
     api.add_resource(EmergencyContacts, 'emergencycontacts', 'emergencycontacts/<int:id>')
-    api.add_resource(Lease, 'lease/<int:id>')
-    api.add_resource(Leases, 'lease')
     api.add_resource(Tickets, 'tickets')
     api.add_resource(Ticket, 'tickets/<int:id>')
     api.add_resource(ResetPassword, 'reset-password', 'reset-password/<string:token>')

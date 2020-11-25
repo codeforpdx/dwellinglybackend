@@ -29,8 +29,6 @@ class TenantModel(BaseModel):
             user = UserModel.find_by_id(id)
             if user: self.staff.append(user)
         
-
-
     def json(self):
         return {
             'id': self.id,
