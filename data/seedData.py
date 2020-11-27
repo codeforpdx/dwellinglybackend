@@ -145,21 +145,24 @@ def seedData():
                                         lastName="McRenter",
                                         phone="800-RENT-ALOT",
                                         propertyID=property_test1.id,
-                                        staffIDs=[user_1.id, user_2.id]
+                                        staffIDs=[user_1.id, user_2.id],
+                                        UnitNum=302
                                         )
     tenant_renty_mcrenter.save_to_db()
     tenant_soho_muless = TenantModel(firstName="Soho",
                                      lastName="Muless",
                                      phone="123-123-0000",
                                      propertyID=property_meerkat_manor.id,
-                                     staffIDs=[]
+                                     staffIDs=[],
+                                     UnitNum=418
                                      )
     tenant_soho_muless.save_to_db()
     tenant_starvin_artist = TenantModel(firstName="Starvin",
                                         lastName="Artist",
                                         phone="123-123-1111",
                                         propertyID=property_meerkat_manor.id,
-                                        staffIDs=[]
+                                        staffIDs=[],
+                                        UnitNum=404
                                         )
     tenant_starvin_artist.save_to_db()
 
