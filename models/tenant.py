@@ -19,7 +19,7 @@ class TenantModel(BaseModel):
     leases = db.relationship('LeaseModel',
         backref='tenant', lazy=True, cascade="all, delete-orphan")
 
-    def __init__(self, firstName, lastName, phone, propertyID, staffIDs, unitNum):
+    def __init__(self, firstName, lastName, phone, propertyID, staffIDs):
         self.firstName = firstName
         self.lastName = lastName
         self.phone = phone
