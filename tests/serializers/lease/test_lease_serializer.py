@@ -19,5 +19,6 @@ class TestLeaseSerializer:
                 'created_at': Time.format_date(lease.created_at),
                 'updated_at': Time.format_date(lease.updated_at),
                 'tenant': TenantSerializer.serialize(lease.tenant),
-                'property': PropertySerializer.serialize(lease.property)
+                'property': PropertySerializer.serialize(lease.property),
+                'unitNum':lease.unitNum
             }

@@ -238,21 +238,24 @@ def seedData():
                          tenantID=tenant_renty_mcrenter.id,
                          dateTimeStart=now,
                          dateTimeEnd=future,
-                         occupants=3)
+                         occupants=3,
+                         unitNum="123")
     lease_1.save_to_db()
     lease_2 = LeaseModel(name="Lease 2",
                          propertyID=property_meerkat_manor.id,
                          tenantID=tenant_soho_muless.id,
                          dateTimeStart=now,
                          dateTimeEnd=future,
-                         occupants=2)
+                         occupants=2,
+                         unitNum="418")
     lease_2.save_to_db()
     lease_3 = LeaseModel(name="Lease 3",
                          propertyID=property_the_reginald.id,
                          tenantID=tenant_starvin_artist.id,
                          dateTimeStart=now,
                          dateTimeEnd=future,
-                         occupants=1)
+                         occupants=1,
+                         unitNum="D2")
     lease_3.save_to_db()
 
     try:

@@ -14,3 +14,4 @@ class LeaseModel(BaseModel):
     occupants = db.Column(db.Integer)
     dateTimeStart = db.Column(db.DateTime, nullable=False)
     dateTimeEnd = db.Column(db.DateTime, nullable=False)
+    unitNum = db.Column(db.String(10))
