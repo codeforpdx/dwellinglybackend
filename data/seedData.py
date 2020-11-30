@@ -233,7 +233,7 @@ def seedData():
                               "number": "503-730-3100"
                           }]).save_to_db()
 
-    lease_1 = LeaseModel(name="Lease 1",
+    lease_1 = LeaseModel(
                          propertyID=property_test1.id,
                          tenantID=tenant_renty_mcrenter.id,
                          dateTimeStart=now,
@@ -241,7 +241,7 @@ def seedData():
                          occupants=3,
                          unitNum="123")
     lease_1.save_to_db()
-    lease_2 = LeaseModel(name="Lease 2",
+    lease_2 = LeaseModel(
                          propertyID=property_meerkat_manor.id,
                          tenantID=tenant_soho_muless.id,
                          dateTimeStart=now,
@@ -249,7 +249,7 @@ def seedData():
                          occupants=2,
                          unitNum="418")
     lease_2.save_to_db()
-    lease_3 = LeaseModel(name="Lease 3",
+    lease_3 = LeaseModel(
                          propertyID=property_the_reginald.id,
                          tenantID=tenant_starvin_artist.id,
                          dateTimeStart=now,

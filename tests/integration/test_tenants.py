@@ -29,15 +29,8 @@ def test_tenants_POST(client, auth_headers):
         "propertyID": 1,
         "staffIDs": [1, 2]
     }
-    newerTenant = {
-        "firstName": "Jake",
-        "lastName": "The Dog",
-        "phone": "111-111-1111",
-        "propertyID": 1,
-        "staffIDs": [1, 2]
-    }
 
-    response = client.post(endpoint, json=newerTenant,
+    response = client.post(endpoint, json=newTenant,
                            headers=auth_headers["admin"])
     print(response)
     assert is_valid(response, 201)  # CREATED
