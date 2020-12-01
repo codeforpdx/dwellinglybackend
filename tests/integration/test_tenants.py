@@ -32,7 +32,7 @@ def test_tenants_POST(client, auth_headers):
 
     response = client.post(endpoint, json=newTenant,
                            headers=auth_headers["admin"])
-    print(response)
+
     assert is_valid(response, 201)  # CREATED
     assert response.json['firstName'] == 'Jake'
 
