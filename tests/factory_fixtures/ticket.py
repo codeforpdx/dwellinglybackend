@@ -16,10 +16,10 @@ def ticket_attributes():
     yield _ticket_attributes
 
 @pytest.fixture
-def create_ticket(ticket_attributes, create_tenant, assigned_user, sender):
+def create_ticket(ticket_attributes, create_tenant, create_admin_user, create_join_staff):
     def _create_ticket(issue="Leaky pipe"):
         tenant = create_tenant()
-        ticket = TicketModel(**ticket_attributes(issue, tenant, assigned_user, sender))
+        ticket = TicketModel(**ticket_attributes(issue, tenant, create_admin_user(), create_join_staff()))
         ticket.save_to_db()
         return ticket
     yield _create_ticket

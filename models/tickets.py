@@ -1,5 +1,5 @@
-from sqlalchemy.orm import relationship
 from db import db
+from sqlalchemy.orm import relationship
 from models.tenant import TenantModel
 from models.user import UserModel
 from models.notes import NotesModel
@@ -47,7 +47,7 @@ class TicketModel(BaseModel):
         assignedUserData = UserModel.find_by_id(self.assignedUser)
         assignedUser = "{} {}".format(assignedUserData.firstName, assignedUserData.lastName)
         minsPastUpdate = int((datetime.utcnow() - self.updated_at).total_seconds() / 60)
-        
+
         return {
             'id': self.id,
             'issue':self.issue,
