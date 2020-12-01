@@ -42,7 +42,7 @@ class Ticket(Resource):
                 ticket.sender = data.sender
 
             if(data.tenant):
-                ticket.tenant = data.tenant
+                ticket.tenantID = data.tenant
 
             if(data.assignedUser):
                 ticket.assignedUser = data.assignedUser
@@ -88,7 +88,14 @@ class Tickets(Resource):
     @jwt_required
     def post(self):
         data = Tickets.parser.parse_args()
-        ticket = TicketModel(**data)
+        ticket = TicketModel(
+            issue=data.issue,
+            tenantID=data.tenant,
+            sender=data.sender,
+            status=data.status,
+            urgency=data.urgency,
+            assignedUser=data.assignedUser
+        )
 
         ticket.save_to_db()
         return ticket.json(), 201

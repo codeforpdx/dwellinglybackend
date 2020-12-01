@@ -13,7 +13,7 @@ class TicketSchema(ma.SQLAlchemyAutoSchema):
     tenant = fields.Nested("TenantSchema")
     user = fields.Nested("UserSchema")
 
-    @validates("tenant")
+    @validates("tenantID")
     def validate_tenant(self, value):
         if not TenantModel.query.get(value):
             raise ValidationError(f"{value} is not a valid tenant ID")

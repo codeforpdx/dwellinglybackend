@@ -19,7 +19,7 @@ class TicketModel(BaseModel):
 
     id = db.Column(db.Integer, primary_key=True)
     issue = db.Column(db.String(144))
-    tenant = db.Column(db.Integer, db.ForeignKey('tenants.id'))
+    tenantID = db.Column(db.Integer, db.ForeignKey('tenants.id'))
     assignedUser = db.Column(db.Integer, db.ForeignKey('users.id'))
     sender = db.Column(db.Integer, db.ForeignKey('users.id'))
     status = db.Column(db.Enum(TicketStatus))
@@ -41,7 +41,7 @@ class TicketModel(BaseModel):
         senderData = UserModel.find_by_id(self.sender)
         senderName = "{} {}".format(senderData.firstName, senderData.lastName)
 
-        tenantData = TenantModel.find_by_id(self.tenant)
+        tenantData = TenantModel.find_by_id(self.tenantID)
         tenantName = "{} {}".format(tenantData.firstName, tenantData.lastName)
 
         assignedUserData = UserModel.find_by_id(self.assignedUser)
@@ -53,7 +53,7 @@ class TicketModel(BaseModel):
             'issue':self.issue,
             'tenant': tenantName,
             'senderID': self.sender,
-            'tenantID': self.tenant,
+            'tenantID': self.tenantID,
             'assignedUserID': self.assignedUser,
             'sender': senderName,
             'assigned': assignedUser,
@@ -80,4 +80,4 @@ class TicketModel(BaseModel):
     #Get tenant by ID
     @classmethod
     def find_by_tenantID(cls, tenantID):
-        return cls.query.filter_by(tenant=tenantID).all()
+        return cls.query.filter_by(tenantID=tenantID).all()
