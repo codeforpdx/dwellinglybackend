@@ -25,9 +25,9 @@ def test_post_property(client, auth_headers, new_property):
     assert response.get_json() == {'message': 'A property with this name already exists'}
     assert response.status_code == 401
 
-def test_get_property_by_name(client, auth_headers, test_database):
+def test_get_property_by_id(client, auth_headers, test_database):
     """The get property by name returns a successful response code."""
-    response = client.get("/api/properties/0", headers=auth_headers["admin"])
+    response = client.get("/api/properties/1", headers=auth_headers["admin"])
     property_info = response.get_json()
     user_json = UserModel.find_by_id(5).json()
     assert response.status_code == 200
