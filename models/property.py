@@ -12,7 +12,7 @@ class PropertyModel(BaseModel):
     __tablename__ = "properties"
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100))
+    name = db.Column(db.String(100), unique=True)
     address = db.Column(db.String(250))
     unit = db.Column(db.String(20), default="")
     city = db.Column(db.String(50))
