@@ -30,7 +30,7 @@ from config import app_config
 def create_routes(app):
     api = Api(app, prefix="/api/")
     api.add_resource(UserRegister, 'register')
-    api.add_resource(Property,'properties/<string:name>') #TODO change to ID
+    api.add_resource(Property,'properties/<int:id>')
     api.add_resource(Properties,'properties')
     api.add_resource(ArchiveProperties,'properties/archive')
     api.add_resource(ArchiveProperty,'properties/archive/<int:id>')
