@@ -60,7 +60,7 @@ class PropertyModel(BaseModel):
 
     @classmethod
     def find_by_name(cls, name):
-        return cls.query.get(name=name)
+        return cls.query.filter_by(name=name).first()
 
     @classmethod
     def find_by_manager(cls, manager_id):
