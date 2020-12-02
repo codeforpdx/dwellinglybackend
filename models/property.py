@@ -60,6 +60,7 @@ class PropertyModel(BaseModel):
 
     @classmethod
     def find_by_name(cls, name):
+        # TODO Can we use a different call here, now that name is unique?
         return cls.query.filter_by(name=name).first()
 
     @classmethod
