@@ -21,6 +21,7 @@ endpoint = '/api/emergencycontacts'
 
 def test_emergency_contacts_GET_all(client, test_database):
   response = client.get(endpoint)
+  print(response)
   assert is_valid(response, 200) # OK
   assert response.json['emergency_contacts'][0]['name'] == 'Narcotics Anonymous'
 
@@ -68,6 +69,7 @@ def test_emergency_contacts_POST(client, auth_headers):
   response = client.post(endpoint, json=newContact, headers=auth_headers["admin"])
   assert is_valid(response, 201)  # CREATED
   assert response.json['name'] == 'Cooler Name'
+  assert response.json['contact_numbers'][0]["number"] == "503-291-9111"
 
   newContact = {}
   response = client.post(endpoint, json=newContact, headers=auth_headers["admin"])

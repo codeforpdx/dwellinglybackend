@@ -25,8 +25,9 @@ class BaseModel(db.Model):
         db.session.commit()
 
     @classmethod
-    def create(cls, validated):
-        obj = cls(**validated)
+    def create(cls, schema, payload):
+        attrs = cls.validate(schema, payload)
+        obj = cls(**attrs)
         obj.save_to_db()
 
         return obj
