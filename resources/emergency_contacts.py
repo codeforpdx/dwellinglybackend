@@ -17,7 +17,7 @@ def parse_contact_numbers(req):
     req["contact_numbers"] = contact_numbers
     return req
 
-class EmergencyContact(Resource):
+class EmergencyContacts(Resource):
     # Keeping this here until PUT endpoint has been refactored
     parser = reqparse.RequestParser()
     parser.add_argument('name', type=str, required=True, help="This field cannot be blank")
@@ -37,7 +37,7 @@ class EmergencyContact(Resource):
 
     @admin_required
     def put(self, id):
-        parser_for_put = EmergencyContact.parser.copy()
+        parser_for_put = EmergencyContacts.parser.copy()
         parser_for_put.replace_argument('name', required=False)
         parser_for_put.replace_argument('contact_numbers', action='append', required=False)
         data = parser_for_put.parse_args()
