@@ -3,6 +3,7 @@ from datetime import datetime
 from freezegun import freeze_time
 from unittest.mock import patch
 from utils.time import time_format
+from models.tickets import TicketStatus
 
 endpoint = '/api/tickets'
 validID = 1
@@ -15,7 +16,7 @@ def test_tickets_GET_all(client, test_database, auth_headers):
     assert len(response.json['tickets']) == 4
     assert len(response.json['tickets'][0]['notes']) == 2
     assert len(response.json['tickets'][1]['notes']) == 1
-    assert len(response.json['tickets'][2]['notes']) == 0
+    assert len(response.json['tickets'][2]['notes']) == 1
     assert len(response.json['tickets'][3]['notes']) == 0
 
 def test_tickets_GET_byTenant(client, test_database, auth_headers):
@@ -36,7 +37,7 @@ def test_tickets_GET_one(client, test_database, auth_headers):
     assert response.json['assignedUserID'] == 4
     assert response.json['sender'] == 'user1 tester'
     assert response.json['assigned'] == 'Mr. Sir'
-    assert response.json['status'] == 'In Progress'
+    assert response.json['status'] == TicketStatus.In_Progress
     assert response.json['urgency'] == 'Low'
     assert len(response.json['notes']) == 2
     assert response.json['notes'][0]['ticketid'] == 1
@@ -55,7 +56,7 @@ def test_tickets_POST(client, auth_headers):
     newTicket = {
         'sender': 1,
         'tenant': 1,
-        'status': 'new',
+        'status': "New",
         'urgency': 'low',
         'issue': 'Lead paint issue',
         "assignedUser": 4,
@@ -74,7 +75,7 @@ def test_tickets_POST(client, auth_headers):
     assert response.json['assignedUserID'] == 4
     assert response.json['sender'] == 'user1 tester'
     assert response.json['assigned'] == 'Mr. Sir'
-    assert response.json['status'] == 'new'
+    assert response.json['status'] == TicketStatus.New
     assert response.json['urgency'] == 'low'
     assert response.json['created_at'] == dt.strftime(time_format)
 
@@ -88,7 +89,7 @@ def test_tickets_PUT(client, auth_headers):
         'sender': 2,
         'tenant': 2,
         'assignedUser': 3,
-        'status': 'in progress',
+        'status': 'In Progress',
         'urgency': 'high',
         'issue': 'Leaky pipe',
         'note': 'Tenant has a service dog'
@@ -107,7 +108,7 @@ def test_tickets_PUT(client, auth_headers):
     assert response.json['assignedUserID'] == 3
     assert response.json['sender'] == 'user2 tester'
     assert response.json['assigned'] == 'user3 tester'
-    assert response.json['status'] == 'in progress'
+    assert response.json['status'] == TicketStatus.In_Progress
     assert response.json['urgency'] == 'high'
     # Ticket already had 2 notes to begin with - and with this PUT - it's +1
     assert len(response.json['notes']) == 3

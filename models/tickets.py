@@ -7,7 +7,12 @@ from models.tenant import TenantModel
 from datetime import datetime, timedelta
 from models.base_model import BaseModel
 from utils.time import Time
+import enum
 
+class TicketStatus(str, enum.Enum):
+    New = "New"
+    In_Progress = "In Progress"
+    Closed = "Closed"
 
 class TicketModel(BaseModel):
     __tablename__ = "tickets"
@@ -17,23 +22,16 @@ class TicketModel(BaseModel):
     tenant = db.Column(db.Integer, db.ForeignKey('tenants.id'))
     assignedUser = db.Column(db.Integer, db.ForeignKey('users.id'))
     sender = db.Column(db.Integer, db.ForeignKey('users.id'))
-    minsPastUpdate = db.Column(db.Integer, default=0)
-    status = db.Column(db.String(12))
+    status = db.Column(db.Enum(TicketStatus))
     urgency = db.Column(db.String(12))
     notelog = db.Column(db.Text)
 
-    #relationships
-    notes = db.relationship(NotesModel)
-
-    def __init__(self, issue, sender, tenant, status, urgency, assignedUser):
-        self.issue = issue
-        self.sender = sender
-        self.tenant = tenant
-        self.minsPastUpdate = 0
-        self.assignedUser = assignedUser
-        self.status = status
-        self.urgency = urgency
-
+    notes = db.relationship(
+            'NotesModel',
+            backref='ticket',
+            lazy=False,
+            cascade='all, delete-orphan'
+        )
 
     def json(self):
         message_notes = []

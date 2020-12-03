@@ -1,6 +1,6 @@
 from flask_restful import Resource, reqparse
 from flask import request
-
+from schemas import UserRegisterSchema
 from models.property import PropertyModel
 from models.tenant import TenantModel
 from resources.admin_required import admin_required
@@ -24,27 +24,11 @@ class UserRoles(Resource):
         return result, 200
 
 class UserRegister(Resource):
-    parser = reqparse.RequestParser()
-    parser.add_argument('firstName',type=str,required=True,help="This field cannot be blank")
-    parser.add_argument('lastName',type=str,required=True,help="This field cannot be blank")
-    parser.add_argument('email',type=str,required=True,help="This field cannot be blank")
-    parser.add_argument('password', type=str, required=True, help="This field cannot be blank")
-    parser.add_argument('role',type=int,required=False,help="This field is not required")
-    parser.add_argument('archived',type=str,required=False,help="This field is not required")
-    parser.add_argument('phone',type=str,required=True,help="This field cannot be blank")
-
     def post(self):
-        data = UserRegister.parser.parse_args()
-
-        if UserModel.find_by_email(data['email']):
-            return {"message": "A user with that email already exists"}, 400
-
-        user = UserModel(firstName=data['firstName'],
-                         lastName=data['lastName'], email=data['email'],
-                         password=hash_pw(data['password']), phone=data['phone'],
-                         role=RoleEnum(data['role']) if data['role'] else None, archived=data['archived'])
-        # And we'll store it into the db as bytes
-        user.save_to_db()
+        UserModel.create(
+            schema=UserRegisterSchema,
+            payload=request.json
+        )
 
         return {"message": "User created successfully."}, 201
 
@@ -78,7 +62,9 @@ class User(Resource):
         parser.add_argument('lastName',type=str, required=False, help="This field is not required")
         parser.add_argument('email',type=str, required=False, help="This field is not required")
         parser.add_argument('phone',type=str, required=False,help="This field is not required")
-        parser.add_argument('password',type=str, required=False,help="This field is not required")
+        parser.add_argument('current_password',type=str, required=False,help="This field is not required")
+        parser.add_argument('new_password', type=str, required=False, help="This field is not required")
+        parser.add_argument('confirm_password', type=str, required=False, help="This field is not required")
 
         data = parser.parse_args()
 
@@ -93,19 +79,30 @@ class User(Resource):
 
         if data['role']:
           user.role = RoleEnum(data['role'])
-        if (data['firstName'] != None):
+        if data['firstName'] is not None:
             user.firstName = data['firstName']
-        if (data['lastName'] != None):
+        if data['lastName'] is not None:
             user.lastName = data['lastName']
         if data['email']:
             user.email = data['email']
         if data['phone']:
             user.phone = data['phone']
-        if data['password']:
-            user.password = hash_pw(data['password'])
+
+        # Reset Password
+        if data['current_password'] and data['new_password'] and data['confirm_password']:
+
+          # Step #1: Check if current password matches the one in the db
+          if not user.check_pw(data['current_password']):
+            return {"message": "Password does not match."}, 401
+
+          # Step #2: Check if new password and confirm password match
+          if data['new_password'] != data['confirm_password']:
+            return {"message": "New password does not match."}, 422
+
+          # Step #3: Set the new password
+          user.password = data['new_password']
 
         user.save_to_db()
-
 
         if user_id == get_jwt_identity():
             new_tokens = {
@@ -158,7 +155,7 @@ class UserLogin(Resource):
         if user and user.archived:
             return {"message": "Invalid user"}, 403
 
-        if user and check_pw(data['password'], user.password):
+        if user.check_pw(data['password']):
             access_token = create_access_token(identity=user.id, fresh=True)
             refresh_token = create_refresh_token(user.id)
             user.update_last_active()
@@ -227,23 +224,3 @@ class Users(Resource):
             } for user in users]
 
         return {"users": ret}, 200
-
-class UserInvite(Resource):
-    @jwt_required
-    def post(self):
-        data = request.json
-        temp_password = ''.join(random.choice(string.ascii_lowercase) for i in range(8))
-        user = UserModel(
-            email=data["email"],
-            firstName=data["firstName"],
-            lastName=data["lastName"],
-            phone=data["phone"],
-            password=temp_password,
-            role=RoleEnum.STAFF,
-            archived=False
-            )
-        if user.save_to_db:
-            Email.send_user_invite_msg(user)
-            return {"message": "User Invited"}, 200
-        else:
-            return {"message": "Could not create user"}, 400

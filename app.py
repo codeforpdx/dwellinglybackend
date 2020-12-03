@@ -9,7 +9,8 @@ from models.property import PropertyModel
 from models.tenant import TenantModel
 from models.tenant_staff_link import StaffTenantLink
 from models.revoked_tokens import RevokedTokensModel
-from resources.user import UserRegister, User, UserLogin, ArchiveUser, UsersRole, UserAccessRefresh, UserRoles, Users, UserInvite
+from resources.user import UserRegister, User, UserLogin, ArchiveUser, UsersRole, UserAccessRefresh, UserRoles, Users
+from resourses.user_invite import UserInvite
 from resources.reset_password import ResetPassword
 from resources.property import Properties, Property, ArchiveProperty
 from resources.tenants import Tenants
@@ -59,7 +60,7 @@ def create_app(env):
     create_routes(app)
 
     #allow cross-origin (CORS)
-    CORS(app)
+    CORS(app, origins=app.config['CORS_ORIGINS'])
 
     # set up authorization
     app.jwt = JWTManager(app)

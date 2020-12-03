@@ -1,4 +1,6 @@
+from flask import current_app
 from datetime import datetime, timedelta
+import bcrypt
 import time
 import jwt
 from db import db
@@ -11,7 +13,6 @@ from utils.time import Time
 
 class RoleEnum(Enum):
     PENDING = 0
-    TENANT = 1
     PROPERTY_MANAGER = 2
     STAFF = 3
     ADMIN = 4
@@ -25,22 +26,17 @@ class UserModel(BaseModel):
     role = db.Column(db.Enum(RoleEnum), default=RoleEnum.PENDING)
     firstName = db.Column(db.String(80))
     lastName = db.Column(db.String(80))
-    fullName = db.column_property(firstName + ' ' + lastName)
     phone = db.Column(db.String(25))
-    password = db.Column(db.LargeBinary(60))
+    hash_digest = db.Column(db.LargeBinary(60))
+    password = db.Column(db.String(), default=None, onupdate=None)
     archived = db.Column(db.Boolean)
     lastActive = db.Column(db.DateTime, default=datetime.utcnow)
 
 
-    def __init__(self, firstName, lastName, email, password, phone, role, archived):
-        self.firstName = firstName
-        self.lastName = lastName
-        self.email = email
-        self.phone = phone
-        self.password = password
-        self.role = role
+    def __init__(self, **kwargs):
+        super(UserModel, self).__init__(**kwargs)
+        self.hash_digest = UserModel._hash_pw(kwargs['password'])
         self.archived = False
-        self.lastActive = datetime.utcnow()
 
     def update_last_active(self):
         self.lastActive = datetime.utcnow()
@@ -62,6 +58,13 @@ class UserModel(BaseModel):
         except ExpiredSignatureError:
             return None
 
+    @staticmethod
+    def _hash_pw(plaintext_password):
+        return bcrypt.hashpw(bytes(plaintext_password, 'utf-8'), bcrypt.gensalt(current_app.config['WORK_FACTOR']))
+
+    def check_pw(self, plaintext_password):
+        return bcrypt.checkpw(bytes(plaintext_password, 'utf-8'), self.hash_digest)
+
     def json(self):
         return {
             'id': self.id,
@@ -75,8 +78,8 @@ class UserModel(BaseModel):
             'created_at': Time.format_date(self.created_at),
             'updated_at': Time.format_date(self.updated_at)
         }
-    
-    def widgetJson(self, propertyName, date):          
+
+    def widgetJson(self, propertyName, date):
         return{
             'id': self.id,
             'stat': date,
@@ -91,12 +94,12 @@ class UserModel(BaseModel):
     @classmethod
     def find_by_role(cls, role):
         return cls.query.filter_by(role=role).all()
-    
+
     @classmethod
     def find_recent_role(cls, role, days):
         dateTime = datetime.utcnow() - timedelta(days = days)
         return db.session.query(UserModel).filter(UserModel.role == role).order_by(UserModel.created_at.desc()).limit(3).all()
-      
+
     @classmethod
     def find_by_role_and_name(cls, role, name):
         likeName = f'%{name}%'
@@ -104,3 +107,10 @@ class UserModel(BaseModel):
 
     def full_name(self):
         return '{} {}'.format(self.firstName, self.lastName)
+
+    def save_to_db(self):
+        if self.password:
+            self.hash_digest = UserModel._hash_pw(self.password)
+        db.session.add(self)
+        db.session.commit()
+

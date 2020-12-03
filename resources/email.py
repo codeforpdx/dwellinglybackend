@@ -17,7 +17,7 @@ class Email(Resource):
         data = Email.parser.parse_args()
         user = UserModel.find_by_id(data.user_id)
 
-        message = Message(data.subject, sender=Email.NO_REPLY, body=data.body )
+        message = Message(data.subject, sender=Email.NO_REPLY, body=data.body)
         message.recipients = [user.email]
 
         current_app.mail.send(message)

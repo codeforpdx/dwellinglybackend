@@ -9,8 +9,7 @@ def create_tenant(create_property):
                 lastName="lastName",
                 phone="phone",
                 propertyID=property.id,
-                staffIDs=[],
-                unitNum=3
+                staffIDs=[]
             )
         tenant.save_to_db()
         return tenant

@@ -25,7 +25,7 @@ class TestLease:
 
     def test_get_all_leases(self, valid_header, create_lease):
         lease = create_lease()
-        second_lease = create_lease(name='World')
+        second_lease = create_lease()
 
         response = self.client.get(self.endpoint, headers=valid_header)
 
