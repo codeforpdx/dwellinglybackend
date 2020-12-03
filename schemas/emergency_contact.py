@@ -1,9 +1,8 @@
 from ma import ma
-from models.contact_number import ContactNumberModel
 from models.emergency_contact import EmergencyContactModel
 from schemas.contact_number import ContactNumberSchema
 from utils.time import time_format
-from marshmallow import fields, validates, ValidationError, EXCLUDE
+from marshmallow import fields, validates, ValidationError
 
 
 class EmergencyContactSchema(ma.SQLAlchemyAutoSchema):
