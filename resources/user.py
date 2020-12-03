@@ -9,7 +9,6 @@ from models.revoked_tokens import RevokedTokensModel
 import json
 from werkzeug.security import safe_str_cmp
 from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt_claims, get_raw_jwt, get_jwt_identity, jwt_refresh_token_required
-from utils.auth import hash_pw, check_pw
 from resources.email import Email
 import string
 import random

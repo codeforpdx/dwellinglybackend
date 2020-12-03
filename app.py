@@ -10,7 +10,7 @@ from models.tenant import TenantModel
 from models.tenant_staff_link import StaffTenantLink
 from models.revoked_tokens import RevokedTokensModel
 from resources.user import UserRegister, User, UserLogin, ArchiveUser, UsersRole, UserAccessRefresh, UserRoles, Users
-from resourses.user_invite import UserInvite
+from resources.user_invite import UserInvite
 from resources.reset_password import ResetPassword
 from resources.property import Properties, Property, ArchiveProperty
 from resources.tenants import Tenants
