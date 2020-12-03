@@ -2,9 +2,9 @@
 
 <p>You have been invited to the Dwellingly Platform!</p>
 
-<p>To finish creating your account, please reset your password here:</p>
+<p>To finish creating your account, please set up your password here: <a href="{{ url_for('resetpassword', token=token, _method='GET', _external=True) }}"> Reset password link</a></p>
 
-<a href="{{ url_for('resetpassword', token=token, _method='GET', _external=True) }}"> Reset password link</a></p>
+<p>This link will expire in 10 minutes.</p>
 
 <p>Alternatively, you can paste the following link in your browser's address bar: {{ url_for('resetpassword', token=token, _method='GET', _external=True) }}</p>
 
