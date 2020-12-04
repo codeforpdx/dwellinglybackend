@@ -28,7 +28,6 @@ class Tenants(Resource):
     parser.add_argument('staffIDs',action='append',required=False,help="This field can be provided at a later time")
 
 
-
     @admin_required
     def get(self, tenant_id=None):
         # GET /tenants
@@ -51,6 +50,7 @@ class Tenants(Resource):
         tenantEntry = TenantModel(**data) 
         TenantModel.save_to_db(tenantEntry)
 
+<<<<<<< HEAD
         returnData = tenantEntry.json()
 
         leaseData = request.json
@@ -69,6 +69,21 @@ class Tenants(Resource):
             )
             returnData.update({'occupants': leaseData['occupants'], 'propertyID': leaseData['propertyID'], 'unitNum': leaseData['unitNum']})
             
+=======
+        #Attempt to create a lease from given data 
+        leaseData = Tenants.leaseParser.parse_args()
+
+        returnData = tenantEntry.json()
+
+        if (leaseData.occupants and leaseData.dateTimeEnd and leaseData.dateTimeStart and leaseData.propertyID):
+            leaseData.tenantID = tenantEntry.id
+            leaseData.dateTimeStart = datetime.strptime(leaseData.dateTimeStart, "%Y-%m-%dT%H:%M:%S.%fZ")
+            leaseData.dateTimeEnd = datetime.strptime(leaseData.dateTimeEnd, "%Y-%m-%dT%H:%M:%S.%fZ")
+            leaseEntry = LeaseModel(**leaseData)
+            LeaseModel.save_to_db(leaseEntry)
+            returnData.update({'occupants': leaseData.occupants, 'propertyID': leaseData.propertyID, 'unitNum': leaseData.unitNum})
+
+>>>>>>> 60759c0... Creating a tenant will now also create a lease, if appropriate
         return returnData, 201
 
 

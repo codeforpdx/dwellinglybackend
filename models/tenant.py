@@ -28,8 +28,7 @@ class TenantModel(BaseModel):
         if not (staffIDs == None):
             for id in staffIDs:
                 user = UserModel.find_by_id(id)
-                if user:
-                    self.staff.append(user)
+                if user: self.staff.append(user)
 
 
     def json(self):
