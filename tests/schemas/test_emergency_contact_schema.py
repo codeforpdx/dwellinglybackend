@@ -5,7 +5,7 @@ class TestEmergencyContactValidations:
         valid_payload = {
             'name': 'emergency contact name',
             'contact_numbers': [
-                {"number": 500}
+                {"number": "503-456-7890"}
             ]
         }
 
