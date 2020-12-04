@@ -7,9 +7,11 @@ from db import db
 from models.tenant import TenantModel
 from models.user import UserModel
 from models.lease import LeaseModel
+<<<<<<< HEAD
 from schemas.lease import LeaseSchema
 from datetime import datetime
 from utils.time import Time
+from datetime import datetime
 
 # | method | route                | action                    |
 # | :----- | :------------------- | :------------------------ |
@@ -50,7 +52,6 @@ class Tenants(Resource):
         tenantEntry = TenantModel(**data) 
         TenantModel.save_to_db(tenantEntry)
 
-<<<<<<< HEAD
         returnData = tenantEntry.json()
 
         leaseData = request.json
@@ -69,7 +70,6 @@ class Tenants(Resource):
             )
             returnData.update({'occupants': leaseData['occupants'], 'propertyID': leaseData['propertyID'], 'unitNum': leaseData['unitNum']})
             
-=======
         #Attempt to create a lease from given data 
         leaseData = Tenants.leaseParser.parse_args()
 
@@ -83,7 +83,6 @@ class Tenants(Resource):
             LeaseModel.save_to_db(leaseEntry)
             returnData.update({'occupants': leaseData.occupants, 'propertyID': leaseData.propertyID, 'unitNum': leaseData.unitNum})
 
->>>>>>> 60759c0... Creating a tenant will now also create a lease, if appropriate
         return returnData, 201
 
 
