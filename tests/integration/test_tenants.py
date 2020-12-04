@@ -1,5 +1,6 @@
 from conftest import is_valid, log
 from utils.time import Time
+from datetime import datetime
 
 endpoint = '/api/tenants'
 
@@ -36,9 +37,15 @@ def test_tenants_POST(client, auth_headers):
         "lastName": "The Human",
         "phone": "123-555-4321",
         "propertyID": 2,
+<<<<<<< HEAD
         "occupants": 3,
         "dateTimeEnd": Time.one_year_from_now(),
         "dateTimeStart": Time.yesterday(),
+=======
+        "occupants": "3",
+        "dateTimeEnd": "2021-04-29T07:00:00.000Z",
+        "dateTimeStart": "2020-11-26T08:00:00.000Z",
+>>>>>>> 5b11408... Creating a tenant will now also create a lease, if appropriate
         "unitNum": "413"
     }
 
