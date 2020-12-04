@@ -1,9 +1,11 @@
+import pytest
+from unittest.mock import patch
 from models.user import UserModel
+from schemas import UserRegisterSchema
 from conftest import is_valid, log
 from freezegun import freeze_time
 from models.user import RoleEnum
 from flask_jwt_extended import create_access_token, create_refresh_token
-import pytest
 from utils.time import time_format
 
 plaintext_password = "1234"
@@ -31,6 +33,13 @@ def test_user_auth(client, test_database, admin_user):
     assert responseMissingToken.json == \
             {'message': 'Missing authorization header'}
 
+def test_bad_user_auth(client, test_database):
+    login_response = client.post("/api/login", json={
+      "email": "bad@user.com",
+      "password": "pass"
+    })
+    assert login_response.status_code == 401
+
 def test_last_active(client, test_database, admin_user):
     user = UserModel.find_by_email(admin_user.email)
     assert user.lastActive.strftime(time_format) != '01/01/2020 00:00:00'
@@ -42,26 +51,6 @@ def test_last_active(client, test_database, admin_user):
         })
         user = UserModel.find_by_email(admin_user.email)
         assert user.lastActive.strftime(time_format) == '01/01/2020 00:00:00'
-
-def test_register_duplicate_user(client, test_database):
-    """When a user first registers, the server responds successfully."""
-    genericUser = {
-        "firstName": "first",
-        "lastName": "last",
-        "password": plaintext_password,
-        "email": "email@mail.com",
-        "phone": "123 123 5555"
-    }
-    login_response = client.post("/api/register", json=genericUser)
-    assert login_response.status_code == 201
-
-    """The server responds with an error if duplicate user details are used for registration."""
-    duplicateUser = genericUser
-    responseDuplicate = client.post("/api/register", json=duplicateUser)
-    assert responseDuplicate.status_code == 400
-    assert responseDuplicate.json == \
-            {'message':
-             'A user with that email already exists'}
 
 def test_refresh_user(client, test_database, admin_user):
     login_response = client.post("/api/login", json={
@@ -84,7 +73,6 @@ def test_get_user_by_id(client, auth_headers, admin_user):
     assert responseBadUserId.status_code == 404
     assert responseBadUserId.json == \
             {'message': 'User not found'}
-
 
 def test_user_roles(client, auth_headers):
     """The get users by role route returns a successful response code."""
@@ -260,3 +248,27 @@ def test_get_user(client, auth_headers, new_user):
     assert is_valid(unauthorized_user_response, 401)
     assert unauthorized_user_response.json == \
             {'message': 'Admin access required'}
+
+
+@pytest.mark.usefixtures('client_class', 'empty_test_db')
+class TestReigsterUser:
+    def setup(self):
+        self.endpoint = "/api/register"
+        self.valid_payload = {
+            'email': 'faker.unique.email@example.com',
+            'password': 'faker.password'
+        }
+
+    def test_user_can_register_with_valid_payload(self):
+        response = self.client.post(self.endpoint, json=self.valid_payload)
+
+        assert response.status_code == 201
+
+    @patch.object(UserModel, 'create')
+    def test_user_calls_create(self, mock_create):
+        response = self.client.post(self.endpoint, json=self.valid_payload)
+
+        mock_create.assert_called_with(
+            schema=UserRegisterSchema,
+            payload=self.valid_payload
+        )

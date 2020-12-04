@@ -35,10 +35,7 @@ class BaseModel(db.Model):
     @classmethod
     def update(cls, schema, id, payload):
         obj = cls.find(id)
-        try:
-            attrs = schema().load(payload, unknown=EXCLUDE, partial=True)
-        except ValidationError as err:
-            abort(400, err.messages)
+        attrs = cls.validate(schema, payload, partial=True)
 
         for k, v in attrs.items():
             setattr(obj, k, v)

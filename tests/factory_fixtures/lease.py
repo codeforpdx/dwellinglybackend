@@ -4,9 +4,9 @@ from datetime import datetime
 
 @pytest.fixture
 def lease_attributes():
-    def _lease_attributes(name, tenant, property):
+    def _lease_attributes(unitNum, tenant, property):
         return {
-            "name": name,
+            "unitNum": unitNum,
             "tenantID": tenant.id,
             "propertyID": property.id,
             "dateTimeStart": datetime.utcnow(),
@@ -17,9 +17,9 @@ def lease_attributes():
 
 @pytest.fixture
 def create_lease(lease_attributes, create_property, create_tenant):
-    def _create_lease(name="Hello World"):
+    def _create_lease(unitNum="D404"):
         tenant = create_tenant()
-        lease = LeaseModel(**lease_attributes(name, tenant, tenant.property))
+        lease = LeaseModel(**lease_attributes(unitNum, tenant, tenant.property))
         lease.save_to_db()
         return lease
     yield _create_lease

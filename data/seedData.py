@@ -146,22 +146,22 @@ def seedData():
                                         lastName="McRenter",
                                         phone="800-RENT-ALOT",
                                         propertyID=property_test1.id,
-                                        staffIDs=[user_1.id, user_2.id],
-                                        unitNum=1)
+                                        staffIDs=[user_1.id, user_2.id]
+                                        )
     tenant_renty_mcrenter.save_to_db()
     tenant_soho_muless = TenantModel(firstName="Soho",
                                      lastName="Muless",
                                      phone="123-123-0000",
                                      propertyID=property_meerkat_manor.id,
-                                     staffIDs=[],
-                                     unitNum=2)
+                                     staffIDs=[]
+                                     )
     tenant_soho_muless.save_to_db()
     tenant_starvin_artist = TenantModel(firstName="Starvin",
                                         lastName="Artist",
                                         phone="123-123-1111",
                                         propertyID=property_meerkat_manor.id,
-                                        staffIDs=[],
-                                        unitNum=3)
+                                        staffIDs=[]
+                                        )
     tenant_starvin_artist.save_to_db()
 
     ticket_roof_on_fire = TicketModel(
@@ -244,26 +244,29 @@ def seedData():
         ]
     ).save_to_db()
 
-    lease_1 = LeaseModel(name="Lease 1",
+    lease_1 = LeaseModel(
                          propertyID=property_test1.id,
                          tenantID=tenant_renty_mcrenter.id,
                          dateTimeStart=now,
                          dateTimeEnd=future,
-                         occupants=3)
+                         occupants=3,
+                         unitNum="123")
     lease_1.save_to_db()
-    lease_2 = LeaseModel(name="Lease 2",
+    lease_2 = LeaseModel(
                          propertyID=property_meerkat_manor.id,
                          tenantID=tenant_soho_muless.id,
                          dateTimeStart=now,
                          dateTimeEnd=future,
-                         occupants=2)
+                         occupants=2,
+                         unitNum="418")
     lease_2.save_to_db()
-    lease_3 = LeaseModel(name="Lease 3",
+    lease_3 = LeaseModel(
                          propertyID=property_the_reginald.id,
                          tenantID=tenant_starvin_artist.id,
                          dateTimeStart=now,
                          dateTimeEnd=future,
-                         occupants=1)
+                         occupants=1,
+                         unitNum="D2")
     lease_3.save_to_db()
 
     try:
