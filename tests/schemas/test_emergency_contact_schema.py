@@ -4,7 +4,9 @@ class TestEmergencyContactValidations:
     def test_valid_payload(self, empty_test_db):
         valid_payload = {
             'name': 'emergency contact name',
-            'contact_numbers': [{"number": "some number"}, {"number1" : "some other number"}]
+            'contact_numbers': [
+                {"number": 500}
+            ]
         }
 
         no_validation_errors = {}

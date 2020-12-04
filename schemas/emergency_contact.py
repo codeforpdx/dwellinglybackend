@@ -16,7 +16,6 @@ class EmergencyContactSchema(ma.SQLAlchemyAutoSchema):
 
     @validates("contact_numbers")
     def validate_contact_nums(self, value):
-        print("validating contact_nums")
         try:
           self.contact_numbers = ContactNumberSchema(many=True).load(value)
         except ValidationError as err:

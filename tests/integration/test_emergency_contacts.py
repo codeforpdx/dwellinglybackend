@@ -48,10 +48,24 @@ def test_emergency_contacts_POST(client, auth_headers):
     ]
   }
 
+  invalidContactNum = {
+    'name': "Contact Name",
+    'description': "An invalid contact number",
+    'contact_numbers': [
+      {"number": 503-291-9111, "numtype": "Call"},
+      {"number": "503-555-3321", "numtype": "Text"}
+    ]
+  }
+
   response = client.post(endpoint, json=newContact, headers=auth_headers["admin"])
   assert is_valid(response, 400) # UNAUTHORIZED - Emergency Contact With This Name Already Exists
   assert response.json == \
          {'message': {'name': ['Narcotics Anonymous is already an emergency contact']}}
+
+  response = client.post(endpoint, json=invalidContactNum, headers=auth_headers["admin"])
+  assert is_valid(response, 400)  # BAD REQUEST - Invalid contact number - number is not string type
+  assert response.json == \
+         {'message': {'contact_numbers': {'0': {'number': ['Not a valid string.']}}}}
 
   response = client.post(endpoint, json=newContact, headers=auth_headers["pm"])
   assert is_valid(response, 401) # UNAUTHORIZED - Admin Access Required
