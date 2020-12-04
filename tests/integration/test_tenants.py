@@ -1,4 +1,5 @@
 from conftest import is_valid, log
+from datetime import datetime
 
 endpoint = '/api/tenants'
 
@@ -30,11 +31,29 @@ def test_tenants_POST(client, auth_headers):
         "staffIDs": [1, 2]
     }
 
+    newTenantWithLease = {
+        "firstName": "Finn",
+        "lastName": "The Human",
+        "phone": "123-555-4321",
+        "propertyID": 2,
+        "occupants": "3",
+        "dateTimeEnd": "2021-04-29T07:00:00.000Z",
+        "dateTimeStart": "2020-11-26T08:00:00.000Z",
+        "unitNum": "413"
+    }
+
     response = client.post(endpoint, json=newTenant,
                            headers=auth_headers["admin"])
 
     assert is_valid(response, 201)  # CREATED
     assert response.json['firstName'] == 'Jake'
+
+    response = client.post(endpoint, json=newTenantWithLease,
+                           headers=auth_headers["admin"])
+    assert is_valid(response, 201)
+    assert response.json['unitNum'] == '413'
+
+
 
     response = client.post(endpoint, json=newTenant,
                            headers=auth_headers["admin"])
