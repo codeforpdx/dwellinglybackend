@@ -5,12 +5,14 @@ from utils.time import Time
 
 
 class TestLeaseValidations:
-    def test_valid_payload(self, empty_test_db, create_tenant, create_property):
+    def test_valid_payload(self, empty_test_db, create_tenant):
+        tenant = create_tenant()
+
         valid_payload = {
             'dateTimeStart': Time.today(),
             'dateTimeEnd': Time.one_year_from_now(),
-            'tenantID': create_tenant().id,
-            'propertyID': create_property().id
+            'tenantID': tenant.id,
+            'propertyID': tenant.propertyID,
         }
 
         no_validation_errors = {}

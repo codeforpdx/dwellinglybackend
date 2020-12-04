@@ -1,6 +1,6 @@
 from flask_restful import Resource, reqparse
 from flask import request
-
+from schemas import UserRegisterSchema
 from models.property import PropertyModel
 from models.tenant import TenantModel
 from resources.admin_required import admin_required
@@ -20,27 +20,11 @@ class UserRoles(Resource):
         return result, 200
 
 class UserRegister(Resource):
-    parser = reqparse.RequestParser()
-    parser.add_argument('firstName',type=str,required=True,help="This field cannot be blank")
-    parser.add_argument('lastName',type=str,required=True,help="This field cannot be blank")
-    parser.add_argument('email',type=str,required=True,help="This field cannot be blank")
-    parser.add_argument('password', type=str, required=True, help="This field cannot be blank")
-    parser.add_argument('role',type=int,required=False,help="This field is not required")
-    parser.add_argument('archived',type=str,required=False,help="This field is not required")
-    parser.add_argument('phone',type=str,required=True,help="This field cannot be blank")
-
     def post(self):
-        data = UserRegister.parser.parse_args()
-
-        if UserModel.find_by_email(data['email']):
-            return {"message": "A user with that email already exists"}, 400
-
-        user = UserModel(firstName=data['firstName'],
-                         lastName=data['lastName'], email=data['email'],
-                         password=data['password'], phone=data['phone'],
-                         role=RoleEnum(data['role']) if data['role'] else None, archived=data['archived'])
-        # And we'll store it into the db as bytes
-        user.save_to_db()
+        UserModel.create(
+            schema=UserRegisterSchema,
+            payload=request.json
+        )
 
         return {"message": "User created successfully."}, 201
 
@@ -167,7 +151,7 @@ class UserLogin(Resource):
         if user and user.archived:
             return {"message": "Invalid user"}, 403
 
-        if user.check_pw(data['password']):
+        if user and user.check_pw(data['password']):
             access_token = create_access_token(identity=user.id, fresh=True)
             refresh_token = create_refresh_token(user.id)
             user.update_last_active()
