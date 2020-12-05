@@ -1,5 +1,5 @@
 from conftest import is_valid, log
-from datetime import datetime
+from utils.time import Time
 
 endpoint = '/api/tenants'
 
@@ -36,9 +36,9 @@ def test_tenants_POST(client, auth_headers):
         "lastName": "The Human",
         "phone": "123-555-4321",
         "propertyID": 2,
-        "occupants": "3",
-        "dateTimeEnd": "2021-04-29T07:00:00.000Z",
-        "dateTimeStart": "2020-11-26T08:00:00.000Z",
+        "occupants": 3,
+        "dateTimeEnd": Time.one_year_from_now(),
+        "dateTimeStart": Time.yesterday(),
         "unitNum": "413"
     }
 
