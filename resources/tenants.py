@@ -1,11 +1,13 @@
 import json
 from flask_restful import Resource, reqparse
 from flask_jwt_extended import jwt_required, get_jwt_claims
+from flask import request
 from resources.admin_required import admin_required
 from db import db
 from models.tenant import TenantModel
 from models.user import UserModel
 from models.lease import LeaseModel
+from schemas.lease import LeaseSchema
 from datetime import datetime
 
 # | method | route                | action                    |
@@ -24,12 +26,7 @@ class Tenants(Resource):
     parser.add_argument('propertyID',required=False,help="This field can be provided at a later time")
     parser.add_argument('staffIDs',action='append',required=False,help="This field can be provided at a later time")
 
-    leaseParser = reqparse.RequestParser(bundle_errors=True)
-    leaseParser.add_argument('propertyID',required=False)
-    leaseParser.add_argument('occupants',required=False)
-    leaseParser.add_argument('dateTimeStart',required=False)
-    leaseParser.add_argument('dateTimeEnd',required=False)
-    leaseParser.add_argument('unitNum',required=False)
+
 
     @admin_required
     def get(self, tenant_id=None):
@@ -45,28 +42,28 @@ class Tenants(Resource):
 
 
     @admin_required
+    @jwt_required
     def post(self):
         data = Tenants.parser.parse_args()
         if TenantModel.find_by_first_and_last(data["firstName"], data["lastName"]):
             return { 'message': 'A tenant with this first and last name already exists'}, 401
 
         tenantEntry = TenantModel(**data) 
-        
         TenantModel.save_to_db(tenantEntry)
-
-        #Attempt to create a lease from given data 
-        leaseData = Tenants.leaseParser.parse_args()
 
         returnData = tenantEntry.json()
 
-        if (leaseData.occupants and leaseData.dateTimeEnd and leaseData.dateTimeStart and leaseData.propertyID):
-            leaseData.tenantID = tenantEntry.id
-            leaseData.dateTimeStart = datetime.strptime(leaseData.dateTimeStart, "%Y-%m-%dT%H:%M:%S.%fZ")
-            leaseData.dateTimeEnd = datetime.strptime(leaseData.dateTimeEnd, "%Y-%m-%dT%H:%M:%S.%fZ")
-            leaseEntry = LeaseModel(**leaseData)
-            LeaseModel.save_to_db(leaseEntry)
-            returnData.update({'occupants': leaseData.occupants, 'propertyID': leaseData.propertyID, 'unitNum': leaseData.unitNum})
+        leaseData = request.json
+        leaseData.update({'tenantID': tenantEntry.id})
 
+        if ("occupants" in leaseData and "dateTimeEnd" in leaseData and "dateTimeStart" in leaseData and "propertyID" in leaseData):
+            LeaseModel.create(
+                schema=LeaseSchema,
+                payload=leaseData
+            )
+            print(leaseData['occupants'])
+            returnData.update({'occupants': leaseData['occupants'], 'propertyID': leaseData['propertyID'], 'unitNum': leaseData['unitNum']})
+            
         return returnData, 201
 
 
