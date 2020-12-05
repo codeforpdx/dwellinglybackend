@@ -7,10 +7,10 @@ from db import db
 from models.tenant import TenantModel
 from models.user import UserModel
 from models.lease import LeaseModel
-<<<<<<< HEAD
 from schemas.lease import LeaseSchema
 from datetime import datetime
 from utils.time import Time
+from schemas.lease import LeaseSchema
 from datetime import datetime
 
 # | method | route                | action                    |
@@ -29,7 +29,6 @@ class Tenants(Resource):
     parser.add_argument('propertyID',required=False,help="This field can be provided at a later time")
     parser.add_argument('staffIDs',action='append',required=False,help="This field can be provided at a later time")
 
-
     @admin_required
     def get(self, tenant_id=None):
         # GET /tenants
@@ -44,6 +43,7 @@ class Tenants(Resource):
 
 
     @admin_required
+    @jwt_required
     def post(self):
         data = Tenants.parser.parse_args()
         if TenantModel.find_by_first_and_last(data["firstName"], data["lastName"]):
@@ -75,14 +75,17 @@ class Tenants(Resource):
 
         returnData = tenantEntry.json()
 
-        if (leaseData.occupants and leaseData.dateTimeEnd and leaseData.dateTimeStart and leaseData.propertyID):
-            leaseData.tenantID = tenantEntry.id
-            leaseData.dateTimeStart = datetime.strptime(leaseData.dateTimeStart, "%Y-%m-%dT%H:%M:%S.%fZ")
-            leaseData.dateTimeEnd = datetime.strptime(leaseData.dateTimeEnd, "%Y-%m-%dT%H:%M:%S.%fZ")
-            leaseEntry = LeaseModel(**leaseData)
-            LeaseModel.save_to_db(leaseEntry)
-            returnData.update({'occupants': leaseData.occupants, 'propertyID': leaseData.propertyID, 'unitNum': leaseData.unitNum})
+        leaseData = request.json
+        leaseData.update({'tenantID': tenantEntry.id})
 
+        if ("occupants" in leaseData and "dateTimeEnd" in leaseData and "dateTimeStart" in leaseData and "propertyID" in leaseData):
+            LeaseModel.create(
+                schema=LeaseSchema,
+                payload=leaseData
+            )
+            print(leaseData['occupants'])
+            returnData.update({'occupants': leaseData['occupants'], 'propertyID': leaseData['propertyID'], 'unitNum': leaseData['unitNum']})
+            
         return returnData, 201
 
 
