@@ -21,7 +21,6 @@ endpoint = '/api/emergencycontacts'
 
 def test_emergency_contacts_GET_all(client, test_database):
   response = client.get(endpoint)
-  print(response)
   assert is_valid(response, 200) # OK
   assert response.json['emergency_contacts'][0]['name'] == 'Narcotics Anonymous'
 

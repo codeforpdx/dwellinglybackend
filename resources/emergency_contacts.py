@@ -16,6 +16,21 @@ def parse_contact_numbers(req):
     req["contact_numbers"] = contact_numbers
     return req
 
+def parseContactNumbersFromJson(json_data):
+    parsedData = []
+    error = None
+    json_data = request.get_json(force=True)
+    for number in json_data["contact_numbers"]:
+        if not 'number' in number.keys():
+            error = "One of the contact_numbers for the emergency contact is missing a number"
+            break
+        newNumber = { "number": number['number'], "id": "unavailable" }
+        if 'id' in number.keys(): newNumber['id'] = number['id']
+        if 'numtype' in number.keys(): newNumber['numtype'] = number['numtype']
+        if 'extension' in number.keys(): newNumber['extension'] = number['extension']
+        parsedData.append(newNumber)
+    return parsedData, error
+
 class EmergencyContacts(Resource):
     # Keeping this here until PUT endpoint has been refactored
     parser = reqparse.RequestParser()
@@ -53,7 +68,7 @@ class EmergencyContacts(Resource):
 
         # TODO: We should/need to create a ContactNumber resource to update this
         if (data.contact_numbers):
-            numbersData, numbersError = parse_contact_numbers(request.get_json(force=True))
+            numbersData, numbersError = parseContactNumbersFromJson(request.get_json(force=True))
             if numbersError:
                 return {'message': numbersError}, 400
             for number in numbersData:

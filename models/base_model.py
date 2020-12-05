@@ -27,6 +27,7 @@ class BaseModel(db.Model):
     @classmethod
     def create(cls, schema, payload):
         attrs = cls.validate(schema, payload)
+
         obj = cls(**attrs)
         obj.save_to_db()
 

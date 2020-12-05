@@ -13,13 +13,14 @@ class EmergencyContactModel(BaseModel):
 
     contact_numbers = relationship(
         'ContactNumberModel',
-        backref='contact_numbers',
+        backref='emergency_contact',
         lazy=True,
         cascade="all, delete-orphan"
     )
 
     def json(self):
         return {
+            'id': self.id,
             'name':self.name,
             'description': self.description,
             'contact_numbers': [number.json() for number in self.contact_numbers],
