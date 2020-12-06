@@ -33,6 +33,13 @@ def test_user_auth(client, test_database, admin_user):
     assert responseMissingToken.json == \
             {'message': 'Missing authorization header'}
 
+def test_bad_user_auth(client, test_database):
+    login_response = client.post("/api/login", json={
+      "email": "bad@user.com",
+      "password": "pass"
+    })
+    assert login_response.status_code == 401
+
 def test_last_active(client, test_database, admin_user):
     user = UserModel.find_by_email(admin_user.email)
     assert user.lastActive.strftime(time_format) != '01/01/2020 00:00:00'

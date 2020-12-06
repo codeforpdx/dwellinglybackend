@@ -28,12 +28,36 @@ class TestFixtures:
         assert admin
         assert admin.role == RoleEnum.ADMIN
 
+        def test_multiple_admins_can_be_created():
+            return create_admin_user()
+
+        assert test_multiple_admins_can_be_created()
+
     def test_create_join_staff(self, create_join_staff):
         staff = create_join_staff()
         assert staff
         assert staff.role == RoleEnum.STAFF
 
+        def test_multiple_join_staff_can_be_created():
+            return create_join_staff()
+
+        assert test_multiple_join_staff_can_be_created()
+
     def test_create_property_manager(self, create_property_manager):
         pm = create_property_manager()
         assert pm
         assert pm.role == RoleEnum.PROPERTY_MANAGER
+
+        def test_multiple_pms_can_be_created():
+            return create_property_manager()
+
+        assert test_multiple_pms_can_be_created()
+
+    def test_create_unauthorized_user(self, create_unauthorized_user):
+        user = create_unauthorized_user()
+        assert user.role == RoleEnum.PENDING
+
+        def test_multiple_users_can_be_created():
+            return create_unauthorized_user()
+
+        assert test_multiple_users_can_be_created()

@@ -9,7 +9,7 @@ from models.property import PropertyModel
 import jwt
 from tests.factory_fixtures import *
 
-newPropertyName = "test1"
+newPropertyName = "myNewProperty"
 newPropertyAddress = "123 NE FLanders St"
 plaintext_password = "1234"
 
