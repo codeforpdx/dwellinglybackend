@@ -7,7 +7,7 @@ def create_tenant(create_property):
         tenant = TenantModel(
                 firstName="firstName",
                 lastName="lastName",
-                phone="phone",
+                phone="1234567890",
                 propertyID=property.id,
                 staffIDs=[]
             )

@@ -8,8 +8,8 @@ class TenantSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = TenantModel
 
-    created_at = fields.DateTime(time_format, required=True)
-    updated_at = fields.DateTime(time_format, required=True)
+    created_at = fields.DateTime(time_format)
+    updated_at = fields.DateTime(time_format)
 
     firstName = fields.Str(
         required=True,
