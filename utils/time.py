@@ -3,6 +3,7 @@ from dateutil.relativedelta import relativedelta
 
 time_format = "%m/%d/%Y %H:%M:%S"
 
+
 class Time:
     @staticmethod
     def format_date(date):
@@ -22,4 +23,4 @@ class Time:
 
     @staticmethod
     def yesterday():
-      return Time.format_date(datetime.today() - relativedelta(days=1))
+        return Time.format_date(datetime.today() - relativedelta(days=1))
