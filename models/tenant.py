@@ -9,9 +9,9 @@ class TenantModel(BaseModel):
     __tablename__ = "tenants"
 
     id = db.Column(db.Integer, primary_key=True)
-    firstName = db.Column(db.String(100))
-    lastName = db.Column(db.String(100))
-    phone = db.Column(db.String(20))
+    firstName = db.Column(db.String(100), nullable=False)
+    lastName = db.Column(db.String(100), nullable=False)
+    phone = db.Column(db.String(20), nullable=False)
     propertyID = db.Column(db.Integer, db.ForeignKey('properties.id'))
 
     # relationships
@@ -27,14 +27,14 @@ class TenantModel(BaseModel):
         self.staff = []
         for id in staffIDs:
             user = UserModel.find_by_id(id)
-            if user: self.staff.append(user)
-
+            if user:
+                self.staff.append(user)
 
     def json(self):
         return {
             'id': self.id,
-            'firstName':self.firstName,
-            'lastName':self.lastName,
+            'firstName': self.firstName,
+            'lastName': self.lastName,
             'fullName': '{} {}'.format(self.firstName, self.lastName),
             'phone': self.phone,
             'propertyID': self.propertyID,
@@ -46,4 +46,4 @@ class TenantModel(BaseModel):
 
     @classmethod
     def find_by_first_and_last(cls, first, last):
-        return cls.query.filter_by(firstName = first, lastName = last).first()
+        return cls.query.filter_by(firstName=first, lastName=last).first()
