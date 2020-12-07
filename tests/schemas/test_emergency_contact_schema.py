@@ -26,7 +26,7 @@ class TestEmergencyContactValidations:
         assert 'contact_numbers' in validation_errors
 
     def test_validate_multiple_contact_numbers(self, empty_test_db):
-        invalid_payload = {
+        valid_payload = {
             'name': 'emergency contact name',
             'contact_numbers': [
                 {"number": "503-291-9111", "numtype": "Call"},
@@ -35,7 +35,7 @@ class TestEmergencyContactValidations:
         }
         no_validation_errors = {}
 
-        assert no_validation_errors == EmergencyContactSchema().validate(invalid_payload)
+        assert no_validation_errors == EmergencyContactSchema().validate(valid_payload)
 
     def test_contact_num_too_long(self, empty_test_db):
         invalid_payload = {
@@ -59,5 +59,4 @@ class TestEmergencyContactValidations:
         validation_errors = EmergencyContactSchema().validate(invalid_payload)
 
         assert 'contact_numbers' in validation_errors
-
 
