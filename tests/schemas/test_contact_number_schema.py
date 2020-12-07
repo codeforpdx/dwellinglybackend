@@ -6,7 +6,6 @@ class TestContactNumberValidation:
         valid_payload = {
             "number": "503-503-503"
         }
-
         no_validation_errors = {}
 
         assert no_validation_errors == ContactNumberSchema().validate(valid_payload)

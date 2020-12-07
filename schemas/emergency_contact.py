@@ -21,9 +21,6 @@ class EmergencyContactSchema(ma.SQLAlchemyAutoSchema):
         except ValidationError as err:
           self.contact_numbers = err.messages
 
-
-
-
     @validates("name")
     def validate_name(self, value):
         if EmergencyContactModel.find_by_name(value):
