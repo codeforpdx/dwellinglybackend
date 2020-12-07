@@ -17,6 +17,7 @@ class TestEmergencyContactModel:
     def test_emergency_contact_json(self, create_emergency_contact):
         emergency_contact = create_emergency_contact()
         assert emergency_contact.json() == {
+            "id": emergency_contact.id,
             'name': emergency_contact.name,
             'contact_numbers': [number.json() for number in emergency_contact.contact_numbers],
             'description': emergency_contact.description,
