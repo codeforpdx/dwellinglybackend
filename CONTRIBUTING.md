@@ -96,7 +96,7 @@ How to contribute to this project.
 
 #### Updating development branch
 
-To update your development branch with the latest changes run:
+To update your development branch with the latest changes:
 
 1. First checkout the development branch if not already checked out.
  - Then run: `git checkout development`
