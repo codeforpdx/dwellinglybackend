@@ -8,6 +8,7 @@ from models.tickets import TicketModel, TicketStatus
 from models.notes import NotesModel
 from models.revoked_tokens import RevokedTokensModel
 from models.emergency_contact import EmergencyContactModel
+from models.contact_number import ContactNumberModel
 from models.lease import LeaseModel
 from utils.time import time_format
 
@@ -214,24 +215,34 @@ def seedData():
 
     RevokedTokensModel(jti="855c5cb8-c871-4a61-b3d8-90249f979601").save_to_db()
 
-    EmergencyContactModel(name="Narcotics Anonymous",
-                          contact_numbers=[{
-                              "number": "503-345-9839"
-                          }]).save_to_db()
+    EmergencyContactModel(
+        name="Narcotics Anonymous",
+        contact_numbers=[
+            ContactNumberModel(number="503-345-9839")
+        ]
+    ).save_to_db()
+
     EmergencyContactModel(
         name="Washington Co. Crisis Team",
-        contact_numbers=[{
-            "number": "503-291-9111",
-            "numtype": "Call"
-        }, {
-            "number": "503-555-3321",
-            "numtype": "Text"
-        }],
-        description="Suicide prevention and referrals").save_to_db()
-    EmergencyContactModel(name="Child Abuse/Reporting",
-                          contact_numbers=[{
-                              "number": "503-730-3100"
-                          }]).save_to_db()
+        description="Suicide prevention and referrals",
+        contact_numbers=[
+            ContactNumberModel(
+                number="503-291-9111",
+                numtype="Call"
+            ),
+            ContactNumberModel(
+                number="503-555-3321",
+                numtype="Text"
+            )
+        ]
+    ).save_to_db()
+
+    EmergencyContactModel(
+        name="Child Abuse/Reporting",
+        contact_numbers=[
+            ContactNumberModel(number="503-730-3100")
+        ]
+    ).save_to_db()
 
     lease_1 = LeaseModel(
                          propertyID=property_test1.id,
