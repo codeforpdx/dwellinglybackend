@@ -8,8 +8,8 @@ class TestTicketValidations:
 
         valid_payload = {
             'tenantID': create_tenant().id,
-            'assignedUser': create_admin_user().id,
-            'sender': create_join_staff().id
+            'assignedUserID': create_admin_user().id,
+            'senderID': create_join_staff().id
         }
 
         no_validation_errors = {}

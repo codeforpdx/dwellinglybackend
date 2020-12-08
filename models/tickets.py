@@ -20,8 +20,8 @@ class TicketModel(BaseModel):
     id = db.Column(db.Integer, primary_key=True)
     issue = db.Column(db.String(144))
     tenantID = db.Column(db.Integer, db.ForeignKey('tenants.id'))
-    assignedUser = db.Column(db.Integer, db.ForeignKey('users.id'))
-    sender = db.Column(db.Integer, db.ForeignKey('users.id'))
+    assignedUserID = db.Column(db.Integer, db.ForeignKey('users.id'))
+    senderID = db.Column(db.Integer, db.ForeignKey('users.id'))
     status = db.Column(db.Enum(TicketStatus))
     urgency = db.Column(db.String(12))
     notelog = db.Column(db.Text)
@@ -38,13 +38,13 @@ class TicketModel(BaseModel):
         for note in self.notes:
             message_notes.append(note.json())
 
-        senderData = UserModel.find_by_id(self.sender)
+        senderData = UserModel.find_by_id(self.senderID)
         senderName = "{} {}".format(senderData.firstName, senderData.lastName)
 
         tenantData = TenantModel.find_by_id(self.tenantID)
         tenantName = "{} {}".format(tenantData.firstName, tenantData.lastName)
 
-        assignedUserData = UserModel.find_by_id(self.assignedUser)
+        assignedUserData = UserModel.find_by_id(self.assignedUserID)
         assignedUser = "{} {}".format(assignedUserData.firstName, assignedUserData.lastName)
         minsPastUpdate = int((datetime.utcnow() - self.updated_at).total_seconds() / 60)
 
@@ -52,9 +52,9 @@ class TicketModel(BaseModel):
             'id': self.id,
             'issue':self.issue,
             'tenant': tenantName,
-            'senderID': self.sender,
+            'senderID': self.senderID,
             'tenantID': self.tenantID,
-            'assignedUserID': self.assignedUser,
+            'assignedUserID': self.assignedUserID,
             'sender': senderName,
             'assigned': assignedUser,
             'status': self.status,

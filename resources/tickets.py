@@ -39,13 +39,13 @@ class Ticket(Resource):
         if ticket:
             #variable statements allow for only updated fields to be transmitted
             if(data.sender):
-                ticket.sender = data.sender
+                ticket.senderID = data.sender
 
             if(data.tenant):
                 ticket.tenantID = data.tenant
 
             if(data.assignedUser):
-                ticket.assignedUser = data.assignedUser
+                ticket.assignedUserID = data.assignedUser
 
             if(data.status):
                 ticket.status = data.status
@@ -60,7 +60,7 @@ class Ticket(Resource):
                 note = NotesModel(
                     ticketid=id,
                     text=data.note,
-                    user=ticket.sender
+                    user=ticket.senderID
                 )
                 note.save_to_db()
 
@@ -91,10 +91,10 @@ class Tickets(Resource):
         ticket = TicketModel(
             issue=data.issue,
             tenantID=data.tenant,
-            sender=data.sender,
+            senderID=data.sender,
             status=data.status,
             urgency=data.urgency,
-            assignedUser=data.assignedUser
+            assignedUserID=data.assignedUser
         )
 
         ticket.save_to_db()
