@@ -43,7 +43,6 @@ class Tenants(Resource):
 
 
     @admin_required
-    @jwt_required
     def post(self):
         data = Tenants.parser.parse_args()
         if TenantModel.find_by_first_and_last(data["firstName"], data["lastName"]):
@@ -68,22 +67,6 @@ class Tenants(Resource):
                 schema=LeaseSchema,
                 payload=leaseData
             )
-            returnData.update({'occupants': leaseData['occupants'], 'propertyID': leaseData['propertyID'], 'unitNum': leaseData['unitNum']})
-            
-        #Attempt to create a lease from given data 
-        leaseData = Tenants.leaseParser.parse_args()
-
-        returnData = tenantEntry.json()
-
-        leaseData = request.json
-        leaseData.update({'tenantID': tenantEntry.id})
-
-        if ("occupants" in leaseData and "dateTimeEnd" in leaseData and "dateTimeStart" in leaseData and "propertyID" in leaseData):
-            LeaseModel.create(
-                schema=LeaseSchema,
-                payload=leaseData
-            )
-            print(leaseData['occupants'])
             returnData.update({'occupants': leaseData['occupants'], 'propertyID': leaseData['propertyID'], 'unitNum': leaseData['unitNum']})
             
         return returnData, 201
