@@ -9,6 +9,7 @@ from models.user import UserModel
 from models.lease import LeaseModel
 from schemas.lease import LeaseSchema
 from datetime import datetime
+from utils.time import Time
 
 # | method | route                | action                    |
 # | :----- | :------------------- | :------------------------ |
@@ -42,7 +43,6 @@ class Tenants(Resource):
 
 
     @admin_required
-    @jwt_required
     def post(self):
         data = Tenants.parser.parse_args()
         if TenantModel.find_by_first_and_last(data["firstName"], data["lastName"]):
@@ -56,12 +56,17 @@ class Tenants(Resource):
         leaseData = request.json
         leaseData.update({'tenantID': tenantEntry.id})
 
-        if ("occupants" in leaseData and "dateTimeEnd" in leaseData and "dateTimeStart" in leaseData and "propertyID" in leaseData):
+        #if this tenant has a lease
+        if ("dateTimeEnd" in leaseData and "dateTimeStart" in leaseData and "propertyID" in leaseData):
+
+            #convert dateTimeStart and dateTimeEnd from iso8601 format
+            leaseData["dateTimeStart"] = Time.format_date(datetime.fromisoformat(leaseData["dateTimeStart"]))
+            leaseData["dateTimeEnd"] = Time.format_date(datetime.fromisoformat(leaseData["dateTimeEnd"]))
+
             LeaseModel.create(
                 schema=LeaseSchema,
                 payload=leaseData
             )
-            print(leaseData['occupants'])
             returnData.update({'occupants': leaseData['occupants'], 'propertyID': leaseData['propertyID'], 'unitNum': leaseData['unitNum']})
             
         return returnData, 201
