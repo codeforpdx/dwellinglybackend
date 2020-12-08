@@ -7,13 +7,13 @@ from datetime import datetime
 
 class Ticket(Resource):
     parser = reqparse.RequestParser()
-    parser.add_argument('sender')
-    parser.add_argument('tenant')
+    parser.add_argument('senderID')
+    parser.add_argument('tenantID')
     parser.add_argument('status')
     parser.add_argument('urgency')
     parser.add_argument('issue')
     parser.add_argument('note')
-    parser.add_argument('assignedUser')
+    parser.add_argument('assignedUserID')
 
 
     @jwt_required
@@ -38,14 +38,14 @@ class Ticket(Resource):
 
         if ticket:
             #variable statements allow for only updated fields to be transmitted
-            if(data.sender):
-                ticket.senderID = data.sender
+            if(data.senderID):
+                ticket.senderID = data.senderID
 
-            if(data.tenant):
-                ticket.tenantID = data.tenant
+            if(data.tenantID):
+                ticket.tenantID = data.tenantID
 
-            if(data.assignedUser):
-                ticket.assignedUserID = data.assignedUser
+            if(data.assignedUserID):
+                ticket.assignedUserID = data.assignedUserID
 
             if(data.status):
                 ticket.status = data.status
@@ -70,32 +70,25 @@ class Ticket(Resource):
 
 class Tickets(Resource):
     parser = reqparse.RequestParser()
-    parser.add_argument('sender')
-    parser.add_argument('tenant')
+    parser.add_argument('senderID')
+    parser.add_argument('tenantID')
     parser.add_argument('status')
     parser.add_argument('urgency')
     parser.add_argument('issue')
-    parser.add_argument('assignedUser')
+    parser.add_argument('assignedUserID')
 
     @jwt_required
     def get(self):
         data = Tickets.parser.parse_args()
-        if data["tenant"]:
-            return {'tickets': [ticket.json() for ticket in TicketModel.find_by_tenantID(data["tenant"])]}
+        if data["tenantID"]:
+            return {'tickets': [ticket.json() for ticket in TicketModel.find_by_tenantID(data["tenantID"])]}
         else:
             return {'tickets': [ticket.json() for ticket in TicketModel.query.all()]}
 
     @jwt_required
     def post(self):
         data = Tickets.parser.parse_args()
-        ticket = TicketModel(
-            issue=data.issue,
-            tenantID=data.tenant,
-            senderID=data.sender,
-            status=data.status,
-            urgency=data.urgency,
-            assignedUserID=data.assignedUser
-        )
+        ticket = TicketModel(**data)
 
         ticket.save_to_db()
         return ticket.json(), 201
