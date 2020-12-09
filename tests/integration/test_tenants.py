@@ -23,7 +23,7 @@ def test_tenants_GET_one(client, test_database, auth_headers):
     assert response.json == {'message': 'Tenant not found'}
 
 
-def test_tenants_POST(client, auth_headers):
+def test_tenants_POST(client, test_database, auth_headers):
     newTenant = {
         "firstName": "Jake",
         "lastName": "The Dog",
