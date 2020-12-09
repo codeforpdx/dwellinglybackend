@@ -107,7 +107,7 @@ def test_POST(client, test_database, auth_headers):
         "unitNum": "413"
     }
 
-    response = client.post(endpoint, json=newTenant,
+    response = client.post(endpoint, json=newTenantWithLease,
                            headers=auth_headers["admin"])
 
     assert response.json == ''
