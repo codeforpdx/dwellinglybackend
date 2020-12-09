@@ -27,7 +27,7 @@ class Time:
 
     @staticmethod
     def one_year_from_now_iso():
-        return datetime.isoformat(datetime.today() + relativedelta(year=1))
+        return datetime.isoformat(datetime.today() + relativedelta(years=1))
 
     @staticmethod
     def yesterday():
