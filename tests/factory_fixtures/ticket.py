@@ -7,9 +7,9 @@ def ticket_attributes():
     def _ticket_attributes(issue, tenant, assignedUser, sender):
         return {
             "issue": issue,
-            "tenant": tenant.id,
-            "assignedUser": assignedUser.id,
-            "sender": sender.id,
+            "tenantID": tenant.id,
+            "assignedUserID": assignedUser.id,
+            "senderID": sender.id,
             "status": TicketStatus.New,
             "urgency": "high"
         }

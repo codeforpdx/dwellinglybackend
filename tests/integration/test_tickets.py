@@ -1,3 +1,4 @@
+import pytest
 from conftest import is_valid
 from datetime import datetime
 from freezegun import freeze_time
@@ -141,3 +142,10 @@ def test_tickets_DELETE(client, auth_headers):
     # NOT FOUND - Trying to delete a non-existing ticket or an already deleted ticket
     assert is_valid(response, 404)
     assert response.json == {'message': 'Ticket not found'}
+
+@pytest.mark.usefixtures("empty_test_db")
+class TestFixtures:
+    def test_create_ticket(self, create_ticket):
+        ticket = create_ticket()
+        assert ticket
+        assert ticket.issue == "Leaky pipe"
