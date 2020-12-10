@@ -14,6 +14,9 @@ class NotesModel(BaseModel):
     ticketid = db.Column(db.Integer, db.ForeignKey('tickets.id'),
         nullable=False)
 
+    userinfo = db.relationship('UserModel',
+                               backref=db.backref('Notes', lazy=True))
+
     def json(self):
         user = UserModel.find_by_id(self.user)
 

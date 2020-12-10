@@ -4,3 +4,4 @@ from .user import *
 from .property import *
 from .contact_number import *
 from .emergency_contact import *
+from .notes import *
