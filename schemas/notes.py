@@ -9,6 +9,7 @@ class NotesSchema(ma.SQLAlchemyAutoSchema):
         model = NotesModel
         include_fk = True
         include_relationships = True
+        exclude = ["userinfo"]
 
     created_at = fields.DateTime(time_format)
     updated_at = fields.DateTime(time_format)

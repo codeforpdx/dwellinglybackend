@@ -9,7 +9,7 @@ class TestNotesSchemaSerialization:
         user = create_join_staff()
         note = create_note(user)
 
-        note_schema = NotesSchema(exclude=["userinfo"])
+        note_schema = NotesSchema()
         note_json = note_schema.dump(note)
         assert note_json['text'] == note.text
         assert note_json['user'] == "%s %s" % (user.firstName, user.lastName)
