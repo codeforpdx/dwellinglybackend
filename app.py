@@ -13,7 +13,7 @@ from resources.user import UserRegister, User, UserLogin, ArchiveUser, UsersRole
 from resources.reset_password import ResetPassword
 from resources.property import Properties, Property, ArchiveProperty
 from resources.staff_tenants import StaffTenants
-from resources.tenants import Tenant,Tenants
+from resources.tenants import Tenants
 from resources.emergency_contacts import EmergencyContacts
 from flask_mail import Mail
 from resources.email import Email
@@ -42,8 +42,7 @@ def create_routes(app):
     api.add_resource(Email, 'user/message')
     api.add_resource(UserAccessRefresh, 'refresh')
     api.add_resource(StaffTenants, 'staff-tenants')
-    api.add_resource(Tenant, 'tenants', 'tenants/<int:tenant_id>')
-    api.add_resource(Tenants, 'tenants/multiple')
+    api.add_resource(Tenants, 'tenants', 'tenants/<int:tenant_id>')
     api.add_resource(EmergencyContacts, 'emergencycontacts', 'emergencycontacts/<int:id>')
     api.add_resource(Lease, 'lease/<int:id>')
     api.add_resource(Leases, 'lease')
