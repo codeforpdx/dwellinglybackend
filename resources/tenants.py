@@ -14,7 +14,7 @@ from models.user import UserModel
 # | PUT    | `v1/tenants/:id`     | Updates a single tenant   |
 # | DELETE | `v1/tenants/:id`     | Deletes a single tenant   |
 
-class Tenants(Resource):
+class Tenant(Resource):
     parser = reqparse.RequestParser()
     parser.add_argument('firstName',type=str,required=True,help="This field cannot be blank")
     parser.add_argument('lastName',type=str,required=True,help="This field cannot be blank")
@@ -37,7 +37,7 @@ class Tenants(Resource):
 
     @admin_required
     def post(self):
-        data = Tenants.parser.parse_args()
+        data = Tenant.parser.parse_args()
         if TenantModel.find_by_first_and_last(data["firstName"], data["lastName"]):
             return { 'message': 'A tenant with this first and last name already exists'}, 401
 
@@ -50,7 +50,7 @@ class Tenants(Resource):
 
     @admin_required
     def put(self, tenant_id):
-        parser_for_put = Tenants.parser.copy()
+        parser_for_put = Tenant.parser.copy()
         parser_for_put.replace_argument('firstName',required=False)
         parser_for_put.replace_argument('lastName',required=False)
         parser_for_put.replace_argument('phone',required=False)
@@ -81,12 +81,42 @@ class Tenants(Resource):
         return tenantEntry.json()
 
 
+    # @admin_required
+    def delete(self, tenant_id=None):
+        parser = reqparse.RequestParser()
+        parser.add_argument('tenant_ids', action='append')
+        data = parser.parse_args()
+
+        if not tenant_id:
+            print(data)
+        else:
+            tenant = TenantModel.find_by_id(tenant_id)
+            if not tenant:
+                return {'message': 'Tenant not found'}, 404
+            tenant.delete_from_db()
+            
+            return {'tenants': [tenant.json() for tenant in TenantModel.query.all()]}, 200
+
+class Tenants(Resource):
+    parser = reqparse.RequestParser()
+    parser.add_argument('tenant_ids', action='append')
+
     @admin_required
-    def delete(self, tenant_id):
-        tenant = TenantModel.find_by_id(tenant_id)
-        if not tenant:
-            return {'message': 'Tenant not found'}, 404
+    def get(self):
+        return {'tenants': [tenant.json() for tenant in TenantModel.query.all()]}
+    
+    @admin_required
+    def delete(self):
+        data = Tenant.parser.parse_args()
 
-        tenant.delete_from_db()
-        return {'message': 'Tenant deleted'}
+        for i in data['tenant_ids']: #verify the quality of the request 
+            tenant = TenantModel.find_by_id(i)
+            if not tenant:
+                return {'message': 'Tenant in list not found'}, 404
+        
+        for i in data['tenant_ids']:
+            tenant = TenantModel.find_by_id(i)
+            tenant.delete_from_db()
 
+        return {'tenants': [tenant.json() for tenant in TenantModel.query.all()]}, 200
+    
