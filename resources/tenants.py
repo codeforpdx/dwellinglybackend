@@ -88,7 +88,14 @@ class Tenant(Resource):
         data = parser.parse_args()
 
         if not tenant_id:
-            print(data)
+            for i in data['tenant_ids']: #verify the quality of the request 
+                tenant = TenantModel.find_by_id(i)
+            if not tenant:
+                return {'message': 'Tenant in list not found'}, 404
+        
+            for i in data['tenant_ids']:
+                tenant = TenantModel.find_by_id(i)
+                tenant.delete_from_db()
         else:
             tenant = TenantModel.find_by_id(tenant_id)
             if not tenant:
