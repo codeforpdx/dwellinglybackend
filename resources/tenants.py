@@ -1,10 +1,17 @@
 import json
 from flask_restful import Resource, reqparse
 from flask_jwt_extended import jwt_required, get_jwt_claims
+from flask import request
 from resources.admin_required import admin_required
 from db import db
 from models.tenant import TenantModel
 from models.user import UserModel
+from models.lease import LeaseModel
+from schemas.lease import LeaseSchema
+from datetime import datetime
+from utils.time import Time
+from schemas.lease import LeaseSchema
+from datetime import datetime
 
 # | method | route                | action                    |
 # | :----- | :------------------- | :------------------------ |
@@ -42,10 +49,27 @@ class Tenants(Resource):
             return { 'message': 'A tenant with this first and last name already exists'}, 401
 
         tenantEntry = TenantModel(**data) 
-        
         TenantModel.save_to_db(tenantEntry)
 
-        return tenantEntry.json(), 201
+        returnData = tenantEntry.json()
+
+        leaseData = request.json
+        leaseData.update({'tenantID': tenantEntry.id})
+
+        #if this tenant has a lease
+        if ("dateTimeEnd" in leaseData and "dateTimeStart" in leaseData and "propertyID" in leaseData):
+
+            #convert dateTimeStart and dateTimeEnd from iso8601 format
+            leaseData["dateTimeStart"] = Time.format_date(datetime.fromisoformat(leaseData["dateTimeStart"]))
+            leaseData["dateTimeEnd"] = Time.format_date(datetime.fromisoformat(leaseData["dateTimeEnd"]))
+
+            LeaseModel.create(
+                schema=LeaseSchema,
+                payload=leaseData
+            )
+            returnData.update({'occupants': leaseData['occupants'], 'propertyID': leaseData['propertyID'], 'unitNum': leaseData['unitNum']})
+            
+        return returnData, 201
 
 
     @admin_required
