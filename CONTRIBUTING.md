@@ -58,10 +58,11 @@ NOTE: Database is SQLite3 via SQLAlchemy
     - `cp .env.example .env`
 5. Create and Seed the database
    - Run: `pipenv run flask db create`
-     Some other userful commands are:
-   - To re-seed the database from scratch run: `pipenv run flask db recreate`
-   - To find other database set-up commands run: `pipenv run flask db --help`
-   - To drop the database run: `pipenv run flask db drop`
+
+   - Some other userful commands are:
+     - To re-seed the database from scratch run: `pipenv run flask db recreate`
+     - To find other database set-up commands run: `pipenv run flask db --help`
+     - To drop the database run: `pipenv run flask db drop`
 6. Start the server using the flask environment (required every time the project is re-opened):
    - Run: `pipenv run flask run`
    - Run and restart the server on changes: `pipenv run flask run --reload`
