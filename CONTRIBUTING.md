@@ -1,4 +1,44 @@
 # Contributing
+## App Architecture
+This section describes how the application is structured, mainly the Python backend. This does not attempt to cover any information about the React frontend. As of this writing the app is currently under a major refactoring to make the application more robust. There is code that uses the deprecated [RequestParser](https://flask-restful.readthedocs.io/en/latest/reqparse.html) which is being removed from the application in favor of [Marshmallow](https://marshmallow.readthedocs.io/en/stable/). It is expected that all new functionality uses Marshmallow.
+
+This application uses the [Flask](https://palletsprojects.com/p/flask/) micro-framework backed by an [sqlLite](https://sqlite.org/index.html) database ([Postgres](https://www.postgresql.org/) for production) utilizing [SQLAlchemy](https://docs.sqlalchemy.org/en/14/) as the ORM. [Flask-Restful](https://flask-restful.readthedocs.io/en/latest/) is used for routing to encourage Restful routes/resources. [Marshmallow](https://marshmallow.readthedocs.io/en/stable/) is being used for input validation, serialization, and deserialization. Flask-mail is currently being used to send mail, and Jinja is used for templating the email messages. However, the mail library has been deprecated and there is an open issue to switch to another library. Flake8 is currently installed for linting, but not really being used. However, we will most likely be using [black](https://github.com/psf/black) in the future or a combination of Flake8 for linting and black for formatting. For database migrations we recently installed alembic and will be using that in the future. For now, while the app is under development we drop the db and rebuild whenever there is a change. There are three different environments the application is setup to run in. Development, testing, and production environments. For testing we are using Pytest. It is an expectation that all new functionality, changes in behavior, or bug fixes will be covered under automated tests.
+
+There are currently three main areas of the application to be familiar with, and possibly four in the future (dependent on how serialization will be handled).
+
+The three main areas are: resources, models, and schemas. This is inline with an MVC web application. The resources directory contains all of the controllers/endpoints. Resources is the terminology that Flask-restful uses and it is the terminology used here. Models are the models, that is where the database tables are defined, and methods that are related to fetching data from the database. The Schemas are for the Marshmallow library, and they define how to validate, serialize, and deserialize the data.
+
+A fourth potential main area is the serializers folder which will be used to build the response.
+
+There is one more file to be familiar with and that is the `app.py` file. This is the file that is ran when the application starts. This is also where we are describing the routes for the app.
+
+The rest of this section will describe the three main areas, and how each of those areas should be tested.
+
+Models:
+
+Models define the database schema. They define what tables to create and what columns to use. They can also contain other methods that relates to the business logic of the application. All models in this application inherit from the BaseModel class, which adds created_at and udpated_at timestamps for all the tables in the database. It also contains methods that are used to find, create, update, and delete database rows. As of this writing there are some models that still have an init method. However, for most of the models the init method is not needed and will be removed. This is because Flask-restful provides an init method that works with key word arguments, and it is recommended to call super if a custom init method is needed. You can see an example of this in the User Model. Currently, all models except for the lease model have a json method that defines how to serialize that object. Models can be found in the `models` directory.
+
+Testing Models:
+
+All models should have unit tests that can be found in the `tests/unit` directory. Each model should have tests that test the inherited methods from the BaseModel to ensure that nothing crazy is inadvertently done to change the behavior of the methods that the BaseModel provides. These are easily implemented using the base_interface_test file. Finally, there should be a test for every public method that is defined in the model. This would be the json method or any other method defined in the file that is directly used outside of the Models class.
+
+Schemas:
+
+Marshmallow Schemas are used primarily for input validation and deserialization. And eventually serialization. Schemas receive the data that the client sends the back-end and validates that data before the data is inserted into the database. They can also describe how the data is serialized before sending data to the client. Schemas can be found in the `schemas` directory.
+
+Testing Schemas:
+
+All schemas should have unit tests. Primarily validation tests. This app uses flask-marshmallow which provides an auto-schema that infers some basic validations based off of the table definition in the Models class. Any additional validations defined in the schema must be tested Schema tests can be found in the `tests/schemas` directory. Deserialization should also be tested here when used. Serialization is currently not used and does not need to be tested here at this time. It's possible that testing serialization will take place elsewhere.
+
+Resources:
+
+A resource main job is to coordinate a response for the request. If data is provided the resource will send that data to the schema for validation and deserialization. The resource will communicate with the model to query for data or insert/update a tables row in the database. Finally the resource will send a response back to the client. Resources can be found in the `resources` directory.
+
+Testing Resources:
+
+Each resource will usually have one test for each action (GET, POST, DELETE, etc...). When the Models and Schemas have unit tests, and when the resource uses the models and schemas appropriately. Then **generally** only a successful reponse (The Happy Path) needs to be tested. As all other responses that can occurr happen elsewhere and are already under test. Such as validation errors, or a database row cannot be found. Errors such as these need not be tested as they're already built into the architecture of the app and happen automatically as long as the schemas are used along with the appropriate methods defined in the BaseModel. Tests for the resources can be found in the `tests/integration` directory.
+
+
 ## Installation
 Set up Dwelling Flask Testing Backend (for the first time)
 NOTE: Database is SQLite3 via SQLAlchemy
@@ -18,8 +58,8 @@ NOTE: Database is SQLite3 via SQLAlchemy
     - `cp .env.example .env`
 5. Create and Seed the database
    - Run: `pipenv run flask db create`
+     Some other userful commands are:
    - To re-seed the database from scratch run: `pipenv run flask db recreate`
-   - Look for the file data.db to be created in the root directory
    - To find other database set-up commands run: `pipenv run flask db --help`
    - To drop the database run: `pipenv run flask db drop`
 6. Start the server using the flask environment (required every time the project is re-opened):
