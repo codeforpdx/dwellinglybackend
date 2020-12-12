@@ -109,5 +109,6 @@ class TesttEmail:
 
     @patch.object(Mail, 'send')
     def test_send_user_invite_msg(self, send_mail_msg, new_user):
-        Email.send_user_invite_msg(new_user)
+        with patch.object(Message, '__init__', return_value=None):
+            Email.send_user_invite_msg(new_user)
         send_mail_msg.assert_called()
