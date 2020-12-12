@@ -203,7 +203,7 @@ class Users(Resource):
 
         role_query = int(request.args["r"])
 
-        if role_query not in range(0, 5):
+        if not RoleEnum.has_role(role_query):
             return {"message": "Invalid role"}, 400
 
         role = RoleEnum(role_query)

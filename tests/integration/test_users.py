@@ -239,7 +239,8 @@ def test_get_user(client, auth_headers, new_user):
 
     """Queries with a non-existing role returns a 400 response"""
 
-    unknown_user_response = client.get('api/user?r=5', headers=auth_headers["admin"])
+    unknown_role = max(RoleEnum.get_values()) + 1
+    unknown_user_response = client.get(f'api/user?r={unknown_role}', headers=auth_headers["admin"])
     assert is_valid(unknown_user_response, 400)
 
     """Non-admin requests return a 401 status code"""
