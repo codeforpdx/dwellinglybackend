@@ -9,16 +9,17 @@ class NotesModel(BaseModel):
 
     id = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.Text)
-    user = db.Column(db.Integer, db.ForeignKey('users.id'))
+    userid = db.Column(db.Integer, db.ForeignKey('users.id'),
+        nullable=False)
 
     ticketid = db.Column(db.Integer, db.ForeignKey('tickets.id'),
         nullable=False)
 
-    userinfo = db.relationship('UserModel',
-                               backref=db.backref('Notes', lazy=True))
+    user = db.relationship('UserModel',
+                            backref=db.backref('notes', lazy=True))
 
     def json(self):
-        user = UserModel.find_by_id(self.user)
+        user = UserModel.find_by_id(self.userid)
 
         return {
             'id':self.id,

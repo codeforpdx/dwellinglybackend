@@ -6,7 +6,7 @@ def note_attributes():
     def _note_attributes(text, user, ticket):
         return {
             'text': text,
-            'user': user.id,
+            'userid': user.id,
             'ticketid': ticket.id
         }
     yield _note_attributes
@@ -21,10 +21,10 @@ def create_note(note_attributes, create_join_staff):
         def __init__(self, id):
             self.id = id
 
-    def _create_note(user=SimpleUser(1),
+    def _create_note(userid=SimpleUser(1),
                      text="This is a note",
                      ticket=SimpleTicket(1)):
-        note = NotesModel(**note_attributes(text, user, ticket))
+        note = NotesModel(**note_attributes(text, userid, ticket))
         note.save_to_db()
         return note
     yield _create_note

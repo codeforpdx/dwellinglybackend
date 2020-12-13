@@ -196,20 +196,20 @@ def seedData():
     note_not_responding = NotesModel(
         ticketid=ticket_unpaid_rent.id,
         text="Tenant not responding to phone calls.",
-        user=user_1.id)
+        userid=user_1.id)
     note_not_responding.save_to_db()
     note_over_40_cats = NotesModel(ticketid=ticket_roof_on_fire.id,
                                    text="Tenant has over 40 cats.",
-                                   user=user_2.id)
+                                   userid=user_2.id)
     note_over_40_cats.save_to_db()
     note_issue_resolved = NotesModel(ticketid=ticket_roof_on_fire.id,
                                      text="Issue Resolved with phone call",
-                                     user=user_3.id)
+                                     userid=user_3.id)
     note_issue_resolved.save_to_db()
     note_contacted_tenant = NotesModel(
         ticketid=ticket_dumpster_fire.id,
         text="Contacted Tenant -- follow up tomorrow.",
-        user=user_3.id)
+        userid=user_3.id)
     note_contacted_tenant.save_to_db()
 
     RevokedTokensModel(jti="855c5cb8-c871-4a61-b3d8-90249f979601").save_to_db()

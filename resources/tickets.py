@@ -60,7 +60,7 @@ class Ticket(Resource):
                 note = NotesModel(
                     ticketid=id,
                     text=data.note,
-                    user=ticket.sender
+                    userid=ticket.sender
                 )
                 note.save_to_db()
 

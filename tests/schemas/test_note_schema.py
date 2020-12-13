@@ -18,22 +18,22 @@ class TestNotesSchemaSerialization:
     def test_notes_deserialization(self, create_join_staff):
         note_schema = NotesSchema()
         user = create_join_staff()
-        payload = {'user': user.id,
+        payload = {'userid': user.id,
                    'text': 'Test serialization',
                    'ticketid': 1}
         note = note_schema.load(payload)
-        assert payload['user'] == note['user']
+        assert payload['userid'] == note['userid']
         assert payload['text'] == note['text']
         assert payload['ticketid'] == note['ticketid']
 
     def test_notes_user_validation(self):
-        note_schema = NotesSchema(exclude=["userinfo"])
-        payload = { 'user': 500,
+        note_schema = NotesSchema(exclude=["user"])
+        payload = { 'userid': 500,
                     'text': "This should fail",
                     'ticketid': 1
                   }
         validation_errors = note_schema.validate(payload)
-        assert 'user' in validation_errors
-        assert validation_errors['user'] == ['No such user']
+        assert 'userid' in validation_errors
+        assert validation_errors['userid'] == ['No such user']
 
 

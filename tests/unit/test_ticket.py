@@ -32,14 +32,14 @@ def test_notes():
 
     testTicketId = 1
     testText = 'Tenant has 40 cats'
-    testUser = 'user1 tester'
+    testUserId = 1
 
     test_note = NotesModel(
         ticketid=testTicketId,
         text=testText,
-        user=testUser,
+        userid=testUserId,
     )
 
     assert test_note.ticketid == testTicketId
     assert test_note.text == testText
-    assert test_note.user == testUser
+    assert test_note.userid == testUserId
