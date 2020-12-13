@@ -13,18 +13,11 @@ def note_attributes():
 
 @pytest.fixture
 def create_note(note_attributes, create_join_staff):
-    class SimpleTicket:
-        def __init__(self, id):
-            self.id = id
 
-    class SimpleUser:
-        def __init__(self, id):
-            self.id = id
-
-    def _create_note(userid=SimpleUser(1),
-                     text="This is a note",
-                     ticket=SimpleTicket(1)):
-        note = NotesModel(**note_attributes(text, userid, ticket))
+    def _create_note(userid,
+                     ticketid,
+                     text="This is a note"):
+        note = NotesModel(**note_attributes(text, userid, ticketid))
         note.save_to_db()
         return note
     yield _create_note

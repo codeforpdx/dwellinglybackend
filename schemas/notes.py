@@ -1,6 +1,7 @@
 from ma import ma
 from models.notes import NotesModel
 from models.user import UserModel
+from models.tickets import TicketModel
 from utils.time import time_format
 from marshmallow import fields, validates, ValidationError
 
@@ -26,3 +27,7 @@ class NotesSchema(ma.SQLAlchemyAutoSchema):
         if UserModel.find_by_id(value) is None:
             raise ValidationError("No such user")
 
+    @validates("ticketid")
+    def validates_existing_ticket(self, value):
+        if TicketModel.find_by_id(value) is None:
+            raise ValidationError("No ticket with id: %s exists" % (value))
