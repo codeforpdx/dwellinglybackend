@@ -1,5 +1,5 @@
 from db import db
-from models.user import UserModel
+import models.user
 from models.base_model import BaseModel
 from utils.time import Time
 
@@ -15,17 +15,14 @@ class NotesModel(BaseModel):
     ticketid = db.Column(db.Integer, db.ForeignKey('tickets.id'),
         nullable=False)
 
-    user = db.relationship('UserModel',
-                            backref=db.backref('notes', lazy=True))
-
     def json(self):
-        user = UserModel.find_by_id(self.userid)
+        userobj = models.user.UserModel.find_by_id(self.userid)
 
         return {
             'id':self.id,
             'ticketid': self.ticketid,
             'text': self.text,
-            'user': user.full_name(),
+            'user': userobj.full_name(),
             'created_at': Time.format_date(self.created_at),
             'updated_at': Time.format_date(self.updated_at)
         }
