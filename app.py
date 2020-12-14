@@ -7,11 +7,13 @@ from resources.admin_required import admin_required
 from models.user import UserModel, RoleEnum
 from models.property import PropertyModel
 from models.tenant import TenantModel
-from models.tenant_staff_link import StaffTenantLink
+from models.staff_tenant_link import StaffTenantLink
 from models.revoked_tokens import RevokedTokensModel
 from resources.user import UserRegister, User, UserLogin, ArchiveUser, UsersRole, UserAccessRefresh, UserRoles, Users
+from resources.user_invite import UserInvite
 from resources.reset_password import ResetPassword
 from resources.property import Properties, Property, ArchiveProperty
+from resources.staff_tenants import StaffTenants
 from resources.tenants import Tenants
 from resources.emergency_contacts import EmergencyContacts
 from flask_mail import Mail
@@ -32,6 +34,7 @@ def create_routes(app):
     api.add_resource(Properties,'properties')
     api.add_resource(ArchiveProperty,'properties/archive/<int:id>')
     api.add_resource(User, 'user/<int:user_id>')
+    api.add_resource(UserInvite, 'user/invite')
     api.add_resource(Users, 'user')
     api.add_resource(UsersRole, 'users/role')
     api.add_resource(ArchiveUser, 'user/archive/<int:user_id>')
@@ -40,6 +43,7 @@ def create_routes(app):
     api.add_resource(Widgets, 'widgets')
     api.add_resource(Email, 'user/message')
     api.add_resource(UserAccessRefresh, 'refresh')
+    api.add_resource(StaffTenants, 'staff-tenants')
     api.add_resource(Tenants, 'tenants', 'tenants/<int:tenant_id>')
     api.add_resource(EmergencyContacts, 'emergencycontacts', 'emergencycontacts/<int:id>')
     api.add_resource(Lease, 'lease/<int:id>')

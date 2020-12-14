@@ -7,9 +7,9 @@ def ticket_attributes():
     def _ticket_attributes(issue, tenant, assignedUser, sender):
         return {
             "issue": issue,
-            "tenant": tenant.id,
-            "assignedUser": assignedUser.id,
-            "sender": sender.id,
+            "tenantID": tenant.id,
+            "assignedUserID": assignedUser.id,
+            "senderID": sender.id,
             "status": TicketStatus.New,
             "urgency": "high"
         }
@@ -22,4 +22,4 @@ def create_ticket(ticket_attributes, create_tenant, create_admin_user, create_jo
         ticket = TicketModel(**ticket_attributes(issue, tenant, create_admin_user(), create_join_staff()))
         ticket.save_to_db()
         return ticket
-    yield _create_ticket
+

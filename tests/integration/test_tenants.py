@@ -1,4 +1,6 @@
 from conftest import is_valid, log
+from utils.time import Time
+from datetime import datetime
 
 endpoint = '/api/tenants'
 
@@ -21,7 +23,7 @@ def test_tenants_GET_one(client, test_database, auth_headers):
     assert response.json == {'message': 'Tenant not found'}
 
 
-def test_tenants_POST(client, auth_headers):
+def test_tenants_POST(client, test_database, auth_headers):
     newTenant = {
         "firstName": "Jake",
         "lastName": "The Dog",
@@ -30,11 +32,29 @@ def test_tenants_POST(client, auth_headers):
         "staffIDs": [1, 2]
     }
 
+    newTenantWithLease = {
+        "firstName": "Finn",
+        "lastName": "The Human",
+        "phone": "123-555-4321",
+        "propertyID": 2,
+        "occupants": 3,
+        "dateTimeEnd": Time.one_year_from_now_iso(),
+        "dateTimeStart": Time.yesterday_iso(),
+        "unitNum": "413"
+    }
+
     response = client.post(endpoint, json=newTenant,
                            headers=auth_headers["admin"])
 
     assert is_valid(response, 201)  # CREATED
     assert response.json['firstName'] == 'Jake'
+
+    response = client.post(endpoint, json=newTenantWithLease,
+                           headers=auth_headers["admin"])
+    assert is_valid(response, 201)
+    assert response.json['unitNum'] == '413'
+
+
 
     response = client.post(endpoint, json=newTenant,
                            headers=auth_headers["admin"])
@@ -66,7 +86,6 @@ def test_tenants_POST(client, auth_headers):
     assert is_valid(response, 400)
     assert response.json == {'message':
                              {'firstName': 'This field cannot be blank'}}
-
 
 def test_tenants_PUT(client, auth_headers):
     id = 1

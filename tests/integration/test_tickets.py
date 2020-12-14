@@ -1,3 +1,4 @@
+import pytest
 from conftest import is_valid
 from datetime import datetime
 from freezegun import freeze_time
@@ -20,7 +21,7 @@ def test_tickets_GET_all(client, test_database, auth_headers):
     assert len(response.json['tickets'][3]['notes']) == 0
 
 def test_tickets_GET_byTenant(client, test_database, auth_headers):
-    response = client.get(f'{endpoint}?tenant=1', headers=auth_headers["admin"])
+    response = client.get(f'{endpoint}?tenantID=1', headers=auth_headers["admin"])
     assert is_valid(response, 200)
     assert len(response.json['tickets']) == 2
     assert response.json['tickets'][0]['tenantID'] == 1
@@ -54,12 +55,12 @@ def test_tickets_GET_one(client, test_database, auth_headers):
 
 def test_tickets_POST(client, auth_headers):
     newTicket = {
-        'sender': 1,
-        'tenant': 1,
+        'senderID': 1,
+        'tenantID': 1,
         'status': "New",
         'urgency': 'low',
         'issue': 'Lead paint issue',
-        "assignedUser": 4,
+        "assignedUserID": 4,
     }
 
     dt = datetime.utcnow()
@@ -86,9 +87,9 @@ def test_tickets_POST(client, auth_headers):
 
 def test_tickets_PUT(client, auth_headers):
     updatedTicket = {
-        'sender': 2,
-        'tenant': 2,
-        'assignedUser': 3,
+        'senderID': 2,
+        'tenantID': 2,
+        'assignedUserID': 3,
         'status': 'In Progress',
         'urgency': 'high',
         'issue': 'Leaky pipe',
@@ -141,3 +142,10 @@ def test_tickets_DELETE(client, auth_headers):
     # NOT FOUND - Trying to delete a non-existing ticket or an already deleted ticket
     assert is_valid(response, 404)
     assert response.json == {'message': 'Ticket not found'}
+
+@pytest.mark.usefixtures("empty_test_db")
+class TestFixtures:
+    def test_create_ticket(self, create_ticket):
+        ticket = create_ticket()
+        assert ticket
+        assert ticket.issue == "Leaky pipe"

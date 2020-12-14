@@ -53,7 +53,8 @@ class Widgets(Resource):
             projectManagers.append(nullPropertyManager)
 
         return { 'opentickets':{
-            'title': 'Open Tickets', 
+            'title': 'Open Tickets',
+            'link': '/tickets', 
             'stats': [[
                 {
                     "stat": TicketModel.find_count_by_status("New"),
@@ -77,7 +78,7 @@ class Widgets(Resource):
         },
         'reports':{
             'title': 'Reports',
-            'link': '#',
+            'link': '/reports/',
             'stats': [
                 [ 
                     {
@@ -97,7 +98,7 @@ class Widgets(Resource):
         },
         'managers':{
                 'title': 'New Property Managers',
-                'link': '#',
+                'link': '/manage/managers/',
                 'isDate': True,
                 'stats': [projectManagers]
             }

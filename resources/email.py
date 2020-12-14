@@ -32,3 +32,11 @@ class Email(Resource):
         msg.html = render_template('emails/reset_msg.html', user=user, token=token)
 
         current_app.mail.send(msg)
+
+    @staticmethod
+    def send_user_invite_msg(user):
+        token = user.reset_password_token()
+        msg = Message('Create Your Dwellingly Account', sender=Email.NO_REPLY, recipients=[user.email])
+        msg.body = render_template('emails/invite_user_msg.txt', user=user, token=token)
+        msg.html = render_template('emails/invite_user_msg.html', user=user, token=token)
+        current_app.mail.send(msg)
