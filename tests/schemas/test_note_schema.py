@@ -7,7 +7,6 @@ from models.user import UserModel
 class TestNotesSchemaSerialization:
     @pytest.mark.usefixtures("empty_test_db")
     def test_notes_serialization(self,
-                                 create_join_staff,
                                  create_note,
                                  create_ticket):
         ticket = create_ticket()
