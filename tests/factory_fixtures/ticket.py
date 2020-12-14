@@ -22,4 +22,5 @@ def create_ticket(ticket_attributes, create_tenant, create_admin_user, create_jo
         ticket = TicketModel(**ticket_attributes(issue, tenant, create_admin_user(), create_join_staff()))
         ticket.save_to_db()
         return ticket
+    yield _create_ticket
 

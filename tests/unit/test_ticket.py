@@ -10,7 +10,7 @@ class TestBaseTicketModel(BaseInterfaceTest):
 
     def test_validate_tenant(self):
         invalid_tenant = {
-            'tenantID': 666kk
+            'tenantID': 666
         }
 
         invalid_tenant_validation_error = {'tenantID': ['666 is not a valid tenant ID']}

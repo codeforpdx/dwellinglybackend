@@ -10,7 +10,7 @@ class TestNotesSchemaSerialization:
                                  create_note,
                                  create_ticket):
         ticket = create_ticket()
-        user = UserModel.find_by_email("staffer@example.com")
+        user = UserModel.query.filter_by(id = ticket.senderID).first()
         note = create_note(user, ticket)
 
         note_schema = NotesSchema()
