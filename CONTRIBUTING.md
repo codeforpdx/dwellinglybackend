@@ -6,10 +6,10 @@ This application uses the [Flask](https://palletsprojects.com/p/flask/) micro-fr
  - [Flask-Restful](https://flask-restful.readthedocs.io/en/latest/) is used for routing to encourage Restful routes/resources.
  - [Marshmallow](https://marshmallow.readthedocs.io/en/stable/) is being used for input validation, serialization, and deserialization.
  - Flask-mail is currently being used to send mail, and Jinja is used for templating the email messages. However, the mail library has been deprecated and there is an open issue to switch to another library.
- - Flake8 is currently installed for linting, but probably not being used by many contributors. However, we will most likely be using [black](https://github.com/psf/black) in the future or a combination of Flake8 for linting and black for formatting.
- - For database migrations, we recently installed alembic and will be using that in the future. For now, while the app is under development, we drop the DB and rebuild whenever there is a change.
+ - [Flake8](https://gitlab.com/pycqa/flake8) is currently installed for linting, but probably not being used by many contributors. However, we will most likely be using [black](https://github.com/psf/black) in the future or a combination of Flake8 for linting and black for formatting.
+ - For database migrations, we recently installed [alembic](https://alembic.sqlalchemy.org/en/latest/) and will be using that in the future. For now, while the app is under development, we drop the DB and rebuild whenever there is a change.
  - There are three different environments the application has been configured to run in: development, testing, and production.
- - For testing, we are using Pytest.
+ - For testing, we are using [Pytest](https://docs.pytest.org/en/latest/).
  - It is an expectation that all new functionality, changes in behavior, or bug fixes will be covered under **automated tests**.
 
 There are currently three main areas of the application to be familiar with, and possibly four in the future (dependent on how serialization will be handled).
