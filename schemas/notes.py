@@ -15,12 +15,9 @@ class NotesSchema(ma.SQLAlchemyAutoSchema):
     updated_at = fields.DateTime(time_format)
 
     user = fields.Nested("UserSchema")
-    user = fields.Method("showFullName", deserialize = "getUserId")
+    user = fields.Method("showFullName")
     def showFullName(self, obj):
         return "%s %s" % (obj.user.firstName, obj.user.lastName)
-
-    def getUserId(self, value):
-        return int(value)
 
     @validates("userid")
     def validate_existing_user(self, value):
