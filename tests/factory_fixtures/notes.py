@@ -12,7 +12,7 @@ def note_attributes():
     yield _note_attributes
 
 @pytest.fixture
-def create_note(note_attributes, create_join_staff):
+def create_note(note_attributes):
 
     def _create_note(userid,
                      ticketid,
