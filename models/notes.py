@@ -16,13 +16,12 @@ class NotesModel(BaseModel):
         nullable=False)
 
     def json(self):
-        userobj = models.user.UserModel.find_by_id(self.userid)
 
         return {
             'id':self.id,
             'ticketid': self.ticketid,
             'text': self.text,
-            'user': userobj.full_name(),
+            'user': self.user.full_name(),
             'created_at': Time.format_date(self.created_at),
             'updated_at': Time.format_date(self.updated_at)
         }

@@ -42,7 +42,7 @@ class UserModel(BaseModel):
     archived = db.Column(db.Boolean)
     lastActive = db.Column(db.DateTime, default=datetime.utcnow)
 
-    note = db.relationship(models.notes.NotesModel,
+    notes = db.relationship(models.notes.NotesModel,
                            backref=db.backref('user', lazy=True))
 
 
