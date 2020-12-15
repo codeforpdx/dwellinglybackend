@@ -83,7 +83,7 @@ All endpoints are prefixed with `/api/`
 | POST   | `/properties/archive/:id` | Archives a single property (admin only) |
 
 ```javascript
-     {
+  {
     "id": "property1",
     "name": "Garden Blocks",
     "address": "1654 NE 18th Ave.",
@@ -91,6 +91,16 @@ All endpoints are prefixed with `/api/`
     "city": "Portland",
     "state": "OR",
     "archived": False
+  },
+```
+
+| method | route                     | action                                   |
+| :----- | :------------------------ | :--------------------------------------- |
+| POST   | `/properties/archive/`    | Archive multiple properties (admin only) |
+
+```javascript
+  {
+    "ids": [id1, id2, id3]
   },
 ```
 

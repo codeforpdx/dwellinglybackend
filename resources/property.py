@@ -3,7 +3,6 @@ from flask_restful import Resource, reqparse
 from resources.admin_required import admin_required
 from db import db
 from models.property import PropertyModel
-from models.user import UserModel
 
 # | method | route                | action                     |
 # | :----- | :------------------- | :------------------------- |
@@ -56,6 +55,27 @@ class ArchiveProperty(Resource):
         property.save_to_db()
 
         return property.json(), 201
+
+class ArchiveProperties(Resource):
+    parser = reqparse.RequestParser()
+    parser.add_argument('ids', action='append')
+
+    @admin_required
+    def post(self):
+        data = ArchiveProperties.parser.parse_args()
+        propertyList = []
+
+        for id in data['ids']:
+            property = PropertyModel.find_by_id(id)
+            if(not property):
+                return{'message': 'Properties cannot be archived'}, 400
+            property.archived = True
+            propertyList.append(property)
+
+        for p in propertyList:
+            p.save_to_db()
+
+        return {'archived': [p.id for p in propertyList]}, 201
 
 # single property/name
 class Property(Resource):
