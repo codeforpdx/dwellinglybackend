@@ -21,5 +21,6 @@ class StaffTenants(Resource):
                 staff_tenants.append(StaffTenantLink(tenant_id=tenant_id, staff_id=staff_id))
 
         db.session.bulk_save_objects(staff_tenants)
+        db.session.commit()
 
         return {'message': 'Staff-Tenant associations updated successfully'}
