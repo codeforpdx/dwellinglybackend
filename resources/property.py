@@ -75,7 +75,7 @@ class ArchiveProperties(Resource):
         for p in propertyList:
             p.save_to_db()
 
-        return {'archived': [p.id for p in propertyList]}, 201
+        return {'properties': [p.json() for p in PropertyModel.query.all()]}, 201
 
 # single property/name
 class Property(Resource):
