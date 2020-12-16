@@ -1,6 +1,6 @@
 # Contributing
 ## App Architecture
-This section describes how the application is structured, mainly the Python backend. This does not attempt to cover any information about the React frontend. As of this writing, the app is currently under a major refactoring to make the application more robust. There is code that uses the deprecated [RequestParser](https://flask-restful.readthedocs.io/en/latest/reqparse.html) which is being removed from the application in favor of [Marshmallow](https://marshmallow.readthedocs.io/en/stable/). It is expected that all new functionality uses Marshmallow.
+This section describes the structure of the Python backed for the Dwellingly application. This does not cover the React frontend. The app is currently under a major refactoring to make the application more robust. We are removing code that uses the deprecated request parser from [Flask-RESTful](https://flask-restful.readthedocs.io/en/latest/reqparse.html) and are replacing it with [Marshmallow](https://marshmallow.readthedocs.io/en/stable/). After the refactoring is complete, all API request parsing will be handled by Marshmallow.
 
 This application uses the [Flask](https://palletsprojects.com/p/flask/) micro-framework backed by an [sqlLite](https://sqlite.org/index.html) database ([Postgres](https://www.postgresql.org/) for production) utilizing [SQLAlchemy](https://docs.sqlalchemy.org/en/14/) as the ORM.
  - [Flask-Restful](https://flask-restful.readthedocs.io/en/latest/) is used for routing to encourage Restful routes/resources.
