@@ -44,7 +44,7 @@ Models define the database tables, the methods used to fetch data from the datab
 
 #### Testing Models
 
-All models should have unit tests that can be found in the `tests/unit` directory. Each model should have tests that test the inherited methods from the BaseModel to ensure that nothing crazy is inadvertently done to change the behavior of the methods that the BaseModel provides. These are easily implemented using the base_interface_test file. Finally, there should be a test for every public method that is defined in the model. This would be the JSON method or any other method defined in the file that is directly used outside of the Models class.
+All models should have unit tests that can be found in the `tests/unit` directory. Each model should have tests that test the inherited methods from the BaseModel to ensure that nothing crazy is inadvertently done to change the behavior of the methods that the BaseModel provides. These are easily implemented using the `base_interface_test` file. Finally, there should be a test for every public method that is defined in the model. This would be the JSON method or any other method defined in the file that is directly used outside of the Models class.
 
 ### Schemas
 
