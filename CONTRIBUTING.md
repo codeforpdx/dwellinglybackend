@@ -54,7 +54,9 @@ Testing Schemas:
 
 All schemas should have unit tests, which primarily should be validation tests. This app uses Flask-Marshmallow, which provides an auto-schema that infers some basic validations based on the table definition in the Models class. Any additional validations defined in the schema must be tested. Schema tests can be found in the `tests/schemas` directory. Deserialization should also be tested here when used. Serialization is currently not used and does not need to be tested here at this time. Testing serialization may take place elsewhere.
 
-Resources:
+### Resources
+
+Flask-RESTful uses the term "resources" in place of "controllers" in an MVC framework and that is also the term we use in this project.
 
 A resource's main job is to coordinate a response for the incoming request. If data is provided the resource will send that data to the schema for validation and deserialization. The resource will communicate with the model to query for data or insert/update a table row in the database. Finally, the resource will send a response back to the client. Resources can be found in the `resources` directory.
 
