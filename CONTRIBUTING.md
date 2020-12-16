@@ -60,7 +60,7 @@ Flask-RESTful uses the term "resources" in place of "controllers" in an MVC fram
 
 A resource's main job is to coordinate a response for the incoming request. If data is provided, the resource will send that data to the schema for validation and deserialization. The resource will communicate with the model to query for data or insert/update a table row in the database. Finally, the resource will send a response back to the client. Resources can be found in the `resources` directory.
 
-Testing Resources:
+#### Testing Resources
 
 Each resource will usually have one test for each action (GET, POST, DELETE, etc...). When the Models and Schemas have unit tests, and when the resource uses the models and schemas appropriately, then **generally** only a successful response (The Happy Path) needs to be tested. All other responses that can occur happen elsewhere and are already under test. Such as validation errors, or a database row cannot be found. Errors such as these need not be tested as they're already built into the architecture of the app and happen automatically as long as the schemas are used along with the appropriate methods defined in the BaseModel. Tests for the resources can be found in the `tests/integration` directory.
 
