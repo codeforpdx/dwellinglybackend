@@ -27,7 +27,8 @@ We use [pytest](https://docs.pytest.org/en/latest/) for automated testing.
 
 All new functionality, changes in behavior, or bug fixes **must** be validated by pytest using test cases.
 
-There are currently three main areas of the application to be familiar with, and possibly four in the future (dependent on how serialization will be handled).
+
+## Project Components
 
 The three main areas are resources, models, and schemas. This is in line with an MVC web application. The resources directory contains all of the controllers/endpoints. Resources is the terminology that Flask-restful uses and it is the terminology used here. Models are the models, that is where the database tables are defined, and methods that are related to fetching data from the database. The Schemas are for the Marshmallow library, and they define how to validate, serialize, and deserialize the data.
 
