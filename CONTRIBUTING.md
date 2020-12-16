@@ -7,11 +7,11 @@ Dwellingly is developed using the following tools and extensions:
 - [Flask](https://palletsprojects.com/p/flask/) is used for the main web application framework
 - [SQLite](https://sqlite.org/index.html) is used for database management ([Postgres](https://www.postgresql.org/) for production)
 - [SQLAlchemy](https://docs.sqlalchemy.org/en/14/) is used for object-relational mapping
- - [Flask-Restful](https://flask-restful.readthedocs.io/en/latest/) is used for routing to encourage Restful routes/resources.
- - [Marshmallow](https://marshmallow.readthedocs.io/en/stable/) is being used for input validation, serialization, and deserialization.
- - Flask-mail is currently being used to send mail, and Jinja is used for templating the email messages. However, the mail library has been deprecated and there is an open issue to switch to another library.
- - [Flake8](https://gitlab.com/pycqa/flake8) is currently installed for linting, but probably not being used by many contributors. However, we will most likely be using [black](https://github.com/psf/black) in the future or a combination of Flake8 for linting and black for formatting.
- - For database migrations, we recently installed [alembic](https://alembic.sqlalchemy.org/en/latest/) and will be using that in the future. For now, while the app is under development, we drop the DB and rebuild whenever there is a change.
+ - [Flask-RESTful](https://flask-restful.readthedocs.io/en/latest/) is used for routing to encourage RESTful routes and resources.
+- [Marshmallow](https://marshmallow.readthedocs.io/en/stable/) is used for input validation, serialization, and deserialization.
+- Flask-mail is currently used to send mail and Jinja is used for templating the email messages. However, the mail library has been deprecated and there is an open issue to switch to another library.
+- [Flake8](https://gitlab.com/pycqa/flake8) is currently installed for linting, but it is probably not being used by many contributors. However, we will most likely be using [Black](https://github.com/psf/black) in the future, or a combination of Flake8 for linting and Black for formatting.
+- [Alembic](https://alembic.sqlalchemy.org/en/latest/) was recently installed for database migrations. However, while the app is under development, we rebuild the database whenever there is a change.
  - There are three different environments the application has been configured to run in: development, testing, and production.
  - For testing, we are using [Pytest](https://docs.pytest.org/en/latest/).
  - It is an expectation that all new functionality, changes in behavior, or bug fixes will be covered under **automated tests**.
