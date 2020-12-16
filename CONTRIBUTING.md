@@ -93,3 +93,21 @@ How to contribute to this project.
 ```
 
 (Step #3 creates a new branch titled <name of branch> and navigates you to that branch)
+
+#### Updating development branch
+
+To update your development branch with the latest changes:
+
+1. First checkout the development branch if not already checked out.
+ - Then run: `git checkout development`
+
+2. Pull the latest changes from github down to your local copy.
+ - Assuming origin is set to the GitHub Code for PDX dev branch run:
+ - `git pull origin development`
+
+3. After pulling fresh copy it is a good habit to install any new deps and rebuild the database. Run the following two commands:
+ - `pipenv run install -d`
+ - `pipenv run flask db recreate`
+
+4. Finally - run the tests to ensure everything is passing.
+ - `pipenv run pytest`

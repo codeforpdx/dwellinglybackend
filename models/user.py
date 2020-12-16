@@ -6,7 +6,6 @@ import jwt
 from db import db
 from enum import Enum
 from models.base_model import BaseModel
-from flask import current_app
 from jwt import ExpiredSignatureError
 from utils.time import Time
 
@@ -17,6 +16,15 @@ class RoleEnum(Enum):
     STAFF = 3
     ADMIN = 4
 
+    @classmethod
+    def get_values(cls):
+        return [member.value for name, member in cls.__members__.items()]
+
+    @classmethod
+    def has_role(cls, role):
+        role_values = cls.get_values()
+        return role in role_values
+
 
 class UserModel(BaseModel):
     __tablename__ = 'users'
@@ -24,9 +32,9 @@ class UserModel(BaseModel):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(100), unique=True, nullable=False)
     role = db.Column(db.Enum(RoleEnum), default=RoleEnum.PENDING)
-    firstName = db.Column(db.String(80))
-    lastName = db.Column(db.String(80))
-    phone = db.Column(db.String(25))
+    firstName = db.Column(db.String(100))
+    lastName = db.Column(db.String(100))
+    phone = db.Column(db.String(20))
     hash_digest = db.Column(db.LargeBinary(60))
     password = db.Column(db.String(), default=None, onupdate=None)
     archived = db.Column(db.Boolean)
@@ -113,4 +121,3 @@ class UserModel(BaseModel):
             self.hash_digest = UserModel._hash_pw(self.password)
         db.session.add(self)
         db.session.commit()
-

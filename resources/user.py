@@ -9,6 +9,9 @@ from models.revoked_tokens import RevokedTokensModel
 import json
 from werkzeug.security import safe_str_cmp
 from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt_claims, get_raw_jwt, get_jwt_identity, jwt_refresh_token_required
+from resources.email import Email
+import string
+import random
 
 
 class UserRoles(Resource):
@@ -203,7 +206,7 @@ class Users(Resource):
 
         role_query = int(request.args["r"])
 
-        if role_query not in range(0, 5):
+        if not RoleEnum.has_role(role_query):
             return {"message": "Invalid role"}, 400
 
         role = RoleEnum(role_query)

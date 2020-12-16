@@ -239,7 +239,8 @@ def test_get_user(client, auth_headers, new_user):
 
     """Queries with a non-existing role returns a 400 response"""
 
-    unknown_user_response = client.get('api/user?r=5', headers=auth_headers["admin"])
+    unknown_role = max(RoleEnum.get_values()) + 1
+    unknown_user_response = client.get(f'api/user?r={unknown_role}', headers=auth_headers["admin"])
     assert is_valid(unknown_user_response, 400)
 
     """Non-admin requests return a 401 status code"""
@@ -249,6 +250,22 @@ def test_get_user(client, auth_headers, new_user):
     assert unauthorized_user_response.json == \
             {'message': 'Admin access required'}
 
+@pytest.mark.usefixtures('client_class', 'empty_test_db')
+class TestUserInvite:
+    def setup(self):
+        self.endpoint = '/api/user/invite'
+
+    def test_invite_user(self, valid_header):
+        property_manager_json = {
+            "email": "manager@domain.com",
+            "firstName": "Leslie",
+            "lastName": "Knope",
+            "phone": "505-503-4455",
+            "role": "STAFF"
+        }
+        response = self.client.post(self.endpoint, headers=valid_header, json=property_manager_json)
+        assert response.json == {'message': 'User Invited'}
+        assert response.status_code == 200
 
 @pytest.mark.usefixtures('client_class', 'empty_test_db')
 class TestReigsterUser:
@@ -258,7 +275,6 @@ class TestReigsterUser:
             'email': 'faker.unique.email@example.com',
             'password': 'faker.password'
         }
-
     def test_user_can_register_with_valid_payload(self):
         response = self.client.post(self.endpoint, json=self.valid_payload)
 

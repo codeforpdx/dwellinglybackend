@@ -1,45 +1,26 @@
-from models.tickets import TicketModel, TicketStatus
-from models.notes import NotesModel
+from tests.unit.base_interface_test import BaseInterfaceTest
+from models.tickets import TicketModel
+from schemas.ticket import TicketSchema
 
-def test_ticket():
-    """The properties must match the ticket model's inputs."""
-    testIssue = 'Property Damage'
-    testSender = 'user1 tester'
-    testTenant = 'Renty McRenter'
-    testStatus = TicketStatus.New
-    testUrgency = 'low'
-    testAssignedUser = 4
+class TestBaseTicketModel(BaseInterfaceTest):
+    def setup(self):
+        self.object = TicketModel()
+        self.custom_404_msg = 'Ticket not found'
+        self.schema = TicketSchema
 
-    test_ticket = TicketModel(
-        issue=testIssue,
-        sender=testSender,
-        tenant=testTenant,
-        status=testStatus,
-        urgency=testUrgency,
-        assignedUser=testAssignedUser,
-    )
+    def test_validate_tenant(self):
+        invalid_tenant = {
+            'tenantID': 666
+        }
 
-    assert test_ticket.issue == testIssue
-    assert test_ticket.sender == testSender
-    assert test_ticket.tenant == testTenant
-    assert test_ticket.status == testStatus
-    assert test_ticket.urgency == testUrgency
-    assert test_ticket.assignedUser == testAssignedUser
+        invalid_tenant_validation_error = {'tenantID': ['666 is not a valid tenant ID']}
+        assert invalid_tenant_validation_error == TicketSchema().validate(invalid_tenant)
 
+    def test_validate_assigned_user_and_sender(self):
+        invalid_assigned_user_and_sender = {
+            'assignedUserID': 777,
+            'senderID': 888
+        }
 
-def test_notes():
-    """The properties must match the notes model's inputs."""
-
-    testTicketId = 1
-    testText = 'Tenant has 40 cats'
-    testUser = 'user1 tester'
-
-    test_note = NotesModel(
-        ticketid=testTicketId,
-        text=testText,
-        user=testUser,
-    )
-
-    assert test_note.ticketid == testTicketId
-    assert test_note.text == testText
-    assert test_note.user == testUser
+        invalid_assigned_user_validation_error = {'assignedUserID': ['777 is not a valid user ID'], 'senderID': ['888 is not a valid user ID']}
+        assert invalid_assigned_user_validation_error == TicketSchema().validate(invalid_assigned_user_and_sender)

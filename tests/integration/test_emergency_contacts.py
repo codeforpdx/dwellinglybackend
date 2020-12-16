@@ -34,7 +34,7 @@ def test_emergency_contacts_GET_one(client, test_database):
   id = 100
   response = client.get(f'{endpoint}/{id}')
   assert is_valid(response, 404) # NOT FOUND - 'Emergency Contact not found'
-  assert response.json == {'message': 'Emergency contact not found'}
+  assert response.json == {'message': 'EmergencyContact not found'}
 
 
 def test_emergency_contacts_POST(client, auth_headers):
@@ -47,17 +47,30 @@ def test_emergency_contacts_POST(client, auth_headers):
     ]
   }
 
+  invalidContactNum = {
+    'name': "Contact Name",
+    'description': "An invalid contact number",
+    'contact_numbers': [
+      {"number": 503-291-9111, "numtype": "Call"},
+      {"number": "503-555-3321", "numtype": "Text"}
+    ]
+  }
+
   response = client.post(endpoint, json=newContact, headers=auth_headers["admin"])
-  assert is_valid(response, 401) # UNAUTHORIZED - Emergency Contact With This Name Already Exists
+  assert is_valid(response, 400) # UNAUTHORIZED - Emergency Contact With This Name Already Exists
   assert response.json == \
-          {'message':
-           'An emergency contact with this name already exists'}
+         {'message': {'name': ['Narcotics Anonymous is already an emergency contact']}}
+
+  response = client.post(endpoint, json=invalidContactNum, headers=auth_headers["admin"])
+  assert is_valid(response, 400)  # BAD REQUEST - Invalid contact number - number is not string type
+  assert response.json == \
+         {'message': {'contact_numbers': {'0': {'number': ['Not a valid string.']}}}}
 
   response = client.post(endpoint, json=newContact, headers=auth_headers["pm"])
   assert is_valid(response, 401) # UNAUTHORIZED - Admin Access Required
   assert response.json == {'message': 'Admin access required'}
 
-  response = client.post(endpoint, json=newContact, headers=auth_headers["pending"]) 
+  response = client.post(endpoint, json=newContact, headers=auth_headers["pending"])
   assert is_valid(response, 401) # UNAUTHORIZED - Admin Access Required
   assert response.json == {'message': 'Admin access required'}
 
@@ -67,13 +80,14 @@ def test_emergency_contacts_POST(client, auth_headers):
 
   newContact['name'] = 'Cooler Name'
   response = client.post(endpoint, json=newContact, headers=auth_headers["admin"])
-  assert is_valid(response, 201) # CREATED
+  assert is_valid(response, 201)  # CREATED
   assert response.json['name'] == 'Cooler Name'
+  assert response.json['contact_numbers'][0]["number"] == "503-291-9111"
 
   newContact = {}
   response = client.post(endpoint, json=newContact, headers=auth_headers["admin"])
   assert is_valid(response, 400) # BAD REQUEST - {'name': 'This Field Cannot Be Blank.'}
-  assert response.json == {'message': {'name': 'This field cannot be blank'}}
+  assert response.json == {'message': {'name': ['Missing data for required field.']}}
 
 
 def test_emergency_contacts_PUT(client, auth_headers):
@@ -85,9 +99,14 @@ def test_emergency_contacts_PUT(client, auth_headers):
       {"number": "503-555-3321", "numtype": "Text"}
     ]
   }
+
   response = client.put(f'{endpoint}/{id}', json=updatedInfo, headers=auth_headers["admin"])
   assert is_valid(response, 200) # OK
   assert response.json['name'] == 'Greg'
+  # assert response.json['contact_numbers'][0]['number'] == '503-291-9111'
+  # This test will fail, Contact Numbers need an id in order to be updated.
+  # The request is not submitting an id.
+  # TODO: Create issue to address non restful behavior.
 
   id = 100
   response = client.put(f'{endpoint}/{id}', json=updatedInfo, headers=auth_headers["admin"])
@@ -115,4 +134,4 @@ def test_emergency_contacts_DELETE(client, auth_headers):
 
   response = client.delete(f'{endpoint}/{id}', headers=auth_headers["admin"])
   assert is_valid(response, 404) # NOT FOUND - Emergency Contact Not Found
-  assert response.json == {'message': 'Emergency contact not found'}
+  assert response.json == {'message': 'EmergencyContact not found'}
