@@ -2,7 +2,11 @@
 ## App Architecture
 This section describes the structure of the Python backed for the Dwellingly application. This does not cover the React frontend. The app is currently under a major refactoring to make the application more robust. We are removing code that uses the deprecated request parser from [Flask-RESTful](https://flask-restful.readthedocs.io/en/latest/reqparse.html) and are replacing it with [Marshmallow](https://marshmallow.readthedocs.io/en/stable/). After the refactoring is complete, all API request parsing will be handled by Marshmallow.
 
-This application uses the [Flask](https://palletsprojects.com/p/flask/) micro-framework backed by an [sqlLite](https://sqlite.org/index.html) database ([Postgres](https://www.postgresql.org/) for production) utilizing [SQLAlchemy](https://docs.sqlalchemy.org/en/14/) as the ORM.
+Dwellingly is developed using the following tools and extensions:
+
+- [Flask](https://palletsprojects.com/p/flask/) is used for the main web application framework
+- [SQLite](https://sqlite.org/index.html) is used for database management ([Postgres](https://www.postgresql.org/) for production)
+- [SQLAlchemy](https://docs.sqlalchemy.org/en/14/) is used for object-relational mapping
  - [Flask-Restful](https://flask-restful.readthedocs.io/en/latest/) is used for routing to encourage Restful routes/resources.
  - [Marshmallow](https://marshmallow.readthedocs.io/en/stable/) is being used for input validation, serialization, and deserialization.
  - Flask-mail is currently being used to send mail, and Jinja is used for templating the email messages. However, the mail library has been deprecated and there is an open issue to switch to another library.
