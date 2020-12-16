@@ -48,7 +48,7 @@ All models should have unit tests that can be found in the `tests/unit` director
 
 ### Schemas
 
-Marshmallow Schemas are used primarily for input validation and deserialization. And eventually, we will probably use it for serialization too. Schemas receive the data that the client sends to the back-end, which validates that data before the data is inserted into the database, or used by other parts of the app. They can also describe how the data is serialized before sending data to the client. Schemas can be found in the `schemas` directory.
+Marshmallow schemas are used primarily for input validation and deserialization. Eventually we will probably use it for serialization too. Schemas validate the data that is received by the client at the back end, before the data is inserted into the database or used by other parts of the app. They can also describe how the data is serialized before sending data to the client. Schemas can be found in the `schemas` directory.
 
 #### Testing Schemas
 
