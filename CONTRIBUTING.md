@@ -12,9 +12,20 @@ Dwellingly is developed using the following tools and extensions:
 - Flask-mail is currently used to send mail and Jinja is used for templating the email messages. However, the mail library has been deprecated and there is an open issue to switch to another library.
 - [Flake8](https://gitlab.com/pycqa/flake8) is currently installed for linting, but it is probably not being used by many contributors. However, we will most likely be using [Black](https://github.com/psf/black) in the future, or a combination of Flake8 for linting and Black for formatting.
 - [Alembic](https://alembic.sqlalchemy.org/en/latest/) was recently installed for database migrations. However, while the app is under development, we rebuild the database whenever there is a change.
- - There are three different environments the application has been configured to run in: development, testing, and production.
- - For testing, we are using [Pytest](https://docs.pytest.org/en/latest/).
- - It is an expectation that all new functionality, changes in behavior, or bug fixes will be covered under **automated tests**.
+
+## Project Environments
+
+The Dwellingly app is developed using the following environments:
+
+- `development`
+- `testing`
+- `production`
+
+## Testing
+
+We use [pytest](https://docs.pytest.org/en/latest/) for automated testing.
+
+All new functionality, changes in behavior, or bug fixes **must** be validated by pytest using test cases.
 
 There are currently three main areas of the application to be familiar with, and possibly four in the future (dependent on how serialization will be handled).
 
