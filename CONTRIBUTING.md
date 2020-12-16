@@ -52,7 +52,7 @@ Marshmallow Schemas are used primarily for input validation and deserialization.
 
 Testing Schemas:
 
-All schemas should have unit tests. Primarily validation tests. This app uses flask-marshmallow which provides an auto-schema that infers some basic validations based on the table definition in the Models class. Any additional validations defined in the schema must be tested. Schema tests can be found in the `tests/schemas` directory. Deserialization should also be tested here when used. Serialization is currently not used and does not need to be tested here at this time. Testing serialization may take place elsewhere.
+All schemas should have unit tests, which primarily should be validation tests. This app uses Flask-Marshmallow, which provides an auto-schema that infers some basic validations based on the table definition in the Models class. Any additional validations defined in the schema must be tested. Schema tests can be found in the `tests/schemas` directory. Deserialization should also be tested here when used. Serialization is currently not used and does not need to be tested here at this time. Testing serialization may take place elsewhere.
 
 Resources:
 
