@@ -32,7 +32,7 @@ All new functionality, changes in behavior, or bug fixes **must** be validated b
 
 The three main areas are resources, models, and schemas. This is in line with an MVC web application. The resources directory contains all of the controllers/endpoints. Resources is the terminology that Flask-restful uses and it is the terminology used here. Models are the models, that is where the database tables are defined, and methods that are related to fetching data from the database. The Schemas are for the Marshmallow library, and they define how to validate, serialize, and deserialize the data.
 
-A fourth potential main area is the serializers folder which will be used to build the response.
+A fourth potential main area is the `serializers` folder, which will be used to build the response.
 
 There is one more file to be familiar with and that is the `app.py` file. This is the file that executes when the application starts. This is also where we are describing the routes for the app.
 
