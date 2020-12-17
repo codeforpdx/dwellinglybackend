@@ -1,15 +1,14 @@
-from ma import ma
 from models.notes import NotesModel
 from models.user import UserModel
 from models.tickets import TicketModel
 from utils.time import time_format
-from marshmallow import fields, validates, ValidationError
+from marshmallow import fields, Schema, validates, ValidationError
 
-class NotesSchema(ma.SQLAlchemyAutoSchema):
-    class Meta:
-        model = NotesModel
-        include_fk = True
-        include_relationships = True
+class NotesSchema(Schema):
+    id = fields.Integer()
+    text = fields.Str()
+    userid = fields.Integer()
+    ticketid = fields.Integer()
 
     created_at = fields.DateTime(time_format)
     updated_at = fields.DateTime(time_format)
