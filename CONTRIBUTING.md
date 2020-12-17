@@ -30,7 +30,7 @@ All new functionality, changes in behavior, or bug fixes **must** be validated b
 
 ## Project Components
 
-The three main areas are resources, models, and schemas. This is in line with an MVC web application. The resources directory contains all of the controllers/endpoints. Resources is the terminology that Flask-restful uses and it is the terminology used here. Models are the models, that is where the database tables are defined, and methods that are related to fetching data from the database. The Schemas are for the Marshmallow library, and they define how to validate, serialize, and deserialize the data.
+The three main areas of the application to be familiar with are resources, models, and schemas. The models and resources align respectively with the model and controller components of a Model-View-Controller (MVC) web application. Schemas are used for input validation and deserialization.
 
 A fourth potential main area is the `serializers` folder, which will be used to build the response.
 
