@@ -61,9 +61,12 @@ class ArchiveProperties(Resource):
     parser.add_argument('ids', action='append')
 
     @admin_required
-    def post(self):
+    def patch(self):
         data = ArchiveProperties.parser.parse_args()
         propertyList = []
+
+        if not ('ids' in data and type(data['ids']) is list):
+            return{'message': 'Property IDs missing in request'}, 400
 
         for id in data['ids']:
             property = PropertyModel.find_by_id(id)
@@ -72,10 +75,9 @@ class ArchiveProperties(Resource):
             property.archived = True
             propertyList.append(property)
 
-        for p in propertyList:
-            p.save_to_db()
-
-        return {'properties': [p.json() for p in PropertyModel.query.all()]}, 201
+        db.session.bulk_save_objects(propertyList)
+        db.session.commit()
+        return {'properties': [p.json() for p in PropertyModel.query.all()]}, 200
 
 # single property/name
 class Property(Resource):

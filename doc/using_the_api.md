@@ -96,7 +96,7 @@ All endpoints are prefixed with `/api/`
 
 | method | route                     | action                                   |
 | :----- | :------------------------ | :--------------------------------------- |
-| POST   | `/properties/archive/`    | Archive multiple properties (admin only) |
+| PATCH  | `/properties/archive/`    | Archive multiple properties (admin only) |
 
 ```javascript
   {

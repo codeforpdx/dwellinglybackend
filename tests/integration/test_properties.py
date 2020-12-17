@@ -1,3 +1,4 @@
+import pytest
 from models.property import PropertyModel
 from models.user import UserModel
 import json
@@ -67,41 +68,49 @@ def test_archive_property_by_id(client, auth_headers, new_property, test_databas
     assert responseBadPropertyID.get_json() == {'message': 'Property cannot be archived'}
     assert responseBadPropertyID.status_code == 400
 
-def test_archive_property_by_id(client, auth_headers, new_property, test_database):
-    response = client.get('/api/properties', headers=auth_headers["admin"])
-    propertiesInfo = response.get_json()['properties']
-    firstProperty = propertiesInfo[0]
-    firstPropertyId = firstProperty['id']
-    allPropertyIds = [p['id'] for p in propertiesInfo]
+@pytest.mark.usefixtures('client_class', 'empty_test_db')
+class TestPropertyArchivalMethods:
+    def test_archive_properties_non_admin(self, staff_header):
+        """The server responds with a 401 error if a non-admin tries to archive"""
+        responseNoAdmin = self.client.patch(f'/api/properties/archive', json={}, headers=staff_header)
+        assert responseNoAdmin == 401
 
-    """The server responds with a 401 error if a non-admin tries to archive"""
-    responseNoAdmin = client.post(f'/api/properties/archive', json={})
-    assert responseNoAdmin == 401
-    assert responseNoAdmin.json == {'message': 'Missing authorization header'}
+    def test_archive_properties(self, admin_header, create_property):
+        firstProperty = create_property()
+        secondProperty = create_property()
+        thirdProperty = create_property()
+        propertiesInfo = [firstProperty, secondProperty, thirdProperty]
+        firstPropertyId = firstProperty.id
+        allPropertyIds = [p.id for p in propertiesInfo]
 
-    """The archive properties endpoint should return a 201 code when successful"""
-    responseSuccess = client.post(f'/api/properties/archive', json={'ids': [firstPropertyId]}, headers=auth_headers['admin'])
-    assert responseSuccess.status_code == 201
+        """The archive properties endpoint should return a 201 code when successful"""
+        responseSuccess = self.client.patch(f'/api/properties/archive', json={'ids': [firstPropertyId]}, headers=admin_header)
+        assert responseSuccess.status_code == 200
 
-    """The archive properties endpoint should return data for all properties (check count, spot-check some fields) when successful"""
-    responseSuccess = client.post(f'/api/properties/archive', json={'ids': [firstPropertyId]}, headers=auth_headers['admin'])
-    propertiesReturnedByEndpoint = json.loads(responseSuccess.data)['properties']
-    assert len(propertiesReturnedByEndpoint) == len(propertiesInfo)
-    assert all([ p['name'] and p['address'] for p in propertiesReturnedByEndpoint ])
+        """The archive properties endpoint should return data for all properties (check count, spot-check some fields) when successful"""
+        responseSuccess = self.client.patch(f'/api/properties/archive', json={'ids': [firstPropertyId]}, headers=admin_header)
+        propertiesReturnedByEndpoint = json.loads(responseSuccess.data)['properties']
+        assert len(propertiesReturnedByEndpoint) == len(propertiesInfo)
+        assert all([ p['name'] and p['address'] for p in propertiesReturnedByEndpoint ])
 
-    """The (single) archived property has its 'archived' key set to True"""
-    responsePropertyByName = client.get(f'/api/properties/{firstProperty["name"]}', headers=auth_headers['admin'])
-    assert json.loads(responsePropertyByName.data)['archived']
+        """The (single) archived property has its 'archived' key set to True"""
+        responsePropertyByName = self.client.get(f'/api/properties/{firstProperty.name}', headers=admin_header)
+        assert json.loads(responsePropertyByName.data)['archived']
 
-    """When archiving multiple properties, all properties have the 'archived' key set to True"""
-    responseSuccess = client.post(f'/api/properties/archive', json={'ids': allPropertyIds}, headers=auth_headers['admin'])
-    responseAllProperties = client.get(f'/api/properties', headers=auth_headers['admin'])
-    assert all([ prop['archived'] for prop in json.loads(responseAllProperties.data)['properties'] ])
+        """When archiving multiple properties, all properties have the 'archived' key set to True"""
+        responseSuccess = self.client.patch(f'/api/properties/archive', json={'ids': allPropertyIds}, headers=admin_header)
+        responseAllProperties = self.client.get(f'/api/properties', headers=admin_header)
+        assert all([ prop['archived'] for prop in json.loads(responseAllProperties.data)['properties'] ])
 
-    """The server responds with a 400 error if request body contains a non-existent property id"""
-    responseBadPropertyID = client.post('/api/properties/archive', json={'ids': [99999]}, headers=auth_headers['admin'])
-    assert responseBadPropertyID.get_json() == {'message': 'Properties cannot be archived'}
-    assert responseBadPropertyID.status_code == 400
+        """The server responds with a 400 error if request body contains a non-existent property id"""
+        responseBadPropertyID = self.client.patch('/api/properties/archive', json={'ids': [99999]}, headers=admin_header)
+        assert responseBadPropertyID.get_json() == {'message': 'Properties cannot be archived'}
+        assert responseBadPropertyID.status_code == 400
+
+        """The server responds with a 400 error if request body does not contain a list of property ids"""
+        responseBadPropertyID = self.client.patch('/api/properties/archive', json={}, headers=admin_header)
+        assert responseBadPropertyID.get_json() == {'message': 'Property IDs missing in request'}
+        assert responseBadPropertyID.status_code == 400
 
 
 def test_delete_property_by_name(client, auth_headers, test_database):
