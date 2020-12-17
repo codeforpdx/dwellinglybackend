@@ -1,6 +1,6 @@
 from ma import ma
 from models.property import PropertyModel
-from marshmallow import fields, validates, ValidationError, INCLUDE
+from marshmallow import fields, validates, ValidationError
 from utils.time import time_format
 
 
