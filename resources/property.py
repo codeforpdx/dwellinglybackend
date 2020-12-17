@@ -3,7 +3,6 @@ from flask_restful import Resource, reqparse
 from resources.admin_required import admin_required
 from db import db
 from models.property import PropertyModel
-from models.user import UserModel
 
 # | method | route                | action                     |
 # | :----- | :------------------- | :------------------------- |
@@ -56,6 +55,29 @@ class ArchiveProperty(Resource):
         property.save_to_db()
 
         return property.json(), 201
+
+class ArchiveProperties(Resource):
+    parser = reqparse.RequestParser()
+    parser.add_argument('ids', action='append')
+
+    @admin_required
+    def patch(self):
+        data = ArchiveProperties.parser.parse_args()
+        propertyList = []
+
+        if not ('ids' in data and type(data['ids']) is list):
+            return{'message': 'Property IDs missing in request'}, 400
+
+        for id in data['ids']:
+            property = PropertyModel.find_by_id(id)
+            if(not property):
+                return{'message': 'Properties cannot be archived'}, 400
+            property.archived = True
+            propertyList.append(property)
+
+        db.session.bulk_save_objects(propertyList)
+        db.session.commit()
+        return {'properties': [p.json() for p in PropertyModel.query.all()]}, 200
 
 # single property/name
 class Property(Resource):
