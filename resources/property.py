@@ -107,6 +107,9 @@ class Property(Resource):
         if(data.state):
             rentalProperty.state = data.state
 
+        if (data.unit):
+            rentalProperty.unit = data.unit
+
         if data.propertyManagerIDs:
             rentalProperty.managers = PropertyModel.set_property_managers(data.propertyManagerIDs)
 
