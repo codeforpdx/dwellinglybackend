@@ -7,10 +7,10 @@ from models.property import PropertyModel
 # | method | route                | action                     |
 # | :----- | :------------------- | :------------------------- |
 # | POST   | `v1/properties/`     | Creates a new property     |
-# | GET    | `v1/properties/`   | Gets all properties        |
-# | GET    | `v1/property/:name`  | Gets a single property     |
-# | PUT    | `v1/property/:name`  | Updates a single property  |
-# | DELETE | `v1/property/:name`  | Deletes a single property  |
+# | GET    | `v1/properties/`     | Gets all properties        |
+# | GET    | `v1/property/:id`    | Gets a single property     |
+# | PUT    | `v1/property/:id`    | Updates a single property  |
+# | DELETE | `v1/property/:id`    | Deletes a single property  |
 
 #TODO Add Id based identifiers.
 #TODO Incorporate JWT Claims for Admin
@@ -93,25 +93,25 @@ class Property(Resource):
     parser.add_argument('archived')
 
     @admin_required
-    def get(self, name):
-        rentalProperty = PropertyModel.find_by_name(name)
+    def get(self, id):
+        rentalProperty = PropertyModel.find_by_id(id)
 
         if rentalProperty:
             return rentalProperty.json()
         return {'message': 'Property not found'}, 404
 
     @admin_required
-    def delete(self, name):
-        property = PropertyModel.find_by_name(name)
+    def delete(self, id):
+        property = PropertyModel.find_by_id(id)
         if property:
             property.delete_from_db()
             return {'message': 'Property deleted'}
         return {'message': 'Property not found'}, 404
 
     @admin_required
-    def put(self, name):
+    def put(self, id):
         data = Properties.parser.parse_args()
-        rentalProperty = PropertyModel.find_by_name(name)
+        rentalProperty = PropertyModel.find_by_id(id)
 
         #variable statements allow for only updated fields to be transmitted
         if(data.address):
