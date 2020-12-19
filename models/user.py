@@ -6,6 +6,8 @@ import jwt
 from db import db
 from enum import Enum
 from models.base_model import BaseModel
+import models.notes
+from flask import current_app
 from jwt import ExpiredSignatureError
 from utils.time import Time
 
@@ -39,6 +41,9 @@ class UserModel(BaseModel):
     password = db.Column(db.String(), default=None, onupdate=None)
     archived = db.Column(db.Boolean)
     lastActive = db.Column(db.DateTime, default=datetime.utcnow)
+
+    notes = db.relationship(models.notes.NotesModel,
+                           backref=db.backref('user', lazy=True))
 
 
     def __init__(self, **kwargs):

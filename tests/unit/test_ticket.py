@@ -24,3 +24,4 @@ class TestBaseTicketModel(BaseInterfaceTest):
 
         invalid_assigned_user_validation_error = {'assignedUserID': ['777 is not a valid user ID'], 'senderID': ['888 is not a valid user ID']}
         assert invalid_assigned_user_validation_error == TicketSchema().validate(invalid_assigned_user_and_sender)
+

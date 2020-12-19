@@ -23,3 +23,4 @@ def create_ticket(ticket_attributes, create_tenant, create_admin_user, create_jo
         ticket.save_to_db()
         return ticket
     yield _create_ticket
+
