@@ -2,6 +2,7 @@ import pytest
 from unittest.mock import patch
 from models.user import UserModel
 from schemas import UserRegisterSchema
+from tests.schemas.test_user_schema import user_register_valid_payload
 from conftest import is_valid, log
 from freezegun import freeze_time
 from models.user import RoleEnum
@@ -268,23 +269,22 @@ class TestUserInvite:
         assert response.status_code == 200
 
 @pytest.mark.usefixtures('client_class', 'empty_test_db')
-class TestReigsterUser:
+class TestRegisterUser:
     def setup(self):
         self.endpoint = "/api/register"
-        self.valid_payload = {
-            'email': 'faker.unique.email@example.com',
-            'password': 'faker.password'
-        }
-    def test_user_can_register_with_valid_payload(self):
-        response = self.client.post(self.endpoint, json=self.valid_payload)
+        self.valid_payload = user_register_valid_payload
+
+    def test_user_can_register_with_valid_payload(self, user_attributes):
+        response = self.client.post(self.endpoint, json=self.valid_payload(user_attributes()))
 
         assert response.status_code == 201
 
     @patch.object(UserModel, 'create')
-    def test_user_calls_create(self, mock_create):
-        response = self.client.post(self.endpoint, json=self.valid_payload)
+    def test_user_calls_create(self, mock_create, user_attributes):
+        payload = self.valid_payload(user_attributes())
+        response = self.client.post(self.endpoint, json=payload)
 
         mock_create.assert_called_with(
             schema=UserRegisterSchema,
-            payload=self.valid_payload
+            payload=payload
         )
