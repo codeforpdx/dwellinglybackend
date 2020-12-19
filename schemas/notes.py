@@ -7,8 +7,8 @@ from marshmallow import fields, Schema, validates, ValidationError
 class NotesSchema(Schema):
     id = fields.Integer()
     text = fields.Str()
-    userid = fields.Integer()
-    ticketid = fields.Integer()
+    userid = fields.Integer(required=True)
+    ticketid = fields.Integer(required=True)
 
     created_at = fields.DateTime(time_format)
     updated_at = fields.DateTime(time_format)
