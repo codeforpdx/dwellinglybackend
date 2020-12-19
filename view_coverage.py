@@ -14,7 +14,7 @@ def stop_coverage(sig, frame):
 signal.signal(signal.SIGINT, stop_coverage)
 
 # the approach below is from: https://2ality.com/2014/06/simple-http-server.html
-PORT = 5000
+PORT = 8001
 Handler = http.server.SimpleHTTPRequestHandler
 with socketserver.TCPServer(("", PORT), Handler) as httpd:
     print(f"Serving coverage details at http://localhost:{PORT}/htmlcov/")
