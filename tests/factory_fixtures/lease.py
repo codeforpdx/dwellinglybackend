@@ -1,16 +1,18 @@
 import pytest
+from faker import Faker
 from models.lease import LeaseModel
 from datetime import datetime
 
 @pytest.fixture
 def lease_attributes():
     def _lease_attributes(unitNum, tenant, property):
+        fake = Faker()
         return {
             "unitNum": unitNum,
             "tenantID": tenant.id,
             "propertyID": property.id,
-            "dateTimeStart": datetime.utcnow(),
-            "dateTimeEnd": datetime.utcnow(),
+            "dateTimeStart": fake.date_time_this_decade(),
+            "dateTimeEnd": fake.date_time_this_decade(False, True), #the future
             "occupants": 3
         }
     yield _lease_attributes

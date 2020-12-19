@@ -1,4 +1,5 @@
 import pytest
+from faker import Faker
 from models.tickets import TicketModel
 from models.tickets import TicketStatus
 
@@ -17,7 +18,8 @@ def ticket_attributes():
 
 @pytest.fixture
 def create_ticket(ticket_attributes, create_tenant, create_admin_user, create_join_staff):
-    def _create_ticket(issue="Leaky pipe"):
+    fake = Faker()
+    def _create_ticket(issue=fake.sentence()):
         tenant = create_tenant()
         ticket = TicketModel(**ticket_attributes(issue, tenant, create_admin_user(), create_join_staff()))
         ticket.save_to_db()
