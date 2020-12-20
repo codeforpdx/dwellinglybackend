@@ -39,7 +39,7 @@ class UserModel(BaseModel):
     phone = db.Column(db.String(20), nullable=False)
     hash_digest = db.Column(db.LargeBinary(60))
     password = db.Column(db.String(), default=None, onupdate=None)
-    archived = db.Column(db.Boolean)
+    archived = db.Column(db.Boolean, default=False, nullable=False)
     lastActive = db.Column(db.DateTime, default=datetime.utcnow)
 
     notes = db.relationship(models.notes.NotesModel,
