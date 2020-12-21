@@ -251,22 +251,6 @@ def test_get_user(client, auth_headers, new_user):
     assert unauthorized_user_response.json == \
             {'message': 'Admin access required'}
 
-@pytest.mark.usefixtures('client_class', 'empty_test_db')
-class TestUserInvite:
-    def setup(self):
-        self.endpoint = '/api/user/invite'
-
-    def test_invite_user(self, valid_header):
-        property_manager_json = {
-            "email": "manager@domain.com",
-            "firstName": "Leslie",
-            "lastName": "Knope",
-            "phone": "505-503-4455",
-            "role": "STAFF"
-        }
-        response = self.client.post(self.endpoint, headers=valid_header, json=property_manager_json)
-        assert response.json == {'message': 'User Invited'}
-        assert response.status_code == 200
 
 @pytest.mark.usefixtures('client_class', 'empty_test_db')
 class TestRegisterUser:
