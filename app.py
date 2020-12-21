@@ -12,7 +12,7 @@ from models.revoked_tokens import RevokedTokensModel
 from resources.user import UserRegister, User, UserLogin, ArchiveUser, UsersRole, UserAccessRefresh, UserRoles, Users
 from resources.user_invite import UserInvite
 from resources.reset_password import ResetPassword
-from resources.property import Properties, Property, ArchiveProperty
+from resources.property import Properties, Property, ArchiveProperty, ArchiveProperties
 from resources.staff_tenants import StaffTenants
 from resources.tenants import Tenants
 from resources.emergency_contacts import EmergencyContacts
@@ -30,8 +30,9 @@ from config import app_config
 def create_routes(app):
     api = Api(app, prefix="/api/")
     api.add_resource(UserRegister, 'register')
-    api.add_resource(Property,'properties/<string:name>') #TODO change to ID
+    api.add_resource(Property,'properties/<int:id>')
     api.add_resource(Properties,'properties')
+    api.add_resource(ArchiveProperties,'properties/archive')
     api.add_resource(ArchiveProperty,'properties/archive/<int:id>')
     api.add_resource(User, 'user/<int:user_id>')
     api.add_resource(UserInvite, 'user/invite')

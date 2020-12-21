@@ -1,9 +1,6 @@
 import pytest
 from conftest import is_valid
-from datetime import datetime
-from freezegun import freeze_time
 from unittest.mock import patch
-from utils.time import time_format
 from models.tickets import TicketStatus
 
 endpoint = '/api/tickets'
@@ -20,12 +17,14 @@ def test_tickets_GET_all(client, test_database, auth_headers):
     assert len(response.json['tickets'][2]['notes']) == 1
     assert len(response.json['tickets'][3]['notes']) == 0
 
+
 def test_tickets_GET_byTenant(client, test_database, auth_headers):
     response = client.get(f'{endpoint}?tenantID=1', headers=auth_headers["admin"])
     assert is_valid(response, 200)
     assert len(response.json['tickets']) == 2
     assert response.json['tickets'][0]['tenantID'] == 1
     assert response.json['tickets'][1]['tenantID'] == 1
+
 
 def test_tickets_GET_one(client, test_database, auth_headers):
     response = client.get(f'{endpoint}/{validID}', headers=auth_headers["admin"])
@@ -63,10 +62,9 @@ def test_tickets_POST(client, auth_headers):
         "assignedUserID": 4,
     }
 
-    dt = datetime.utcnow()
-    with freeze_time(dt):
-        with patch('flask_jwt_extended.view_decorators.verify_jwt_in_request') as mock_jwt_required:
-            response = client.post(endpoint, json=newTicket, headers=auth_headers["admin"])
+    with patch('flask_jwt_extended.view_decorators.verify_jwt_in_request') as mock_jwt_required:
+        response = client.post(endpoint, json=newTicket, headers=auth_headers["admin"])
+
     assert is_valid(response, 201)
     assert response.json['id'] != 0
     assert response.json['issue'] == 'Lead paint issue'
@@ -78,7 +76,6 @@ def test_tickets_POST(client, auth_headers):
     assert response.json['assigned'] == 'Mr. Sir'
     assert response.json['status'] == TicketStatus.New
     assert response.json['urgency'] == 'low'
-    assert response.json['created_at'] == dt.strftime(time_format)
 
     # verify jwt only
     response = client.post(endpoint, json=newTicket, headers=auth_headers["admin"])
@@ -96,10 +93,8 @@ def test_tickets_PUT(client, auth_headers):
         'note': 'Tenant has a service dog'
     }
 
-    dt = datetime.utcnow()
-    with freeze_time(dt):
-        with patch('flask_jwt_extended.view_decorators.verify_jwt_in_request') as mock_jwt_required:
-            response = client.put(f'{endpoint}/{validID}', json=updatedTicket, headers=auth_headers["admin"])
+    with patch('flask_jwt_extended.view_decorators.verify_jwt_in_request') as mock_jwt_required:
+        response = client.put(f'{endpoint}/{validID}', json=updatedTicket, headers=auth_headers["admin"])
 
     assert is_valid(response, 200)
     assert response.json['issue'] == 'Leaky pipe'
@@ -142,6 +137,7 @@ def test_tickets_DELETE(client, auth_headers):
     # NOT FOUND - Trying to delete a non-existing ticket or an already deleted ticket
     assert is_valid(response, 404)
     assert response.json == {'message': 'Ticket not found'}
+
 
 @pytest.mark.usefixtures("empty_test_db")
 class TestFixtures:
