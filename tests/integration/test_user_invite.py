@@ -1,6 +1,5 @@
 import pytest
 from unittest.mock import patch
-from models.user import RoleEnum
 from resources.email import Email
 
 
