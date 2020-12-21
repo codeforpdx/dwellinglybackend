@@ -2,12 +2,12 @@ import pytest
 from models.tenant import TenantModel
 
 @pytest.fixture
-def create_tenant(create_property):
+def create_tenant(faker, create_property):
     def _create_tenant(property=create_property()):
         tenant = TenantModel(
-                firstName="firstName",
-                lastName="lastName",
-                phone="1234567890",
+                firstName=faker.first_name(),
+                lastName=faker.last_name(),
+                phone=faker.phone_number(),
                 propertyID=property.id,
                 staffIDs=[]
             )

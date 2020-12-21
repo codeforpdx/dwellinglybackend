@@ -144,4 +144,3 @@ class TestFixtures:
     def test_create_ticket(self, create_ticket):
         ticket = create_ticket()
         assert ticket
-        assert ticket.issue == "Leaky pipe"
