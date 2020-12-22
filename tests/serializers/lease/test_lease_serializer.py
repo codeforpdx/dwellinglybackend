@@ -12,8 +12,8 @@ class TestLeaseSerializer:
 
         assert LeaseSerializer.serialize(lease) == {
                 'id': lease.id,
-                'dateTimeStart': Time.format_date(lease.dateTimeStart),
-                'dateTimeEnd': Time.format_date(lease.dateTimeEnd),
+                'dateTimeStart': Time.to_iso(lease.dateTimeStart),
+                'dateTimeEnd': Time.to_iso(lease.dateTimeEnd),
                 'occupants': lease.occupants,
                 'created_at': Time.format_date(lease.created_at),
                 'updated_at': Time.format_date(lease.updated_at),

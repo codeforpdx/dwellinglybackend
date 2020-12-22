@@ -9,8 +9,8 @@ class TestLeaseValidations:
         tenant = create_tenant()
 
         valid_payload = {
-            'dateTimeStart': Time.today(),
-            'dateTimeEnd': Time.one_year_from_now(),
+            'dateTimeStart': Time.today_iso(),
+            'dateTimeEnd': Time.one_year_from_now_iso(),
             'tenantID': tenant.id,
             'propertyID': tenant.propertyID,
         }
@@ -26,7 +26,7 @@ class TestLeaseValidations:
 
     def test_dateTimeStart_validates_valid_format(self):
         validation_errors = LeaseSchema().validate(
-            {'dateTimeStart': Time.today()}
+            {'dateTimeStart': Time.today_iso()}
         )
 
         assert 'dateTimeStart' not in validation_errors
@@ -45,7 +45,7 @@ class TestLeaseValidations:
 
     def test_dateTimeEnd_validates_valid_date_format(self):
         validation_errors = LeaseSchema().validate(
-            {'dateTimeEnd': Time.today()}
+            {'dateTimeEnd': Time.one_year_from_now_iso()}
         )
 
         assert 'dateTimeEnd' not in validation_errors

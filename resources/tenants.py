@@ -58,11 +58,6 @@ class Tenants(Resource):
 
         #if this tenant has a lease
         if ("dateTimeEnd" in leaseData and "dateTimeStart" in leaseData and "propertyID" in leaseData):
-
-            #convert dateTimeStart and dateTimeEnd from iso8601 format
-            leaseData["dateTimeStart"] = Time.format_date(datetime.fromisoformat(leaseData["dateTimeStart"]))
-            leaseData["dateTimeEnd"] = Time.format_date(datetime.fromisoformat(leaseData["dateTimeEnd"]))
-
             LeaseModel.create(
                 schema=LeaseSchema,
                 payload=leaseData

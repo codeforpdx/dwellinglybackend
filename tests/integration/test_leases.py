@@ -86,8 +86,8 @@ class TestLease:
 class TestLeaseAuthorizations:
     def valid_payload(self, tenant_id, property_id):
         return {
-                'dateTimeStart': Time.today(),
-                'dateTimeEnd': Time.one_year_from_now(),
+                'dateTimeStart': Time.today_iso(),
+                'dateTimeEnd': Time.one_year_from_now_iso(),
                 'tenantID': tenant_id,
                 'propertyID': property_id
             }
@@ -192,8 +192,8 @@ class TestLeaseAuthorizations:
     def test_pm_is_authorized_to_update(self, pm_header, create_lease):
         lease = create_lease()
         payload = {
-                'dateTimeStart': Time.today(),
-                'dateTimeEnd': Time.one_year_from_now()
+                'dateTimeStart': Time.today_iso(),
+                'dateTimeEnd': Time.one_year_from_now_iso()
             }
         response = self.client.put(f'/api/lease/{lease.id}', json=payload, headers=pm_header)
         assert response.status_code == 200
@@ -201,8 +201,8 @@ class TestLeaseAuthorizations:
     def test_staff_authorized_to_update(self, staff_header, create_lease):
         lease = create_lease()
         payload = {
-                'dateTimeStart': Time.today(),
-                'dateTimeEnd': Time.one_year_from_now()
+                'dateTimeStart': Time.today_iso(),
+                'dateTimeEnd': Time.one_year_from_now_iso()
             }
         response = self.client.put(f'/api/lease/{lease.id}', json=payload, headers=staff_header)
         assert response.status_code == 200
@@ -210,8 +210,8 @@ class TestLeaseAuthorizations:
     def test_admin_authorized_to_update(self, admin_header, create_lease):
         lease = create_lease()
         payload = {
-                'dateTimeStart': Time.today(),
-                'dateTimeEnd': Time.one_year_from_now()
+                'dateTimeStart': Time.today_iso(),
+                'dateTimeEnd': Time.one_year_from_now_iso()
             }
         response = self.client.put(f'/api/lease/{lease.id}', json=payload, headers=admin_header)
         assert response.status_code == 200
