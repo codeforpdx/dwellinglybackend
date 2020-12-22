@@ -54,7 +54,7 @@ def valid_header():
             {
                 'identity': 'identity',
                 'user_claims': {
-                    'is_admin': True
+                    'role': RoleEnum.ADMIN.value
                 }
             },
             current_app.secret_key,algorithm='HS256'
@@ -64,7 +64,7 @@ def valid_header():
 @pytest.fixture
 def admin_header():
     token = jwt.encode(
-            {'identity': 'identity', 'user_claims': {'is_admin': True}},
+            {'identity': 'identity', 'user_claims': {'role': RoleEnum.ADMIN.value}},
             current_app.secret_key,algorithm='HS256'
         ).decode('utf-8')
     return {"Authorization": f"Bearer {token}"}
@@ -72,7 +72,7 @@ def admin_header():
 @pytest.fixture
 def staff_header():
     token = jwt.encode(
-            {'identity': 'identity', 'user_claims': {'is_admin': False}},
+            {'identity': 'identity', 'user_claims': {'role': RoleEnum.STAFF.value}},
             current_app.secret_key,algorithm='HS256'
         ).decode('utf-8')
     return {"Authorization": f"Bearer {token}"}
@@ -80,7 +80,7 @@ def staff_header():
 @pytest.fixture
 def pm_header():
     token = jwt.encode(
-            {'identity': 'identity', 'user_claims': {'is_admin': False}},
+            {'identity': 'identity', 'user_claims': {'role': RoleEnum.PROPERTY_MANAGER.value}},
             current_app.secret_key,algorithm='HS256'
         ).decode('utf-8')
     return {"Authorization": f"Bearer {token}"}
@@ -153,4 +153,3 @@ def log(response):
     print(f'\n\nResponse Status: {response.status}')
     print(f'Response JSON: {response.json}')
     print(f'Response headers:\n\n{response.headers}')
-
