@@ -1,6 +1,6 @@
 import json
 from flask_restful import Resource, reqparse
-from flask_jwt_extended import jwt_required, get_jwt_claims
+from flask_jwt_extended import jwt_required
 from flask import request
 from utils.authorizations import admin_required
 from db import db
