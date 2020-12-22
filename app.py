@@ -3,7 +3,7 @@ from flask_restful import Api
 from flask_jwt_extended import JWTManager, jwt_refresh_token_required, create_access_token, get_jwt_identity
 from flask_cors import CORS
 from flask_mail import Mail
-from resources.admin_required import admin_required
+from utils.authorizations import admin_required
 from models.user import UserModel, RoleEnum
 from models.property import PropertyModel
 from models.tenant import TenantModel

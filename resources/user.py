@@ -3,7 +3,7 @@ from flask import request
 from schemas import UserRegisterSchema
 from models.property import PropertyModel
 from models.tenant import TenantModel
-from resources.admin_required import admin_required
+from utils.authorizations import admin_required
 from models.user import UserModel, RoleEnum
 from models.revoked_tokens import RevokedTokensModel
 import json
@@ -130,7 +130,7 @@ class ArchiveUser(Resource):
             return{'message': 'User cannot be archived'}, 400
 
         user.archived = not user.archived
-        
+
         user.save_to_db()
 
         if user.archived:
