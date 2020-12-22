@@ -217,11 +217,9 @@ def test_delete_user(client, auth_headers, new_user):
 
     response = client.delete(f"/api/user/{userToDelete.id}", headers=auth_headers["pm"])
     assert is_valid(response, 401) # UNAUTHORIZED - Admin Access Required
-    assert response.json == {'message': 'Admin access required'}
 
     response = client.delete(f"/api/user/{userToDelete.id}", headers=auth_headers["pending"])
     assert is_valid(response, 401) # UNAUTHORIZED - Admin Access Required
-    assert response.json == {'message': 'Admin access required'}
 
     response = client.delete(f"/api/user/{userToDelete.id}", headers=auth_headers["admin"])
     assert is_valid(response, 200) # OK
@@ -248,8 +246,6 @@ def test_get_user(client, auth_headers, new_user):
 
     unauthorized_user_response = client.get(f'api/user?r={RoleEnum.PROPERTY_MANAGER.value}', headers=auth_headers["pm"])
     assert is_valid(unauthorized_user_response, 401)
-    assert unauthorized_user_response.json == \
-            {'message': 'Admin access required'}
 
 
 @pytest.mark.usefixtures('client_class', 'empty_test_db')

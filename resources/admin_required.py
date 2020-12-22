@@ -6,7 +6,7 @@ def admin_required(func):
         if get_jwt_claims()['is_admin']:
             return func(*args, **kwargs)
         else:
-            return {'message': "Admin access required"}, 401
+            return {'message': 'Not Authorized'}, 401
 
     return check_admin_wrapper
 
