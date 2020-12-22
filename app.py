@@ -1,6 +1,6 @@
 from flask import Flask
 from flask_restful import Api
-from flask_jwt_extended import JWTManager, jwt_refresh_token_required, create_access_token, get_jwt_identity
+from flask_jwt_extended import JWTManager, jwt_refresh_token_required, get_jwt_identity
 from flask_cors import CORS
 from flask_mail import Mail
 from utils.authorizations import admin_required

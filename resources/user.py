@@ -3,12 +3,12 @@ from flask import request
 from schemas import UserRegisterSchema
 from models.property import PropertyModel
 from models.tenant import TenantModel
-from utils.authorizations import admin_required, admin
+from utils.authorizations import admin_required, admin, pm_level_required
 from models.user import UserModel, RoleEnum
 from models.revoked_tokens import RevokedTokensModel
 import json
 from werkzeug.security import safe_str_cmp
-from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_raw_jwt, get_jwt_identity, jwt_refresh_token_required
+from flask_jwt_extended import create_access_token, create_refresh_token, get_raw_jwt, get_jwt_identity, jwt_refresh_token_required
 from resources.email import Email
 import string
 import random
@@ -50,7 +50,7 @@ class User(Resource):
 
         return user_info, 200
 
-    @jwt_required
+    @pm_level_required
     def patch(self,user_id):
 
         user = UserModel.find_by_id(user_id)
