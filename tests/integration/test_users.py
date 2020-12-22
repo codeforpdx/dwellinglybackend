@@ -126,7 +126,7 @@ def test_archive_user_failure(client, auth_headers):
     assert responseInvalidId.json == \
             {'message': 'User cannot be archived'}
 
-def test_patch_user(client, auth_headers, property_manager_user, create_admin_user, staff_header):
+def test_patch_user(client, auth_headers, property_manager_user, create_admin_user, pm_header):
     """The route to patch a user by id returns a successful response code and the expected data is patched."""
 
     payload = {
@@ -174,7 +174,7 @@ def test_patch_user(client, auth_headers, property_manager_user, create_admin_us
 
     newEmail = "unauthorizedpatch@test.com"
 
-    unauthorizedResponse = client.patch(f"/api/user/{userToPatch.id}", json={"email": newEmail}, headers=staff_header)
+    unauthorizedResponse = client.patch(f"/api/user/{userToPatch.id}", json={"email": newEmail}, headers=pm_header)
 
     assert unauthorizedResponse.status_code == 403
 
