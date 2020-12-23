@@ -6,6 +6,7 @@ from db import db
 from models.property import PropertyModel
 from schemas.property_assignment import PropertyAssignSchema
 from models.user import UserModel, RoleEnum
+from schemas.property import PropertySchema
 
 # | method | route                | action                     |
 # | :----- | :------------------- | :------------------------- |
@@ -44,17 +45,7 @@ class Properties(Resource):
 
     @admin_required
     def post(self):
-        data = Properties.parser.parse_args()
-
-        if PropertyModel.find_by_name(data["name"]):
-            return { 'message': 'A property with this name already exists'}, 401
-
-        managers = set_managers(request.json['propertyManagerIDs'])
-        rentalproperty = PropertyModel(**data)
-
-        PropertyModel.save_to_db(rentalproperty)
-
-        return rentalproperty.json(), 201
+        return PropertyModel.create(schema=PropertySchema, payload=request.json).json(), 201
 
 class ArchiveProperty(Resource):
 
