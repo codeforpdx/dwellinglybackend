@@ -1,6 +1,6 @@
 from flask_restful import Resource
 from flask import request
-from utils.authorizations import admin_required
+from resources.admin_required import admin_required
 from models.user import UserModel
 from schemas import UserSchema
 from resources.email import Email

@@ -1,7 +1,8 @@
 import json
 from flask_restful import Resource, reqparse
+from flask_jwt_extended import jwt_required, get_jwt_claims
 from flask import request
-from utils.authorizations import admin_required
+from resources.admin_required import admin_required
 from db import db
 from models.tenant import TenantModel
 from models.user import UserModel
@@ -47,7 +48,7 @@ class Tenants(Resource):
         if TenantModel.find_by_first_and_last(data["firstName"], data["lastName"]):
             return { 'message': 'A tenant with this first and last name already exists'}, 401
 
-        tenantEntry = TenantModel(**data)
+        tenantEntry = TenantModel(**data) 
         TenantModel.save_to_db(tenantEntry)
 
         returnData = tenantEntry.json()
@@ -62,7 +63,7 @@ class Tenants(Resource):
                 payload=leaseData
             )
             returnData.update({'occupants': leaseData['occupants'], 'propertyID': leaseData['propertyID'], 'unitNum': leaseData['unitNum']})
-
+            
         return returnData, 201
 
 
@@ -78,7 +79,7 @@ class Tenants(Resource):
         if not tenantEntry:
             return {'message': 'Tenant not found'}, 404
 
-        #variable statements allow for only updated fields to be transmitted
+        #variable statements allow for only updated fields to be transmitted 
         if(data.firstName):
             tenantEntry.firstName = data.firstName
         if(data.lastName):
@@ -107,3 +108,4 @@ class Tenants(Resource):
 
         tenant.delete_from_db()
         return {'message': 'Tenant deleted'}
+

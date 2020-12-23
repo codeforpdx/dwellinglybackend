@@ -95,6 +95,7 @@ class TestEmailAuthorizations:
             if role != 'admin':
                 response = self.client.post(self.endpoint, json=payload, headers=token)
                 assert is_valid(response, 401)
+                assert response.json == {'message': "Admin access required"}
 
 
 @pytest.mark.usefixtures('empty_test_db')

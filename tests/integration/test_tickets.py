@@ -62,7 +62,8 @@ def test_tickets_POST(client, auth_headers):
         "assignedUserID": 4,
     }
 
-    response = client.post(endpoint, json=newTicket, headers=auth_headers["admin"])
+    with patch('flask_jwt_extended.view_decorators.verify_jwt_in_request') as mock_jwt_required:
+        response = client.post(endpoint, json=newTicket, headers=auth_headers["admin"])
 
     assert is_valid(response, 201)
     assert response.json['id'] != 0
@@ -92,7 +93,8 @@ def test_tickets_PUT(client, auth_headers):
         'note': 'Tenant has a service dog'
     }
 
-    response = client.put(f'{endpoint}/{validID}', json=updatedTicket, headers=auth_headers["admin"])
+    with patch('flask_jwt_extended.view_decorators.verify_jwt_in_request') as mock_jwt_required:
+        response = client.put(f'{endpoint}/{validID}', json=updatedTicket, headers=auth_headers["admin"])
 
     assert is_valid(response, 200)
     assert response.json['issue'] == 'Leaky pipe'

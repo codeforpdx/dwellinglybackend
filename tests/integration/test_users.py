@@ -126,7 +126,7 @@ def test_archive_user_failure(client, auth_headers):
     assert responseInvalidId.json == \
             {'message': 'User cannot be archived'}
 
-def test_patch_user(client, auth_headers, property_manager_user, create_admin_user, pm_header):
+def test_patch_user(client, auth_headers, new_user, create_admin_user):
     """The route to patch a user by id returns a successful response code and the expected data is patched."""
 
     payload = {
@@ -135,7 +135,7 @@ def test_patch_user(client, auth_headers, property_manager_user, create_admin_us
         'phone': '503-867-5309'
     }
 
-    userToPatch = UserModel.find_by_email(property_manager_user.email)
+    userToPatch = UserModel.find_by_email(new_user.email)
     response = client.patch(f"/api/user/{create_admin_user().id}", json=payload,
         headers=auth_headers["admin"])
 
@@ -174,7 +174,7 @@ def test_patch_user(client, auth_headers, property_manager_user, create_admin_us
 
     newEmail = "unauthorizedpatch@test.com"
 
-    unauthorizedResponse = client.patch(f"/api/user/{userToPatch.id}", json={"email": newEmail}, headers=pm_header)
+    unauthorizedResponse = client.patch(f"/api/user/{userToPatch.id}", json={"email": newEmail}, headers=auth_headers["pm"])
 
     assert unauthorizedResponse.status_code == 403
 
@@ -217,9 +217,11 @@ def test_delete_user(client, auth_headers, new_user):
 
     response = client.delete(f"/api/user/{userToDelete.id}", headers=auth_headers["pm"])
     assert is_valid(response, 401) # UNAUTHORIZED - Admin Access Required
+    assert response.json == {'message': 'Admin access required'}
 
     response = client.delete(f"/api/user/{userToDelete.id}", headers=auth_headers["pending"])
     assert is_valid(response, 401) # UNAUTHORIZED - Admin Access Required
+    assert response.json == {'message': 'Admin access required'}
 
     response = client.delete(f"/api/user/{userToDelete.id}", headers=auth_headers["admin"])
     assert is_valid(response, 200) # OK
@@ -246,6 +248,8 @@ def test_get_user(client, auth_headers, new_user):
 
     unauthorized_user_response = client.get(f'api/user?r={RoleEnum.PROPERTY_MANAGER.value}', headers=auth_headers["pm"])
     assert is_valid(unauthorized_user_response, 401)
+    assert unauthorized_user_response.json == \
+            {'message': 'Admin access required'}
 
 
 @pytest.mark.usefixtures('client_class', 'empty_test_db')

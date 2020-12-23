@@ -3,7 +3,7 @@ import json
 from models.tickets import TicketModel
 from models.user import UserModel
 from models.property import PropertyModel
-from utils.authorizations import pm_level_required
+from flask_jwt_extended import jwt_required 
 from datetime import datetime, timedelta
 
 class Widgets(Resource):
@@ -28,12 +28,12 @@ class Widgets(Resource):
         property = PropertyModel.find_by_manager(userID)
         propertyName = "Not Assigned"
 
-        if property[0]:
+        if property[0]: 
             propertyName = property[0].name
 
         return propertyName
 
-    @pm_level_required
+    @jwt_required
     def get(self):
         users = UserModel.find_recent_role("property-manager", 5)
         projectManagers = []
@@ -46,7 +46,7 @@ class Widgets(Resource):
 
         for user in users:
             date = self.dateStringConversion(user.created_at)
-            propertyName = self.returnPropertyName(user.id)
+            propertyName = self.returnPropertyName(user.id)           
             projectManagers.append(user.widgetJson(propertyName, date))
 
         if len(projectManagers) == 0:
@@ -54,7 +54,7 @@ class Widgets(Resource):
 
         return { 'opentickets':{
             'title': 'Open Tickets',
-            'link': '/tickets',
+            'link': '/tickets', 
             'stats': [[
                 {
                     "stat": TicketModel.find_count_by_status("New"),
@@ -80,7 +80,7 @@ class Widgets(Resource):
             'title': 'Reports',
             'link': '/reports/',
             'stats': [
-                [
+                [ 
                     {
                         'stat': 0,
                         'desc': 'Compliments',

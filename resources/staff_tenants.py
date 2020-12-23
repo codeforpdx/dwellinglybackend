@@ -3,7 +3,7 @@ from flask import request
 from db import db
 from schemas.staff_tenants import StaffTenantSchema
 from models.staff_tenant_link import StaffTenantLink
-from utils.authorizations import admin_required
+from resources.admin_required import admin_required
 
 
 class StaffTenants(Resource):

@@ -1,7 +1,7 @@
 from flask import Flask, current_app, render_template
 from flask_restful import Resource, reqparse
 from flask_mail import Message
-from utils.authorizations import admin_required
+from resources.admin_required import admin_required
 from models.user import UserModel
 
 class Email(Resource):
