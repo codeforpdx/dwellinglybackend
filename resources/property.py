@@ -22,7 +22,8 @@ def set_managers(ids):
     managers = []
     if ids:
         for id in ids:
-            user = UserModel.find_by_id(id)
+            user = UserModel.find(id)
+
             if user and user.role == RoleEnum.PROPERTY_MANAGER:
 
                 managers.append(user)
