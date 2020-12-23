@@ -18,4 +18,4 @@ class UserInvite(Resource):
             payload={**data, "archived": False, "password": temp_password}
         )
         Email.send_user_invite_msg(user)
-        return {"message": "User Invited"}, 200
+        return user.json(), 200   

@@ -1,7 +1,6 @@
 from db import db
 from utils.time import Time
 from marshmallow import ValidationError
-
 from models.tenant import TenantModel
 from models.base_model import BaseModel
 from models.user import UserModel, RoleEnum
@@ -72,7 +71,6 @@ class PropertyModel(BaseModel):
             for id in ids:
                 user = UserModel.find_by_id(id)
                 if user and user.role == RoleEnum.PROPERTY_MANAGER:
-
                     managers.append(user)
 
                 elif user and user.role != RoleEnum.PROPERTY_MANAGER:

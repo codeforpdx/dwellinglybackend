@@ -24,5 +24,3 @@ class UserRegisterSchema(UserSchema):
     def user_cannot_register_a_role(self, _):
         raise ValidationError("Role is not allowed")
 
-class AdminUserRegisterSchema(UserSchema):
-   password = fields.String(required=True)
