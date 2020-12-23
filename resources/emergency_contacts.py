@@ -3,7 +3,7 @@ from flask import request
 
 from models.emergency_contact import EmergencyContactModel
 from models.contact_number import ContactNumberModel
-from resources.admin_required import admin_required
+from utils.authorizations import admin_required
 from schemas.emergency_contact import EmergencyContactSchema
 
 

@@ -2,8 +2,8 @@ from flask_restful import Resource, reqparse
 import json
 from models.tickets import TicketModel
 from models.notes import NotesModel
-from flask_jwt_extended import jwt_required
 from datetime import datetime
+from utils.authorizations import pm_level_required
 
 class Ticket(Resource):
     parser = reqparse.RequestParser()
@@ -16,14 +16,14 @@ class Ticket(Resource):
     parser.add_argument('assignedUserID')
 
 
-    @jwt_required
+    @pm_level_required
     def get(self, id):
         ticket = TicketModel.find_by_id(id)
         if ticket:
             return ticket.json()
         return {'message': 'Ticket not found'}, 404
 
-    @jwt_required
+    @pm_level_required
     def delete(self, id):
         ticket = TicketModel.find_by_id(id)
         if ticket:
@@ -31,7 +31,7 @@ class Ticket(Resource):
             return {'message': 'Ticket removed from database'}
         return {'message': 'Ticket not found'}, 404
 
-    @jwt_required
+    @pm_level_required
     def put(self, id):
         data = Ticket.parser.parse_args()
         ticket = TicketModel.find_by_id(id)
@@ -77,7 +77,7 @@ class Tickets(Resource):
     parser.add_argument('issue')
     parser.add_argument('assignedUserID')
 
-    @jwt_required
+    @pm_level_required
     def get(self):
         data = Tickets.parser.parse_args()
         if data["tenantID"]:
@@ -85,7 +85,7 @@ class Tickets(Resource):
         else:
             return {'tickets': [ticket.json() for ticket in TicketModel.query.all()]}
 
-    @jwt_required
+    @pm_level_required
     def post(self):
         data = Tickets.parser.parse_args()
         ticket = TicketModel(**data)

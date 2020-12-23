@@ -1,9 +1,9 @@
 from flask import Flask
 from flask_restful import Api
-from flask_jwt_extended import JWTManager, jwt_refresh_token_required, create_access_token, get_jwt_identity
+from flask_jwt_extended import JWTManager, jwt_refresh_token_required, get_jwt_identity
 from flask_cors import CORS
 from flask_mail import Mail
-from resources.admin_required import admin_required
+from utils.authorizations import admin_required
 from models.user import UserModel, RoleEnum
 from models.property import PropertyModel
 from models.tenant import TenantModel
@@ -75,7 +75,13 @@ def create_app(env):
     @app.jwt.user_claims_loader
     def role_loader(identity):
         user = UserModel.find_by_id(identity)
-        return {'email': user.email, 'phone': user.phone, 'firstName': user.firstName, 'lastName': user.lastName, 'is_admin': (user.role == RoleEnum.ADMIN)}
+        return {
+            'email': user.email,
+            'phone': user.phone,
+            'firstName': user.firstName,
+            'lastName': user.lastName,
+            'role': user.role.value
+        }
 
     # checking if the token's jti (jwt id) is in the set of revoked tokens
     # this check is applied globally (to all routes that require jwt)

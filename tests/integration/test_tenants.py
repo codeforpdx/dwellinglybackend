@@ -67,12 +67,10 @@ def test_tenants_POST(client, test_database, auth_headers):
     response = client.post(endpoint, json=newTenant,
                            headers=auth_headers["pm"])
     assert is_valid(response, 401)  # UNAUTHORIZED - Admin Access Required
-    assert response.json == {'message': 'Admin access required'}
 
     response = client.post(endpoint, json=newTenant,
                            headers=auth_headers["pending"])
     assert is_valid(response, 401)  # UNAUTHORIZED - Admin Access Required
-    assert response.json == {'message': 'Admin access required'}
 
     response = client.post(endpoint, json=newTenant)
     # UNAUTHORIZED - Missing Authorization Header
@@ -119,13 +117,11 @@ def test_pending_role_is_unauthorized_to_delete(client, auth_headers):
         f'{endpoint}/1', headers=auth_headers["pending"])
 
     assert is_valid(response, 401)
-    assert response.json == {'message': 'Admin access required'}
 
 def test_pm_role_is_unauthorized_to_delete(client, auth_headers):
     response = client.delete(f'{endpoint}/1', headers=auth_headers["pm"])
 
     assert is_valid(response, 401)
-    assert response.json == {'message': 'Admin access required'}
 
 def test_admin_is_authorized_to_delete(client, auth_headers):
     response = client.delete(f'{endpoint}/1', headers=auth_headers["admin"])

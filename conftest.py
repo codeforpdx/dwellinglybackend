@@ -49,38 +49,46 @@ def auth_headers(client, test_database, admin_user, new_user, property_manager_u
     }
 
 @pytest.fixture
-def valid_header():
-    token = jwt.encode(
-            {
-                'identity': 'identity',
-                'user_claims': {
-                    'is_admin': True
-                }
-            },
+def valid_header(admin_header):
+    return admin_header
+
+def _user_claims(user):
+    return {
+        'email': user.email,
+        'phone': user.phone,
+        'firstName': user.firstName,
+        'lastName': user.lastName,
+        'role': user.role.value
+    }
+
+@pytest.fixture
+def admin_header(create_admin_user):
+    admin = create_admin_user()
+    token = jwt.encode({
+            'identity': admin.id,
+            'user_claims': _user_claims(admin)
+        },
             current_app.secret_key,algorithm='HS256'
         ).decode('utf-8')
     return {"Authorization": f"Bearer {token}"}
 
 @pytest.fixture
-def admin_header():
-    token = jwt.encode(
-            {'identity': 'identity', 'user_claims': {'is_admin': True}},
+def staff_header(create_join_staff):
+    staff = create_join_staff()
+    token = jwt.encode({
+            'identity': staff.id,
+            'user_claims': _user_claims(staff)
+        },
             current_app.secret_key,algorithm='HS256'
         ).decode('utf-8')
     return {"Authorization": f"Bearer {token}"}
 
 @pytest.fixture
-def staff_header():
-    token = jwt.encode(
-            {'identity': 'identity', 'user_claims': {'is_admin': False}},
-            current_app.secret_key,algorithm='HS256'
-        ).decode('utf-8')
-    return {"Authorization": f"Bearer {token}"}
-
-@pytest.fixture
-def pm_header():
-    token = jwt.encode(
-            {'identity': 'identity', 'user_claims': {'is_admin': False}},
+def pm_header(create_property_manager):
+    pm = create_property_manager()
+    token = jwt.encode({
+            'identity': pm.id,
+            'user_claims': _user_claims(pm)        },
             current_app.secret_key,algorithm='HS256'
         ).decode('utf-8')
     return {"Authorization": f"Bearer {token}"}
@@ -153,4 +161,3 @@ def log(response):
     print(f'\n\nResponse Status: {response.status}')
     print(f'Response JSON: {response.json}')
     print(f'Response headers:\n\n{response.headers}')
-

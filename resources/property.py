@@ -1,6 +1,6 @@
 import json
 from flask_restful import Resource, reqparse
-from resources.admin_required import admin_required
+from utils.authorizations import admin_required
 from db import db
 from models.property import PropertyModel
 
