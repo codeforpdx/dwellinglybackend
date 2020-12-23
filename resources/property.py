@@ -31,15 +31,6 @@ def set_managers(ids):
 
 
 class Properties(Resource):
-    parser = reqparse.RequestParser()
-    parser.add_argument('name')
-    parser.add_argument('address')
-    parser.add_argument('unit')
-    parser.add_argument('city')
-    parser.add_argument('zipcode')
-    parser.add_argument('state')
-    parser.add_argument('archived')
-
     def get(self):
         return {'properties': [property.json() for property in db.session.query(PropertyModel).all()]}
 
@@ -86,16 +77,6 @@ class ArchiveProperties(Resource):
 
 # single property/name
 class Property(Resource):
-    parser = reqparse.RequestParser()
-    parser.add_argument('name')
-    parser.add_argument('address')
-    parser.add_argument('unit')
-    parser.add_argument('city')
-    parser.add_argument('zipcode')
-    parser.add_argument('state')
-    parser.add_argument('tenants')
-    parser.add_argument('archived')
-
     @admin_required
     def get(self, id):
         rentalProperty = PropertyModel.find_by_id(id)
