@@ -18,7 +18,7 @@ class PropertyModel(BaseModel):
     city = db.Column(db.String(50))
     state = db.Column(db.String(50))
     zipcode = db.Column(db.String(20))
-    archived = db.Column(db.Boolean)
+    archived = db.Column(db.Boolean, default=False)
 
     tenants = db.relationship(TenantModel, backref="property")
     leases = db.relationship('LeaseModel', backref='property', lazy=True, cascade="all, delete-orphan")
