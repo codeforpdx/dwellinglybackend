@@ -1,6 +1,6 @@
 from flask_restful import Resource, reqparse
 from flask import request
-from schemas import UserRegisterSchema
+from schemas import UserRegisterSchema, AdminUserRegisterSchema
 from models.property import PropertyModel
 from models.tenant import TenantModel
 from resources.admin_required import admin_required
@@ -30,6 +30,15 @@ class UserRegister(Resource):
         )
 
         return {"message": "User created successfully."}, 201
+
+class AdminRegisterUser(Resource):
+   @admin_required
+   def post(self):
+       user = UserModel.create(
+           schema=AdminUserRegisterSchema,
+           payload=request.json
+       )
+       return user.json(), 200
 
 class User(Resource):
     @admin_required
