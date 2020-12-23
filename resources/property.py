@@ -114,38 +114,4 @@ class Property(Resource):
 
     @admin_required
     def put(self, id):
-        data = Properties.parser.parse_args()
-        rentalProperty = PropertyModel.find_by_id(id)
-
-        #variable statements allow for only updated fields to be transmitted
-        if(data.address):
-            rentalProperty.address = data.address
-
-        if(data.city):
-            rentalProperty.city = data.city
-
-        if(data.name):
-            rentalProperty.name = data.name
-
-        if(data.zipcode):
-            rentalProperty.zipcode = data.zipcode
-
-        if(data.state):
-            rentalProperty.state = data.state
-
-        if (data.unit):
-            rentalProperty.unit = data.unit
-
-        if 'propertyManagerIDs' in request.json:
-            managers = set_managers(request.json['propertyManagerIDs'])
-            rentalProperty.managers = managers
-
-        #the reported purpose of this route is toggling the "archived" status
-        #but an explicit value of "archive" in the request body will override
-        rentalProperty.archived = not rentalProperty.archived
-        if(data.archived == True or data.archived == False):
-            rentalProperty.archived = data.archived
-
-        rentalProperty.save_to_db()
-
-        return rentalProperty.json()
+        return PropertyModel.update(schema=PropertySchema, id=id, payload=request.json).json()
