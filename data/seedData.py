@@ -140,7 +140,6 @@ def seedData():
                                    city="Portland",
                                    state="OR",
                                    zipcode="97207",
-                                   propertyManagerIDs=None,
                                    archived=False)
 
     property_test1.managers = set_managers([user_gray_pouponn.id])
@@ -152,7 +151,6 @@ def seedData():
                                            city="Portland",
                                            state="OR",
                                            zipcode="97207",
-                                           propertyManagerIDs=None,
                                            archived=False)
 
     property_meerkat_manor.managers = set_managers([user_mister_sir.id])
@@ -163,7 +161,6 @@ def seedData():
                                           city="Portland",
                                           state="OR",
                                           zipcode="97207",
-                                          propertyManagerIDs=None,
                                           archived=False)
 
     property_the_reginald.managers = set_managers([user_gray_pouponn.id, user_mister_sir.id])

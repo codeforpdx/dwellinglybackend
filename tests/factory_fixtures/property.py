@@ -3,7 +3,7 @@ from models.property import PropertyModel
 
 @pytest.fixture
 def property_attributes(faker):
-    def _property_attributes(archived=False, pm=None):
+    def _property_attributes(archived=None):
         return {
             'name': faker.unique.name(),
             'address': faker.address(),
@@ -11,7 +11,6 @@ def property_attributes(faker):
             'unit': faker.building_number(),
             'state': faker.state() ,
             'zipcode': faker.postcode(),
-            'propertyManagerIDs': [pm.id] if pm and pm.id else [],
             'archived': archived,
         }
     yield _property_attributes
@@ -19,11 +18,8 @@ def property_attributes(faker):
 @pytest.fixture
 def create_property(property_attributes, create_property_manager):
     def _create_property():
-        property = PropertyModel(**property_attributes(
-            pm=create_property_manager(),
-            archived=False,
-        ))
+        property = PropertyModel(**property_attributes())
+        property.managers = [create_property_manager()]
         property.save_to_db()
         return property
     yield _create_property
-

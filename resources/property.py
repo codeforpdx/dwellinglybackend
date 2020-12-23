@@ -1,9 +1,11 @@
 import json
 from flask_restful import Resource, reqparse
+from flask import request
 from utils.authorizations import admin_required
 from db import db
 from models.property import PropertyModel
 from schemas.property_assignment import PropertyAssignSchema
+from models.user import UserModel, RoleEnum
 
 # | method | route                | action                     |
 # | :----- | :------------------- | :------------------------- |
@@ -41,7 +43,6 @@ class Properties(Resource):
     parser.add_argument('city')
     parser.add_argument('zipcode')
     parser.add_argument('state')
-    parser.add_argument('propertyManagerIDs')
     parser.add_argument('archived')
 
     def get(self):
@@ -54,8 +55,7 @@ class Properties(Resource):
         if PropertyModel.find_by_name(data["name"]):
             return { 'message': 'A property with this name already exists'}, 401
 
-        managers = set_managers(data['propertyManagerIDs'])
-        data['propertyManagerIDs'] = None
+        managers = set_managers(request.json['propertyManagerIDs'])
         rentalproperty = PropertyModel(**data)
 
         PropertyModel.save_to_db(rentalproperty)
@@ -108,7 +108,6 @@ class Property(Resource):
     parser.add_argument('city')
     parser.add_argument('zipcode')
     parser.add_argument('state')
-    parser.add_argument('propertyManagerIDs')
     parser.add_argument('tenants')
     parser.add_argument('archived')
 
@@ -152,9 +151,8 @@ class Property(Resource):
         if (data.unit):
             rentalProperty.unit = data.unit
 
-        if data.propertyManagerIDs:
-            managers = set_managers(data['propertyManagerIDs'])
-            data['propertyManagerIDs'] = None
+        if 'propertyManagerIDs' in request.json:
+            managers = set_managers(request.json['propertyManagerIDs'])
             rentalProperty.managers = managers
 
         #the reported purpose of this route is toggling the "archived" status

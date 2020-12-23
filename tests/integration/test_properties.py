@@ -8,8 +8,10 @@ def test_get_properties(client, test_database):
     response = client.get("/api/properties")
     assert response.status_code == 200
 
-def test_post_property(client, auth_headers, property_attributes):
+def test_post_property(client, auth_headers, property_attributes, create_property_manager):
     property_attrs = property_attributes()
+    # TODO: Remove this
+    property_attrs['propertyManagerIDs'] = [create_property_manager().id]
     """The server should check for the correct credentials when posting a new property"""
     response = client.post("/api/properties", json=property_attrs)
     assert response.status_code == 401

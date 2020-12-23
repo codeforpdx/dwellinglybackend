@@ -1,10 +1,9 @@
 from db import db
 from utils.time import Time
-from marshmallow import ValidationError
 
 from models.tenant import TenantModel
 from models.base_model import BaseModel
-from models.user import UserModel, RoleEnum
+from models.user import UserModel
 from models.property_assignment import PropertyAssignment
 
 
@@ -23,15 +22,6 @@ class PropertyModel(BaseModel):
     tenants = db.relationship(TenantModel, backref="property")
     leases = db.relationship('LeaseModel', backref='property', lazy=True, cascade="all, delete-orphan")
     managers = db.relationship(UserModel, secondary='property_assignments', backref='properties')
-
-    def __init__(self, name, address, unit, city, state, zipcode, propertyManagerIDs, archived):
-        self.name = name
-        self.address = address
-        self.unit = unit
-        self.city = city
-        self.state = state
-        self.zipcode = zipcode
-        self.archived = False
 
     def json(self):
         property_tenants = []
