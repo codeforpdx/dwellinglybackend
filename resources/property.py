@@ -16,19 +16,7 @@ from schemas.property import PropertySchema
 # | PUT    | `v1/property/:id`    | Updates a single property  |
 # | DELETE | `v1/property/:id`    | Deletes a single property  |
 
-#TODO Add Id based identifiers.
 #TODO Incorporate JWT Claims for Admin
-
-def set_managers(ids):
-    managers = []
-    if ids:
-        for id in ids:
-            user = UserModel.find(id)
-            PropertyAssignSchema().load({'manager_id': user.id}, partial=True)
-            managers.append(user)
-
-    return managers
-
 
 class Properties(Resource):
     def get(self):
