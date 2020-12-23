@@ -3,6 +3,7 @@ from flask_restful import Resource, reqparse
 from resources.admin_required import admin_required
 from db import db
 from models.property import PropertyModel
+from models.user import UserModel
 
 # | method | route                | action                     |
 # | :----- | :------------------- | :------------------------- |
@@ -88,7 +89,7 @@ class Property(Resource):
     parser.add_argument('city')
     parser.add_argument('zipcode')
     parser.add_argument('state')
-    parser.add_argument('propertyManagerIDs')
+    parser.add_argument('propertyManagerIDs', action='append')
     parser.add_argument('tenants')
     parser.add_argument('archived')
 
@@ -133,7 +134,9 @@ class Property(Resource):
             rentalProperty.unit = data.unit
 
         if data.propertyManagerIDs:
-            rentalProperty.managers = PropertyModel.set_property_managers(data.propertyManagerIDs)
+            managers = []
+            managers.append(data.propertyManagerIDs)
+            rentalProperty.managers = PropertyModel.set_property_managers(managers)
 
         #the reported purpose of this route is toggling the "archived" status
         #but an explicit value of "archive" in the request body will override
