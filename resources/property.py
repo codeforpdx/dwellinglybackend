@@ -23,15 +23,8 @@ def set_managers(ids):
     if ids:
         for id in ids:
             user = UserModel.find(id)
-
-            if user and user.role == RoleEnum.PROPERTY_MANAGER:
-
-                managers.append(user)
-
-            elif user and user.role != RoleEnum.PROPERTY_MANAGER:
-                raise ValidationError(f'{user.full_name()} is not a property manager')
-            else:
-                raise ValidationError(f'{id} is not a valid user id')
+            PropertyAssignSchema().load({'manager_id': user.id}, partial=True)
+            managers.append(user)
 
     return managers
 
