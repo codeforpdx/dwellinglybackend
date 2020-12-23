@@ -11,7 +11,7 @@ from models.emergency_contact import EmergencyContactModel
 from models.contact_number import ContactNumberModel
 from models.lease import LeaseModel
 from utils.time import time_format
-from schemas.property_assignment import PropertyAssignSchema
+from schemas import *
 
 
 def set_managers(ids):
@@ -127,38 +127,46 @@ def seedData():
     user_xander_dander.save_to_db()
 
 
+    property_test1 = PropertyModel.create(
+        payload= {
+            'name': "test1",
+            'address': "123 NE FLanders St",
+            'unit': "5",
+            'city': "Portland",
+            'state': "OR",
+            'zipcode': "97207",
+            'propertyManagerIDs': [user_gray_pouponn.id]
+        },
+        schema=PropertySchema
+    )
 
-    property_test1 = PropertyModel(name="test1",
-                                   address="123 NE FLanders St",
-                                   unit="5",
-                                   city="Portland",
-                                   state="OR",
-                                   zipcode="97207",
-                                   archived=False)
 
-    property_test1.managers = set_managers([user_gray_pouponn.id])
-    property_test1.save_to_db()
+    property_meerkat_manor = PropertyModel.create(
+        payload = {
+            'name': "Meerkat Manor",
+            'address': "Privet Drive",
+            'unit': "2",
+            'city': "Portland",
+            'state': "OR",
+            'zipcode': "97207",
+            'propertyManagerIDs': [user_mister_sir.id]
+        },
+        schema = PropertySchema
+    )
 
-    property_meerkat_manor = PropertyModel(name="Meerkat Manor",
-                                           address="Privet Drive",
-                                           unit="2",
-                                           city="Portland",
-                                           state="OR",
-                                           zipcode="97207",
-                                           archived=False)
+    property_the_reginald = PropertyModel.create(
+        payload = {
+            'name': "The Reginald",
+            'address': "Aristocrat Avenue",
+            'unit': "3",
+            'city': "Portland",
+            'state': "OR",
+            'zipcode': "97207",
+            'propertyManagerIDs': [user_gray_pouponn.id, user_mister_sir.id]
+        },
+        schema = PropertySchema
+    )
 
-    property_meerkat_manor.managers = set_managers([user_mister_sir.id])
-    property_meerkat_manor.save_to_db()
-    property_the_reginald = PropertyModel(name="The Reginald",
-                                          address="Aristocrat Avenue",
-                                          unit="3",
-                                          city="Portland",
-                                          state="OR",
-                                          zipcode="97207",
-                                          archived=False)
-
-    property_the_reginald.managers = set_managers([user_gray_pouponn.id, user_mister_sir.id])
-    property_the_reginald.save_to_db()
 
     tenant_renty_mcrenter = TenantModel(firstName="Renty",
                                         lastName="McRenter",
