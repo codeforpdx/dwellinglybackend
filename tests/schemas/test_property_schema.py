@@ -6,9 +6,10 @@ from models.user import UserModel
 from models.property import PropertyModel
 
 
+@pytest.mark.usefixtures('empty_test_db')
 class TestPropertyManagerValidations:
 
-    def test_valid_payload(self, empty_test_db, create_property_manager,):
+    def test_valid_payload(self, create_property_manager):
 
         valid_payload = {
             'created_at': Time.one_year_from_now(),
@@ -28,3 +29,9 @@ class TestPropertyManagerValidations:
     def test_must_have_manager_assigned(self):
         validation_error = PropertySchema().validate({"propertyManagerIDs": []})
         assert "propertyManagerIDs" in validation_error
+
+    def test_uniqueness_of_property_name(self, create_property):
+        name = create_property().name
+        validation_errors = PropertySchema().validate({'name': name})
+
+        assert 'name' in validation_errors

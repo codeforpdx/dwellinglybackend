@@ -22,6 +22,11 @@ class PropertySchema(ma.SQLAlchemyAutoSchema):
         payload = [ { 'manager_id': value[manager_id] } for manager_id in range(0, len(value)) ]
         PropertyModel.validate(PropertyAssignSchema, payload, partial=True, many=True)
 
+    @validates("name")
+    def validates_uniqueness_of_name(self, value):
+        if PropertyModel.find_by_name(value):
+            raise ValidationError('A property with this name already exists')
+
     @post_load
     def make_property_attributes(self, data, **kwargs):
         data['managers'] = [ UserModel.find(manager) for manager in data['propertyManagerIDs'] ]

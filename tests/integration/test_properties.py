@@ -22,8 +22,8 @@ def test_post_property(client, auth_headers, property_attributes, create_propert
 
     """The server should return with an error if a duplicate property is posted"""
     response = client.post("/api/properties", json=property_attrs, headers=auth_headers["admin"])
-    assert response.get_json() == {'message': 'A property with this name already exists'}
-    assert response.status_code == 401
+    assert response.get_json() == {'message': {'name': ['A property with this name already exists']}}
+    assert response.status_code == 400
 
 def test_get_property_by_id(client, auth_headers, test_database):
     """The get property by name returns a successful response code."""
