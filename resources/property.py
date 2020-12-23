@@ -3,6 +3,7 @@ from flask_restful import Resource, reqparse
 from utils.authorizations import admin_required
 from db import db
 from models.property import PropertyModel
+from schemas.property_assignment import PropertyAssignSchema
 
 # | method | route                | action                     |
 # | :----- | :------------------- | :------------------------- |
@@ -14,6 +15,23 @@ from models.property import PropertyModel
 
 #TODO Add Id based identifiers.
 #TODO Incorporate JWT Claims for Admin
+
+def set_managers(ids):
+    managers = []
+    if ids:
+        for id in ids:
+            user = UserModel.find_by_id(id)
+            if user and user.role == RoleEnum.PROPERTY_MANAGER:
+
+                managers.append(user)
+
+            elif user and user.role != RoleEnum.PROPERTY_MANAGER:
+                raise ValidationError(f'{user.full_name()} is not a property manager')
+            else:
+                raise ValidationError(f'{id} is not a valid user id')
+
+    return managers
+
 
 class Properties(Resource):
     parser = reqparse.RequestParser()
@@ -36,6 +54,8 @@ class Properties(Resource):
         if PropertyModel.find_by_name(data["name"]):
             return { 'message': 'A property with this name already exists'}, 401
 
+        managers = set_managers(data['propertyManagerIDs'])
+        data['propertyManagerIDs'] = None
         rentalproperty = PropertyModel(**data)
 
         PropertyModel.save_to_db(rentalproperty)
@@ -133,7 +153,9 @@ class Property(Resource):
             rentalProperty.unit = data.unit
 
         if data.propertyManagerIDs:
-            rentalProperty.managers = PropertyModel.set_property_managers(data.propertyManagerIDs)
+            managers = set_managers(data['propertyManagerIDs'])
+            data['propertyManagerIDs'] = None
+            rentalProperty.managers = managers
 
         #the reported purpose of this route is toggling the "archived" status
         #but an explicit value of "archive" in the request body will override

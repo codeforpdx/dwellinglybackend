@@ -31,7 +31,6 @@ class PropertyModel(BaseModel):
         self.city = city
         self.state = state
         self.zipcode = zipcode
-        self.managers = self.set_property_managers(propertyManagerIDs)
         self.archived = False
 
     def json(self):
@@ -64,20 +63,3 @@ class PropertyModel(BaseModel):
     @classmethod
     def find_by_manager(cls, manager_id):
         return cls.query.filter(cls.managers.any(UserModel.id == manager_id)).all()
-
-    @classmethod
-    def set_property_managers(cls, ids):
-        managers = []
-        if ids:
-            for id in ids:
-                user = UserModel.find_by_id(id)
-                if user and user.role == RoleEnum.PROPERTY_MANAGER:
-
-                    managers.append(user)
-
-                elif user and user.role != RoleEnum.PROPERTY_MANAGER:
-                    raise ValidationError(f'{user.full_name()} is not a property manager')
-                else:
-                    raise ValidationError(f'{id} is not a valid user id')
-
-        return managers

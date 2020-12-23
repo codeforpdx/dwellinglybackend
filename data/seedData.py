@@ -11,6 +11,24 @@ from models.emergency_contact import EmergencyContactModel
 from models.contact_number import ContactNumberModel
 from models.lease import LeaseModel
 from utils.time import time_format
+from schemas.property_assignment import PropertyAssignSchema
+
+
+def set_managers(ids):
+    managers = []
+    if ids:
+        for id in ids:
+            user = UserModel.find_by_id(id)
+            if user and user.role == RoleEnum.PROPERTY_MANAGER:
+
+                managers.append(user)
+
+            elif user and user.role != RoleEnum.PROPERTY_MANAGER:
+                raise ValidationError(f'{user.full_name()} is not a property manager')
+            else:
+                raise ValidationError(f'{id} is not a valid user id')
+
+    return managers
 
 def seedData():
     now=datetime.utcnow()
@@ -114,23 +132,30 @@ def seedData():
                                    archived=False)
     user_xander_dander.save_to_db()
 
+
+
     property_test1 = PropertyModel(name="test1",
                                    address="123 NE FLanders St",
                                    unit="5",
                                    city="Portland",
                                    state="OR",
                                    zipcode="97207",
-                                   propertyManagerIDs=[user_gray_pouponn.id],
+                                   propertyManagerIDs=None,
                                    archived=False)
+
+    property_test1.managers = set_managers([user_gray_pouponn.id])
     property_test1.save_to_db()
+
     property_meerkat_manor = PropertyModel(name="Meerkat Manor",
                                            address="Privet Drive",
                                            unit="2",
                                            city="Portland",
                                            state="OR",
                                            zipcode="97207",
-                                           propertyManagerIDs=[user_mister_sir.id],
+                                           propertyManagerIDs=None,
                                            archived=False)
+
+    property_meerkat_manor.managers = set_managers([user_mister_sir.id])
     property_meerkat_manor.save_to_db()
     property_the_reginald = PropertyModel(name="The Reginald",
                                           address="Aristocrat Avenue",
@@ -138,8 +163,10 @@ def seedData():
                                           city="Portland",
                                           state="OR",
                                           zipcode="97207",
-                                          propertyManagerIDs=[user_gray_pouponn.id, user_mister_sir.id],
+                                          propertyManagerIDs=None,
                                           archived=False)
+
+    property_the_reginald.managers = set_managers([user_gray_pouponn.id, user_mister_sir.id])
     property_the_reginald.save_to_db()
 
     tenant_renty_mcrenter = TenantModel(firstName="Renty",
