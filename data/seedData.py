@@ -14,16 +14,6 @@ from utils.time import time_format
 from schemas import *
 
 
-def set_managers(ids):
-    managers = []
-    if ids:
-        for id in ids:
-            user = UserModel.find(id)
-            PropertyAssignSchema().load({'manager_id': user.id}, partial=True)
-            managers.append(user)
-
-    return managers
-
 def seedData():
     now=datetime.utcnow()
     future = now + timedelta(days=365)
