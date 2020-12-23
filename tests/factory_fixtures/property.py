@@ -3,7 +3,7 @@ from models.property import PropertyModel
 
 @pytest.fixture
 def property_attributes(faker):
-    def _property_attributes(archived=None):
+    def _property_attributes(archived=False):
         return {
             'name': faker.unique.name(),
             'address': faker.address(),
