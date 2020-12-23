@@ -15,13 +15,9 @@ class TestBasePropertyModel(BaseInterfaceTest):
 @pytest.mark.usefixtures('empty_test_db')
 class TestProperty:
     def test_property_created_with_manager_ids(self, property_attributes, create_property_manager):
-        property_attrs = property_attributes()
         pm_1 = create_property_manager()
         pm_2 = create_property_manager()
-        property_attrs['propertyManagerIDs'] = [
-            pm_1.id,
-            pm_2.id
-        ]
+        property_attrs = property_attributes(manager_ids=[pm_1.id, pm_2.id])
 
         prop = PropertyModel.create(schema=PropertySchema, payload=property_attrs)
         db.session.rollback()
