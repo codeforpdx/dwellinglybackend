@@ -46,9 +46,9 @@ class BaseModel(db.Model):
         return obj
 
     @staticmethod
-    def validate(schema, payload, partial=False):
+    def validate(schema, payload, partial=False, many=False):
         try:
-            return schema().load(payload, unknown=EXCLUDE, partial=partial)
+            return schema().load(payload, unknown=EXCLUDE, partial=partial, many=many)
         except ValidationError as err:
             abort(400, err.messages)
 
