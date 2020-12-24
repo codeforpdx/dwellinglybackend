@@ -35,3 +35,9 @@ class TestProperty:
         db.session.rollback()
 
         assert prop.managers == [pm_2, pm_3]
+
+    def test_property_update_without_managers(self, create_property):
+        prop = create_property()
+        payload = {'name': 'The New Portlander Delux Apartment Complex Multnomah Suite Express'}
+
+        assert PropertyModel.update(schema=PropertySchema, id=prop.id, payload=payload)

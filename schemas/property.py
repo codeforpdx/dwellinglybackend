@@ -29,6 +29,7 @@ class PropertySchema(ma.SQLAlchemyAutoSchema):
 
     @post_load
     def make_property_attributes(self, data, **kwargs):
-        data['managers'] = [ UserModel.find(manager) for manager in data['propertyManagerIDs'] ]
-        del(data['propertyManagerIDs'])
+        if 'propertyManagerIDs' in data:
+            data['managers'] = [ UserModel.find(manager) for manager in data['propertyManagerIDs'] ]
+            del(data['propertyManagerIDs'])
         return data
