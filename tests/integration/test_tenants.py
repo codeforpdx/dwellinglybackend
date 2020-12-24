@@ -28,7 +28,6 @@ def test_tenants_POST(client, test_database, auth_headers):
         "firstName": "Jake",
         "lastName": "The Dog",
         "phone": "111-111-1111",
-        "propertyID": 1,
         "staffIDs": [1, 2]
     }
 
@@ -36,7 +35,6 @@ def test_tenants_POST(client, test_database, auth_headers):
         "firstName": "Finn",
         "lastName": "The Human",
         "phone": "123-555-4321",
-        "propertyID": 2,
         "occupants": 3,
         "dateTimeEnd": Time.one_year_from_now_iso(),
         "dateTimeStart": Time.yesterday_iso(),
@@ -91,7 +89,6 @@ def test_tenants_PUT(client, auth_headers):
         "firstName": "Jake",
         "lastName": "The Dog",
         "phone": "111-111-1111",
-        "propertyID": 1,
         "staffIDs": [1, 2]
     }
     response = client.put(f'{endpoint}/{id}',

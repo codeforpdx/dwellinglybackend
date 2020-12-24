@@ -155,20 +155,23 @@ class TestLeaseAuthorizations:
         response = self.client.get('/api/lease', headers=admin_header)
         assert response.status_code == 200
 
-    def test_pm_is_authorized_to_create(self, pm_header, create_tenant):
+    def test_pm_is_authorized_to_create(self, pm_header, create_tenant, create_property):
         tenant = create_tenant()
-        response = self.client.post('/api/lease', json=self.valid_payload(tenant.id, tenant.propertyID), headers=pm_header)
+        propertyID = create_property().id
+        response = self.client.post('/api/lease', json=self.valid_payload(tenant.id, propertyID), headers=pm_header)
 
         assert response.status_code == 201
 
-    def test_staff_are_authorized_to_create(self, staff_header, create_tenant):
+    def test_staff_are_authorized_to_create(self, staff_header, create_tenant, create_property):
         tenant = create_tenant()
-        response = self.client.post('/api/lease', json=self.valid_payload(tenant.id, tenant.propertyID), headers=staff_header)
+        propertyID = create_property().id
+        response = self.client.post('/api/lease', json=self.valid_payload(tenant.id, propertyID), headers=staff_header)
         assert response.status_code == 201
 
     def test_admin_is_authorized_to_create(self, admin_header, create_tenant, create_property):
         tenant = create_tenant()
-        response = self.client.post('/api/lease', json=self.valid_payload(tenant.id, tenant.propertyID), headers=admin_header)
+        propertyID = create_property().id
+        response = self.client.post('/api/lease', json=self.valid_payload(tenant.id, propertyID), headers=admin_header)
         assert response.status_code == 201
 
     def test_pm_is_authorized_to_delete_lease(self, pm_header, create_lease):
