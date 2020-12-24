@@ -27,7 +27,6 @@ class TestProperty:
 
     def test_manager_update(self, create_property, create_property_manager):
         prop = create_property()
-        pm_1 = prop.managers[0]
         pm_2 = create_property_manager()
         pm_3 = create_property_manager()
         payload = { 'propertyManagerIDs': [pm_2.id, pm_3.id] }

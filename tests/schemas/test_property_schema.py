@@ -1,9 +1,6 @@
 import pytest
 from utils.time import Time
 from schemas import PropertySchema
-from schemas import UserSchema
-from models.user import UserModel
-from models.property import PropertyModel
 
 
 @pytest.mark.usefixtures('empty_test_db')

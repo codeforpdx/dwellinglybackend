@@ -1,11 +1,8 @@
-import json
 from flask_restful import Resource, reqparse
 from flask import request
 from utils.authorizations import admin_required
 from db import db
 from models.property import PropertyModel
-from schemas.property_assignment import PropertyAssignSchema
-from models.user import UserModel, RoleEnum
 from schemas.property import PropertySchema
 
 # | method | route                | action                     |

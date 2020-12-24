@@ -10,7 +10,7 @@ def property_attributes(faker, create_property_manager):
             'address': faker.address(),
             'city': faker.city(),
             'unit': faker.building_number(),
-            'state': faker.state() ,
+            'state': faker.state(),
             'zipcode': faker.postcode(),
             'archived': archived,
             'propertyManagerIDs': manager_ids

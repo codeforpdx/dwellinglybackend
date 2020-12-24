@@ -11,7 +11,7 @@ from models.emergency_contact import EmergencyContactModel
 from models.contact_number import ContactNumberModel
 from models.lease import LeaseModel
 from utils.time import time_format
-from schemas import *
+from schemas import PropertySchema
 
 
 def seedData():
