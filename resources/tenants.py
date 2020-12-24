@@ -25,7 +25,6 @@ class Tenants(Resource):
     parser.add_argument('firstName',type=str,required=True,help="This field cannot be blank")
     parser.add_argument('lastName',type=str,required=True,help="This field cannot be blank")
     parser.add_argument('phone',type=str,required=True,help="This field cannot be blank")
-    parser.add_argument('propertyID',required=False,help="This field can be provided at a later time")
     parser.add_argument('staffIDs',action='append',required=False,help="This field can be provided at a later time")
 
     @admin_required
@@ -85,8 +84,6 @@ class Tenants(Resource):
             tenantEntry.lastName = data.lastName
         if(data.phone):
             tenantEntry.phone = data.phone
-        if(data.propertyID):
-            tenantEntry.propertyID = data.propertyID
         if(data.staffIDs and len(data.staffIDs)):
             tenantEntry.staff[:] = []
             for id in data.staffIDs:

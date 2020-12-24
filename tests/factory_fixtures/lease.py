@@ -4,11 +4,11 @@ from datetime import datetime
 
 @pytest.fixture
 def lease_attributes(faker):
-    def _lease_attributes(unitNum, tenant, propertyid):
+    def _lease_attributes(unitNum, tenant, property):
         return {
             "unitNum": unitNum,
             "tenantID": tenant.id,
-            "propertyID": propertyid.id,
+            "propertyID": property.id,
             "dateTimeStart": faker.date_time_this_decade(),
             "dateTimeEnd": faker.date_time_this_decade(before_now=False, after_now=True),
             "occupants": faker.random_number(digits=2)

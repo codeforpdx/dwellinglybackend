@@ -23,7 +23,7 @@ def test_tenants_GET_one(client, test_database, auth_headers):
     assert response.json == {'message': 'Tenant not found'}
 
 
-def test_tenants_POST(client, test_database, auth_headers):
+def test_tenants_POST(client, test_database, auth_headers, create_property):
     newTenant = {
         "firstName": "Jake",
         "lastName": "The Dog",
@@ -35,6 +35,7 @@ def test_tenants_POST(client, test_database, auth_headers):
         "firstName": "Finn",
         "lastName": "The Human",
         "phone": "123-555-4321",
+        "propertyID": create_property().id,
         "occupants": 3,
         "dateTimeEnd": Time.one_year_from_now_iso(),
         "dateTimeStart": Time.yesterday_iso(),
