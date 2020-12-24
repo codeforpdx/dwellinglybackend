@@ -12,18 +12,16 @@ class TenantModel(BaseModel):
     firstName = db.Column(db.String(100), nullable=False)
     lastName = db.Column(db.String(100), nullable=False)
     phone = db.Column(db.String(20), nullable=False)
-    propertyID = db.Column(db.Integer, db.ForeignKey('properties.id'))
 
     # relationships
     staff = relationship('UserModel', secondary='staff_tenant_links')
     leases = db.relationship('LeaseModel',
         backref='tenant', lazy=True, cascade="all, delete-orphan")
 
-    def __init__(self, firstName, lastName, phone, propertyID, staffIDs):
+    def __init__(self, firstName, lastName, phone, staffIDs):
         self.firstName = firstName
         self.lastName = lastName
         self.phone = phone
-        self.propertyID = propertyID if propertyID else None
         self.staff = []
         if not (staffIDs == None):
             for id in staffIDs:
@@ -38,8 +36,6 @@ class TenantModel(BaseModel):
             'lastName': self.lastName,
             'fullName': '{} {}'.format(self.firstName, self.lastName),
             'phone': self.phone,
-            'propertyID': self.propertyID,
-            'propertyName': self.property.name if self.property else None,
             'staff': [user.json() for user in self.staff] if self.staff else [],
             'created_at': Time.format_date(self.created_at),
             'updated_at': Time.format_date(self.updated_at)

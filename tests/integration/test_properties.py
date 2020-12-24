@@ -39,7 +39,6 @@ def test_get_property_by_id(client, auth_headers, test_database):
     assert property_info['zipcode'] == '97207'
     assert property_info['propertyManager'] == [user_json]
     assert property_info['propertyManagerName'] == ['Gray Pouponn']
-    assert property_info['tenantIDs'] == [1]
     assert property_info['archived'] == 0
 
     """The server responds with an error if the URL contains a non-existent property id"""
