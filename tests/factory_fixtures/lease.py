@@ -18,9 +18,8 @@ def lease_attributes(faker):
 @pytest.fixture
 def create_lease(faker, lease_attributes, create_property, create_tenant):
     def _create_lease(unitNum=faker.building_number()):
-        propertyID= create_property()
         tenant = create_tenant()
-        lease = LeaseModel(**lease_attributes(unitNum, tenant, propertyID))
+        lease = LeaseModel(**lease_attributes(unitNum, tenant, create_property()))
         lease.save_to_db()
         return lease
     yield _create_lease

@@ -54,7 +54,7 @@ class TestTenantValidations:
         assert 'phone' in validation_errors
 
     def test_phone_max_20(self):
-        long_phone_number = '8' * 21
+        long_phone_number = '8' * 41
         validation_errors = TenantSchema().validate({'phone': long_phone_number})
 
         assert 'phone' in validation_errors
