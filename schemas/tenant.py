@@ -35,7 +35,7 @@ class TenantSchema(ma.SQLAlchemyAutoSchema):
 
     @validates("staffIDs")
     def validate_staff_ids(self, value):
-        TenantModel.validate(StaffTenantSchema, {'staff': value}, partial=True)
+        StaffTenantSchema().load({'staff': value}, partial=True)
 
     @post_load
     def make_tenant_attributes(self, data, **kwargs):
