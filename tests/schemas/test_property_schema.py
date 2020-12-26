@@ -29,6 +29,12 @@ class TestPropertyManagerValidations:
         validation_error = PropertySchema().validate({"propertyManagerIDs": []})
         assert "propertyManagerIDs" in validation_error
 
+    def test_propertyManagerIDs_are_validated(self, create_join_staff):
+        staff = create_join_staff()
+        validation_error = PropertySchema().validate({"propertyManagerIDs": [staff.id]})
+
+        assert "propertyManagerIDs" in validation_error
+
     def test_uniqueness_of_property_name(self, create_property):
         name = create_property().name
         validation_errors = PropertySchema().validate({'name': name})

@@ -20,7 +20,7 @@ class PropertySchema(ma.SQLAlchemyAutoSchema):
             raise ValidationError('manager must be assigned')
 
         payload = [ {'manager_id': value[manager_id]} for manager_id in range(len(value)) ]
-        PropertyModel.validate(PropertyAssignSchema, payload, partial=True, many=True)
+        PropertyAssignSchema().load(payload, partial=True, many=True)
 
     @validates("name")
     def validates_uniqueness_of_name(self, value):
