@@ -50,12 +50,12 @@ class TestTenantValidations:
 
         assert 'lastName' in validation_errors
 
-    def test_phone_min_10(self):
+    def test_min_length_phone_number_validation(self):
         validation_errors = TenantSchema().validate({'phone': '1234'})
 
         assert 'phone' in validation_errors
 
-    def test_phone_max_20(self):
+    def test_max_length_phone_number_validation(self):
         long_phone_number = '8' * 41
         validation_errors = TenantSchema().validate({'phone': long_phone_number})
 
