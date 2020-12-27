@@ -66,3 +66,7 @@ class BaseModel(db.Model):
     @classmethod
     def _name(cls):
         return cls.__name__.replace('Model', '')
+
+    @classmethod
+    def tablename(cls):
+        return cls.__tablename__

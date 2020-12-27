@@ -21,7 +21,7 @@ class PropertyModel(BaseModel):
 
     tenants = db.relationship(TenantModel, backref="property")
     leases = db.relationship('LeaseModel', backref='property', lazy=True, cascade="all, delete-orphan")
-    managers = db.relationship(UserModel, secondary='property_assignments', backref='properties')
+    managers = db.relationship(UserModel, secondary=PropertyAssignment.tablename(), backref='properties')
 
     def json(self):
         property_tenants = []
