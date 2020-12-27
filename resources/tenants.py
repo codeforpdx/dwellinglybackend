@@ -1,17 +1,10 @@
-import json
-from flask_restful import Resource, reqparse
+from flask_restful import Resource
 from flask import request
 from utils.authorizations import admin_required
-from db import db
 from models.tenant import TenantModel
-from models.user import UserModel
 from models.lease import LeaseModel
 from schemas.lease import LeaseSchema
 from schemas.tenant import TenantSchema
-from datetime import datetime
-from utils.time import Time
-from schemas.lease import LeaseSchema
-from datetime import datetime
 
 # | method | route                | action                    |
 # | :----- | :------------------- | :------------------------ |
