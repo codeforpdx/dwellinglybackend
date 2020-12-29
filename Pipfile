@@ -14,6 +14,9 @@ pytest-watch = "*"
 python-dotenv = "*"
 pytest = "*"
 atomicwrites = "*"
+flake8-bugbear = "*"
+pre-commit = "*"
+black = "*"
 
 [packages]
 Flask = "==1.1.1"
@@ -36,3 +39,6 @@ python_version = "3.8"
 
 [scripts]
 view_coverage = "coverage report -m"
+
+[pipenv]
+allow_prereleases = true
