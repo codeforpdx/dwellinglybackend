@@ -39,6 +39,7 @@ python_version = "3.8"
 
 [scripts]
 view_coverage = "coverage report -m"
+dev-install = "pipenv install -d --pre"
 
 [pipenv]
 allow_prereleases = true
