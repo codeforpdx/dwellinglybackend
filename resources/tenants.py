@@ -1,16 +1,10 @@
-import json
-from flask_restful import Resource, reqparse
+from flask_restful import Resource
 from flask import request
 from utils.authorizations import admin_required
-from db import db
 from models.tenant import TenantModel
-from models.user import UserModel
 from models.lease import LeaseModel
 from schemas.lease import LeaseSchema
-from datetime import datetime
-from utils.time import Time
-from schemas.lease import LeaseSchema
-from datetime import datetime
+from schemas.tenant import TenantSchema
 
 # | method | route                | action                    |
 # | :----- | :------------------- | :------------------------ |
@@ -21,12 +15,6 @@ from datetime import datetime
 # | DELETE | `v1/tenants/:id`     | Deletes a single tenant   |
 
 class Tenants(Resource):
-    parser = reqparse.RequestParser()
-    parser.add_argument('firstName',type=str,required=True,help="This field cannot be blank")
-    parser.add_argument('lastName',type=str,required=True,help="This field cannot be blank")
-    parser.add_argument('phone',type=str,required=True,help="This field cannot be blank")
-    parser.add_argument('staffIDs',action='append',required=False,help="This field can be provided at a later time")
-
     @admin_required
     def get(self, tenant_id=None):
         # GET /tenants
@@ -42,12 +30,7 @@ class Tenants(Resource):
 
     @admin_required
     def post(self):
-        data = Tenants.parser.parse_args()
-        if TenantModel.find_by_first_and_last(data["firstName"], data["lastName"]):
-            return { 'message': 'A tenant with this first and last name already exists'}, 401
-
-        tenantEntry = TenantModel(**data)
-        TenantModel.save_to_db(tenantEntry)
+        tenantEntry = TenantModel.create(schema=TenantSchema, payload=request.json)
 
         returnData = tenantEntry.json()
 
@@ -67,34 +50,7 @@ class Tenants(Resource):
 
     @admin_required
     def put(self, tenant_id):
-        parser_for_put = Tenants.parser.copy()
-        parser_for_put.replace_argument('firstName',required=False)
-        parser_for_put.replace_argument('lastName',required=False)
-        parser_for_put.replace_argument('phone',required=False)
-        data = parser_for_put.parse_args()
-
-        tenantEntry = TenantModel.find_by_id(tenant_id)
-        if not tenantEntry:
-            return {'message': 'Tenant not found'}, 404
-
-        #variable statements allow for only updated fields to be transmitted
-        if(data.firstName):
-            tenantEntry.firstName = data.firstName
-        if(data.lastName):
-            tenantEntry.lastName = data.lastName
-        if(data.phone):
-            tenantEntry.phone = data.phone
-        if(data.staffIDs and len(data.staffIDs)):
-            tenantEntry.staff[:] = []
-            for id in data.staffIDs:
-                user = UserModel.find_by_id(id)
-                if user: tenantEntry.staff.append(user)
-
-
-        tenantEntry.save_to_db()
-
-        return tenantEntry.json()
-
+        return TenantModel.update(schema=TenantSchema, payload=request.json, id=tenant_id).json()
 
     @admin_required
     def delete(self, tenant_id):

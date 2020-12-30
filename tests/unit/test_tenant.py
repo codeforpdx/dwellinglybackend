@@ -1,15 +1,18 @@
+import pytest
+from tests.unit.base_interface_test import BaseInterfaceTest
 from models.tenant import TenantModel
-
-firstName = "Renty"
-lastName = "McRenter"
-phone = "800-RENT-ALOT"
-propertyID = 1
-staffIDs = [1, 2]
+from schemas.tenant import TenantSchema
 
 
-def test_tenant(test_database):
-    newTenant = TenantModel(firstName=firstName, lastName=lastName,
-                            phone=phone, staffIDs=staffIDs)
-    assert newTenant.firstName == firstName
-    assert newTenant.lastName == lastName
-    assert newTenant.phone == phone
+
+class TestBaseTenantModel(BaseInterfaceTest):
+    def setup(self):
+        self.object = TenantModel()
+        self.custom_404_msg = 'Tenant not found'
+        self.schema = TenantSchema
+
+
+@pytest.mark.usefixtures('empty_test_db')
+class TestTenantFactory:
+    def test_create_tenant(self, create_tenant):
+        assert create_tenant()

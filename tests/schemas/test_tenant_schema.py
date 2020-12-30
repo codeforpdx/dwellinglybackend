@@ -1,4 +1,6 @@
+import pytest
 from datetime import datetime
+from models.tenant import TenantModel
 from schemas import TenantSchema
 from utils.time import Time
 
@@ -48,13 +50,13 @@ class TestTenantValidations:
 
         assert 'lastName' in validation_errors
 
-    def test_phone_min_10(self):
+    def test_min_length_phone_number_validation(self):
         validation_errors = TenantSchema().validate({'phone': '1234'})
 
         assert 'phone' in validation_errors
 
-    def test_phone_max_20(self):
-        long_phone_number = '8' * 21
+    def test_max_length_phone_number_validation(self):
+        long_phone_number = '8' * 41
         validation_errors = TenantSchema().validate({'phone': long_phone_number})
 
         assert 'phone' in validation_errors
@@ -72,3 +74,22 @@ class TestTenantValidations:
         )
 
         assert 'updated_at' in validation_errors
+
+    def test_staffIDs_are_validated(self, empty_test_db, create_property_manager):
+        pm = create_property_manager()
+        validation_error = TenantSchema().validate({"staffIDs": [pm.id]})
+
+        assert "staffIDs" in validation_error
+
+@pytest.mark.usefixtures('empty_test_db')
+class TestPostLoadDeserialization:
+    def test_tenant_creation(self, tenant_attributes, create_property, create_join_staff):
+        staff_1 = create_join_staff()
+        staff_2 = create_join_staff()
+
+        tenant_attrs = tenant_attributes(staff=[staff_1.id, staff_2.id])
+
+        tenant = TenantModel.create(schema=TenantSchema, payload=tenant_attrs)
+
+        assert tenant
+        assert tenant.staff == [staff_1, staff_2]

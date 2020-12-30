@@ -11,7 +11,7 @@ from models.emergency_contact import EmergencyContactModel
 from models.contact_number import ContactNumberModel
 from models.lease import LeaseModel
 from utils.time import time_format
-from schemas import PropertySchema
+from schemas import PropertySchema, TenantSchema
 
 
 def seedData():
@@ -158,24 +158,35 @@ def seedData():
     )
 
 
-    tenant_renty_mcrenter = TenantModel(firstName="Renty",
-                                        lastName="McRenter",
-                                        phone="800-RENT-ALOT",
-                                        staffIDs=[user_1.id, user_2.id]
-                                        )
-    tenant_renty_mcrenter.save_to_db()
-    tenant_soho_muless = TenantModel(firstName="Soho",
-                                     lastName="Muless",
-                                     phone="123-123-0000",
-                                     staffIDs=[]
-                                     )
-    tenant_soho_muless.save_to_db()
-    tenant_starvin_artist = TenantModel(firstName="Starvin",
-                                        lastName="Artist",
-                                        phone="123-123-1111",
-                                        staffIDs=[]
-                                        )
-    tenant_starvin_artist.save_to_db()
+    tenant_renty_mcrenter = TenantModel.create(
+        schema=TenantSchema,
+        payload={
+            'firstName': "Renty",
+            'lastName': "McRenter",
+            'phone': "800-RENT-ALOT",
+            'staffIDs': [user_janice_joinstaff.id, user_hector_chen.id]
+        }
+    )
+
+    tenant_soho_muless = TenantModel.create(
+        schema=TenantSchema,
+        payload={
+            'firstName': "Soho",
+            'lastName': "Muless",
+            'phone': "123-123-0000",
+            'staffIDs': []
+        }
+    )
+
+    tenant_starvin_artist = TenantModel.create(
+        schema=TenantSchema,
+        payload={
+            'firstName': "Starvin",
+            'lastName': "Artist",
+            'phone': "123-123-1111",
+            'staffIDs': []
+        }
+    )
 
     ticket_roof_on_fire = TicketModel(
         issue="The roof, the roof, the roof is on fire.",

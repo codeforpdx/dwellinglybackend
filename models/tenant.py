@@ -18,17 +18,6 @@ class TenantModel(BaseModel):
     leases = db.relationship('LeaseModel',
         backref='tenant', lazy=True, cascade="all, delete-orphan")
 
-    def __init__(self, firstName, lastName, phone, staffIDs):
-        self.firstName = firstName
-        self.lastName = lastName
-        self.phone = phone
-        self.staff = []
-        if not (staffIDs == None):
-            for id in staffIDs:
-                user = UserModel.find_by_id(id)
-                if user: self.staff.append(user)
-
-
     def json(self):
         return {
             'id': self.id,
@@ -40,7 +29,3 @@ class TenantModel(BaseModel):
             'created_at': Time.format_date(self.created_at),
             'updated_at': Time.format_date(self.updated_at)
         }
-
-    @classmethod
-    def find_by_first_and_last(cls, first, last):
-        return cls.query.filter_by(firstName=first, lastName=last).first()

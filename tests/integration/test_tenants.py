@@ -23,12 +23,14 @@ def test_tenants_GET_one(client, test_database, auth_headers):
     assert response.json == {'message': 'Tenant not found'}
 
 
-def test_tenants_POST(client, test_database, auth_headers, create_property):
+def test_tenants_POST(client, empty_test_db, auth_headers, valid_header, create_property, create_join_staff):
+    staff_1 = create_join_staff()
+    staff_2 = create_join_staff()
     newTenant = {
         "firstName": "Jake",
         "lastName": "The Dog",
         "phone": "111-111-1111",
-        "staffIDs": [1, 2]
+        "staffIDs": [staff_1.id, staff_2.id]
     }
 
     newTenantWithLease = {
@@ -43,25 +45,20 @@ def test_tenants_POST(client, test_database, auth_headers, create_property):
     }
 
     response = client.post(endpoint, json=newTenant,
-                           headers=auth_headers["admin"])
+                           headers=valid_header)
 
     assert is_valid(response, 201)  # CREATED
     assert response.json['firstName'] == 'Jake'
 
     response = client.post(endpoint, json=newTenantWithLease,
-                           headers=auth_headers["admin"])
+                           headers=valid_header)
     assert is_valid(response, 201)
     assert response.json['unitNum'] == '413'
 
 
 
     response = client.post(endpoint, json=newTenant,
-                           headers=auth_headers["admin"])
-    # UNAUTHORIZED - A tenant with this first and last name already exists
-    assert is_valid(response, 401)
-    assert response.json == \
-            {'message':
-             'A tenant with this first and last name already exists'}
+                           headers=valid_header)
 
     response = client.post(endpoint, json=newTenant,
                            headers=auth_headers["pm"])
@@ -76,30 +73,30 @@ def test_tenants_POST(client, test_database, auth_headers, create_property):
     assert is_valid(response, 401)
     assert response.json == {'message': 'Missing authorization header'}
 
-    newTenant = {}
-    response = client.post(endpoint, json=newTenant,
-                           headers=auth_headers["admin"])
-    # BAD REQUEST - {'firstName': 'This field cannot be blank.'}
-    assert is_valid(response, 400)
-    assert response.json == {'message':
-                             {'firstName': 'This field cannot be blank'}}
-
-def test_tenants_PUT(client, auth_headers):
-    id = 1
+def test_tenants_PUT(client, empty_test_db, valid_header, create_tenant, create_join_staff):
+    tenant = create_tenant()
+    staff_1 = create_join_staff()
+    staff_2 = create_join_staff()
     updatedTenant = {
         "firstName": "Jake",
         "lastName": "The Dog",
         "phone": "111-111-1111",
-        "staffIDs": [1, 2]
+        "staffIDs": [staff_1.id, staff_2.id]
     }
-    response = client.put(f'{endpoint}/{id}',
-                          json=updatedTenant, headers=auth_headers["admin"])
+    response = client.put(
+        f'{endpoint}/{tenant.id}',
+        json=updatedTenant,
+        headers=valid_header
+    )
     assert is_valid(response, 200)  # OK
     assert response.json['firstName'] == 'Jake'
 
     id = 100
-    response = client.put(f'{endpoint}/{id}',
-                          json=updatedTenant, headers=auth_headers["admin"])
+    response = client.put(
+        f'{endpoint}/{id}',
+        json=updatedTenant,
+        headers=valid_header
+    )
     assert is_valid(response, 404)  # NOT FOUND
     assert response.json == {'message': 'Tenant not found'}
 
