@@ -76,7 +76,7 @@ NOTE: Database is SQLite3 via SQLAlchemy
 2. Install [pipenv](https://pipenv.pypa.io/en/latest/#install-pipenv-today)
     - Note: It is not necessary to install python before installing pipenv.
     - Please install pipenv according to their docs for your OS.
-3. Install dependencies `pipenv install -d --pre`
+3. Install dependencies `pipenv run dev-install`
    - Note: Pipenv may prompt you to install Python if it cannot find the correct version on your system. You should select Yes.
    - Note: If you get the error `ImportError: cannot import name 'Feature' from 'setuptools'`, your setuptools version might be at 46 or later. You may be able to get it to work using version 45 (e.g. `pip3 install setuptools==45`)
 4. Install our pre-commit hook:
@@ -180,7 +180,7 @@ To update your development branch with the latest changes:
  - `git pull origin development`
 
 3. After pulling fresh copy it is a good habit to install any new deps and rebuild the database. Run the following two commands:
- - `pipenv run install -d --pre`
+ - `pipenv run dev-install`
  - `pipenv run flask db recreate`
 
 4. Finally - run the tests to ensure everything is passing.
