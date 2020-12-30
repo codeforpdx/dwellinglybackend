@@ -14,13 +14,6 @@ class EmergencyContactSchema(ma.SQLAlchemyAutoSchema):
 
     contact_numbers = fields.List(fields.Nested("ContactNumberSchema"))
 
-    @validates("contact_numbers")
-    def validate_contact_nums(self, value):
-        try:
-          self.contact_numbers = ContactNumberSchema(many=True).load(value)
-        except ValidationError as err:
-          self.contact_numbers = err.messages
-
     @validates("name")
     def validate_name(self, value):
         if EmergencyContactModel.find_by_name(value):
