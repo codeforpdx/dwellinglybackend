@@ -37,12 +37,14 @@ class Tenants(Resource):
         leaseData = request.json
         leaseData.update({"tenantID": tenantEntry.id})
 
-        # if this tenant has a lease
-        if (
-            "dateTimeEnd" in leaseData
-            and "dateTimeStart" in leaseData
-            and "propertyID" in leaseData
-        ):
+        def _lease():
+            return (
+                "dateTimeEnd" in leaseData
+                and "dateTimeStart" in leaseData
+                and "propertyID" in leaseData
+            )
+
+        if _lease():
             LeaseModel.create(schema=LeaseSchema, payload=leaseData)
             returnData.update(
                 {
