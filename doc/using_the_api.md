@@ -147,7 +147,7 @@ All endpoints are prefixed with `/api/`
 | POST   | `/emergencycontacts/`        | Creates a new emergency contact (admin only)        |
 | GET    | `/emergencycontacts/`        | Gets all emergency contacts                         |
 | GET    | `/emergencycontacts/:id`     | Gets a single emergency contact (admin only)        |
-| PUT    | `/emergencycontacts/:id`     | Updates a single emergency contact (admin only)     | 
+| PUT    | `/emergencycontacts/:id`     | Updates a single emergency contact (admin only)     |
 | DELETE | `/emergencycontacts/:id`     | Deletes a single emergency contact (admin only)     |
 
 ```javascript
@@ -194,7 +194,7 @@ All endpoints are prefixed with `/api/`
 | POST   | `/tickets/`        | Creates a new ticket                                |
 | GET    | `/tickets/`        | Gets all tickets                                    |
 | GET    | `/tickets/:id`     | Gets a single ticket                                |
-| PUT    | `/tickets/:id`     | Updates a single ticket                             | 
+| PUT    | `/tickets/:id`     | Updates a single ticket                             |
 | DELETE | `/tickets/:id`     | Deletes a single ticket                             |
 
 ```javascript
@@ -231,7 +231,7 @@ All endpoints are prefixed with `/api/`
 
 ```javascript
 { 'opentickets':{
-            'title': 'Open Tickets', 
+            'title': 'Open Tickets',
             'stats': [[
                 {
                     "stat": TicketModel.find_count_by_status("New"),
@@ -257,7 +257,7 @@ All endpoints are prefixed with `/api/`
             'title': 'Reports',
             'link': '#',
             'stats': [
-                [ 
+                [
                     {
                         'stat': 0,
                         'desc': 'Compliments',

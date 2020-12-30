@@ -1,8 +1,8 @@
-from models.notes import NotesModel
 from models.user import UserModel
 from models.tickets import TicketModel
 from utils.time import time_format
 from marshmallow import fields, Schema, validates, ValidationError
+
 
 class NotesSchema(Schema):
     id = fields.Integer()
@@ -15,6 +15,7 @@ class NotesSchema(Schema):
 
     user = fields.Nested("UserSchema")
     user = fields.Method("showFullName")
+
     def showFullName(self, obj):
         return "%s %s" % (obj.user.firstName, obj.user.lastName)
 

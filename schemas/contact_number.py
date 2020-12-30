@@ -15,4 +15,3 @@ class ContactNumberSchema(ma.SQLAlchemyAutoSchema):
     @post_load
     def make_contact_nums(self, data, **kwargs):
         return ContactNumberModel(**data)
-

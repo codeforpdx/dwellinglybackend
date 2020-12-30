@@ -1,6 +1,5 @@
 from ma import ma
 from models.emergency_contact import EmergencyContactModel
-from schemas.contact_number import ContactNumberSchema
 from utils.time import time_format
 from marshmallow import fields, validates, ValidationError
 
@@ -18,5 +17,3 @@ class EmergencyContactSchema(ma.SQLAlchemyAutoSchema):
     def validate_name(self, value):
         if EmergencyContactModel.find_by_name(value):
             raise ValidationError(f"{value} is already an emergency contact")
-
-
