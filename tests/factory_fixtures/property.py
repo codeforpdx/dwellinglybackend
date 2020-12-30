@@ -1,29 +1,25 @@
 import pytest
 from models.property import PropertyModel
+from schemas.property import PropertySchema
 
 @pytest.fixture
-def property_attributes(faker):
-    def _property_attributes(archived=False, pm=None):
+def property_attributes(faker, create_property_manager):
+    def _property_attributes(archived=False, manager_ids=[create_property_manager().id]):
         return {
             'name': faker.unique.name(),
             'address': faker.address(),
             'city': faker.city(),
             'unit': faker.building_number(),
-            'state': faker.state() ,
+            'state': faker.state(),
             'zipcode': faker.postcode(),
-            'propertyManagerIDs': [pm.id] if pm and pm.id else [],
             'archived': archived,
+            'propertyManagerIDs': manager_ids
         }
     yield _property_attributes
 
 @pytest.fixture
-def create_property(property_attributes, create_property_manager):
+def create_property(property_attributes):
     def _create_property():
-        property = PropertyModel(**property_attributes(
-            pm=create_property_manager(),
-            archived=False,
-        ))
-        property.save_to_db()
+        property = PropertyModel.create(payload=property_attributes(), schema=PropertySchema)
         return property
     yield _create_property
-

@@ -9,8 +9,6 @@ from models.property import PropertyModel
 import jwt
 from tests.factory_fixtures import *
 
-newPropertyName = "myNewProperty"
-newPropertyAddress = "123 NE FLanders St"
 plaintext_password = "1234"
 
 # Note: this repo uses the "pytest-flask" plugin which exposes the following fixtures for use in tests:
@@ -92,19 +90,6 @@ def pm_header(create_property_manager):
             current_app.secret_key,algorithm='HS256'
         ).decode('utf-8')
     return {"Authorization": f"Bearer {token}"}
-
-@pytest.fixture
-def new_property():
-    newProperty = PropertyModel( name=newPropertyName
-                               , address=newPropertyAddress
-                               , city="Portland"
-                               , unit="101"
-                               , state="OR"
-                               , zipcode="97207"
-                               , propertyManagerIDs=[5]
-                               , archived=0
-                               )
-    return newProperty
 
 @pytest.fixture
 def test_database(app, admin_user, new_user, property_manager_user):

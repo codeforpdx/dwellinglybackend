@@ -8,22 +8,21 @@ def test_get_properties(client, test_database):
     response = client.get("/api/properties")
     assert response.status_code == 200
 
-def test_post_property(client, auth_headers, new_property):
-    property = new_property.json()
-    property['name'] = "new_property"
+def test_post_property(client, auth_headers, property_attributes, create_property_manager):
+    property_attrs = property_attributes()
 
     """The server should check for the correct credentials when posting a new property"""
-    response = client.post("/api/properties", json=property)
+    response = client.post("/api/properties", json=property_attrs)
     assert response.status_code == 401
 
     """The server should successfully add a new property"""
-    response = client.post("/api/properties", json=property, headers=auth_headers["admin"])
+    response = client.post("/api/properties", json=property_attrs, headers=auth_headers["admin"])
     assert response.status_code == 201
 
     """The server should return with an error if a duplicate property is posted"""
-    response = client.post("/api/properties", json=property, headers=auth_headers["admin"])
-    assert response.get_json() == {'message': 'A property with this name already exists'}
-    assert response.status_code == 401
+    response = client.post("/api/properties", json=property_attrs, headers=auth_headers["admin"])
+    assert response.get_json() == {'message': {'name': ['A property with this name already exists']}}
+    assert response.status_code == 400
 
 def test_get_property_by_id(client, auth_headers, test_database):
     """The get property by name returns a successful response code."""
@@ -46,8 +45,8 @@ def test_get_property_by_id(client, auth_headers, test_database):
     assert responseBadPropertyName == 404
     assert responseBadPropertyName.json == {'message': 'Property not found'}
 
-def test_archive_property_by_id(client, auth_headers, new_property, test_database):
-    test_property = PropertyModel.find_by_name(new_property.name)
+def test_archive_property_by_id(client, auth_headers, create_property, test_database):
+    test_property = create_property()
 
     """The server responds with a 401 error if a non-admin tries to archive"""
     responseNoAdmin = client.post(f"/api/properties/archive/{test_property.id}")
@@ -138,8 +137,8 @@ def test_delete_property_by_id(client, auth_headers, test_database):
     response = client.delete(f"/api/properties/23", headers=auth_headers["admin"])
     assert response == 404
 
-def test_update_property_by_id(client, auth_headers, new_property, test_database):
-    test_property = PropertyModel.find_by_name(new_property.name)
+def test_update_property_by_id(client, auth_headers, create_property, test_database):
+    test_property = create_property()
     new_property_address = "123 NE Flanders St"
     test_property.address = new_property_address
     responseUpdateProperty = client.put( f'/api/properties/{test_property.id}'
