@@ -12,9 +12,9 @@ def note_attributes():
 
 @pytest.fixture
 def create_note(faker, note_attributes):
-    text = faker.paragraph()
-
-    def _create_note(userid, ticketid, text=text):
+    def _create_note(userid, ticketid, text=None):
+        if not text:
+            text = faker.paragraph()
         note = NotesModel(**note_attributes(text, userid, ticketid))
         note.save_to_db()
         return note

@@ -128,19 +128,16 @@ class TestLeaseAuthorizations:
         assert response.status_code == 200
 
     def test_pm_is_authorized_to_get_all(self, pm_header, create_lease):
-        create_lease()
 
         response = self.client.get("/api/lease", headers=pm_header)
         assert response.status_code == 200
 
     def test_staff_are_authorized_to_get_all(self, staff_header, create_lease):
-        create_lease()
 
         response = self.client.get("/api/lease", headers=staff_header)
         assert response.status_code == 200
 
     def test_admin_is_authorized_to_get_all(self, admin_header, create_lease):
-        create_lease()
 
         response = self.client.get("/api/lease", headers=admin_header)
         assert response.status_code == 200

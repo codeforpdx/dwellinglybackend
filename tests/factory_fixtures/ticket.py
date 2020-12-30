@@ -22,9 +22,9 @@ def ticket_attributes(faker):
 def create_ticket(
     faker, ticket_attributes, create_tenant, create_admin_user, create_join_staff
 ):
-    issue = faker.sentence()
-
-    def _create_ticket(issue=issue):
+    def _create_ticket(issue=None):
+        if not issue:
+            issue = faker.sentence()
         tenant = create_tenant()
         ticket = TicketModel(
             **ticket_attributes(issue, tenant, create_admin_user(), create_join_staff())

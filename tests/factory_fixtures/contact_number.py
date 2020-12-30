@@ -16,9 +16,10 @@ def contact_number_attributes(faker):
 
 @pytest.fixture
 def create_contact_number(contact_number_attributes, create_emergency_contact):
-    emergency_contact = create_emergency_contact()
+    def _create_contact_number(emergency_contact=None):
+        if not emergency_contact:
+            emergency_contact = create_emergency_contact()
 
-    def _create_contact_number(emergency_contact=emergency_contact):
         contact_number = ContactNumberModel(
             **contact_number_attributes, emergency_contact_id=emergency_contact.id
         )
