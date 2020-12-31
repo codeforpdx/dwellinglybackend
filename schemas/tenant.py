@@ -18,28 +18,28 @@ class TenantSchema(ma.SQLAlchemyAutoSchema):
     firstName = fields.Str(
         required=True,
         validate=validate.Length(min=1, max=100),
-        error_messages={'required': 'First name is required.'},
+        error_messages={"required": "First name is required."},
     )
 
     lastName = fields.Str(
         required=True,
         validate=validate.Length(min=1, max=100),
-        error_messages={'required': 'Last name is required.'},
+        error_messages={"required": "Last name is required."},
     )
 
     phone = fields.Str(
         required=True,
         validate=validate.Length(min=10, max=30),
-        error_messages={'required': 'Phone number is required.'},
+        error_messages={"required": "Phone number is required."},
     )
 
     @validates("staffIDs")
     def validate_staff_ids(self, value):
-        StaffTenantSchema().load({'staff': value}, partial=True)
+        StaffTenantSchema().load({"staff": value}, partial=True)
 
     @post_load
     def make_tenant_attributes(self, data, **kwargs):
-        if 'staffIDs' in data:
-            data['staff'] = [ UserModel.find(staff) for staff in data['staffIDs'] ]
-            del(data['staffIDs'])
+        if "staffIDs" in data:
+            data["staff"] = [UserModel.find(staff) for staff in data["staffIDs"]]
+            del data["staffIDs"]
         return data

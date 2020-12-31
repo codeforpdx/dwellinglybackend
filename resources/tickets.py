@@ -1,35 +1,33 @@
 from flask_restful import Resource, reqparse
-import json
 from models.tickets import TicketModel
 from models.notes import NotesModel
-from datetime import datetime
 from utils.authorizations import pm_level_required
+
 
 class Ticket(Resource):
     parser = reqparse.RequestParser()
-    parser.add_argument('senderID')
-    parser.add_argument('tenantID')
-    parser.add_argument('status')
-    parser.add_argument('urgency')
-    parser.add_argument('issue')
-    parser.add_argument('note')
-    parser.add_argument('assignedUserID')
-
+    parser.add_argument("senderID")
+    parser.add_argument("tenantID")
+    parser.add_argument("status")
+    parser.add_argument("urgency")
+    parser.add_argument("issue")
+    parser.add_argument("note")
+    parser.add_argument("assignedUserID")
 
     @pm_level_required
     def get(self, id):
         ticket = TicketModel.find_by_id(id)
         if ticket:
             return ticket.json()
-        return {'message': 'Ticket not found'}, 404
+        return {"message": "Ticket not found"}, 404
 
     @pm_level_required
     def delete(self, id):
         ticket = TicketModel.find_by_id(id)
         if ticket:
             ticket.delete_from_db()
-            return {'message': 'Ticket removed from database'}
-        return {'message': 'Ticket not found'}, 404
+            return {"message": "Ticket removed from database"}
+        return {"message": "Ticket not found"}, 404
 
     @pm_level_required
     def put(self, id):
@@ -37,53 +35,55 @@ class Ticket(Resource):
         ticket = TicketModel.find_by_id(id)
 
         if ticket:
-            #variable statements allow for only updated fields to be transmitted
-            if(data.senderID):
+            # variable statements allow for only updated fields to be transmitted
+            if data.senderID:
                 ticket.senderID = data.senderID
 
-            if(data.tenantID):
+            if data.tenantID:
                 ticket.tenantID = data.tenantID
 
-            if(data.assignedUserID):
+            if data.assignedUserID:
                 ticket.assignedUserID = data.assignedUserID
 
-            if(data.status):
+            if data.status:
                 ticket.status = data.status
 
-            if(data.urgency):
+            if data.urgency:
                 ticket.urgency = data.urgency
 
-            if(data.issue):
+            if data.issue:
                 ticket.issue = data.issue
 
-            if(data.note):
-                note = NotesModel(
-                    ticketid=id,
-                    text=data.note,
-                    userid=ticket.senderID
-                )
+            if data.note:
+                note = NotesModel(ticketid=id, text=data.note, userid=ticket.senderID)
                 note.save_to_db()
 
             ticket.save_to_db()
             return ticket.json()
-        return {'message': 'Ticket not found'}, 404
+        return {"message": "Ticket not found"}, 404
+
 
 class Tickets(Resource):
     parser = reqparse.RequestParser()
-    parser.add_argument('senderID')
-    parser.add_argument('tenantID')
-    parser.add_argument('status')
-    parser.add_argument('urgency')
-    parser.add_argument('issue')
-    parser.add_argument('assignedUserID')
+    parser.add_argument("senderID")
+    parser.add_argument("tenantID")
+    parser.add_argument("status")
+    parser.add_argument("urgency")
+    parser.add_argument("issue")
+    parser.add_argument("assignedUserID")
 
     @pm_level_required
     def get(self):
         data = Tickets.parser.parse_args()
         if data["tenantID"]:
-            return {'tickets': [ticket.json() for ticket in TicketModel.find_by_tenantID(data["tenantID"])]}
+            return {
+                "tickets": [
+                    ticket.json()
+                    for ticket in TicketModel.find_by_tenantID(data["tenantID"])
+                ]
+            }
         else:
-            return {'tickets': [ticket.json() for ticket in TicketModel.query.all()]}
+            return {"tickets": [ticket.json() for ticket in TicketModel.query.all()]}
 
     @pm_level_required
     def post(self):

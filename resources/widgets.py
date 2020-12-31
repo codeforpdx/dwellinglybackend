@@ -1,18 +1,17 @@
-from flask_restful import Resource, reqparse
-import json
+from flask_restful import Resource
 from models.tickets import TicketModel
 from models.user import UserModel
 from models.property import PropertyModel
 from utils.authorizations import pm_level_required
 from datetime import datetime, timedelta
 
-class Widgets(Resource):
 
+class Widgets(Resource):
     def dateStringConversion(self, date):
-        stat = date.strftime('%m/%d')
+        stat = date.strftime("%m/%d")
         today = datetime.utcnow()
-        yesterday = today - timedelta(days = 1)
-        week = today - timedelta(days = 1)
+        yesterday = today - timedelta(days=1)
+        week = today - timedelta(days=1)
 
         if date.date() == today.date():
             stat = "Today"
@@ -24,7 +23,7 @@ class Widgets(Resource):
         return stat
 
     def returnPropertyName(self, userID):
-        #returns the first property to keep things tidy, could add feature later
+        # returns the first property to keep things tidy, could add feature later
         property = PropertyModel.find_by_manager(userID)
         propertyName = "Not Assigned"
 
@@ -38,11 +37,12 @@ class Widgets(Resource):
         users = UserModel.find_recent_role("property-manager", 5)
         projectManagers = []
 
-        nullPropertyManager  = { 'id': " ",
-            'stat': " ",
-            'desc': "No new users",
-            'subtext': " "
-            }
+        nullPropertyManager = {
+            "id": " ",
+            "stat": " ",
+            "desc": "No new users",
+            "subtext": " ",
+        }
 
         for user in users:
             date = self.dateStringConversion(user.created_at)
@@ -52,54 +52,61 @@ class Widgets(Resource):
         if len(projectManagers) == 0:
             projectManagers.append(nullPropertyManager)
 
-        return { 'opentickets':{
-            'title': 'Open Tickets',
-            'link': '/tickets',
-            'stats': [[
-                {
-                    "stat": TicketModel.find_count_by_status("New"),
-                    "desc": 'New',
-                },
-                {
-                    "stat": TicketModel.find_count_by_update_status("New", 1440),
-                    "desc": "Unseen for > 24 hours",
-                }
-            ],
-            [
-                {
-                    "stat": TicketModel.find_count_by_status("In Progress"),
-                    "desc": 'In Progress'
-                },
-                {
-                    "stat": TicketModel.find_count_by_update_status("In Progress", 10080),
-                    "desc": 'In progress for > 1 week',
-                }
-            ]]
-        },
-        'reports':{
-            'title': 'Reports',
-            'link': '/reports/',
-            'stats': [
-                [
-                    {
-                        'stat': 0,
-                        'desc': 'Compliments',
-                        'subtext': 'in the last week'
-                    },
+        return {
+            "opentickets": {
+                "title": "Open Tickets",
+                "link": "/tickets",
+                "stats": [
+                    [
+                        {
+                            "stat": TicketModel.find_count_by_status("New"),
+                            "desc": "New",
+                        },
+                        {
+                            "stat": TicketModel.find_count_by_update_status(
+                                "New", 1440
+                            ),
+                            "desc": "Unseen for > 24 hours",
+                        },
+                    ],
+                    [
+                        {
+                            "stat": TicketModel.find_count_by_status("In Progress"),
+                            "desc": "In Progress",
+                        },
+                        {
+                            "stat": TicketModel.find_count_by_update_status(
+                                "In Progress", 10080
+                            ),
+                            "desc": "In progress for > 1 week",
+                        },
+                    ],
                 ],
-                [
-                    {
-                        'stat': TicketModel.find_count_by_status("Closed"),
-                        'desc': "Closed tickets",
-                        'subtext': 'in the last week!'
-                    }
-                ]
-            ]
-        },
-        'managers':{
-                'title': 'New Property Managers',
-                'link': '/manage/managers/',
-                'isDate': True,
-                'stats': [projectManagers]
-            }
+            },
+            "reports": {
+                "title": "Reports",
+                "link": "/reports/",
+                "stats": [
+                    [
+                        {
+                            "stat": 0,
+                            "desc": "Compliments",
+                            "subtext": "in the last week",
+                        },
+                    ],
+                    [
+                        {
+                            "stat": TicketModel.find_count_by_status("Closed"),
+                            "desc": "Closed tickets",
+                            "subtext": "in the last week!",
+                        }
+                    ],
+                ],
+            },
+            "managers": {
+                "title": "New Property Managers",
+                "link": "/manage/managers/",
+                "isDate": True,
+                "stats": [projectManagers],
+            },
         }, 200

@@ -1,6 +1,7 @@
 import pytest
 from models.user import UserModel, RoleEnum
 
+
 @pytest.fixture
 def user_attributes(faker):
     def _user_attributes(role=None, archived=False, firstName=None, lastName=None):
@@ -11,22 +12,25 @@ def user_attributes(faker):
             "lastName": lastName if lastName else faker.last_name(),
             "phone": faker.phone_number(),
             "role": role,
-            "archived": archived
+            "archived": archived,
         }
+
     yield _user_attributes
+
 
 @pytest.fixture
 def create_admin_user(user_attributes):
     def _create_admin_user(firstName=None, lastName=None):
-        admin = UserModel(**user_attributes(
-            role=RoleEnum.ADMIN,
-            firstName=firstName,
-            lastName=lastName)
+        admin = UserModel(
+            **user_attributes(
+                role=RoleEnum.ADMIN, firstName=firstName, lastName=lastName
+            )
         )
         admin.save_to_db()
         return admin
 
     yield _create_admin_user
+
 
 @pytest.fixture
 def create_join_staff(user_attributes):
@@ -37,6 +41,7 @@ def create_join_staff(user_attributes):
 
     yield _create_join_staff
 
+
 @pytest.fixture
 def create_property_manager(user_attributes):
     def _create_property_manager():
@@ -45,6 +50,7 @@ def create_property_manager(user_attributes):
         return pm
 
     yield _create_property_manager
+
 
 @pytest.fixture
 def create_unauthorized_user(user_attributes):

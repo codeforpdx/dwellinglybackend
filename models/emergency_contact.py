@@ -12,20 +12,20 @@ class EmergencyContactModel(BaseModel):
     description = db.Column(db.String(256))
 
     contact_numbers = relationship(
-        'ContactNumberModel',
-        backref='emergency_contact',
+        "ContactNumberModel",
+        backref="emergency_contact",
         lazy=True,
-        cascade="all, delete-orphan"
+        cascade="all, delete-orphan",
     )
 
     def json(self):
         return {
-            'id': self.id,
-            'name':self.name,
-            'description': self.description,
-            'contact_numbers': [number.json() for number in self.contact_numbers],
-            'created_at': Time.format_date(self.created_at),
-            'updated_at': Time.format_date(self.updated_at)
+            "id": self.id,
+            "name": self.name,
+            "description": self.description,
+            "contact_numbers": [number.json() for number in self.contact_numbers],
+            "created_at": Time.format_date(self.created_at),
+            "updated_at": Time.format_date(self.updated_at),
         }
 
     @classmethod

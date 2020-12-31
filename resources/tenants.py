@@ -14,19 +14,19 @@ from schemas.tenant import TenantSchema
 # | PUT    | `v1/tenants/:id`     | Updates a single tenant   |
 # | DELETE | `v1/tenants/:id`     | Deletes a single tenant   |
 
+
 class Tenants(Resource):
     @admin_required
     def get(self, tenant_id=None):
         # GET /tenants
         if not tenant_id:
-            return {'tenants': [tenant.json() for tenant in TenantModel.query.all()]}
+            return {"tenants": [tenant.json() for tenant in TenantModel.query.all()]}
 
         # GET /tenants/<tenant_id>
         tenant = TenantModel.find_by_id(tenant_id)
         if not tenant:
-            return {'message': 'Tenant not found'}, 404
+            return {"message": "Tenant not found"}, 404
         return tenant.json()
-
 
     @admin_required
     def post(self):
@@ -35,28 +35,38 @@ class Tenants(Resource):
         returnData = tenantEntry.json()
 
         leaseData = request.json
-        leaseData.update({'tenantID': tenantEntry.id})
+        leaseData.update({"tenantID": tenantEntry.id})
 
-        #if this tenant has a lease
-        if ("dateTimeEnd" in leaseData and "dateTimeStart" in leaseData and "propertyID" in leaseData):
-            LeaseModel.create(
-                schema=LeaseSchema,
-                payload=leaseData
+        def _lease():
+            return (
+                "dateTimeEnd" in leaseData
+                and "dateTimeStart" in leaseData
+                and "propertyID" in leaseData
             )
-            returnData.update({'occupants': leaseData['occupants'], 'propertyID': leaseData['propertyID'], 'unitNum': leaseData['unitNum']})
+
+        if _lease():
+            LeaseModel.create(schema=LeaseSchema, payload=leaseData)
+            returnData.update(
+                {
+                    "occupants": leaseData["occupants"],
+                    "propertyID": leaseData["propertyID"],
+                    "unitNum": leaseData["unitNum"],
+                }
+            )
 
         return returnData, 201
 
-
     @admin_required
     def put(self, tenant_id):
-        return TenantModel.update(schema=TenantSchema, payload=request.json, id=tenant_id).json()
+        return TenantModel.update(
+            schema=TenantSchema, payload=request.json, id=tenant_id
+        ).json()
 
     @admin_required
     def delete(self, tenant_id):
         tenant = TenantModel.find_by_id(tenant_id)
         if not tenant:
-            return {'message': 'Tenant not found'}, 404
+            return {"message": "Tenant not found"}, 404
 
         tenant.delete_from_db()
-        return {'message': 'Tenant deleted'}
+        return {"message": "Tenant deleted"}

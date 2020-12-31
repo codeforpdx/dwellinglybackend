@@ -1,7 +1,8 @@
 from flask_jwt_extended import jwt_required, get_jwt_claims
 from models.user import RoleEnum
 
-not_authorized_msg = {'message': 'Not Authorized'}, 401
+not_authorized_msg = {"message": "Not Authorized"}, 401
+
 
 def admin_required(func):
     @jwt_required
@@ -13,6 +14,7 @@ def admin_required(func):
 
     return check_admin_wrapper
 
+
 def staff_level_required(func):
     @jwt_required
     def check_staff_level(*args, **kwargs):
@@ -22,6 +24,7 @@ def staff_level_required(func):
             return not_authorized_msg
 
     return check_staff_level
+
 
 def pm_level_required(func):
     @jwt_required
@@ -33,17 +36,22 @@ def pm_level_required(func):
 
     return check_pm_level
 
+
 def admin():
-    return get_jwt_claims()['role'] == RoleEnum.ADMIN.value
+    return get_jwt_claims()["role"] == RoleEnum.ADMIN.value
+
 
 def staff():
-    return get_jwt_claims()['role'] == RoleEnum.STAFF.value
+    return get_jwt_claims()["role"] == RoleEnum.STAFF.value
+
 
 def pm():
-    return get_jwt_claims()['role'] == RoleEnum.PROPERTY_MANAGER.value
+    return get_jwt_claims()["role"] == RoleEnum.PROPERTY_MANAGER.value
+
 
 def _staff_level():
     return staff() or admin()
+
 
 def _pm_level():
     return pm() or _staff_level()

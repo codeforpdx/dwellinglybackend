@@ -5,12 +5,15 @@ import signal
 import sys
 
 result = subprocess.call(["pipenv", "run", "coverage", "html"])
-if(result): 
+if result:
     print("There was an error generating the HTML coverage report. Exiting.")
     exit()
 
-def stop_coverage(sig, frame):  
+
+def stop_coverage(sig, frame):
     sys.exit(0)
+
+
 signal.signal(signal.SIGINT, stop_coverage)
 
 # the approach below is from: https://2ality.com/2014/06/simple-http-server.html

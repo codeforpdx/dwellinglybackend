@@ -8,7 +8,9 @@ class BaseModel(db.Model):
     __abstract__ = True
 
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, onupdate=datetime.utcnow, default=datetime.utcnow, nullable=False)
+    updated_at = db.Column(
+        db.DateTime, onupdate=datetime.utcnow, default=datetime.utcnow, nullable=False
+    )
 
     @classmethod
     def find_by_id(cls, id):
@@ -16,7 +18,7 @@ class BaseModel(db.Model):
 
     @classmethod
     def find(cls, id):
-        return cls.query.get_or_404(id, f'{cls._name()} not found')
+        return cls.query.get_or_404(id, f"{cls._name()} not found")
 
     @classmethod
     def delete(cls, id):
@@ -65,7 +67,7 @@ class BaseModel(db.Model):
 
     @classmethod
     def _name(cls):
-        return cls.__name__.replace('Model', '')
+        return cls.__name__.replace("Model", "")
 
     @classmethod
     def tablename(cls):
