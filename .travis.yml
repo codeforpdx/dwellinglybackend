@@ -5,5 +5,7 @@ env:
   - SECRET_KEY=somethinghereforciprtoexecuteintestbuilds
 install:
   - pip install pipenv --upgrade-strategy=only-if-needed
-  - pipenv install --dev
-script: pytest
+  - pipenv run dev-install
+script:
+  - pytest
+  - pre-commit run --all-files
