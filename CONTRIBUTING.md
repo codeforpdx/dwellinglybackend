@@ -105,6 +105,7 @@ NOTE: Database is SQLite3 via SQLAlchemy
       - As a web page: `pipenv run python view_coverage.py`
       - In the console: `pipenv run view_coverage`
     - Tests can be run automatically after each file save using [pytest-watch](https://pypi.org/project/pytest-watch/). Visit the documentation to learn how to run it for your system. See [PR #72](https://github.com/codeforpdx/dwellinglybackend/pull/72) for a preview of what it can do.
+9. (OPTIONAL) Set up your workflow using the [Advanced Setup documentation](./advanced_setup.md)
 
 Queries can be made with the Postman Collection link ( https://www.getpostman.com/collections/a86a292798c7895425e2 )
 [![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/0078de8f58d4ea0b78eb)
@@ -167,6 +168,9 @@ How to contribute to this project.
     - The pre-commit hook will check your code every time you try to commit. If your code needs re-formatting, that will happen automatically. If you have non-formatting errors in your code, these will be printed to the terminal with the error, filename and line number. You will need to resolve these yourself.
     - After your code has been reformatted and/or you have resolved other errors, you will need to add and commit those files again (because they have been modified).
     - Successful commits can then be pushed to your remote branch like normal.
+    - NOTE: If you did not set up pre-commit as described in Step 4 of [Installation](#Installation), our CI will still perform these checks when you make a PR into `development`. If the build fails, you will be asked to push the appropriate changes to your branch before it can be merged.
+
+(For more information on the pre-commit hook, Flake8 and the Black formatter, see the [Advanced Setup documentation](./advanced_setup.md))
 
 #### Updating development branch
 
