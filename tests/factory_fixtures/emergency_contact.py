@@ -7,7 +7,7 @@ from models.contact_number import ContactNumberModel
 def create_emergency_contact(faker, contact_number_attributes):
     def _create_emergency_contact():
         emergency_contact = EmergencyContactModel(
-            name=(faker.name().upper()),
+            name=faker.name().upper(),
             description=faker.sentence(nb_words=5),
             contact_numbers=[ContactNumberModel(**contact_number_attributes)],
         )
