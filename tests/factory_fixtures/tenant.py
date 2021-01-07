@@ -1,16 +1,28 @@
 import pytest
 from models.tenant import TenantModel
+from schemas.tenant import TenantSchema
+
 
 @pytest.fixture
-def create_tenant(create_property):
-    def _create_tenant(property=create_property()):
-        tenant = TenantModel(
-                firstName="firstName",
-                lastName="lastName",
-                phone="1234567890",
-                propertyID=property.id,
-                staffIDs=[]
-            )
-        tenant.save_to_db()
-        return tenant
+def tenant_attributes(faker, create_join_staff):
+    def _tenant_attributes(staff=None):
+        if staff is None:
+            staff = [create_join_staff().id]
+        return {
+            "firstName": faker.first_name(),
+            "lastName": faker.last_name(),
+            "phone": faker.phone_number(),
+            "staffIDs": staff,
+        }
+
+    yield _tenant_attributes
+
+
+@pytest.fixture
+def create_tenant(tenant_attributes):
+    def _create_tenant():
+        return TenantModel.create(
+            schema=TenantSchema, payload=tenant_attributes(staff=[])
+        )
+
     yield _create_tenant

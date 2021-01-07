@@ -76,22 +76,24 @@ NOTE: Database is SQLite3 via SQLAlchemy
 2. Install [pipenv](https://pipenv.pypa.io/en/latest/#install-pipenv-today)
     - Note: It is not necessary to install python before installing pipenv.
     - Please install pipenv according to their docs for your OS.
-3. Install dependencies `pipenv install -d`
+3. Install dependencies `pipenv run dev-install`
    - Note: Pipenv may prompt you to install Python if it cannot find the correct version on your system. You should select Yes.
    - Note: If you get the error `ImportError: cannot import name 'Feature' from 'setuptools'`, your setuptools version might be at 46 or later. You may be able to get it to work using version 45 (e.g. `pip3 install setuptools==45`)
-4. copy the contents of the `.env.example` to a new file called `.env`
+4. Install our pre-commit hook:
+   - Run: `pipenv run pre-commit install`
+5. copy the contents of the `.env.example` to a new file called `.env`
     - `cp .env.example .env`
-5. Create and Seed the database
+6. Create and Seed the database
    - Run: `pipenv run flask db create`
 
    - Some other userful commands are:
      - To re-seed the database from scratch run: `pipenv run flask db recreate`
      - To find other database set-up commands run: `pipenv run flask db --help`
      - To drop the database run: `pipenv run flask db drop`
-6. Start the server using the flask environment (required every time the project is re-opened):
+7. Start the server using the flask environment (required every time the project is re-opened):
    - Run: `pipenv run flask run`
    - Run and restart the server on changes: `pipenv run flask run --reload`
-7. Test the server and view coverage reports. Use of coverage reporting is recommended to indicate test suite completeness and to locate defunct code in the code base.
+8. Test the server and view coverage reports. Use of coverage reporting is recommended to indicate test suite completeness and to locate defunct code in the code base.
     - Run all the tests: `pipenv run pytest --cov .`
       - Run tests in a particular directory: `pipenv run pytest --cov [path to directory]`
         - Example: Just the integration tests: `pipenv run pytest --cov tests/integration`
@@ -127,19 +129,19 @@ If you don't see something similar, you may have several versions of Python inst
 
 ### Database migrations.
 
-Database migrations are not used for development. Please ignore do not use migrations during development.  
+Database migrations are not used for development. Please ignore do not use migrations during development.
 
-Database migrations are managed through [Alembic](https://alembic.sqlalchemy.org/en/latest/index.html). After making a change to a model, a database migration is necessary. 
+Database migrations are managed through [Alembic](https://alembic.sqlalchemy.org/en/latest/index.html). After making a change to a model, a database migration is necessary.
 
 - The first step is to create a revision: `pipenv run alembic revision --autogenerate -m "message"`
 - The second step is to upgrade: `pipenv run alembic upgrade head`
 
-To return to a previous version, a downgrade is necessary. Run: 
+To return to a previous version, a downgrade is necessary. Run:
 `pipenv run alembic downgrade -n` where n is the number of versions to downgrade.
 
-To downgrade to the very beginning run: `pipenv run alembic downgrade base` 
+To downgrade to the very beginning run: `pipenv run alembic downgrade base`
 
-The reversion are maintained as Python files in ``./migrations/versions/` 
+The reversion are maintained as Python files in ``./migrations/versions/`
 
 ### Contributing
 
@@ -160,6 +162,12 @@ How to contribute to this project.
 
 (Step #3 creates a new branch titled <name of branch> and navigates you to that branch)
 
+4. Commit your changes (and resolve commit errors)
+    - Our pre-commit hook is designed to be strict in order to ensure all code being committed to the codebase is as clean and uniform as possible. Commit errors are a good thing, and completely expected!
+    - The pre-commit hook will check your code every time you try to commit. If your code needs re-formatting, that will happen automatically. If you have non-formatting errors in your code, these will be printed to the terminal with the error, filename and line number. You will need to resolve these yourself.
+    - After your code has been reformatted and/or you have resolved other errors, you will need to add and commit those files again (because they have been modified).
+    - Successful commits can then be pushed to your remote branch like normal.
+
 #### Updating development branch
 
 To update your development branch with the latest changes:
@@ -172,7 +180,7 @@ To update your development branch with the latest changes:
  - `git pull origin development`
 
 3. After pulling fresh copy it is a good habit to install any new deps and rebuild the database. Run the following two commands:
- - `pipenv run install -d`
+ - `pipenv run dev-install`
  - `pipenv run flask db recreate`
 
 4. Finally - run the tests to ensure everything is passing.

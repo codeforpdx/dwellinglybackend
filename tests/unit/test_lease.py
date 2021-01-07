@@ -6,5 +6,5 @@ from schemas.lease import LeaseSchema
 class TestBaseLeaseModel(BaseInterfaceTest):
     def setup(self):
         self.object = LeaseModel()
-        self.custom_404_msg = 'Lease not found'
+        self.custom_404_msg = "Lease not found"
         self.schema = LeaseSchema

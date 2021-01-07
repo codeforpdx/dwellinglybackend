@@ -1,21 +1,19 @@
 from logging.config import fileConfig
 
-#from sqlalchemy import engine_from_config
+# from sqlalchemy import engine_from_config
 from sqlalchemy import pool, create_engine
 
 from alembic import context
-from dotenv import load_dotenv
-from pathlib import Path
+from dotenv import load_dotenv, find_dotenv
 
 from app import create_app
 from db import db
 import os
 
-from dotenv import load_dotenv, find_dotenv
-load_dotenv(find_dotenv('.flaskenv'))
+load_dotenv(find_dotenv(".flaskenv"))
 
 # Use the database url based on the the FLASK_ENV
-app = create_app(os.getenv('FLASK_ENV'))
+app = create_app(os.getenv("FLASK_ENV"))
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -49,8 +47,8 @@ def run_migrations_offline():
     script output.
 
     """
-    #url = config.get_main_option("sqlalchemy.url")
-    url = app.config['SQLALCHEMY_DATABASE_URI']
+    # url = config.get_main_option("sqlalchemy.url")
+    url = app.config["SQLALCHEMY_DATABASE_URI"]
     context.configure(
         url=url,
         target_metadata=target_metadata,
@@ -69,20 +67,18 @@ def run_migrations_online():
     and associate a connection with the context.
 
     """
-    #connectable = engine_from_config(
+    # connectable = engine_from_config(
     #    config.get_section(config.config_ini_section),
     #    prefix="sqlalchemy.",
     #    poolclass=pool.NullPool,
-    #)
+    # )
     connectable = create_engine(
-        app.config['SQLALCHEMY_DATABASE_URI'],
+        app.config["SQLALCHEMY_DATABASE_URI"],
         poolclass=pool.NullPool,
     )
 
     with connectable.connect() as connection:
-        context.configure(
-            connection=connection, target_metadata=target_metadata
-        )
+        context.configure(connection=connection, target_metadata=target_metadata)
 
         with context.begin_transaction():
             context.run_migrations()

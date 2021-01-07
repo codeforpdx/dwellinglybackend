@@ -5,11 +5,11 @@ from resources.email import Email
 
 class ResetPassword(Resource):
     parser = reqparse.RequestParser()
-    parser.add_argument('email', required=True)
+    parser.add_argument("email", required=True)
 
     def post(self):
         data = ResetPassword.parser.parse_args()
-        user = UserModel.find_by_email(data['email'])
+        user = UserModel.find_by_email(data["email"])
 
         if user:
             Email.send_reset_password_msg(user)
@@ -21,6 +21,6 @@ class ResetPassword(Resource):
         user = UserModel.validate_reset_password(token)
 
         if user:
-            return {'message': 'Valid token', 'user_id': user.id}, 200
+            return {"message": "Valid token", "user_id": user.id}, 200
         else:
-            return {'message': 'Expired token'}, 422
+            return {"message": "Expired token"}, 422
