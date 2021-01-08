@@ -27,7 +27,7 @@ class UserSchemaValidations:
 
     def test_role_enum_validation(self):
         user_schema = UserSchema()
-        payload = {"role": 6}
+        payload = {"role": 99}
         validation_error = user_schema.validate(payload)
         assert "role" in validation_error
         assert validation_error["role"] == ["Invalid role"]
