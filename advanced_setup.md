@@ -5,15 +5,17 @@ Any additional setup instructions referenced here are completely optional, but a
 
 ## Table of Contents
 
-- [Introduction](#Introduction)
-  - [This sounds painful, is it even worth it?](#This-sounds-painful-is-it-even-worth-it)
-- [Flake8](#Flake8)
-  - [Flake8 on Command Line](#Flake8-Command-Line-Usage)
-  - [Flake8 in your Editor](#Use-Flake8-in-Your-Editor)
-- [Black](#Black)
-  - [Black on Command Line](#Black-Command-Line-Usage)
-  - [Black in your Editor](#Use-Black-in-Your-Editor)
-- [Git Blame](#Git-Blame)
+- [Introduction](#introduction)
+  - [This sounds painful, is it even worth it?](#this-sounds-painful-is-it-even-worth-it)
+- [Flake8](#flake8)
+  - [Flake8 on Command Line](#flake8-command-line-usage)
+  - [Flake8 in your Editor](#use-flake8-in-your-editor)
+- [Black](#black)
+  - [Black on Command Line](#black-command-line-usage)
+  - [Black in your Editor](#use-black-in-your-editor)
+- [Git Blame](#git-blame)
+  - [Git Blame on Command Line](#git-blame-command-line-usage)
+  - [Git Blame in your Editor](#git-blame-in-your-editor)
 
 ## Introduction
 
