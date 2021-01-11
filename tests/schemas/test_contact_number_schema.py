@@ -5,7 +5,7 @@ from schemas.contact_number import ContactNumberSchema
 @pytest.mark.usefixture("empty_test_db")
 class TestContactNumberValidation:
     def test_valid_payload(self):
-        valid_payload = {"number": "503-503-503"}
+        valid_payload = {"number": "503-503-5031"}
         no_validation_errors = {}
 
         assert no_validation_errors == ContactNumberSchema().validate(valid_payload)
