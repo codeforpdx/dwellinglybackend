@@ -40,9 +40,7 @@ class PropertyModel(BaseModel):
             "propertyManager": [user.json() for user in self.managers]
             if self.managers
             else None,
-            "lease": [lease.json() for lease in self.leases]
-            if self.leases
-            else None,
+            "lease": [lease.json() for lease in self.leases] if self.leases else None,
             "propertyManagerName": managers_name if managers_name else None,
             "archived": self.archived,
             "created_at": Time.format_date(self.created_at),
