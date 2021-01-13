@@ -24,3 +24,4 @@ class LeaseModel(BaseModel):
             "dateTimeEnd": Time.format_date(self.dateTimeEnd),
             "unitNum": self.unitNum,
         }
+
