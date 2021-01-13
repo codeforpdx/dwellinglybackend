@@ -14,7 +14,6 @@ class LeaseModel(BaseModel):
     dateTimeEnd = db.Column(db.DateTime, nullable=False)
     unitNum = db.Column(db.String(10))
 
-
     def json(self):
         return {
             "id": self.id,
