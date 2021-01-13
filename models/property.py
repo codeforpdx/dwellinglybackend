@@ -4,6 +4,7 @@ from utils.time import Time
 from models.base_model import BaseModel
 from models.user import UserModel
 from models.property_assignment import PropertyAssignment
+from models.lease import LeaseModel
 
 
 class PropertyModel(BaseModel):
@@ -39,6 +40,9 @@ class PropertyModel(BaseModel):
             "zipcode": self.zipcode,
             "propertyManager": [user.json() for user in self.managers]
             if self.managers
+            else None,
+            "lease": [lease.json() for lease in self.leases]
+            if self.leases
             else None,
             "propertyManagerName": managers_name if managers_name else None,
             "archived": self.archived,
