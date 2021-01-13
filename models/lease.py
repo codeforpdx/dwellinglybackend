@@ -16,8 +16,6 @@ class LeaseModel(BaseModel):
 
 
     def json(self):
-        print(type(self.dateTimeStart))
-        print(type(self.dateTimeEnd))
         return {
             "id": self.id,
             "propertyID": self.propertyID,

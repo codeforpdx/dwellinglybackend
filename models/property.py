@@ -4,7 +4,6 @@ from utils.time import Time
 from models.base_model import BaseModel
 from models.user import UserModel
 from models.property_assignment import PropertyAssignment
-from models.lease import LeaseModel
 
 
 class PropertyModel(BaseModel):
