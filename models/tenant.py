@@ -19,7 +19,6 @@ class TenantModel(BaseModel):
     )
 
     def json(self):
-
         return {
             "id": self.id,
             "firstName": self.firstName,
