@@ -196,7 +196,7 @@ class UserLogin(Resource):
 
         user = UserModel.find_by_email(data["email"])
 
-        if user and user.archived:
+        if user and (user.archived or user.role is None):
             return {"message": "Invalid user"}, 403
 
         if user and user.check_pw(data["password"]):
