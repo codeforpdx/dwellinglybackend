@@ -24,6 +24,21 @@ class TestPropertyManagerValidations:
         no_validation_errors = {}
         assert no_validation_errors == PropertySchema().validate(valid_payload)
 
+    def test_missing_required_parameters(self, create_property_manager):
+        invalid_payload = {
+            "created_at": Time.one_year_from_now(),
+            "updated_at": Time.today(),
+            "unit": "101",
+            "propertyManagerIDs": [create_property_manager().id],
+            "archived": False,
+        }
+        validation_errors = PropertySchema().validate(invalid_payload)
+        assert "name" in validation_errors
+        assert "address" in validation_errors
+        assert "city" in validation_errors
+        assert "state" in validation_errors
+        assert "zipcode" in validation_errors
+
     def test_must_have_manager_assigned(self):
         validation_error = PropertySchema().validate({"propertyManagerIDs": []})
         assert "propertyManagerIDs" in validation_error

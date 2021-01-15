@@ -10,12 +10,12 @@ class PropertyModel(BaseModel):
     __tablename__ = "properties"
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), unique=True)
-    address = db.Column(db.String(250))
+    name = db.Column(db.String(100), unique=True, nullable=False)
+    address = db.Column(db.String(250), nullable=False)
     unit = db.Column(db.String(20), default="")
-    city = db.Column(db.String(50))
-    state = db.Column(db.String(50))
-    zipcode = db.Column(db.String(20))
+    city = db.Column(db.String(50), nullable=False)
+    state = db.Column(db.String(50), nullable=False)
+    zipcode = db.Column(db.String(20), nullable=False)
     archived = db.Column(db.Boolean, default=False, nullable=False)
 
     leases = db.relationship(
