@@ -155,9 +155,13 @@ class User(Resource):
 
     @admin_required
     def delete(self, user_id):
+        if user_id == get_jwt_identity():
+            return {"message": "Cannot delete self"}, 400
+
         user = UserModel.find_by_id(user_id)
         if not user:
             return {"message": "Unable to delete User"}, 400
+
         user.delete_from_db()
         return {"message": "User deleted"}, 200
 
@@ -165,6 +169,9 @@ class User(Resource):
 class ArchiveUser(Resource):
     @admin_required
     def post(self, user_id):
+        if user_id == get_jwt_identity():
+            return {"message": "Cannot archive self"}, 400
+
         user = UserModel.find_by_id(user_id)
         if not user:
             return {"message": "User cannot be archived"}, 400
