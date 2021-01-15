@@ -22,6 +22,17 @@ def test_user_auth(client, test_database, admin_user):
     assert "access_token" in login_response.json.keys()
 
     """
+    The server responds with an error when a user attempts to login
+    to an account without a valid role
+    """
+    admin_user.role = None
+    responseBadPassword = client.post(
+        "/api/login", json={"email": admin_user.email, "password": plaintext_password}
+    )
+    assert responseBadPassword.status_code == 403
+    assert responseBadPassword.json == {"message": "Invalid user"}
+    admin_user.role = RoleEnum.ADMIN
+    """
     The server responds with an error when a user attempts to
     login with an incorrect password.
     """

@@ -1,7 +1,7 @@
 from ma import ma
 from models.tickets import TicketModel
 from models.tenant import TenantModel
-from models.user import UserModel
+from models.user import UserModel, RoleEnum
 from utils.time import time_format
 from marshmallow import fields, validates, ValidationError
 
@@ -24,8 +24,11 @@ class TicketSchema(ma.SQLAlchemyAutoSchema):
 
     @validates("assignedUserID")
     def validate_assigned_user(self, value):
-        if not UserModel.query.get(value):
+        user = UserModel.query.get(value)
+        if not user:
             raise ValidationError(f"{value} is not a valid user ID")
+        if user.role != RoleEnum.STAFF:
+            raise ValidationError(f"{value} is not JOIN staff")
 
     @validates("senderID")
     def validate_sender(self, value):
