@@ -12,7 +12,7 @@ class TestPropertySerializer:
             "id": property.id,
             "name": property.name,
             "address": property.address,
-            "unit": property.unit,
+            "num_units": property.num_units,
             "city": property.city,
             "state": property.state,
             "zipcode": property.zipcode,

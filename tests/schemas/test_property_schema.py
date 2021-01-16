@@ -12,7 +12,7 @@ class TestPropertyManagerValidations:
             "name": "the heights",
             "address": "111 SW Harrison",
             "city": "Portland",
-            "unit": "101",
+            "num_units": 101,
             "state": "OR",
             "zipcode": "97207",
             "propertyManagerIDs": [create_property_manager().id],
