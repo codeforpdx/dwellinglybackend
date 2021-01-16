@@ -1,5 +1,4 @@
 import pytest
-from utils.time import Time
 from schemas import PropertySchema
 from models.property import PropertyModel
 from db import db
@@ -10,8 +9,6 @@ class TestPropertyManagerValidations:
     def test_valid_payload(self, create_property_manager):
 
         valid_payload = {
-            "created_at": Time.one_year_from_now(),
-            "updated_at": Time.today(),
             "name": "the heights",
             "address": "111 SW Harrison",
             "city": "Portland",
@@ -26,8 +23,6 @@ class TestPropertyManagerValidations:
 
     def test_missing_required_parameters(self, create_property_manager):
         invalid_payload = {
-            "created_at": Time.one_year_from_now(),
-            "updated_at": Time.today(),
             "unit": "101",
             "propertyManagerIDs": [create_property_manager().id],
             "archived": False,
