@@ -25,6 +25,7 @@ class TenantModel(BaseModel):
             "lastName": self.lastName,
             "fullName": "{} {}".format(self.firstName, self.lastName),
             "phone": self.phone,
+            "lease": self.leases[0].json() if self.leases else "",
             "staff": [user.json() for user in self.staff] if self.staff else [],
             "created_at": Time.format_date(self.created_at),
             "updated_at": Time.format_date(self.updated_at),
