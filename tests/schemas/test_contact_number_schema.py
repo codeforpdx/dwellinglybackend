@@ -1,38 +1,28 @@
-import pytest
 from schemas.contact_number import ContactNumberSchema
 
 
-@pytest.mark.usefixture("empty_test_db")
 class TestContactNumberValidation:
-    def test_valid_payload(self):
-        valid_payload = {"number": "503-503-5031"}
+    def test_valid_payload(self, contact_number_attributes):
+        valid_payload = contact_number_attributes
         no_validation_errors = {}
 
         assert no_validation_errors == ContactNumberSchema().validate(valid_payload)
 
-    def test_empty_payload(self):
+    def test_empty_payload_is_invalid(self):
         empty_payload = {}
         validation_errors = ContactNumberSchema().validate(empty_payload)
 
         assert "number" in validation_errors
 
-    def test_invalid_payload(self):
+    def test_number_cannot_be_null(self):
         invalid_payload = {"number": None}
         validation_errors = ContactNumberSchema().validate(invalid_payload)
 
         assert "number" in validation_errors
 
-    def test_contact_num_too_long(self):
+    def test_number_cannot_exceed_max_length(self):
         invalid_payload = {
-            "number": "123-456-7890123456789",
-        }
-        validation_errors = ContactNumberSchema().validate(invalid_payload)
-
-        assert "number" in validation_errors
-
-    def test_contact_num_not_string(self):
-        invalid_payload = {
-            "number": 503 - 123 - 4567,
+            "number": "8" * 50,
         }
         validation_errors = ContactNumberSchema().validate(invalid_payload)
 
