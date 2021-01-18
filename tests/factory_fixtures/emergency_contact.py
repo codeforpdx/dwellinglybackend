@@ -4,6 +4,18 @@ from models.contact_number import ContactNumberModel
 
 
 @pytest.fixture
+def emergency_contact_attributes(faker, contact_number_attributes):
+    def _emergency_contact_attributes():
+        return {
+            "name": faker.name().upper(),
+            "description": faker.sentence(nb_words=5),
+            "contact_numbers": [contact_number_attributes],
+        }
+
+    yield _emergency_contact_attributes()
+
+
+@pytest.fixture
 def create_emergency_contact(faker, contact_number_attributes):
     def _create_emergency_contact():
         emergency_contact = EmergencyContactModel(

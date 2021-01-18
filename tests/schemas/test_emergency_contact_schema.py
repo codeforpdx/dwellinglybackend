@@ -4,17 +4,13 @@ from schemas.emergency_contact import EmergencyContactSchema
 
 @pytest.mark.usefixtures("empty_test_db")
 class TestEmergencyContactValidations:
-    def test_valid_payload(self):
-        valid_payload = {
-            "name": "emergency contact name",
-            "contact_numbers": [{"number": "503-456-7890"}],
-        }
-
+    def test_valid_payload(self, emergency_contact_attributes):
+        valid_payload = emergency_contact_attributes
         no_validation_errors = {}
 
         assert no_validation_errors == EmergencyContactSchema().validate(valid_payload)
 
-    def test_validate_empty_contact_number(self):
+    def test_contact_numbers_cannot_be_empty(self):
         invalid_payload = {
             "name": "emergency contact name",
             "contact_numbers": [],
@@ -23,7 +19,7 @@ class TestEmergencyContactValidations:
 
         assert "contact_numbers" in validation_errors
 
-    def test_validate_missing_contact_numbers(self):
+    def test_contact_numbers_required(self):
         invalid_payload = {
             "name": "emergency contact name",
         }
@@ -31,14 +27,12 @@ class TestEmergencyContactValidations:
 
         assert "contact_numbers" in validation_errors
 
-    def test_validate_multiple_contact_numbers(self):
-        valid_payload = {
-            "name": "emergency contact name",
-            "contact_numbers": [
-                {"number": "503-291-9111", "numtype": "Call"},
-                {"number": "503-555-3321", "numtype": "Text"},
-            ],
-        }
+    def test_multiple_contact_numbers_is_valid(
+        self, emergency_contact_attributes, contact_number_attributes
+    ):
+        valid_payload = emergency_contact_attributes
+        valid_payload["contact_numbers"].append(contact_number_attributes)
+
         no_validation_errors = {}
 
         assert no_validation_errors == EmergencyContactSchema().validate(valid_payload)
