@@ -96,12 +96,6 @@ def test_emergency_contacts_POST(client, auth_headers):
     assert is_valid(
         response, 400
     )  # BAD REQUEST - {'name': 'This Field Cannot Be Blank.'}
-    assert response.json == {
-        "message": {
-            "name": ["Missing data for required field."],
-            "contact_numbers": ["Missing data for required field."],
-        }
-    }
 
 
 def test_emergency_contacts_PUT(client, auth_headers):
