@@ -128,6 +128,8 @@ If you are still having issues or if your command prompt is throwing an error th
 Check to see where the Python you're running is located (`which python`). You should see something like `/Users/your_account_shortname/.pyenv/shims/python`.
 If you don't see something similar, you may have several versions of Python installed elsewhere (via Anaconda or Homebrew). If (and only if) you'd like to clear out any previous homebrew-based installs, type `brew uninstall --ignore-dependencies python3 && brew uninstall --ignore-dependencies python`.
 
+If you are seeing errors when trying to create the database at the following step `pipenv run flask db create`, check your pipenv version and update it to the latest release.
+
 ### Database migrations.
 
 Database migrations are not used for development. Please ignore do not use migrations during development.
