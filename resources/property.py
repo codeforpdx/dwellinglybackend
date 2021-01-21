@@ -77,7 +77,12 @@ class Property(Resource):
         rentalProperty = PropertyModel.find_by_id(id)
 
         if rentalProperty:
-            return rentalProperty.json()
+            json = rentalProperty.json()
+            json['tenants'] = []
+            for lease in rentalProperty.leases:
+                json['tenants'].append(lease.tenant.json())
+            return json
+
         return {"message": "Property not found"}, 404
 
     @admin_required
