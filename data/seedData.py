@@ -140,6 +140,36 @@ def seedData():
     )
     user_xander_dander.save_to_db()
 
+    user_bobby_lowroll = UserModel(
+        email="broll@joinpdx.org",
+        firstName="Bobby",
+        lastName="Lowroll",
+        password="1234",
+        phone="555-555-5673",
+        archived=False,
+    )
+    user_bobby_lowroll.save_to_db()
+
+    user_cindy_norole = UserModel(
+        email="cindynorole@joinpdx.org",
+        firstName="Cindy",
+        lastName="Norole",
+        password="1234",
+        phone="555-555-5555",
+        archived=False,
+    )
+    user_cindy_norole.save_to_db()
+
+    user_joe_zero = UserModel(
+        email="joez@joinpdx.org",
+        firstName="Joe",
+        lastName="Zero",
+        password="1234",
+        phone="555-345-5555",
+        archived=False,
+    )
+    user_joe_zero.save_to_db()
+
     property_test1 = PropertyModel.create(
         payload={
             "name": "test1",

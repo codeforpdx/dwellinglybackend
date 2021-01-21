@@ -38,6 +38,20 @@ def admin_user():
 
 
 @pytest.fixture
+def new_user_no_role():
+    newUserNoRole = UserModel(
+        email="missy@dwelling.org",
+        password=plaintext_password,
+        firstName="Missy",
+        lastName="Role",
+        phone="503-555-5557",
+        role=None,
+        archived=0,
+    )
+    return newUserNoRole
+
+
+@pytest.fixture
 def new_user():
     newUser = UserModel(
         email="someone@domain.com",

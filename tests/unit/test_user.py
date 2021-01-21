@@ -59,7 +59,7 @@ class TestFixtures:
 
     def test_create_unauthorized_user(self, create_unauthorized_user):
         user = create_unauthorized_user()
-        assert user.role == RoleEnum.PENDING
+        assert user.role is None
 
         def test_multiple_users_can_be_created():
             return create_unauthorized_user()

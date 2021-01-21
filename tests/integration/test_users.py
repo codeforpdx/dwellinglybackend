@@ -103,6 +103,7 @@ def test_user_roles(client, auth_headers):
         json={"userrole": RoleEnum.ADMIN.value},
         headers=auth_headers["admin"],
     )
+    print("Admin users json: {}".format(response.get_json()["users"]))
     assert len(response.get_json()["users"]) == 4
     assert response.status_code == 200
 
@@ -138,6 +139,10 @@ def test_user_roles(client, auth_headers):
     managers = response.get_json()["users"]
     assert len(managers) == 0
     assert response.status_code == 200
+
+
+def test_user_no_roles(client, auth_headers):
+    pass
 
 
 def test_archive_user(client, auth_headers, new_user):

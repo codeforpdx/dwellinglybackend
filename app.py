@@ -46,6 +46,7 @@ def create_routes(app):
     api.add_resource(UserInvite, "user/invite")
     api.add_resource(Users, "user")
     api.add_resource(UsersRole, "users/role")
+    #    api.add_resource(UsersNoRole, "users/norole")
     api.add_resource(ArchiveUser, "user/archive/<int:user_id>")
     api.add_resource(UserLogin, "login")
     api.add_resource(UserRoles, "roles")
