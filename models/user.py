@@ -87,7 +87,7 @@ class UserModel(BaseModel):
             "lastName": self.lastName,
             "email": self.email,
             "phone": self.phone,
-            "role": self.role.value,
+            "role": self.role.value if self.role else None,
             "archived": self.archived,
             "lastActive": Time.format_date(self.lastActive),
             "created_at": Time.format_date(self.created_at),

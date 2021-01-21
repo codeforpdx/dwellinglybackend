@@ -26,6 +26,27 @@ class UserRoles(Resource):
         return result, 200
 
 
+class UsersNoRole(Resource):
+    @admin_required
+    def get(self):
+        users = [user.json() for user in UserModel.find_by_role(None)]
+        ret = [
+            {
+                "id": user["id"],
+                "firstName": user["firstName"],
+                "lastName": user["lastName"],
+                "email": user["email"],
+                "phone": user["phone"],
+                "role": user["role"],
+                "tickets": "TODO",
+                "tenants": "TODO",
+            }
+            for user in users
+        ]
+
+        return {"users": ret}, 200
+
+
 class UserRegister(Resource):
     def post(self):
         UserModel.create(schema=UserRegisterSchema, payload=request.json)

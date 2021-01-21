@@ -142,13 +142,14 @@ def pm_header(create_property_manager):
 
 
 @pytest.fixture
-def test_database(app, admin_user, new_user, property_manager_user):
+def test_database(app, admin_user, new_user, new_user_no_role, property_manager_user):
     db.create_all()
 
     seedData()
 
     db.session.add(admin_user)
     db.session.add(new_user)
+    db.session.add(new_user_no_role)
     db.session.add(property_manager_user)
     db.session.commit()
 

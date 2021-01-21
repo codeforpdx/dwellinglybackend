@@ -103,7 +103,6 @@ def test_user_roles(client, auth_headers):
         json={"userrole": RoleEnum.ADMIN.value},
         headers=auth_headers["admin"],
     )
-    print("Admin users json: {}".format(response.get_json()["users"]))
     assert len(response.get_json()["users"]) == 4
     assert response.status_code == 200
 
@@ -141,8 +140,15 @@ def test_user_roles(client, auth_headers):
     assert response.status_code == 200
 
 
-def test_user_no_roles(client, auth_headers):
-    pass
+def test_user_no_roles(client, auth_headers, test_database):
+    """The get users with no role returns four users with no role
+    and a successful response code."""
+    response = client.get(
+        "/api/users/norole",
+        headers=auth_headers["admin"],
+    )
+    assert len(response.get_json()["users"]) == 4
+    assert response.status_code == 200
 
 
 def test_archive_user(client, auth_headers, new_user):
