@@ -78,9 +78,9 @@ class Property(Resource):
 
         if rentalProperty:
             json = rentalProperty.json()
-            json['tenants'] = []
+            json["tenants"] = []
             for lease in rentalProperty.leases:
-                json['tenants'].append(lease.tenant.json())
+                json["tenants"].append(lease.tenant.json())
             return json
 
         return {"message": "Property not found"}, 404
