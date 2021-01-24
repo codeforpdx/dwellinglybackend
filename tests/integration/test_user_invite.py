@@ -18,5 +18,5 @@ class TestUserInvite:
         )
 
         send_user_invite_msg.assert_called()
-        assert response.status_code == 200
+        assert response.status_code == 201
         assert response.json == {"message": "User Invited"}
