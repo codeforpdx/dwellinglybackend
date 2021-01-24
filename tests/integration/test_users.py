@@ -140,7 +140,7 @@ def test_user_roles(client, auth_headers):
     assert response.status_code == 200
 
 
-def test_archive_user(client, auth_headers, new_user):
+def test_archive_user(client, auth_headers, new_user, admin_user):
     """
     The archive user by id route returns a successful response code
     and changes the user's status.
@@ -157,6 +157,13 @@ def test_archive_user(client, auth_headers, new_user):
     responseLoginArchivedUser = client.post("/api/login", json=data)
     assert responseLoginArchivedUser.status_code == 403
     assert responseLoginArchivedUser.json == {"message": "Invalid user"}
+
+    """Admin user attempting to archive themselves should get error"""
+    response = client.post(
+        f"/api/user/archive/{admin_user.id}", json={}, headers=auth_headers["admin"]
+    )
+    assert response.status_code == 400
+    assert response.json == {"message": "Cannot archive self"}
 
 
 def test_archive_user_failure(client, auth_headers):
@@ -316,7 +323,7 @@ def test_unique_user_constraint(client, auth_headers, new_user):
         )
 
 
-def test_delete_user(client, auth_headers, new_user):
+def test_delete_user(client, auth_headers, new_user, admin_user):
     userToDelete = UserModel.find_by_email(new_user.email)
 
     response = client.delete(f"/api/user/{userToDelete.id}", headers=auth_headers["pm"])
@@ -334,6 +341,9 @@ def test_delete_user(client, auth_headers, new_user):
 
     response = client.delete("/api/user/999999", headers=auth_headers["admin"])
     assert is_valid(response, 400)  # BAD REQUEST
+
+    response = client.delete(f"api/user/{admin_user.id}", headers=auth_headers["admin"])
+    assert is_valid(response, 400)
 
 
 def test_get_user(client, auth_headers, new_user):
