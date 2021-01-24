@@ -7,7 +7,7 @@ class ContactNumberModel(BaseModel):
     __tablename__ = "contact_numbers"
 
     id = db.Column(db.Integer, primary_key=True)
-    number = db.Column(db.String(20), nullable=False)
+    number = db.Column(db.String(30), nullable=False)
     numtype = db.Column(db.String(30))
     extension = db.Column(db.String(10))
     emergency_contact_id = db.Column(
