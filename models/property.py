@@ -12,7 +12,7 @@ class PropertyModel(BaseModel):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), unique=True, nullable=False)
     address = db.Column(db.String(250), nullable=False)
-    unit = db.Column(db.String(20), default="")
+    num_units = db.Column(db.Integer, default=1)
     city = db.Column(db.String(50), nullable=False)
     state = db.Column(db.String(50), nullable=False)
     zipcode = db.Column(db.String(20), nullable=False)
@@ -33,7 +33,7 @@ class PropertyModel(BaseModel):
             "id": self.id,
             "name": self.name,
             "address": self.address,
-            "unit": self.unit,
+            "num_units": self.num_units,
             "city": self.city,
             "state": self.state,
             "zipcode": self.zipcode,

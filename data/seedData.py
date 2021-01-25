@@ -144,7 +144,7 @@ def seedData():
         payload={
             "name": "test1",
             "address": "123 NE FLanders St",
-            "unit": "5",
+            "num_units": 5,
             "city": "Portland",
             "state": "OR",
             "zipcode": "97207",
@@ -157,7 +157,7 @@ def seedData():
         payload={
             "name": "Meerkat Manor",
             "address": "Privet Drive",
-            "unit": "2",
+            "num_units": 2,
             "city": "Portland",
             "state": "OR",
             "zipcode": "97207",
@@ -170,7 +170,7 @@ def seedData():
         payload={
             "name": "The Reginald",
             "address": "Aristocrat Avenue",
-            "unit": "3",
+            "num_units": 3,
             "city": "Portland",
             "state": "OR",
             "zipcode": "97207",

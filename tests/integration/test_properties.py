@@ -45,7 +45,7 @@ def test_get_property_by_id(client, auth_headers, test_database):
     assert response.status_code == 200
     assert property_info["name"] == "test1"
     assert property_info["address"] == "123 NE FLanders St"
-    assert property_info["unit"] == "5"
+    assert property_info["num_units"] == 5
     assert property_info["city"] == "Portland"
     assert property_info["state"] == "OR"
     assert property_info["zipcode"] == "97207"

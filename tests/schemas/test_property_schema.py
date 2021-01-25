@@ -6,18 +6,9 @@ from db import db
 
 @pytest.mark.usefixtures("empty_test_db")
 class TestPropertyManagerValidations:
-    def test_valid_payload(self, create_property_manager):
+    def test_valid_payload(self, create_property_manager, property_attributes):
 
-        valid_payload = {
-            "name": "the heights",
-            "address": "111 SW Harrison",
-            "city": "Portland",
-            "unit": "101",
-            "state": "OR",
-            "zipcode": "97207",
-            "propertyManagerIDs": [create_property_manager().id],
-            "archived": False,
-        }
+        valid_payload = property_attributes()
         no_validation_errors = {}
         assert no_validation_errors == PropertySchema().validate(valid_payload)
 
