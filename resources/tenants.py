@@ -67,6 +67,7 @@ class Tenants(Resource):
         tenant = TenantModel.find_by_id(tenant_id)
         if not tenant:
             return {"message": "Tenant not found"}, 404
-
-        tenant.delete_from_db()
-        return {"message": "Tenant deleted"}
+        # Do not delete the tenant, just archive
+        tenant.archived = True
+        tenant.save_to_db()
+        return {"message": "Tenant archived"}

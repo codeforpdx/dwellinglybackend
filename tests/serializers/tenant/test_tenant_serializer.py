@@ -15,4 +15,5 @@ class TestTenantSerializer:
             "phone": tenant.phone,
             "created_at": Time.format_date(tenant.created_at),
             "updated_at": Time.format_date(tenant.updated_at),
+            "archived": tenant.archived,
         }

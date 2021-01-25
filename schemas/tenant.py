@@ -33,6 +33,8 @@ class TenantSchema(ma.SQLAlchemyAutoSchema):
         error_messages={"required": "Phone number is required."},
     )
 
+    archived = fields.Boolean(required=False)
+
     @validates("staffIDs")
     def validate_staff_ids(self, value):
         StaffTenantSchema().load({"staff": value}, partial=True)
