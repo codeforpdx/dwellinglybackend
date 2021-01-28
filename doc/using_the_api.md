@@ -228,7 +228,17 @@ All endpoints are prefixed with `/api/`
 | :----- | :-------------- | :--------------------- |
 | POST   | `/user/invite`  | Invite a user          |
 
-##### Response (200)
+```javascript
+    'archived': False,
+    'email': 'john51@gmail.com',
+    'firstName': 'Amy',
+    'lastName': 'Roberts',
+    'password': 'xlLHBzv()3',
+    'phone': '965-934-2320',
+    'role': 3
+```
+
+##### Response (201)
 
 ```javascript
     {
