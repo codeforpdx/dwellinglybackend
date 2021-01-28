@@ -74,16 +74,10 @@ class ArchiveProperties(Resource):
 class Property(Resource):
     @admin_required
     def get(self, id):
-        rentalProperty = PropertyModel.find_by_id(id)
-
-        if rentalProperty:
-            property = rentalProperty.json()
-            property["tenants"] = []
-            for lease in rentalProperty.leases:
-                property["tenants"].append(lease.tenant.json())
-            return property
-
-        return {"message": "Property not found"}, 404
+        property = PropertyModel.find(id)
+        property_json = property.json()
+        property_json["tenants"] = property.tenants()
+        return property_json
 
     @admin_required
     def delete(self, id):

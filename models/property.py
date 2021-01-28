@@ -47,6 +47,12 @@ class PropertyModel(BaseModel):
             "updated_at": Time.format_date(self.updated_at),
         }
 
+    def tenants(self):
+        tenants = []
+        for lease in self.leases:
+            tenants.append(lease.tenant.json())
+        return tenants
+
     @classmethod
     def find_by_name(cls, name):
         return cls.query.filter_by(name=name).first()
