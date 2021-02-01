@@ -1,6 +1,7 @@
 import pytest
 from models.property import PropertyModel
 from models.user import UserModel
+from models.tenant import TenantModel
 import json
 
 
@@ -52,6 +53,7 @@ def test_get_property_by_id(client, auth_headers, test_database):
     assert property_info["propertyManager"] == [user_json]
     assert property_info["propertyManagerName"] == ["Gray Pouponn"]
     assert property_info["archived"] == 0
+    assert property_info["tenants"] == [TenantModel.find_by_id(1).json()]
 
     """
     The server responds with an error if the URL contains a non-existent property id
