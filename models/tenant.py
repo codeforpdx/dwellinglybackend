@@ -11,6 +11,7 @@ class TenantModel(BaseModel):
     firstName = db.Column(db.String(100), nullable=False)
     lastName = db.Column(db.String(100), nullable=False)
     phone = db.Column(db.String(20), nullable=False)
+    archived = db.Column(db.Boolean, default=False, nullable=False)
 
     # relationships
     staff = relationship("UserModel", secondary="staff_tenant_links")
@@ -29,4 +30,5 @@ class TenantModel(BaseModel):
             "staff": [user.json() for user in self.staff] if self.staff else [],
             "created_at": Time.format_date(self.created_at),
             "updated_at": Time.format_date(self.updated_at),
+            "archived": self.archived,
         }
