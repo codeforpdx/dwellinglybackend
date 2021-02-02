@@ -2,7 +2,7 @@ from ma import ma
 from models.property import PropertyModel
 from models.user import UserModel
 from schemas.property_assignment import PropertyAssignSchema
-from marshmallow import fields, validates, ValidationError, post_load
+from marshmallow import fields, validates, ValidationError, post_load, pre_load
 from utils.time import time_format
 
 
@@ -36,4 +36,14 @@ class PropertySchema(ma.SQLAlchemyAutoSchema):
                 UserModel.find(manager) for manager in data["propertyManagerIDs"]
             ]
             del data["propertyManagerIDs"]
+        return data
+
+
+class PropertyUpdateSchema(PropertySchema):
+    @pre_load
+    def ignore_name_if_unchanged(self, data, **kwargs):
+        property_to_update = PropertyModel.find(data["id"])
+        if "name" in data and data["name"] == property_to_update.name:
+            del data["name"]
+        del data["id"]
         return data
