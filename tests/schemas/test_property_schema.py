@@ -1,5 +1,5 @@
 import pytest
-from schemas import PropertySchema
+from schemas import PropertySchema, PropertyUpdateSchema
 from models.property import PropertyModel
 from db import db
 
@@ -61,9 +61,9 @@ class TestPostLoadDeserialization:
         prop = create_property()
         pm_2 = create_property_manager()
         pm_3 = create_property_manager()
-        payload = {"propertyManagerIDs": [pm_2.id, pm_3.id]}
+        payload = {"id": prop.id, "propertyManagerIDs": [pm_2.id, pm_3.id]}
 
-        PropertyModel.update(schema=PropertySchema, id=prop.id, payload=payload)
+        PropertyModel.update(schema=PropertyUpdateSchema, id=prop.id, payload=payload)
         db.session.rollback()
 
         assert prop.managers == [pm_2, pm_3]
@@ -71,7 +71,34 @@ class TestPostLoadDeserialization:
     def test_property_update_without_managers(self, create_property):
         prop = create_property()
         payload = {
-            "name": "The New Portlander Delux Apartment Complex Multnomah Suite Express"
+            "id": prop.id,
+            "name": "The New Portlander Delux Apartment Complex Multnomah Suites",
         }
 
-        assert PropertyModel.update(schema=PropertySchema, id=prop.id, payload=payload)
+        assert PropertyModel.update(
+            schema=PropertyUpdateSchema, id=prop.id, payload=payload
+        )
+
+
+@pytest.mark.usefixtures("empty_test_db")
+class TestUpdatePropertyValidations:
+    def test_property_can_update_with_same_name(self, create_property):
+        new_property = create_property()
+        payload = new_property.json()
+
+        payload["num_units"] = 42
+
+        assert PropertyModel.update(
+            schema=PropertyUpdateSchema, id=new_property.id, payload=payload
+        )
+
+    def test_updated_property_cannot_have_duplicate_name(self, create_property):
+        property_1 = create_property()
+        property_2 = create_property()
+
+        payload = property_1.json()
+        payload["name"] = property_2.name
+
+        validation_errors = PropertyUpdateSchema().validate(payload)
+
+        assert "name" in validation_errors
