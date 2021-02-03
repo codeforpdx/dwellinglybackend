@@ -1,5 +1,6 @@
 from db import db
-from models.tenant import TenantModel
+
+# from models.tenant import TenantModel
 from models.user import UserModel
 from datetime import datetime, timedelta
 from models.base_model import BaseModel
@@ -37,8 +38,8 @@ class TicketModel(BaseModel):
         senderData = UserModel.find_by_id(self.senderID)
         senderName = "{} {}".format(senderData.firstName, senderData.lastName)
 
-        tenantData = TenantModel.find_by_id(self.tenantID)
-        tenantName = "{} {}".format(tenantData.firstName, tenantData.lastName)
+        # tenantData = TenantModel.find_by_id(self.tenantID)
+        # tenantName = "{} {}".format(tenantData.firstName, tenantData.lastName)
 
         assignedUserData = UserModel.find_by_id(self.assignedUserID)
         assignedUser = "{} {}".format(
@@ -49,7 +50,7 @@ class TicketModel(BaseModel):
         return {
             "id": self.id,
             "issue": self.issue,
-            "tenant": tenantName,
+            # "tenant": tenantName,
             "senderID": self.senderID,
             "tenantID": self.tenantID,
             "assignedUserID": self.assignedUserID,
