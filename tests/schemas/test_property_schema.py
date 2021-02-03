@@ -1,5 +1,5 @@
 import pytest
-from schemas import PropertySchema, PropertyUpdateSchema
+from schemas import PropertySchema
 from models.property import PropertyModel
 from db import db
 
@@ -62,8 +62,11 @@ class TestPostLoadDeserialization:
         pm_2 = create_property_manager()
         pm_3 = create_property_manager()
         payload = {"id": prop.id, "propertyManagerIDs": [pm_2.id, pm_3.id]}
+        context = {"request_type": "PUT", "name": prop.name}
 
-        PropertyModel.update(schema=PropertyUpdateSchema, id=prop.id, payload=payload)
+        PropertyModel.update(
+            schema=PropertySchema, id=prop.id, payload=payload, context=context
+        )
         db.session.rollback()
 
         assert prop.managers == [pm_2, pm_3]
@@ -74,9 +77,10 @@ class TestPostLoadDeserialization:
             "id": prop.id,
             "name": "The New Portlander Delux Apartment Complex Multnomah Suites",
         }
+        context = {"request_type": "PUT", "name": prop.name}
 
         assert PropertyModel.update(
-            schema=PropertyUpdateSchema, id=prop.id, payload=payload
+            schema=PropertySchema, id=prop.id, payload=payload, context=context
         )
 
 
@@ -88,8 +92,10 @@ class TestUpdatePropertyValidations:
 
         payload["num_units"] = 42
 
+        context = {"request_type": "PUT", "name": new_property.name}
+
         assert PropertyModel.update(
-            schema=PropertyUpdateSchema, id=new_property.id, payload=payload
+            schema=PropertySchema, id=new_property.id, payload=payload, context=context
         )
 
     def test_updated_property_cannot_have_duplicate_name(self, create_property):
@@ -99,6 +105,8 @@ class TestUpdatePropertyValidations:
         payload = property_1.json()
         payload["name"] = property_2.name
 
-        validation_errors = PropertyUpdateSchema().validate(payload)
+        context = {"request_type": "PUT", "name": property_1.name}
+
+        validation_errors = PropertySchema(context=context).validate(payload)
 
         assert "name" in validation_errors

@@ -65,7 +65,7 @@ class BaseInterfaceTest:
                 response = self.object.__class__.update(self.schema, 1, {})
 
         mock_find.assert_called_with(1)
-        mock_validate.assert_called_with(self.schema, {}, partial=True)
+        mock_validate.assert_called_with(self.schema, {}, context=None, partial=True)
         mock_session.add.assert_called_with(self.object)
         mock_session.commit.assert_called()
 

@@ -36,9 +36,9 @@ class BaseModel(db.Model):
         return obj
 
     @classmethod
-    def update(cls, schema, id, payload):
+    def update(cls, schema, id, payload, context=None):
         obj = cls.find(id)
-        attrs = cls.validate(schema, payload, partial=True)
+        attrs = cls.validate(schema, payload, context=context, partial=True)
 
         for k, v in attrs.items():
             setattr(obj, k, v)
@@ -48,9 +48,14 @@ class BaseModel(db.Model):
         return obj
 
     @staticmethod
-    def validate(schema, payload, partial=False):
+    def validate(schema, payload, context=None, partial=False):
         try:
-            return schema().load(payload, unknown=EXCLUDE, partial=partial)
+            if context:
+                return schema(context=context).load(
+                    payload, unknown=EXCLUDE, partial=partial
+                )
+            else:
+                return schema().load(payload, unknown=EXCLUDE, partial=partial)
         except ValidationError as err:
             abort(400, err.messages)
 

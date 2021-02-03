@@ -3,7 +3,7 @@ from flask import request
 from utils.authorizations import admin_required
 from db import db
 from models.property import PropertyModel
-from schemas.property import PropertySchema, PropertyUpdateSchema
+from schemas.property import PropertySchema
 
 # | method | route                | action                     |
 # | :----- | :------------------- | :------------------------- |
@@ -90,8 +90,8 @@ class Property(Resource):
     @admin_required
     def put(self, id):
         payload = request.json
-        if "id" not in payload:
-            payload["id"] = id
+        context = {"request_type": "PUT", "name": payload["name"]}
+
         return PropertyModel.update(
-            schema=PropertyUpdateSchema, id=id, payload=payload
+            schema=PropertySchema, id=id, context=context, payload=payload
         ).json()
