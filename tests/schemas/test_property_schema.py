@@ -61,7 +61,7 @@ class TestPostLoadDeserialization:
         prop = create_property()
         pm_2 = create_property_manager()
         pm_3 = create_property_manager()
-        payload = {"id": prop.id, "propertyManagerIDs": [pm_2.id, pm_3.id]}
+        payload = {"propertyManagerIDs": [pm_2.id, pm_3.id]}
         context = {"request_type": "PUT", "name": prop.name}
 
         PropertyModel.update(
@@ -74,7 +74,6 @@ class TestPostLoadDeserialization:
     def test_property_update_without_managers(self, create_property):
         prop = create_property()
         payload = {
-            "id": prop.id,
             "name": "The New Portlander Delux Apartment Complex Multnomah Suites",
         }
         context = {"request_type": "PUT", "name": prop.name}
