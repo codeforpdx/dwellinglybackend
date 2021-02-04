@@ -38,20 +38,6 @@ def admin_user():
 
 
 @pytest.fixture
-def new_user_no_role():
-    newUserNoRole = UserModel(
-        email="missy@dwelling.org",
-        password=plaintext_password,
-        firstName="Missy",
-        lastName="Role",
-        phone="503-555-5557",
-        role=None,
-        archived=0,
-    )
-    return newUserNoRole
-
-
-@pytest.fixture
 def new_user():
     newUser = UserModel(
         email="someone@domain.com",
@@ -142,14 +128,13 @@ def pm_header(create_property_manager):
 
 
 @pytest.fixture
-def test_database(app, admin_user, new_user, new_user_no_role, property_manager_user):
+def test_database(app, admin_user, new_user, property_manager_user):
     db.create_all()
 
     seedData()
 
     db.session.add(admin_user)
     db.session.add(new_user)
-    db.session.add(new_user_no_role)
     db.session.add(property_manager_user)
     db.session.commit()
 

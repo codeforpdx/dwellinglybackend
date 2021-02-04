@@ -140,12 +140,13 @@ def test_user_roles(client, auth_headers):
     assert response.status_code == 200
 
 
-def test_user_no_roles(client, auth_headers, test_database):
-    """The get users with no role returns four users with no role
+# TODO remove this & put in new test file tests/integration/users/test_pending_users.py
+def test_users_pending(client, test_database, valid_header):
+    """The get pending users returns four users with no role
     and a successful response code."""
     response = client.get(
-        "/api/users/norole",
-        headers=auth_headers["admin"],
+        "/api/users/pending",
+        headers=valid_header,
     )
     assert len(response.get_json()["users"]) == 4
     assert response.status_code == 200
