@@ -2,7 +2,6 @@ from flask_restful import Resource, reqparse
 from flask import request
 from schemas import UserRegisterSchema
 from models.property import PropertyModel
-from models.tenant import TenantModel
 from utils.authorizations import admin_required, admin, pm_level_required
 from models.user import UserModel, RoleEnum
 from models.revoked_tokens import RevokedTokensModel
