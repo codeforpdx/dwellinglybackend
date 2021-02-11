@@ -9,6 +9,7 @@ from models.base_model import BaseModel
 import models.notes
 from jwt import ExpiredSignatureError
 from utils.time import Time
+from sqlalchemy import and_
 
 
 class RoleEnum(Enum):
@@ -127,6 +128,10 @@ class UserModel(BaseModel):
             (UserModel.role == role)
             & (UserModel.firstName.ilike(likeName) | UserModel.lastName.ilike(likeName))
         ).all()
+
+    @classmethod
+    def find_unassigned_users(cls):
+        return cls.query.filter(and_(cls.role.is_(None), cls.archived.is_(False)))
 
     def full_name(self):
         return "{} {}".format(self.firstName, self.lastName)

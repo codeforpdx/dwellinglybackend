@@ -15,12 +15,12 @@ from resources.user import (
     UserLogin,
     ArchiveUser,
     UsersRole,
-    UsersPending,
     UserAccessRefresh,
     UserRoles,
     Users,
 )
 from resources.user_invite import UserInvite
+from resources.users.pending_users import UsersPending
 from resources.reset_password import ResetPassword
 from resources.property import Properties, Property, ArchiveProperty, ArchiveProperties
 from resources.staff_tenants import StaffTenants

@@ -235,27 +235,25 @@ class UsersRole(Resource):
 
 
 # TODO put this class in new file app/resources/users/pending_users.py
-class UsersPending(Resource):
-    @admin_required
-    def get(self):
-        # TODO: change find_by_role to a new method you create, find_unassigned_users
-        users = [user.json() for user in UserModel.find_by_role(None)]
-        # TODO search for Users that do not have a role and are NOT archived
-        ret = [
-            {
-                "id": user["id"],
-                "firstName": user["firstName"],
-                "lastName": user["lastName"],
-                "email": user["email"],
-                "phone": user["phone"],
-                "role": user["role"],
-                "tickets": "TODO",
-                "tenants": "TODO",
-            }
-            for user in users
-        ]
-
-        return {"users": ret}, 200
+# class UsersPending(Resource):
+#     @admin_required
+#     def get(self):
+#         users = [user.json() for user in UserModel.find_unassigned_users()]
+#         ret = [
+#             {
+#                 "id": user["id"],
+#                 "firstName": user["firstName"],
+#                 "lastName": user["lastName"],
+#                 "email": user["email"],
+#                 "phone": user["phone"],
+#                 "role": user["role"],
+#                 "tickets": "TODO",
+#                 "tenants": "TODO",
+#             }
+#             for user in users
+#         ]
+#
+#         return {"users": ret}, 200
 
 
 # This endpoint allows the app to use a refresh token to get a new access token
