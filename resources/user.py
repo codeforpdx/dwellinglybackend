@@ -234,28 +234,6 @@ class UsersRole(Resource):
         return {"users": users_info}
 
 
-# TODO put this class in new file app/resources/users/pending_users.py
-# class UsersPending(Resource):
-#     @admin_required
-#     def get(self):
-#         users = [user.json() for user in UserModel.find_unassigned_users()]
-#         ret = [
-#             {
-#                 "id": user["id"],
-#                 "firstName": user["firstName"],
-#                 "lastName": user["lastName"],
-#                 "email": user["email"],
-#                 "phone": user["phone"],
-#                 "role": user["role"],
-#                 "tickets": "TODO",
-#                 "tenants": "TODO",
-#             }
-#             for user in users
-#         ]
-#
-#         return {"users": ret}, 200
-
-
 # This endpoint allows the app to use a refresh token to get a new access token
 class UserAccessRefresh(Resource):
 
