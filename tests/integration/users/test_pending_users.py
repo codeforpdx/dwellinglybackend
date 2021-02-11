@@ -14,6 +14,5 @@ class TestPendingUsers:
             "/api/users/pending",
             headers=valid_header,
         )
-        print(response)
         assert len(response.get_json()["users"]) == 1
         assert response.status_code == 200

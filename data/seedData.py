@@ -68,7 +68,7 @@ def seedData():
         archived=False,
     )
     user_gray_pouponn.save_to_db()
-    user_anthony_redding = UserModel.create(
+    UserModel.create(
         payload={
             "email": "pending1@dwellingly.org",
             "firstName": "Anthony",
@@ -78,8 +78,7 @@ def seedData():
         },
         schema=UserRegisterSchema,
     )
-    user_anthony_redding.save_to_db()
-    user_ryan_dander = UserModel.create(
+    UserModel.create(
         payload={
             "email": "pending2@dwellingly.org",
             "firstName": "Ryan",
@@ -89,8 +88,7 @@ def seedData():
         },
         schema=UserRegisterSchema,
     )
-    user_ryan_dander.save_to_db()
-    user_amber_lemming = UserModel.create(
+    UserModel.create(
         payload={
             "email": "pending3@dwellingly.org",
             "firstName": "Amber",
@@ -100,8 +98,7 @@ def seedData():
         },
         schema=UserRegisterSchema,
     )
-    user_amber_lemming.save_to_db()
-    user_jeremy_quazar = UserModel.create(
+    UserModel.create(
         payload={
             "email": "pending4@dwellingly.org",
             "firstName": "Jeremy",
@@ -111,7 +108,6 @@ def seedData():
         },
         schema=UserRegisterSchema,
     )
-    user_jeremy_quazar.save_to_db()
     user_janice_joinstaff = UserModel(
         email="janice@joinpdx.org",
         role=RoleEnum.STAFF,
