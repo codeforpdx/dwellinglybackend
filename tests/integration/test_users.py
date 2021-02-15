@@ -81,17 +81,17 @@ def test_refresh_user(client, test_database, admin_user):
     assert responseRefreshToken.status_code == 200
 
 
-def test_get_user_by_id(client, empty_test_db, create_admin_user, admin_header):
+def test_get_user_by_id(client, empty_test_db, create_admin_user, valid_header):
     """The get user by id route returns a successful response code."""
     user = create_admin_user()
-    response = client.get(f"/api/user/{user.id}", headers=admin_header)
+    response = client.get(f"/api/user/{user.id}", headers=valid_header)
     assert response.status_code == 200
 
     """
     The server responds with an error if a non-existent user id
     is requested from the get user by id route.
     """
-    responseBadUserId = client.get("/api/user/000000", headers=admin_header)
+    responseBadUserId = client.get("/api/user/000000", headers=valid_header)
     assert responseBadUserId.status_code == 404
     assert responseBadUserId.json == {"message": "User not found"}
 
@@ -102,19 +102,22 @@ def test_get_pm_by_id(
     create_property_manager,
     create_property,
     create_lease,
-    admin_header,
+    valid_header,
 ):
     user = create_property_manager()
     prop = create_property(manager_ids=[user.id])
     lease_1 = create_lease(property=prop)
     lease_2 = create_lease(property=prop)
 
-    response = client.get(f"/api/user/{user.id}", headers=admin_header)
+    response = client.get(f"/api/user/{user.id}", headers=valid_header)
 
     property_list = response.json["properties"]
     tenants_list = response.json["tenants"]
 
-    """The get user by id route returns a successful response code for PMs"""
+    """
+    The get user by id route returns a successful response code
+    when the queried user is a property manager
+    """
     assert response.status_code == 200
 
     """The PM's properties are returned as a list of JSON objects"""
