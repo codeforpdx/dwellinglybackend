@@ -36,10 +36,7 @@ class UserRegister(Resource):
 class User(Resource):
     @admin_required
     def get(self, user_id):
-        user = UserModel.find_by_id(user_id)
-
-        if not user:
-            return {"message": "User not found"}, 404
+        user = UserModel.find(user_id)
 
         user_info = user.json()
 
