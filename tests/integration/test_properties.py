@@ -1,6 +1,5 @@
 import pytest
 import json
-from conftest import is_valid
 from models.property import PropertyModel
 from models.user import UserModel
 from models.tenant import TenantModel
@@ -216,7 +215,7 @@ def test_delete_property_by_id(client, auth_headers, test_database):
     assert response == 404
 
 
-def test_update_property_by_id(client, empty_test_db, valid_header, create_property):
+def test_update_property(client, empty_test_db, valid_header, create_property):
     test_property = create_property()
     new_property_address = "123 NE Flanders St"
 
@@ -229,7 +228,7 @@ def test_update_property_by_id(client, empty_test_db, valid_header, create_prope
         json=property_json,
         headers=valid_header,
     )
-    assert is_valid(response, 200)
+    assert response == 200
 
     """The property should have a new address"""
     assert response.json["address"] == new_property_address

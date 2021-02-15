@@ -5,7 +5,7 @@ from db import db
 
 
 @pytest.mark.usefixtures("empty_test_db")
-class TestPropertyManagerValidations:
+class TestPropertyValidations:
     def test_valid_payload(self, create_property_manager, property_attributes):
 
         valid_payload = property_attributes()
@@ -41,6 +41,31 @@ class TestPropertyManagerValidations:
 
         assert "name" in validation_errors
 
+    def test_property_can_update_with_same_name(self, create_property):
+        new_property = create_property()
+        payload = new_property.json()
+
+        payload["num_units"] = 42
+
+        context = {"name": new_property.name}
+
+        assert PropertyModel.update(
+            schema=PropertySchema, id=new_property.id, payload=payload, context=context
+        )
+
+    def test_updated_property_cannot_have_duplicate_name(self, create_property):
+        property_1 = create_property()
+        property_2 = create_property()
+
+        payload = property_1.json()
+        payload["name"] = property_2.name
+
+        context = {"name": property_1.name}
+
+        validation_errors = PropertySchema(context=context).validate(payload)
+
+        assert "name" in validation_errors
+
 
 @pytest.mark.usefixtures("empty_test_db")
 class TestPostLoadDeserialization:
@@ -62,7 +87,7 @@ class TestPostLoadDeserialization:
         pm_2 = create_property_manager()
         pm_3 = create_property_manager()
         payload = {"propertyManagerIDs": [pm_2.id, pm_3.id]}
-        context = {"request_type": "PUT", "name": prop.name}
+        context = {"name": prop.name}
 
         PropertyModel.update(
             schema=PropertySchema, id=prop.id, payload=payload, context=context
@@ -76,36 +101,8 @@ class TestPostLoadDeserialization:
         payload = {
             "name": "The New Portlander Delux Apartment Complex Multnomah Suites",
         }
-        context = {"request_type": "PUT", "name": prop.name}
+        context = {"name": prop.name}
 
         assert PropertyModel.update(
             schema=PropertySchema, id=prop.id, payload=payload, context=context
         )
-
-
-@pytest.mark.usefixtures("empty_test_db")
-class TestUpdatePropertyValidations:
-    def test_property_can_update_with_same_name(self, create_property):
-        new_property = create_property()
-        payload = new_property.json()
-
-        payload["num_units"] = 42
-
-        context = {"request_type": "PUT", "name": new_property.name}
-
-        assert PropertyModel.update(
-            schema=PropertySchema, id=new_property.id, payload=payload, context=context
-        )
-
-    def test_updated_property_cannot_have_duplicate_name(self, create_property):
-        property_1 = create_property()
-        property_2 = create_property()
-
-        payload = property_1.json()
-        payload["name"] = property_2.name
-
-        context = {"request_type": "PUT", "name": property_1.name}
-
-        validation_errors = PropertySchema(context=context).validate(payload)
-
-        assert "name" in validation_errors

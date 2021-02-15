@@ -50,12 +50,9 @@ class BaseModel(db.Model):
     @staticmethod
     def validate(schema, payload, context=None, partial=False):
         try:
-            if context:
-                return schema(context=context).load(
-                    payload, unknown=EXCLUDE, partial=partial
-                )
-            else:
-                return schema().load(payload, unknown=EXCLUDE, partial=partial)
+            return schema(context=context).load(
+                payload, unknown=EXCLUDE, partial=partial
+            )
         except ValidationError as err:
             abort(400, err.messages)
 
