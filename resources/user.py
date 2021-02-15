@@ -2,11 +2,11 @@ from flask_restful import Resource, reqparse
 from flask import request
 from schemas import UserRegisterSchema
 from models.property import PropertyModel
-from models.tenant import TenantModel
 from utils.authorizations import admin_required, admin, pm_level_required
 from models.user import UserModel, RoleEnum
 from models.revoked_tokens import RevokedTokensModel
 import json
+from itertools import chain
 
 from flask_jwt_extended import (
     create_access_token,
@@ -36,25 +36,16 @@ class UserRegister(Resource):
 class User(Resource):
     @admin_required
     def get(self, user_id):
-        user = UserModel.find_by_id(user_id)
-
-        if not user:
-            return {"message": "User not found"}, 404
+        user = UserModel.find(user_id)
 
         user_info = user.json()
 
         if user.role == RoleEnum.PROPERTY_MANAGER:
-            user_info["properties"], tenant_list = zip(
-                *(
-                    (p.json(), p.tenants)
-                    for p in PropertyModel.find_by_manager(user_id)
-                    if p
-                )
-            )
+            properties_list = PropertyModel.find_by_manager(user_id)
+            user_info["properties"] = [p.json() for p in properties_list]
 
-            tenant_IDs = [tenant.id for sublist in tenant_list for tenant in sublist]
-            tenants_list = [TenantModel.find_by_id(t) for t in set(tenant_IDs)]
-            user_info["tenants"] = [t.json() for t in tenants_list if t]
+            tenants_json_2D = [p.tenants() for p in properties_list]
+            user_info["tenants"] = list(chain.from_iterable(tenants_json_2D))
 
         return user_info, 200
 

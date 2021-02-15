@@ -81,19 +81,53 @@ def test_refresh_user(client, test_database, admin_user):
     assert responseRefreshToken.status_code == 200
 
 
-def test_get_user_by_id(client, auth_headers, admin_user):
+def test_get_user_by_id(client, empty_test_db, create_admin_user, valid_header):
     """The get user by id route returns a successful response code."""
-    user = UserModel.find_by_email(admin_user.email)
-    response = client.get(f"/api/user/{user.id}", headers=auth_headers["admin"])
+    user = create_admin_user()
+    response = client.get(f"/api/user/{user.id}", headers=valid_header)
     assert response.status_code == 200
 
     """
     The server responds with an error if a non-existent user id
     is requested from the get user by id route.
     """
-    responseBadUserId = client.get("/api/user/000000", headers=auth_headers["admin"])
+    responseBadUserId = client.get("/api/user/000000", headers=valid_header)
     assert responseBadUserId.status_code == 404
     assert responseBadUserId.json == {"message": "User not found"}
+
+
+def test_get_pm_by_id(
+    client,
+    empty_test_db,
+    create_property_manager,
+    create_property,
+    create_lease,
+    valid_header,
+):
+    user = create_property_manager()
+    prop = create_property(manager_ids=[user.id])
+    lease_1 = create_lease(property=prop)
+    lease_2 = create_lease(property=prop)
+
+    response = client.get(f"/api/user/{user.id}", headers=valid_header)
+
+    property_list = response.json["properties"]
+    tenants_list = response.json["tenants"]
+
+    """
+    The get user by id route returns a successful response code
+    when the queried user is a property manager
+    """
+    assert response.status_code == 200
+
+    """The PM's properties are returned as a list of JSON objects"""
+    assert property_list == [prop.json()]
+
+    """
+    Tenants are retreived through the leases on each
+    property and returned as a list of JSON objects
+    """
+    assert tenants_list == [lease_1.tenant.json(), lease_2.tenant.json()]
 
 
 def test_user_roles(client, auth_headers):
