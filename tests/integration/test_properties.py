@@ -223,12 +223,31 @@ def test_update_property(client, empty_test_db, valid_header, create_property):
 
     property_json["address"] = new_property_address
 
+    """
+    Updating property info should be successful when the payload includes
+    the property's current name. The response JSON should reflect these changes.
+    """
     response = client.put(
         f"/api/properties/{test_property.id}",
         json=property_json,
         headers=valid_header,
     )
     assert response == 200
+    assert response.json == property_json
 
-    """The property should have a new address"""
-    assert response.json["address"] == new_property_address
+    new_property = create_property()
+    duplicate_name = test_property.name
+
+    new_property_json = new_property.json()
+    new_property_json["name"] = duplicate_name
+
+    """
+    The server responds with a 400 error when attempting to update a
+    property with the name of another existing property.
+    """
+    response = client.put(
+        f"/api/properties/{new_property.id}",
+        json=new_property_json,
+        headers=valid_header,
+    )
+    assert response == 400
