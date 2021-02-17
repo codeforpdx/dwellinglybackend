@@ -1,7 +1,5 @@
 import pytest
 from schemas import PropertySchema
-from models.property import PropertyModel
-from db import db
 
 
 @pytest.mark.usefixtures("empty_test_db")
@@ -49,9 +47,9 @@ class TestPropertyValidations:
 
         context = {"name": new_property.name}
 
-        assert PropertyModel.update(
-            schema=PropertySchema, id=new_property.id, payload=payload, context=context
-        )
+        validation_errors = PropertySchema(context=context).validate(payload)
+
+        assert "name" not in validation_errors
 
     def test_updated_property_cannot_have_duplicate_name(self, create_property):
         property_1 = create_property()
@@ -76,11 +74,10 @@ class TestPostLoadDeserialization:
         pm_2 = create_property_manager()
         property_attrs = property_attributes(manager_ids=[pm_1.id, pm_2.id])
 
-        prop = PropertyModel.create(schema=PropertySchema, payload=property_attrs)
-        db.session.rollback()
+        prop = PropertySchema().load(property_attrs)
 
         assert prop
-        assert prop.managers == [pm_1, pm_2]
+        assert prop["managers"] == [pm_1, pm_2]
 
     def test_manager_update(self, create_property, create_property_manager):
         prop = create_property()
@@ -89,12 +86,9 @@ class TestPostLoadDeserialization:
         payload = {"propertyManagerIDs": [pm_2.id, pm_3.id]}
         context = {"name": prop.name}
 
-        PropertyModel.update(
-            schema=PropertySchema, id=prop.id, payload=payload, context=context
-        )
-        db.session.rollback()
+        updated_prop = PropertySchema(context=context).load(payload, partial=True)
 
-        assert prop.managers == [pm_2, pm_3]
+        assert updated_prop["managers"] == [pm_2, pm_3]
 
     def test_property_update_without_managers(self, create_property):
         prop = create_property()
@@ -103,6 +97,4 @@ class TestPostLoadDeserialization:
         }
         context = {"name": prop.name}
 
-        assert PropertyModel.update(
-            schema=PropertySchema, id=prop.id, payload=payload, context=context
-        )
+        assert PropertySchema(context=context).load(payload, partial=True)
