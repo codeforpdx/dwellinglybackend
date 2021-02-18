@@ -130,7 +130,7 @@ class UserModel(BaseModel):
         ).all()
 
     @classmethod
-    def find_unassigned_users(cls):
+    def find_users_without_assigned_role(cls):
         return cls.query.filter(and_(cls.role.is_(None), cls.archived.is_(False)))
 
     def full_name(self):
