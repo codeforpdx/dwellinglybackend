@@ -69,7 +69,7 @@ class TestFixtures:
 
 
 @pytest.mark.usefixtures("empty_test_db")
-class TestOverwrittenBaseClassMethods:
+class TestOverwrittenAndInheritedMethods:
     def test_user_save_to_db(self, user_attributes):
         user = UserModel(**user_attributes())
         user.save_to_db()
