@@ -11,7 +11,7 @@ from models.emergency_contact import EmergencyContactModel
 from models.contact_number import ContactNumberModel
 from models.lease import LeaseModel
 from utils.time import time_format
-from schemas import PropertySchema, TenantSchema
+from schemas import PropertySchema, TenantSchema, UserRegisterSchema
 
 
 def seedData():
@@ -68,47 +68,46 @@ def seedData():
         archived=False,
     )
     user_gray_pouponn.save_to_db()
-
-    user_anthony_redding = UserModel(
-        email="pending1@dwellingly.org",
-        role=RoleEnum.PENDING,
-        firstName="Anthony",
-        lastName="Redding",
-        password="1234",
-        phone="555-555-5555",
-        archived=False,
+    UserModel.create(
+        payload={
+            "email": "pending1@dwellingly.org",
+            "firstName": "Anthony",
+            "lastName": "Redding",
+            "password": "1234",
+            "phone": "555-555-5555",
+        },
+        schema=UserRegisterSchema,
     )
-    user_anthony_redding.save_to_db()
-    user_ryan_dander = UserModel(
-        email="pending2@dwellingly.org",
-        role=RoleEnum.PENDING,
-        firstName="Ryan",
-        lastName="Dander",
-        password="1234",
-        phone="555-555-5555",
-        archived=False,
+    UserModel.create(
+        payload={
+            "email": "pending2@dwellingly.org",
+            "firstName": "Ryan",
+            "lastName": "Dander",
+            "password": "1234",
+            "phone": "555-555-5555",
+        },
+        schema=UserRegisterSchema,
     )
-    user_ryan_dander.save_to_db()
-    user_amber_lemming = UserModel(
-        email="pending3@dwellingly.org",
-        role=RoleEnum.PENDING,
-        firstName="Amber",
-        lastName="Lemming",
-        password="1234",
-        phone="555-555-5555",
-        archived=False,
+    UserModel.create(
+        payload={
+            "email": "pending3@dwellingly.org",
+            "firstName": "Amber",
+            "lastName": "Lemming",
+            "password": "1234",
+            "phone": "555-555-5555",
+        },
+        schema=UserRegisterSchema,
     )
-    user_amber_lemming.save_to_db()
-    user_jeremy_quazar = UserModel(
-        email="pending4@dwellingly.org",
-        role=RoleEnum.PENDING,
-        firstName="Jeremy",
-        lastName="Quazar",
-        password="1234",
-        phone="555-555-5555",
-        archived=False,
+    UserModel.create(
+        payload={
+            "email": "pending4@dwellingly.org",
+            "firstName": "Jeremy",
+            "lastName": "Quazar",
+            "password": "1234",
+            "phone": "555-555-5555",
+        },
+        schema=UserRegisterSchema,
     )
-    user_jeremy_quazar.save_to_db()
     user_janice_joinstaff = UserModel(
         email="janice@joinpdx.org",
         role=RoleEnum.STAFF,
