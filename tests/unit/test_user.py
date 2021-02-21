@@ -88,7 +88,6 @@ class TestOverwrittenAndInheritedMethods:
         lookedup = UserModel.find_by_id(user.id)
         assert lookedup.email == email
         assert lookedup.password is None
-        assert lookedup.hash_digest is not None
         assert lookedup.hash_digest == user.hash_digest
 
     def test_create_class_method(self, user_attributes):
@@ -96,4 +95,3 @@ class TestOverwrittenAndInheritedMethods:
         lookedup = UserModel.find_by_id(user.id)
         assert lookedup.password is None
         assert lookedup == user
-        assert lookedup.hash_digest is not None
