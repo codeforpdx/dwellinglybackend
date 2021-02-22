@@ -78,8 +78,6 @@ class TestOverwrittenAndInheritedMethods:
         user.save_to_db()
         lookedup = UserModel.find_by_id(user.id)
         assert lookedup.password is None
-        user.password = None
-        assert lookedup == user
 
     def test_update_class_method(self, create_join_staff, faker):
         user = create_join_staff()
@@ -94,4 +92,3 @@ class TestOverwrittenAndInheritedMethods:
         user = UserModel.create(UserSchema, user_attributes(role=RoleEnum.STAFF.value))
         lookedup = UserModel.find_by_id(user.id)
         assert lookedup.password is None
-        assert lookedup == user
