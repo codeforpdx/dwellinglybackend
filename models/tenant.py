@@ -1,6 +1,7 @@
 from sqlalchemy.orm import relationship
 from db import db
 from models.base_model import BaseModel
+from models.tickets import TicketModel
 from utils.time import Time
 
 
@@ -18,7 +19,7 @@ class TenantModel(BaseModel):
     leases = db.relationship(
         "LeaseModel", backref="tenant", lazy=True, cascade="all, delete-orphan"
     )
-    tickets = db.relationship("TicketModel", backref="tenant", lazy=True)
+    tickets = db.relationship(TicketModel, backref="tenant", lazy=True)
 
     def json(self):
         return {
