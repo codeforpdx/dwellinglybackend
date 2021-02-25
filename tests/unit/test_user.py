@@ -76,19 +76,19 @@ class TestOverwrittenAndInheritedMethods:
         )
         user = UserModel(**attrs)
         user.save_to_db()
-        lookedup = UserModel.find_by_id(user.id)
+        lookedup = UserModel.find(user.id)
         assert lookedup.password is None
 
     def test_update_class_method(self, create_join_staff, faker):
         user = create_join_staff()
         email = faker.unique.email()
         UserModel.update(UserSchema, user.id, {"email": email})
-        lookedup = UserModel.find_by_id(user.id)
+        lookedup = UserModel.find(user.id)
         assert lookedup.email == email
         assert lookedup.password is None
         assert lookedup.hash_digest == user.hash_digest
 
     def test_create_class_method(self, user_attributes):
         user = UserModel.create(UserSchema, user_attributes(role=RoleEnum.STAFF.value))
-        lookedup = UserModel.find_by_id(user.id)
+        lookedup = UserModel.find(user.id)
         assert lookedup.password is None
