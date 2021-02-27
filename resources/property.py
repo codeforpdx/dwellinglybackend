@@ -89,6 +89,10 @@ class Property(Resource):
 
     @admin_required
     def put(self, id):
+        property = PropertyModel.find(id)
+        payload = request.json
+        context = {"name": property.name}
+
         return PropertyModel.update(
-            schema=PropertySchema, id=id, payload=request.json
+            schema=PropertySchema, id=id, context=context, payload=payload
         ).json()

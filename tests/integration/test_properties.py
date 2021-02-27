@@ -1,8 +1,8 @@
 import pytest
+import json
 from models.property import PropertyModel
 from models.user import UserModel
 from models.tenant import TenantModel
-import json
 
 
 def test_get_properties(client, test_database):
@@ -215,15 +215,39 @@ def test_delete_property_by_id(client, auth_headers, test_database):
     assert response == 404
 
 
-def test_update_property_by_id(client, auth_headers, create_property, test_database):
+def test_update_property(client, empty_test_db, valid_header, create_property):
     test_property = create_property()
     new_property_address = "123 NE Flanders St"
-    test_property.address = new_property_address
 
-    """The property should have a new address"""
-    test_changed_property = client.get(
-        f"/api/properties/{test_property.id}", headers=auth_headers["admin"]
+    property_json = test_property.json()
+
+    property_json["address"] = new_property_address
+
+    """
+    Updating property info should be successful when the payload includes
+    the property's current name. The response JSON should reflect these changes.
+    """
+    response = client.put(
+        f"/api/properties/{test_property.id}",
+        json=property_json,
+        headers=valid_header,
     )
-    test_changed_property = json.loads(test_changed_property.data)
+    assert response == 200
+    assert response.json == property_json
 
-    assert test_changed_property["address"] == new_property_address
+    new_property = create_property()
+    duplicate_name = test_property.name
+
+    new_property_json = new_property.json()
+    new_property_json["name"] = duplicate_name
+
+    """
+    The server responds with a 400 error when attempting to update a
+    property with the name of another existing property.
+    """
+    response = client.put(
+        f"/api/properties/{new_property.id}",
+        json=new_property_json,
+        headers=valid_header,
+    )
+    assert response == 400
