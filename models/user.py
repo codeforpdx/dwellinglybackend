@@ -139,5 +139,6 @@ class UserModel(BaseModel):
     def save_to_db(self):
         if self.password:
             self.hash_digest = UserModel._hash_pw(self.password)
+            self.password = None
         db.session.add(self)
         db.session.commit()
