@@ -364,11 +364,6 @@ def test_delete_user(client, auth_headers, new_user, admin_user):
     assert is_valid(response, 401)  # UNAUTHORIZED - Admin Access Required
 
     response = client.delete(
-        f"/api/user/{userToDelete.id}", headers=auth_headers["pending"]
-    )
-    assert is_valid(response, 401)  # UNAUTHORIZED - Admin Access Required
-
-    response = client.delete(
         f"/api/user/{userToDelete.id}", headers=auth_headers["admin"]
     )
     assert is_valid(response, 200)  # OK
