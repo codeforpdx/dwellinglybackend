@@ -28,7 +28,7 @@ class TestBaseTenantModel(BaseInterfaceTest):
 
         # Create an active lease for the tenant
         lease_active = create_lease(
-            tenant=tenant, property=PropertyModel.find_by_id(lease_expired.propertyID)
+            tenant=tenant, property=PropertyModel.find(lease_expired.propertyID)
         )
 
         # Active lease should be the only one that shows up
