@@ -1,5 +1,7 @@
 import pytest
 from models.lease import LeaseModel
+from schemas.lease import LeaseSchema
+from utils.time import Time
 
 
 @pytest.fixture
@@ -9,8 +11,8 @@ def lease_attributes(faker):
             "unitNum": unitNum,
             "tenantID": tenant.id,
             "propertyID": property.id,
-            "dateTimeStart": dateTimeStart,
-            "dateTimeEnd": dateTimeEnd,
+            "dateTimeStart": Time.to_iso(dateTimeStart),
+            "dateTimeEnd": Time.to_iso(dateTimeEnd),
             "occupants": faker.random_number(digits=2),
         }
 
@@ -33,10 +35,10 @@ def create_lease(faker, lease_attributes, create_property, create_tenant):
         dateTimeEnd = dateTimeEnd or faker.date_time_this_decade(
             before_now=False, after_now=True
         )
-        lease = LeaseModel(
-            **lease_attributes(unitNum, tenant, property, dateTimeStart, dateTimeEnd)
+        lease = LeaseModel.create(
+            LeaseSchema,
+            lease_attributes(unitNum, tenant, property, dateTimeStart, dateTimeEnd),
         )
-        lease.save_to_db()
         return lease
 
     yield _create_lease
