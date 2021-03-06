@@ -86,7 +86,7 @@ NOTE: Database is SQLite3 via SQLAlchemy
 6. Create and Seed the database
    - Run: `pipenv run flask db create`
 
-   - Some other userful commands are:
+   - Some other useful commands are:
      - To re-seed the database from scratch run: `pipenv run flask db recreate`
      - To find other database set-up commands run: `pipenv run flask db --help`
      - To drop the database run: `pipenv run flask db drop`
