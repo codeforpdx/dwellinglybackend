@@ -45,7 +45,6 @@ def new_user():
         firstName="user2",
         lastName="tester",
         phone="1-888-cal-saul",
-        role=RoleEnum.PENDING,
         archived=0,
     )
     return newUser
@@ -70,12 +69,10 @@ def property_manager_user():
 def auth_headers(client, test_database, admin_user, new_user, property_manager_user):
     admin_auth_header = get_auth_header(client, admin_user)
     pm_auth_header = get_auth_header(client, property_manager_user)
-    pending_auth_header = get_auth_header(client, new_user)
 
     return {
         "admin": admin_auth_header,
         "pm": pm_auth_header,
-        "pending": pending_auth_header,
     }
 
 

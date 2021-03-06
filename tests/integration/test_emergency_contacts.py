@@ -78,9 +78,6 @@ def test_emergency_contacts_POST(client, auth_headers):
     response = client.post(endpoint, json=newContact, headers=auth_headers["pm"])
     assert is_valid(response, 401)  # UNAUTHORIZED - Admin Access Required
 
-    response = client.post(endpoint, json=newContact, headers=auth_headers["pending"])
-    assert is_valid(response, 401)  # UNAUTHORIZED - Admin Access Required
-
     response = client.post(endpoint, json=newContact)
     assert is_valid(response, 401)  # UNAUTHORIZED - Missing Authorization Header
     assert response.json == {"message": "Missing authorization header"}
@@ -132,9 +129,6 @@ def test_emergency_contacts_DELETE(client, auth_headers):
     response = client.delete(f"{endpoint}/{id}")
     assert is_valid(response, 401)  # UNAUTHORIZED - Missing Authorization Header
     assert response.json == {"message": "Missing authorization header"}
-
-    response = client.delete(f"{endpoint}/{id}", headers=auth_headers["pending"])
-    assert is_valid(response, 401)  # UNAUTHORIZED - Admin Access Required
 
     response = client.delete(f"{endpoint}/{id}", headers=auth_headers["pm"])
     assert is_valid(response, 401)  # UNAUTHORIZED - Admin Access Required
