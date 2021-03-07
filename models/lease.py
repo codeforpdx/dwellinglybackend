@@ -1,3 +1,4 @@
+from sqlalchemy.sql.functions import now
 from db import db
 from models.base_model import BaseModel
 from utils.time import Time
@@ -24,3 +25,8 @@ class LeaseModel(BaseModel):
             "dateTimeEnd": Time.format_date(self.dateTimeEnd),
             "unitNum": self.unitNum,
         }
+
+    @classmethod
+    def active(cls):
+        time = now()
+        return (time > cls.dateTimeStart) & (time < cls.dateTimeEnd)
