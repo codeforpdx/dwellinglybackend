@@ -64,9 +64,7 @@ class Tenants(Resource):
 
     @admin_required
     def delete(self, tenant_id):
-        tenant = TenantModel.find_by_id(tenant_id)
-        if not tenant:
-            return {"message": "Tenant not found"}, 404
+        tenant = TenantModel.find(tenant_id)
 
         def _toggle_archive():
             if tenant.archived:
