@@ -119,13 +119,6 @@ def test_emergency_contacts_PUT(client, auth_headers):
 def test_emergency_contacts_DELETE(client, auth_headers):
     id = 1
 
-    response = client.delete(f"{endpoint}/{id}")
-    assert is_valid(response, 401)  # UNAUTHORIZED - Missing Authorization Header
-    assert response.json == {"message": "Missing authorization header"}
-
-    response = client.delete(f"{endpoint}/{id}", headers=auth_headers["pm"])
-    assert is_valid(response, 401)  # UNAUTHORIZED - Admin Access Required
-
     response = client.delete(f"{endpoint}/{id}", headers=auth_headers["admin"])
     assert is_valid(response, 200)  # OK
 
