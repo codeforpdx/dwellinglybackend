@@ -130,7 +130,7 @@ class TestTenantsDelete:
 
     def test_delete_can_unarchive_tenant(self, valid_header, create_tenant):
         tenant = create_tenant()
-        self.client.delete(f"{endpoint}/{tenant.id}", headers=valid_header)
+        tenant.archived = True
 
         response = self.client.delete(f"{endpoint}/{tenant.id}", headers=valid_header)
 
