@@ -1,3 +1,4 @@
+import pytest
 from conftest import is_valid
 from utils.time import Time
 
@@ -116,3 +117,23 @@ def test_resource_not_found(client, auth_headers):
     response = client.delete(f"{endpoint}/10000", headers=auth_headers["admin"])
     assert is_valid(response, 404)
     assert response.json == {"message": "Tenant not found"}
+
+
+@pytest.mark.usefixtures("client_class", "empty_test_db")
+class TestTenantsDelete:
+    def test_delete_archives_tenant(self, valid_header, create_tenant):
+        tenant = create_tenant()
+        response = self.client.delete(f"{endpoint}/{tenant.id}", headers=valid_header)
+        assert response == 200
+        assert tenant.archived
+        assert response.json == {"message": "Tenant archived"}
+
+    def test_delete_can_unarchive_tenant(self, valid_header, create_tenant):
+        tenant = create_tenant()
+        self.client.delete(f"{endpoint}/{tenant.id}", headers=valid_header)
+
+        response = self.client.delete(f"{endpoint}/{tenant.id}", headers=valid_header)
+
+        assert response == 200
+        assert not tenant.archived
+        assert response.json == {"message": "Tenant unarchived"}
