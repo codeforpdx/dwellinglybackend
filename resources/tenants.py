@@ -64,10 +64,18 @@ class Tenants(Resource):
 
     @admin_required
     def delete(self, tenant_id):
-        tenant = TenantModel.find_by_id(tenant_id)
-        if not tenant:
-            return {"message": "Tenant not found"}, 404
-        # Do not delete the tenant, just archive
-        tenant.archived = True
-        tenant.save_to_db()
-        return {"message": "Tenant archived"}
+        tenant = TenantModel.find(tenant_id)
+
+        def _toggle_archive():
+            if tenant.archived:
+                tenant.archived = False
+                status = {"message": "Tenant unarchived"}
+            else:
+                tenant.archived = True
+                status = {"message": "Tenant archived"}
+
+            tenant.save_to_db()
+            return status
+
+        response = _toggle_archive()
+        return response
