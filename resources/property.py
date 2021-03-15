@@ -42,8 +42,12 @@ class ArchiveProperty(Resource):
         property.archived = not property.archived
 
         property.save_to_db()
-
-        return property.json(), 201
+        message = (
+            "Property archived successfully"
+            if property.archived
+            else "Property unarchived successfully"
+        )
+        return {"message": message}, 200
 
 
 class ArchiveProperties(Resource):
