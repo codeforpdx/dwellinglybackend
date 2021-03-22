@@ -73,11 +73,11 @@ def test_archive_property_by_id(client, auth_headers, create_property, test_data
     assert responseNoAdmin == 401
     assert responseNoAdmin.json == {"message": "Missing authorization header"}
 
-    """The archive property endpoint should return a 201 code when successful"""
+    """The archive property endpoint should return a 200 code when successful"""
     responseSuccess = client.post(
         f"/api/properties/archive/{test_property.id}", headers=auth_headers["admin"]
     )
-    assert responseSuccess.status_code == 201
+    assert responseSuccess.status_code == 200
 
     """The property should have its 'archived' key set to True"""
     responseArchivedProperty = client.get(
