@@ -9,10 +9,10 @@ from models.base_model import BaseModel
 import models.notes
 from jwt import ExpiredSignatureError
 from utils.time import Time
+from sqlalchemy import and_
 
 
 class RoleEnum(Enum):
-    PENDING = 0
     PROPERTY_MANAGER = 2
     STAFF = 3
     ADMIN = 4
@@ -32,7 +32,7 @@ class UserModel(BaseModel):
 
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(100), unique=True, nullable=False)
-    role = db.Column(db.Enum(RoleEnum), default=RoleEnum.PENDING)
+    role = db.Column(db.Enum(RoleEnum), default=None)
     firstName = db.Column(db.String(100), nullable=False)
     lastName = db.Column(db.String(100), nullable=False)
     phone = db.Column(db.String(20), nullable=False)
@@ -87,7 +87,7 @@ class UserModel(BaseModel):
             "lastName": self.lastName,
             "email": self.email,
             "phone": self.phone,
-            "role": self.role.value,
+            "role": self.role.value if self.role else None,
             "archived": self.archived,
             "lastActive": Time.format_date(self.lastActive),
             "created_at": Time.format_date(self.created_at),
@@ -128,11 +128,16 @@ class UserModel(BaseModel):
             & (UserModel.firstName.ilike(likeName) | UserModel.lastName.ilike(likeName))
         ).all()
 
+    @classmethod
+    def find_users_without_assigned_role(cls):
+        return cls.query.filter(and_(cls.role.is_(None), cls.archived.is_(False)))
+
     def full_name(self):
         return "{} {}".format(self.firstName, self.lastName)
 
     def save_to_db(self):
         if self.password:
             self.hash_digest = UserModel._hash_pw(self.password)
+            self.password = None
         db.session.add(self)
         db.session.commit()

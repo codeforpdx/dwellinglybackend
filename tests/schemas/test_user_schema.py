@@ -1,4 +1,5 @@
 from schemas.user import UserSchema, UserRegisterSchema
+from models.user import RoleEnum
 
 
 def user_register_valid_payload(user):
@@ -24,6 +25,28 @@ class UserSchemaValidations:
             f"A user with email '{user.email}' already exists"
         ]
 
+    def test_role_enum_validation(self):
+        user_schema = UserSchema()
+        payload = {"role": 999}
+        validation_error = user_schema.validate(payload)
+        assert "role" in validation_error
+        assert validation_error["role"] == ["Invalid role"]
+
+        payload = {"role": "STAFF"}
+        validation_error = user_schema.validate(payload)
+        assert "role" in validation_error
+        assert validation_error["role"] == ["Invalid role"]
+
+        payload = {"role": RoleEnum.STAFF.value}
+        no_validation_error = user_schema.validate(payload)
+        assert "role" not in no_validation_error
+
+    def test_role_enum_serialization(self, empty_test_db, create_join_staff):
+        user = create_join_staff()
+        user_schema = UserSchema()
+        user_serialized = user_schema.dump(user)
+        user_serialized["role"] = user.role.value
+
 
 class TestUserSchemaValidations(UserSchemaValidations):
     def setup(self):
@@ -44,7 +67,7 @@ class TestUserRegisterSchemaValidations:
         )
 
     def test_presence_of_role_key_is_not_valid(self):
-        payload = {"role": "ADMIN"}
+        payload = {"role": RoleEnum.ADMIN.value}
 
         validation_errors = UserRegisterSchema().validate(payload)
 

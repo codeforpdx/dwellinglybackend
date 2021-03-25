@@ -12,7 +12,7 @@ def property_attributes(faker, create_property_manager):
             "name": faker.unique.name(),
             "address": faker.address(),
             "city": faker.city(),
-            "unit": faker.building_number(),
+            "num_units": faker.random_int(min=1),
             "state": faker.state(),
             "zipcode": faker.postcode(),
             "archived": archived,
@@ -23,10 +23,10 @@ def property_attributes(faker, create_property_manager):
 
 
 @pytest.fixture
-def create_property(property_attributes):
-    def _create_property():
+def create_property(property_attributes, **kwargs):
+    def _create_property(**kwargs):
         property = PropertyModel.create(
-            payload=property_attributes(), schema=PropertySchema
+            payload=property_attributes(**kwargs), schema=PropertySchema
         )
         return property
 

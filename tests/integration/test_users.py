@@ -22,6 +22,17 @@ def test_user_auth(client, test_database, admin_user):
     assert "access_token" in login_response.json.keys()
 
     """
+    The server responds with an error when a user attempts to login
+    to an account without a valid role
+    """
+    admin_user.role = None
+    responseBadPassword = client.post(
+        "/api/login", json={"email": admin_user.email, "password": plaintext_password}
+    )
+    assert responseBadPassword.status_code == 403
+    assert responseBadPassword.json == {"message": "Invalid user"}
+    admin_user.role = RoleEnum.ADMIN
+    """
     The server responds with an error when a user attempts to
     login with an incorrect password.
     """
@@ -70,19 +81,53 @@ def test_refresh_user(client, test_database, admin_user):
     assert responseRefreshToken.status_code == 200
 
 
-def test_get_user_by_id(client, auth_headers, admin_user):
+def test_get_user_by_id(client, empty_test_db, create_admin_user, valid_header):
     """The get user by id route returns a successful response code."""
-    user = UserModel.find_by_email(admin_user.email)
-    response = client.get(f"/api/user/{user.id}", headers=auth_headers["admin"])
+    user = create_admin_user()
+    response = client.get(f"/api/user/{user.id}", headers=valid_header)
     assert response.status_code == 200
 
     """
     The server responds with an error if a non-existent user id
     is requested from the get user by id route.
     """
-    responseBadUserId = client.get("/api/user/000000", headers=auth_headers["admin"])
+    responseBadUserId = client.get("/api/user/000000", headers=valid_header)
     assert responseBadUserId.status_code == 404
     assert responseBadUserId.json == {"message": "User not found"}
+
+
+def test_get_pm_by_id(
+    client,
+    empty_test_db,
+    create_property_manager,
+    create_property,
+    create_lease,
+    valid_header,
+):
+    user = create_property_manager()
+    prop = create_property(manager_ids=[user.id])
+    lease_1 = create_lease(property=prop)
+    lease_2 = create_lease(property=prop)
+
+    response = client.get(f"/api/user/{user.id}", headers=valid_header)
+
+    property_list = response.json["properties"]
+    tenants_list = response.json["tenants"]
+
+    """
+    The get user by id route returns a successful response code
+    when the queried user is a property manager
+    """
+    assert response.status_code == 200
+
+    """The PM's properties are returned as a list of JSON objects"""
+    assert property_list == [prop.json()]
+
+    """
+    Tenants are retreived through the leases on each
+    property and returned as a list of JSON objects
+    """
+    assert tenants_list == [lease_1.tenant.json(), lease_2.tenant.json()]
 
 
 def test_user_roles(client, auth_headers):
@@ -129,7 +174,7 @@ def test_user_roles(client, auth_headers):
     assert response.status_code == 200
 
 
-def test_archive_user(client, auth_headers, new_user):
+def test_archive_user(client, auth_headers, new_user, admin_user):
     """
     The archive user by id route returns a successful response code
     and changes the user's status.
@@ -146,6 +191,13 @@ def test_archive_user(client, auth_headers, new_user):
     responseLoginArchivedUser = client.post("/api/login", json=data)
     assert responseLoginArchivedUser.status_code == 403
     assert responseLoginArchivedUser.json == {"message": "Invalid user"}
+
+    """Admin user attempting to archive themselves should get error"""
+    response = client.post(
+        f"/api/user/archive/{admin_user.id}", json={}, headers=auth_headers["admin"]
+    )
+    assert response.status_code == 400
+    assert response.json == {"message": "Cannot archive self"}
 
 
 def test_archive_user_failure(client, auth_headers):
@@ -305,15 +357,10 @@ def test_unique_user_constraint(client, auth_headers, new_user):
         )
 
 
-def test_delete_user(client, auth_headers, new_user):
+def test_delete_user(client, auth_headers, new_user, admin_user):
     userToDelete = UserModel.find_by_email(new_user.email)
 
     response = client.delete(f"/api/user/{userToDelete.id}", headers=auth_headers["pm"])
-    assert is_valid(response, 401)  # UNAUTHORIZED - Admin Access Required
-
-    response = client.delete(
-        f"/api/user/{userToDelete.id}", headers=auth_headers["pending"]
-    )
     assert is_valid(response, 401)  # UNAUTHORIZED - Admin Access Required
 
     response = client.delete(
@@ -323,6 +370,9 @@ def test_delete_user(client, auth_headers, new_user):
 
     response = client.delete("/api/user/999999", headers=auth_headers["admin"])
     assert is_valid(response, 400)  # BAD REQUEST
+
+    response = client.delete(f"api/user/{admin_user.id}", headers=auth_headers["admin"])
+    assert is_valid(response, 400)
 
 
 def test_get_user(client, auth_headers, new_user):

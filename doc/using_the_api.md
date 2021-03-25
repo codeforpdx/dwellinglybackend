@@ -222,6 +222,29 @@ All endpoints are prefixed with `/api/`
     ]
 ```
 
+#### ENDPOINT: USER INVITE
+
+| method | route           | action                 |
+| :----- | :-------------- | :--------------------- |
+| POST   | `/user/invite`  | Invite a user          |
+
+```javascript
+    'archived': False,
+    'email': 'john51@gmail.com',
+    'firstName': 'Amy',
+    'lastName': 'Roberts',
+    'password': 'xlLHBzv()3',
+    'phone': '965-934-2320',
+    'role': 3
+```
+
+##### Response (201)
+
+```javascript
+    {
+        "message": "User Invited"
+    }
+```
 
 #### ENDPOINT: WIDGETS
 

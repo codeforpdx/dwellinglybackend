@@ -17,4 +17,4 @@ class UserInvite(Resource):
             schema=UserSchema, payload={**data, "password": temp_password}
         )
         Email.send_user_invite_msg(user)
-        return {"message": "User Invited"}, 200
+        return {"message": "User Invited"}, 201

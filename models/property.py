@@ -10,12 +10,12 @@ class PropertyModel(BaseModel):
     __tablename__ = "properties"
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), unique=True)
-    address = db.Column(db.String(250))
-    unit = db.Column(db.String(20), default="")
-    city = db.Column(db.String(50))
-    state = db.Column(db.String(50))
-    zipcode = db.Column(db.String(20))
+    name = db.Column(db.String(100), unique=True, nullable=False)
+    address = db.Column(db.String(250), nullable=False)
+    num_units = db.Column(db.Integer, default=1)
+    city = db.Column(db.String(50), nullable=False)
+    state = db.Column(db.String(50), nullable=False)
+    zipcode = db.Column(db.String(20), nullable=False)
     archived = db.Column(db.Boolean, default=False, nullable=False)
 
     leases = db.relationship(
@@ -33,18 +33,25 @@ class PropertyModel(BaseModel):
             "id": self.id,
             "name": self.name,
             "address": self.address,
-            "unit": self.unit,
+            "num_units": self.num_units,
             "city": self.city,
             "state": self.state,
             "zipcode": self.zipcode,
             "propertyManager": [user.json() for user in self.managers]
             if self.managers
             else None,
+            "lease": [lease.json() for lease in self.leases] if self.leases else None,
             "propertyManagerName": managers_name if managers_name else None,
             "archived": self.archived,
             "created_at": Time.format_date(self.created_at),
             "updated_at": Time.format_date(self.updated_at),
         }
+
+    def tenants(self):
+        tenants = []
+        for lease in self.leases:
+            tenants.append(lease.tenant.json())
+        return tenants
 
     @classmethod
     def find_by_name(cls, name):

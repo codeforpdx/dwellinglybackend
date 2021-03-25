@@ -1,3 +1,4 @@
+import pytest
 from conftest import is_valid
 from utils.time import Time
 
@@ -64,9 +65,6 @@ def test_tenants_POST(
     response = client.post(endpoint, json=newTenant, headers=auth_headers["pm"])
     assert is_valid(response, 401)  # UNAUTHORIZED - Admin Access Required
 
-    response = client.post(endpoint, json=newTenant, headers=auth_headers["pending"])
-    assert is_valid(response, 401)  # UNAUTHORIZED - Admin Access Required
-
     response = client.post(endpoint, json=newTenant)
     # UNAUTHORIZED - Missing Authorization Header
     assert is_valid(response, 401)
@@ -104,12 +102,6 @@ def test_unauthenticated_delete(client):
     assert response.json == {"message": "Missing authorization header"}
 
 
-def test_pending_role_is_unauthorized_to_delete(client, auth_headers):
-    response = client.delete(f"{endpoint}/1", headers=auth_headers["pending"])
-
-    assert is_valid(response, 401)
-
-
 def test_pm_role_is_unauthorized_to_delete(client, auth_headers):
     response = client.delete(f"{endpoint}/1", headers=auth_headers["pm"])
 
@@ -125,3 +117,23 @@ def test_resource_not_found(client, auth_headers):
     response = client.delete(f"{endpoint}/10000", headers=auth_headers["admin"])
     assert is_valid(response, 404)
     assert response.json == {"message": "Tenant not found"}
+
+
+@pytest.mark.usefixtures("client_class", "empty_test_db")
+class TestTenantsDelete:
+    def test_delete_archives_tenant(self, valid_header, create_tenant):
+        tenant = create_tenant()
+        response = self.client.delete(f"{endpoint}/{tenant.id}", headers=valid_header)
+        assert response == 200
+        assert tenant.archived
+        assert response.json == {"message": "Tenant archived"}
+
+    def test_delete_can_unarchive_tenant(self, valid_header, create_tenant):
+        tenant = create_tenant()
+        tenant.archived = True
+
+        response = self.client.delete(f"{endpoint}/{tenant.id}", headers=valid_header)
+
+        assert response == 200
+        assert not tenant.archived
+        assert response.json == {"message": "Tenant unarchived"}

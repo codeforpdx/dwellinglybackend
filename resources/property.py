@@ -42,8 +42,12 @@ class ArchiveProperty(Resource):
         property.archived = not property.archived
 
         property.save_to_db()
-
-        return property.json(), 201
+        message = (
+            "Property archived successfully"
+            if property.archived
+            else "Property unarchived successfully"
+        )
+        return {"message": message}, 200
 
 
 class ArchiveProperties(Resource):
@@ -74,11 +78,10 @@ class ArchiveProperties(Resource):
 class Property(Resource):
     @admin_required
     def get(self, id):
-        rentalProperty = PropertyModel.find_by_id(id)
-
-        if rentalProperty:
-            return rentalProperty.json()
-        return {"message": "Property not found"}, 404
+        property = PropertyModel.find(id)
+        property_json = property.json()
+        property_json["tenants"] = property.tenants()
+        return property_json
 
     @admin_required
     def delete(self, id):
@@ -90,6 +93,10 @@ class Property(Resource):
 
     @admin_required
     def put(self, id):
+        property = PropertyModel.find(id)
+        payload = request.json
+        context = {"name": property.name}
+
         return PropertyModel.update(
-            schema=PropertySchema, id=id, payload=request.json
+            schema=PropertySchema, id=id, context=context, payload=payload
         ).json()

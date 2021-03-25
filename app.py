@@ -20,6 +20,7 @@ from resources.user import (
     Users,
 )
 from resources.user_invite import UserInvite
+from resources.users.pending_users import UsersPending
 from resources.reset_password import ResetPassword
 from resources.property import Properties, Property, ArchiveProperty, ArchiveProperties
 from resources.staff_tenants import StaffTenants
@@ -46,6 +47,7 @@ def create_routes(app):
     api.add_resource(UserInvite, "user/invite")
     api.add_resource(Users, "user")
     api.add_resource(UsersRole, "users/role")
+    api.add_resource(UsersPending, "users/pending")
     api.add_resource(ArchiveUser, "user/archive/<int:user_id>")
     api.add_resource(UserLogin, "login")
     api.add_resource(UserRoles, "roles")
