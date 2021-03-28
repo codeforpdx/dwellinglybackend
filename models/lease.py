@@ -2,6 +2,7 @@ from sqlalchemy.sql.functions import now
 from db import db
 from models.base_model import BaseModel
 from utils.time import Time
+from datetime import datetime
 
 
 class LeaseModel(BaseModel):
@@ -25,6 +26,10 @@ class LeaseModel(BaseModel):
             "dateTimeEnd": Time.format_date(self.dateTimeEnd),
             "unitNum": self.unitNum,
         }
+
+    def is_active(self):
+        now = datetime.now()
+        return now > self.dateTimeStart and now < self.dateTimeEnd
 
     @classmethod
     def active(cls):
