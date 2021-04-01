@@ -1,0 +1,27 @@
+# [dev-packages]
+pytest-flask
+coverage
+pytest-cov
+flake8
+freezegun
+pytest-watch
+python-dotenv
+pytest
+
+# [packages]
+Flask==1.1.1
+Flask-JWT-Extended==3.24.1
+Flask-RESTful==0.3.7
+Flask-SQLAlchemy==2.5.1
+Jinja2==2.11.1
+PyJWT==1.7.1
+Werkzeug==1.0.0
+Flask-mail==0.9.1
+Flask-Cors
+psycopg2-binary
+bcrypt==3.1.7
+flask-marshmallow
+marshmallow-sqlalchemy
+# not sure how to handle
+# [scripts]
+# view_coverage = "coverage report -m"
