@@ -51,35 +51,6 @@ def test_tickets_GET_one(client, test_database, auth_headers):
     assert response.json == {"message": "Ticket not found"}
 
 
-def test_tickets_POST(client, auth_headers):
-    newTicket = {
-        "senderID": 1,
-        "tenantID": 1,
-        "status": "New",
-        "urgency": "low",
-        "issue": "Lead paint issue",
-        "assignedUserID": 4,
-    }
-
-    response = client.post(endpoint, json=newTicket, headers=auth_headers["admin"])
-
-    assert is_valid(response, 201)
-    assert response.json["id"] != 0
-    assert response.json["issue"] == "Lead paint issue"
-    assert response.json["tenant"] == "Renty McRenter"
-    assert response.json["senderID"] == 1
-    assert response.json["tenantID"] == 1
-    assert response.json["assignedUserID"] == 4
-    assert response.json["sender"] == "user1 tester"
-    assert response.json["assigned"] == "Mr. Sir"
-    assert response.json["status"] == TicketStatus.New
-    assert response.json["urgency"] == "low"
-
-    # verify jwt only
-    response = client.post(endpoint, json=newTicket, headers=auth_headers["admin"])
-    assert is_valid(response, 201)
-
-
 def test_tickets_PUT(client, auth_headers):
     updatedTicket = {
         "senderID": 2,
@@ -125,21 +96,18 @@ def test_tickets_PUT(client, auth_headers):
     assert response.json == {"message": "Ticket not found"}
 
 
-def test_tickets_DELETE(client, auth_headers):
-
-    response = client.delete(f"{endpoint}/{validID}")
+def test_tickets_POST(client, auth_headers):
     # UNAUTHORIZED - Missing Authorization Header
+    response = client.post(f"{endpoint}")
     assert is_valid(response, 401)
     assert response.json == {"message": "Missing authorization header"}
 
-    response = client.delete(f"{endpoint}/{validID}", headers=auth_headers["admin"])
+    # Successful call
+    response = client.post(
+        f"{endpoint}", json={"ids": [validID]}, headers=auth_headers["admin"]
+    )
     assert is_valid(response, 200)
-    assert response.json == {"message": "Ticket removed from database"}
-
-    response = client.delete(f"{endpoint}/{validID}", headers=auth_headers["admin"])
-    # NOT FOUND - Trying to delete a non-existing ticket or an already deleted ticket
-    assert is_valid(response, 404)
-    assert response.json == {"message": "Ticket not found"}
+    assert response.json == {"message": "Tickets successfully deleted"}
 
 
 @pytest.mark.usefixtures("empty_test_db")

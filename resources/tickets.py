@@ -71,6 +71,7 @@ class Tickets(Resource):
     parser.add_argument("urgency")
     parser.add_argument("issue")
     parser.add_argument("assignedUserID")
+    parser.add_argument("ids", action="append")
 
     @pm_level_required
     def get(self):
@@ -86,9 +87,24 @@ class Tickets(Resource):
             return {"tickets": [ticket.json() for ticket in TicketModel.query.all()]}
 
     @pm_level_required
-    def post(self):
+    def put(self):
         data = Tickets.parser.parse_args()
         ticket = TicketModel(**data)
 
         ticket.save_to_db()
         return ticket.json(), 201
+
+    @pm_level_required
+    def post(self):
+        data = Tickets.parser.parse_args()
+
+        if not ("ids" in data and type(data["ids"]) is list):
+            return {"message": "Ticket IDs missing in request"}, 400
+
+        for id in data["ids"]:
+            ticket = TicketModel.find_by_id(id)
+            if not ticket:
+                return {"message": "Ticket cannot be deleted"}, 400
+            ticket.delete_from_db()
+
+        return {"message": "Tickets successfully deleted"}, 200
