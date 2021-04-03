@@ -1,13 +1,12 @@
 from flask_restful import Resource, reqparse
 from flask import request
 from schemas import UserRegisterSchema
+from schemas import UserSchema
 from models.property import PropertyModel
 from utils.authorizations import admin_required, admin, pm_level_required
 from models.user import UserModel, RoleEnum
 from models.revoked_tokens import RevokedTokensModel
 import json
-from itertools import chain
-
 from flask_jwt_extended import (
     create_access_token,
     create_refresh_token,
@@ -37,15 +36,7 @@ class User(Resource):
     @admin_required
     def get(self, user_id):
         user = UserModel.find(user_id)
-
-        user_info = user.json()
-
-        if user.role == RoleEnum.PROPERTY_MANAGER:
-            properties_list = PropertyModel.find_by_manager(user_id)
-            user_info["properties"] = [p.json() for p in properties_list]
-
-            tenants_json_2D = [p.tenants() for p in properties_list]
-            user_info["tenants"] = list(chain.from_iterable(tenants_json_2D))
+        user_info = UserSchema().dump(user)
 
         return user_info, 200
 
