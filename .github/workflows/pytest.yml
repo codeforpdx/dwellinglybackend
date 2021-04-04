@@ -1,0 +1,34 @@
+name: CI Tests
+
+on:
+  push:
+    branches:
+      - development
+  pull_request:
+    branches:
+      - development
+
+jobs:
+  pytest:
+
+    runs-on: ubuntu-latest
+    env:
+      SECRET_KEY: dwellingly
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.8'
+      - run: pip install --user pipenv
+
+      - name: Install dependecies
+        run: pipenv run dev-install
+
+      - name: Setup Database
+        run: pipenv run flask db create
+
+      - name: Test
+        run: |
+          pipenv run pytest
+          pipenv run pre-commit run --all-file

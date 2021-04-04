@@ -39,5 +39,3 @@ class TestEmergenyContactsAuthorizations:
 
         response = self.client.delete(f"{endpoint}/{id}", headers=auth_headers["pm"])
         assert is_valid(response, 401)  # UNAUTHORIZED - Admin Access Required
-
-
