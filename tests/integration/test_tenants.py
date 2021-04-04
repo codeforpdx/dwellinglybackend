@@ -128,10 +128,10 @@ class TestTenantsDelete:
         assert tenant.archived
         assert response.json == {"message": "Tenant archived"}
 
-    @pytest.mark.skip(reason="Needs Fixing")
     def test_delete_can_unarchive_tenant(self, valid_header, create_tenant):
         tenant = create_tenant()
         tenant.archived = True
+        tenant.save_to_db()
 
         response = self.client.delete(f"{endpoint}/{tenant.id}", headers=valid_header)
 
