@@ -74,7 +74,7 @@ NOTE: Database is SQLite3 via SQLAlchemy
 
 1. Clone the repo (`git clone https://github.com/codeforpdx/dwellinglybackend.git`)
 2. Install [pipenv](https://pipenv.pypa.io/en/latest/#install-pipenv-today)
-    - Note: It is not necessary to install python before installing pipenv.
+    - Note: Pipenv handles the install for all dependencies. Including Python.
     - Please install pipenv according to their docs for your OS.
 3. Install dependencies `pipenv run dev-install`
    - Note: Pipenv may prompt you to install Python if it cannot find the correct version on your system. You should select Yes.
