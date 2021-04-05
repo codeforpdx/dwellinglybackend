@@ -42,7 +42,7 @@ def test_get_property_by_id(client, auth_headers, test_database):
     """The get property by name returns a successful response code."""
     response = client.get("/api/properties/1", headers=auth_headers["admin"])
     property_info = response.get_json()
-    user_json = UserModel.find_by_id(5).json()
+    user_json = UserModel.find(5).json()
     assert response.status_code == 200
     assert property_info["name"] == "test1"
     assert property_info["address"] == "123 NE FLanders St"
@@ -53,7 +53,7 @@ def test_get_property_by_id(client, auth_headers, test_database):
     assert property_info["propertyManager"] == [user_json]
     assert property_info["propertyManagerName"] == ["Gray Pouponn"]
     assert property_info["archived"] == 0
-    assert property_info["tenants"] == [TenantModel.find_by_id(1).json()]
+    assert property_info["tenants"] == [TenantModel.find(1).json()]
 
     """
     The server responds with an error if the URL contains a non-existent property id
@@ -84,17 +84,6 @@ def test_archive_property_by_id(client, auth_headers, create_property, test_data
         f"/api/properties/{test_property.id}", headers=auth_headers["admin"]
     )
     assert json.loads(responseArchivedProperty.data)["archived"]
-
-    """
-    The server responds with a 400 error if the URL contains a non-existent property id
-    """
-    responseBadPropertyID = client.post(
-        "/api/properties/archive/99999", headers=auth_headers["admin"]
-    )
-    assert responseBadPropertyID.get_json() == {
-        "message": "Property cannot be archived"
-    }
-    assert responseBadPropertyID.status_code == 400
 
 
 @pytest.mark.usefixtures("client_class", "empty_test_db")
@@ -157,18 +146,6 @@ class TestPropertyArchivalMethods:
                 for prop in json.loads(responseAllProperties.data)["properties"]
             ]
         )
-
-        """
-        The server responds with a 400 error if request body
-        contains a non-existent property id
-        """
-        responseBadPropertyID = self.client.patch(
-            "/api/properties/archive", json={"ids": [99999]}, headers=admin_header
-        )
-        assert responseBadPropertyID.get_json() == {
-            "message": "Properties cannot be archived"
-        }
-        assert responseBadPropertyID.status_code == 400
 
         """
         The server responds with a 400 error if request body

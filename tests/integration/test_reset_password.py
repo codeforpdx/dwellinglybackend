@@ -25,7 +25,7 @@ class TestResetPasswordPOST:
 
     @patch.object(Email, "send_reset_password_msg")
     def test_request_with_valid_email(self, send_reset_email):
-        user = UserModel.find_by_id(1)
+        user = UserModel.find(1)
         response = self.client.post(self.endpoint, json={"email": user.email})
 
         assert is_valid(response, 200)

@@ -200,18 +200,6 @@ def test_archive_user(client, auth_headers, new_user, admin_user):
     assert response.json == {"message": "Cannot archive self"}
 
 
-def test_archive_user_failure(client, auth_headers):
-    """
-    The server responds with an error if a non-existent user id
-    is used for the archive user by id route.
-    """
-    responseInvalidId = client.post(
-        "/api/user/archive/999999", json={}, headers=auth_headers["admin"]
-    )
-    assert responseInvalidId.status_code == 400
-    assert responseInvalidId.json == {"message": "User cannot be archived"}
-
-
 def test_patch_user(
     client, auth_headers, property_manager_user, create_admin_user, pm_header
 ):
@@ -288,15 +276,6 @@ def test_patch_user(
     assert responseValidCurrentPassword.status_code == 201
 
     """
-    The server responds with an error if a non-existent user id
-    is used for the patch user by id route.
-    """
-    responseInvalidId = client.patch(
-        "/api/user/999999", json={"role": "new_role"}, headers=auth_headers["admin"]
-    )
-    assert responseInvalidId.status_code == 400
-
-    """
     The server responds with a 403 error if a non-admin
     attempts to edit another user's information
     """
@@ -367,9 +346,6 @@ def test_delete_user(client, auth_headers, new_user, admin_user):
         f"/api/user/{userToDelete.id}", headers=auth_headers["admin"]
     )
     assert is_valid(response, 200)  # OK
-
-    response = client.delete("/api/user/999999", headers=auth_headers["admin"])
-    assert is_valid(response, 400)  # BAD REQUEST
 
     response = client.delete(f"api/user/{admin_user.id}", headers=auth_headers["admin"])
     assert is_valid(response, 400)

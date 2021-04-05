@@ -13,10 +13,6 @@ class BaseModel(db.Model):
     )
 
     @classmethod
-    def find_by_id(cls, id):
-        return cls.query.filter_by(id=id).first()
-
-    @classmethod
     def find(cls, id):
         return cls.query.get_or_404(id, f"{cls._name()} not found")
 

@@ -33,10 +33,10 @@ class TicketModel(BaseModel):
         for note in self.notes:
             message_notes.append(note.json())
 
-        senderData = UserModel.find_by_id(self.senderID)
+        senderData = UserModel.find(self.senderID)
         senderName = "{} {}".format(senderData.firstName, senderData.lastName)
 
-        assignedUserData = UserModel.find_by_id(self.assignedUserID)
+        assignedUserData = UserModel.find(self.assignedUserID)
         assignedUser = "{} {}".format(
             assignedUserData.firstName, assignedUserData.lastName
         )

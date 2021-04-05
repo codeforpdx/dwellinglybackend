@@ -11,6 +11,6 @@ class TestBasePropertyModel(BaseInterfaceTest):
 
     def test_tenants_attached_to_property(self, create_lease):
         lease = create_lease()
-        property_with_lease = PropertyModel.find_by_id(lease.propertyID)
+        property_with_lease = PropertyModel.find(lease.propertyID)
         assert property_with_lease is not None
         assert property_with_lease.tenants() == [lease.tenant.json()]

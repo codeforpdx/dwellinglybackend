@@ -16,51 +16,43 @@ class Ticket(Resource):
 
     @pm_level_required
     def get(self, id):
-        ticket = TicketModel.find_by_id(id)
-        if ticket:
-            return ticket.json()
-        return {"message": "Ticket not found"}, 404
+        return TicketModel.find(id).json()
 
     @pm_level_required
     def delete(self, id):
-        ticket = TicketModel.find_by_id(id)
-        if ticket:
-            ticket.delete_from_db()
-            return {"message": "Ticket removed from database"}
-        return {"message": "Ticket not found"}, 404
+        ticket = TicketModel.find(id)
+        ticket.delete_from_db()
+        return {"message": "Ticket removed from database"}
 
     @pm_level_required
     def put(self, id):
         data = Ticket.parser.parse_args()
-        ticket = TicketModel.find_by_id(id)
+        ticket = TicketModel.find(id)
 
-        if ticket:
-            # variable statements allow for only updated fields to be transmitted
-            if data.senderID:
-                ticket.senderID = data.senderID
+        if data.senderID:
+            ticket.senderID = data.senderID
 
-            if data.tenantID:
-                ticket.tenantID = data.tenantID
+        if data.tenantID:
+            ticket.tenantID = data.tenantID
 
-            if data.assignedUserID:
-                ticket.assignedUserID = data.assignedUserID
+        if data.assignedUserID:
+            ticket.assignedUserID = data.assignedUserID
 
-            if data.status:
-                ticket.status = data.status
+        if data.status:
+            ticket.status = data.status
 
-            if data.urgency:
-                ticket.urgency = data.urgency
+        if data.urgency:
+            ticket.urgency = data.urgency
 
-            if data.issue:
-                ticket.issue = data.issue
+        if data.issue:
+            ticket.issue = data.issue
 
-            if data.note:
-                note = NotesModel(ticketid=id, text=data.note, userid=ticket.senderID)
-                note.save_to_db()
+        if data.note:
+            note = NotesModel(ticketid=id, text=data.note, userid=ticket.senderID)
+            note.save_to_db()
 
-            ticket.save_to_db()
-            return ticket.json()
-        return {"message": "Ticket not found"}, 404
+        ticket.save_to_db()
+        return ticket.json()
 
 
 class Tickets(Resource):
