@@ -19,7 +19,7 @@ pre-commit = "*"
 black = "*"
 
 [packages]
-Flask = "==1.1.1"
+Flask = "==1.1.2"
 Flask-JWT-Extended = "==3.24.1"
 Flask-RESTful = "==0.3.8"
 Flask-SQLAlchemy = "==2.5.1"
