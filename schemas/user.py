@@ -11,6 +11,9 @@ class UserSchema(ma.SQLAlchemyAutoSchema):
     created_at = fields.DateTime(time_format)
     updated_at = fields.DateTime(time_format)
 
+    properties = fields.Method("serialize_props", dump_only=True)
+    tenants = fields.Method("serialize_tenants", dump_only=True)
+
     role = fields.Method("get_role_value", deserialize="load_role_enum")
 
     @validates("email")
@@ -26,6 +29,12 @@ class UserSchema(ma.SQLAlchemyAutoSchema):
             raise ValidationError("Invalid role")
         else:
             return RoleEnum(value)
+
+    def serialize_tenants(self, obj):
+        return [lease.tenant.json() for prop in obj.properties for lease in prop.leases]
+
+    def serialize_props(self, obj):
+        return [prop.json() for prop in obj.properties]
 
 
 class UserRegisterSchema(UserSchema):
