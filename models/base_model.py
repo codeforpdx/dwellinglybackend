@@ -14,6 +14,7 @@ class BaseModel(db.Model):
 
     @classmethod
     def find_by_id(cls, id):
+        print("Deprecation warning: `find_by_id` is deprecated. Use the `find` method.")
         return cls.query.filter_by(id=id).first()
 
     @classmethod
