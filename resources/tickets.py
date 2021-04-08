@@ -92,3 +92,19 @@ class Tickets(Resource):
 
         ticket.save_to_db()
         return ticket.json(), 201
+
+    @pm_level_required
+    def delete(self):
+        self.parser.add_argument("ids", action="append")
+        data = Tickets.parser.parse_args()
+
+        if not ("ids" in data and type(data["ids"]) is list):
+            return {"message": "Ticket IDs missing in request"}, 400
+
+        for id in data["ids"]:
+            ticket = TicketModel.find(id)
+            if not ticket:
+                continue
+            ticket.delete_from_db()
+
+        return {"message": "Tickets successfully deleted"}, 200
