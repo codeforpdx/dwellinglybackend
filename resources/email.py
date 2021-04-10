@@ -1,6 +1,6 @@
-from flask import current_app, render_template
+from flask import render_template
 from flask_restful import Resource, reqparse
-from flask_mail import Message
+from flask_mailman import EmailMessage, EmailMultiAlternatives
 from utils.authorizations import admin_required
 from models.user import UserModel
 
@@ -18,35 +18,38 @@ class Email(Resource):
         data = Email.parser.parse_args()
         user = UserModel.find(data.user_id)
 
-        message = Message(data.subject, sender=Email.NO_REPLY, body=data.body)
-        message.recipients = [user.email]
-
-        current_app.mail.send(message)
+        msg = EmailMessage(data.subject, data.body, Email.NO_REPLY, [user.email])
+        msg.send()
         return {"message": "Message sent"}
 
     @staticmethod
     def send_reset_password_msg(user):
         token = user.reset_password_token()
-        msg = Message(
-            "Reset password for Dwellingly",
-            sender=Email.NO_REPLY,
-            recipients=[user.email],
+        msg = EmailMultiAlternatives(
+            "Rest password for Dwellingly",
+            render_template("emails/reset_msg.txt", user=user, token=token),
+            Email.NO_REPLY,
+            [user.email],
         )
-        msg.body = render_template("emails/reset_msg.txt", user=user, token=token)
-        msg.html = render_template("emails/reset_msg.html", user=user, token=token)
 
-        current_app.mail.send(msg)
+        msg.attach_alternative(
+            render_template("emails/reset_msg.html", user=user, token=token),
+            "text/html",
+        )
+
+        msg.send()
 
     @staticmethod
     def send_user_invite_msg(user):
         token = user.reset_password_token()
-        msg = Message(
+        msg = EmailMultiAlternatives(
             "Create Your Dwellingly Account",
-            sender=Email.NO_REPLY,
-            recipients=[user.email],
+            render_template("emails/invite_user_msg.txt", user=user, token=token),
+            Email.NO_REPLY,
+            [user.email],
         )
-        msg.body = render_template("emails/invite_user_msg.txt", user=user, token=token)
-        msg.html = render_template(
-            "emails/invite_user_msg.html", user=user, token=token
+        msg.attach_alternative(
+            render_template("emails/invite_user_msg.html", user=user, token=token),
+            "text/html",
         )
-        current_app.mail.send(msg)
+        msg.send()

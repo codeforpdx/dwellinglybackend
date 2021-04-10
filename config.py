@@ -27,7 +27,6 @@ class Default(object):
     MAIL_DEFAULT_SENDER = os.environ.get("MAIL_DEFAULT_SENDER")
     MAIL_MAX_EMAILS = os.environ.get("MAIL_MAX_EMAILS", 3)
     MAIL_ASCII_ATTACHMENTS = os.environ.get("MAIL_ASCII_ATTACHMENTS", False)
-    MAIL_SUPPRESS_SEND = os.environ.get("MAIL_SUPPRESS_SEND", False)
 
     # Configure JWT error message key
     JWT_ERROR_MESSAGE_KEY = "message"

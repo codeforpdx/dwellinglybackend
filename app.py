@@ -2,7 +2,7 @@ from flask import Flask
 from flask_restful import Api
 from flask_jwt_extended import JWTManager
 from flask_cors import CORS
-from flask_mail import Mail
+from flask_mailman import Mail
 from models.user import UserModel
 
 # This should not be imported here, but for now we can force Flake8 to ignore the error
