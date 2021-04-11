@@ -7,7 +7,7 @@ Dwellingly is developed using the following tools and extensions:
 - [Flask](https://palletsprojects.com/p/flask/) is used for the main web application framework
 - [SQLite](https://sqlite.org/index.html) is used for database management ([Postgres](https://www.postgresql.org/) for production)
 - [SQLAlchemy](https://docs.sqlalchemy.org/en/14/) is used for object-relational mapping
- - [Flask-RESTful](https://flask-restful.readthedocs.io/en/latest/) is used for routing to encourage RESTful routes and resources.
+ - [Flask-RESTful](https://flask-restful.readthedocs.io/en/latest/) - (deprecated) Moving toward to using Flasks internal MethodView for routing.
 - [Marshmallow](https://marshmallow.readthedocs.io/en/stable/) is used for input validation, serialization, and deserialization.
 - Flask-mail is currently used to send mail and Jinja is used for templating the email messages. However, the mail library has been deprecated and there is an open issue to switch to another library.
 - [Flake8](https://gitlab.com/pycqa/flake8) is currently installed for linting, but it is probably not being used by many contributors. However, we will most likely be using [Black](https://github.com/psf/black) in the future, or a combination of Flake8 for linting and Black for formatting.
@@ -40,7 +40,7 @@ The rest of this section will describe the three main areas, and how each of tho
 
 ### Models
 
-Models define the database tables, the methods used to fetch data from the database, the tables to create, and what columns to use. They can also contain other methods that relate to the business logic of the application. All models in this application inherit from the BaseModel class, which adds `created_at` and `updated_at` timestamps for all the tables in the database. It also contains methods that are used to find, create, update, and delete database rows. As of this writing, some models still have an init method. However, for most of the models, the init method is not needed and will be removed. This is because Flask-RESTful provides an init method that works with keyword arguments, and it is recommended to call super if a custom init method is needed. You can see an example of this in the User Model. Currently, all models except for the lease model have a JSON method that defines how to serialize that object. Models can be found in the `models` directory.
+Models define the database tables, the methods used to fetch data from the database, the tables to create, and what columns to use. They can also contain other methods that relate to the business logic of the application. All models in this application inherit from the BaseModel class, which adds `created_at` and `updated_at` timestamps for all the tables in the database. It also contains methods that are used to find, create, update, and delete database rows. As of this writing, some models still have an init method. However, for most of the models, the init method is not needed and will be removed. This is because Flask-SQLAlchemy provides an init method that works with keyword arguments, and it is recommended to call super if a custom init method is needed. You can see an example of this in the User Model. Currently, all models except for the lease model have a JSON method that defines how to serialize that object. Models can be found in the `models` directory.
 
 #### Testing Models
 
@@ -56,7 +56,7 @@ All schemas should have unit tests, which primarily should be validation tests. 
 
 ### Resources
 
-Flask-RESTful uses the term "resources" in place of "controllers" in an MVC framework and that is also the term we use in this project.
+Flask-RESTful used the term "resources" in place of "controllers" in an MVC framework and that is also the term we use in this project. If your familiar with Django this would be a View.
 
 A resource's main job is to coordinate a response for the incoming request. If data is provided, the resource will send that data to the schema for validation and deserialization. The resource will communicate with the model to query for data or insert/update a table row in the database. Finally, the resource will send a response back to the client. Resources can be found in the `resources` directory.
 
