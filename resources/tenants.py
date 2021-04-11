@@ -6,24 +6,41 @@ from models.lease import LeaseModel
 from schemas.lease import LeaseSchema
 from schemas.tenant import TenantSchema
 
-# | method | route                | action                    |
-# | :----- | :------------------- | :------------------------ |
-# | POST   | `v1/tenants/`        | Creates a new tenant      |
-# | GET    | `v1/tenants/`        | Gets all tenants          |
-# | GET    | `v1/tenants/:id`     | Gets a single tenant      |
-# | PUT    | `v1/tenants/:id`     | Updates a single tenant   |
-# | DELETE | `v1/tenants/:id`     | Deletes a single tenant   |
 
+class Tenant(Resource):
+    @admin_required
+    def get(self, id):
+        return TenantModel.find(id).json()
+
+    @admin_required
+    def put(self, id):
+        return TenantModel.update(
+            schema=TenantSchema, payload=request.json, id=id
+        ).json()
+
+    @admin_required
+    def delete(self, id):
+        tenant = TenantModel.find(id)
+
+        def _toggle_archive():
+            if tenant.archived:
+                tenant.archived = False
+                status = {"message": "Tenant unarchived"}
+            else:
+                tenant.archived = True
+                status = {"message": "Tenant archived"}
+
+            tenant.save_to_db()
+            return status
+
+        response = _toggle_archive()
+        return response
 
 class Tenants(Resource):
     @admin_required
-    def get(self, tenant_id=None):
-        # GET /tenants
-        if not tenant_id:
-            return {"tenants": [tenant.json() for tenant in TenantModel.query.all()]}
+    def get(self):
+        return {"tenants": [tenant.json() for tenant in TenantModel.query.all()]}
 
-        # GET /tenants/<tenant_id>
-        return TenantModel.find(tenant_id).json()
 
     @admin_required
     def post(self):
@@ -52,27 +69,3 @@ class Tenants(Resource):
             )
 
         return returnData, 201
-
-    @admin_required
-    def put(self, tenant_id):
-        return TenantModel.update(
-            schema=TenantSchema, payload=request.json, id=tenant_id
-        ).json()
-
-    @admin_required
-    def delete(self, tenant_id):
-        tenant = TenantModel.find(tenant_id)
-
-        def _toggle_archive():
-            if tenant.archived:
-                tenant.archived = False
-                status = {"message": "Tenant unarchived"}
-            else:
-                tenant.archived = True
-                status = {"message": "Tenant archived"}
-
-            tenant.save_to_db()
-            return status
-
-        response = _toggle_archive()
-        return response
