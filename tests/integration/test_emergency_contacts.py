@@ -1,4 +1,5 @@
 from conftest import is_valid
+import pytest
 
 # NOTE: Each endpoint should be tested for all valid request types --
 # (GET, POST, PUT, PATCH, DELETE, etc.)
@@ -88,6 +89,9 @@ def test_emergency_contacts_POST(client, auth_headers):
     )  # BAD REQUEST - {'name': 'This Field Cannot Be Blank.'}
 
 
+@pytest.mark.skip(
+    reason="This is testing a successful update action on a non-existent id..."
+)
 def test_emergency_contacts_PUT(client, auth_headers):
     id = 1
     updatedInfo = {

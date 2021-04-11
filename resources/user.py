@@ -43,7 +43,7 @@ class User(Resource):
     @pm_level_required
     def patch(self, user_id):
 
-        user = UserModel.find_by_id(user_id)
+        user = UserModel.find(user_id)
 
         parser = reqparse.RequestParser()
         parser.add_argument(
@@ -78,9 +78,6 @@ class User(Resource):
         )
 
         data = parser.parse_args()
-
-        if not user:
-            return {"message": "User not found"}, 400
 
         if user_id != get_jwt_identity() and not admin():
             return (
@@ -140,9 +137,7 @@ class User(Resource):
         if user_id == get_jwt_identity():
             return {"message": "Cannot delete self"}, 400
 
-        user = UserModel.find_by_id(user_id)
-        if not user:
-            return {"message": "Unable to delete User"}, 400
+        user = UserModel.find(user_id)
 
         user.delete_from_db()
         return {"message": "User deleted"}, 200
@@ -154,9 +149,7 @@ class ArchiveUser(Resource):
         if user_id == get_jwt_identity():
             return {"message": "Cannot archive self"}, 400
 
-        user = UserModel.find_by_id(user_id)
-        if not user:
-            return {"message": "User cannot be archived"}, 400
+        user = UserModel.find(user_id)
 
         user.archived = not user.archived
 

@@ -9,7 +9,7 @@ from freezegun import freeze_time
 
 @patch.object(jwt, "encode")
 def test_reset_password_token(stubbed_encode, app, test_database):
-    user = UserModel.find_by_id(1)
+    user = UserModel.find(1)
 
     with freeze_time(time.ctime(time.time())):
         ten_minutes = time.time() + 600

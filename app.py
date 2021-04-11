@@ -87,7 +87,7 @@ def create_app(env):
     # check the user role in the JSON Web Token (JWT)
     @app.jwt.user_claims_loader
     def role_loader(identity):
-        user = UserModel.find_by_id(identity)
+        user = UserModel.find(identity)
         return {
             "email": user.email,
             "phone": user.phone,

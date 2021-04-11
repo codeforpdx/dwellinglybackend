@@ -13,4 +13,4 @@ class RevokedTokensModel(BaseModel):
 
     @classmethod
     def is_jti_blacklisted(cls, jti):
-        return bool(cls.find_by_id(jti))
+        return bool(cls.query.get(jti))

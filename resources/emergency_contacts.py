@@ -81,9 +81,7 @@ class EmergencyContacts(Resource):
         )
         data = parser_for_put.parse_args()
 
-        contactEntry = EmergencyContactModel.find_by_id(id)
-        if not contactEntry:
-            return {"message": "Emergency contact not found"}, 404
+        contactEntry = EmergencyContactModel.find(id)
 
         # variable statements allow for only updated fields to be transmitted
         if data.name:
@@ -99,7 +97,7 @@ class EmergencyContacts(Resource):
             if numbersError:
                 return {"message": numbersError}, 400
             for number in numbersData:
-                contactToModify = ContactNumberModel.find_by_id(number["id"])
+                contactToModify = ContactNumberModel.find(number["id"])
                 if not contactToModify:
                     contactToModify = ContactNumberModel(
                         emergency_contact_id=id, number=number["number"]

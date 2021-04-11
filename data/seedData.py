@@ -1,4 +1,3 @@
-from db import db
 from datetime import datetime, timedelta
 
 from models.user import UserModel, RoleEnum
@@ -10,7 +9,6 @@ from models.revoked_tokens import RevokedTokensModel
 from models.emergency_contact import EmergencyContactModel
 from models.contact_number import ContactNumberModel
 from models.lease import LeaseModel
-from utils.time import time_format
 from schemas import PropertySchema, TenantSchema, UserRegisterSchema
 
 
@@ -318,10 +316,3 @@ def seedData():
         unitNum="D2",
     )
     lease_3.save_to_db()
-
-    try:
-        db.session.commit()
-    except Exception:
-        print("Error updating database")
-
-    print("Database sucessfully seeded: " + now.strftime(time_format))
