@@ -27,14 +27,15 @@ class Email(Resource):
         token = user.reset_password_token()
         msg = EmailMultiAlternatives(
             "Rest password for Dwellingly",
-            render_template("emails/reset_msg.txt", user=user, token=token),
+            render_template("emails/reset_msg.html", user=user, token=token),
             Email.NO_REPLY,
             [user.email],
         )
+        msg.content_subtype = "html"
 
         msg.attach_alternative(
-            render_template("emails/reset_msg.html", user=user, token=token),
-            "text/html",
+            render_template("emails/reset_msg.txt", user=user, token=token),
+            "text/plain",
         )
 
         msg.send()
@@ -44,12 +45,13 @@ class Email(Resource):
         token = user.reset_password_token()
         msg = EmailMultiAlternatives(
             "Create Your Dwellingly Account",
-            render_template("emails/invite_user_msg.txt", user=user, token=token),
+            render_template("emails/invite_user_msg.html", user=user, token=token),
             Email.NO_REPLY,
             [user.email],
         )
+        msg.content_subtype = "html"
         msg.attach_alternative(
-            render_template("emails/invite_user_msg.html", user=user, token=token),
-            "text/html",
+            render_template("emails/invite_user_msg.txt", user=user, token=token),
+            "text/plain",
         )
         msg.send()
