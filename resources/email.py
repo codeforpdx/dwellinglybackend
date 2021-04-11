@@ -16,7 +16,7 @@ class Email(Resource):
     @admin_required
     def post(self):
         data = Email.parser.parse_args()
-        user = UserModel.find_by_id(data.user_id)
+        user = UserModel.find(data.user_id)
 
         message = Message(data.subject, sender=Email.NO_REPLY, body=data.body)
         message.recipients = [user.email]

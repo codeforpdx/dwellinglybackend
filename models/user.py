@@ -66,7 +66,7 @@ class UserModel(BaseModel):
     def validate_reset_password(token):
         try:
             token = jwt.decode(token, current_app.secret_key, algorithms=["HS256"])
-            return UserModel.find_by_id(token["user_id"])
+            return UserModel.find(token["user_id"])
         except ExpiredSignatureError:
             return None
 

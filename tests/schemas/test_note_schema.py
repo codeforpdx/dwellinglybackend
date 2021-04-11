@@ -23,7 +23,7 @@ class TestNotesSchemaSerialization:
         payload = {"userid": 500, "text": "Invalid User ID", "ticketid": ticket.id}
         validation_errors = note_schema.validate(payload)
         assert "userid" in validation_errors
-        assert validation_errors["userid"] == ["No such user"]
+        assert validation_errors["userid"] == ["500 is not a valid User ID"]
 
     @pytest.mark.usefixtures("empty_test_db")
     def test_notes_ticket_validation(self, create_join_staff):
@@ -33,6 +33,4 @@ class TestNotesSchemaSerialization:
 
         validation_errors = note_schema.validate(payload)
         assert "ticketid" in validation_errors
-        assert validation_errors["ticketid"] == [
-            "No ticket with id: %s exists" % (payload["ticketid"])
-        ]
+        assert validation_errors["ticketid"] == ["500 is not a valid Ticket ID"]

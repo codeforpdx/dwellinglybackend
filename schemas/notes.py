@@ -21,10 +21,10 @@ class NotesSchema(Schema):
 
     @validates("userid")
     def validate_existing_user(self, value):
-        if UserModel.find_by_id(value) is None:
-            raise ValidationError("No such user")
+        if not UserModel.query.get(value):
+            raise ValidationError(f"{value} is not a valid User ID")
 
     @validates("ticketid")
     def validates_existing_ticket(self, value):
-        if TicketModel.find_by_id(value) is None:
-            raise ValidationError("No ticket with id: %s exists" % (value))
+        if not TicketModel.query.get(value):
+            raise ValidationError(f"{value} is not a valid Ticket ID")
