@@ -3,7 +3,7 @@ from unittest.mock import patch
 from unittest import mock
 from db import db
 from marshmallow import ValidationError, EXCLUDE
-from werkzeug.exceptions import BadRequest
+from config.error_handling import InvalidRequest
 
 
 @pytest.mark.usefixtures("empty_test_db")
@@ -36,9 +36,17 @@ class BaseInterfaceTest:
 
     def test_find(self):
         with patch.object(self.object.__class__, "query") as mock_query:
-            self.object.__class__.find(1)
+            mock_query.get.return_value = "booj"
+            response = self.object.__class__.find(1)
 
-        mock_query.get_or_404.assert_called_with(1, self.custom_404_msg)
+        mock_query.get.assert_called_with(1)
+        assert response == "booj"
+
+    def test_find_with_invalid_request(self):
+        with patch.object(self.object.__class__, "query") as mock_query:
+            with pytest.raises(InvalidRequest):
+                mock_query.get.return_value = None
+                self.object.__class__.find(1)
 
     @patch.object(db, "session")
     def test_create(self, mock_session):
@@ -87,5 +95,5 @@ class BaseInterfaceTest:
             message="Invalid attributes", field_name="foo"
         )
         with patch.object(self.schema, "load", validation_error):
-            with pytest.raises(BadRequest):
+            with pytest.raises(InvalidRequest):
                 self.object.__class__.validate(self.schema, {})

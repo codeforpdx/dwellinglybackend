@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, jsonify
 from flask_restful import Api
 from flask_jwt_extended import JWTManager
 from flask_cors import CORS
@@ -33,7 +33,8 @@ from resources.widgets import Widgets
 from db import db
 from ma import ma
 from manage import dbsetup
-from config import app_config
+from config.config import app_config
+from config.error_handling import InvalidRequest
 
 
 def create_routes(app):
@@ -55,8 +56,6 @@ def create_routes(app):
     api.add_resource(Email, "user/message")
     api.add_resource(UserAccessRefresh, "refresh")
     api.add_resource(StaffTenants, "staff-tenants")
-    api.add_resource(Tenants, "tenants")
-    api.add_resource(Tenant, "tenants/<int:id>")
     api.add_resource(
         EmergencyContacts, "emergencycontacts", "emergencycontacts/<int:id>"
     )
@@ -65,6 +64,9 @@ def create_routes(app):
     api.add_resource(Tickets, "tickets")
     api.add_resource(Ticket, "tickets/<int:id>")
     api.add_resource(ResetPassword, "reset-password", "reset-password/<string:token>")
+
+    app.add_url_rule("/api/tenants", view_func=Tenants.as_view("tenants_api"))
+    app.add_url_rule("/api/tenants/<id>", view_func=Tenant.as_view("tenant_api"))
 
 
 def create_app(env):
@@ -108,6 +110,12 @@ def create_app(env):
     @app.jwt.unauthorized_loader
     def format_unauthorized_message(message):
         return {app.config["JWT_ERROR_MESSAGE_KEY"]: message.capitalize()}, 401
+
+    @app.errorhandler(InvalidRequest)
+    def handle_invalid_requests(invalid_request):
+        response = jsonify(invalid_request.to_dict())
+        response.status_code = invalid_request.status_code
+        return response
 
     db.init_app(app)
     ma.init_app(app)

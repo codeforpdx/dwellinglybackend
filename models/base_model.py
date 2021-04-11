@@ -1,4 +1,4 @@
-from flask import abort
+from config.error_handling import InvalidRequest
 from marshmallow import ValidationError, EXCLUDE
 from db import db
 from datetime import datetime
@@ -14,7 +14,11 @@ class BaseModel(db.Model):
 
     @classmethod
     def find(cls, id):
-        return cls.query.get_or_404(id, f"{cls._name()} not found")
+        object = cls.query.get(id)
+        if object:
+            return object
+        else:
+            raise InvalidRequest(404, f"{cls._name()} not found")
 
     @classmethod
     def delete(cls, id):
@@ -50,7 +54,7 @@ class BaseModel(db.Model):
                 payload, unknown=EXCLUDE, partial=partial
             )
         except ValidationError as err:
-            abort(400, err.messages)
+            raise InvalidRequest(400, err.messages)
 
     def save_to_db(self):
         db.session.add(self)

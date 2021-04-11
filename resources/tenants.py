@@ -1,5 +1,5 @@
-from flask_restful import Resource
 from flask import request
+from flask.views import MethodView
 from utils.authorizations import admin_required
 from models.tenant import TenantModel
 from models.lease import LeaseModel
@@ -7,7 +7,7 @@ from schemas.lease import LeaseSchema
 from schemas.tenant import TenantSchema
 
 
-class Tenant(Resource):
+class Tenant(MethodView):
     @admin_required
     def get(self, id):
         return TenantModel.find(id).json()
@@ -36,11 +36,11 @@ class Tenant(Resource):
         response = _toggle_archive()
         return response
 
-class Tenants(Resource):
+
+class Tenants(MethodView):
     @admin_required
     def get(self):
         return {"tenants": [tenant.json() for tenant in TenantModel.query.all()]}
-
 
     @admin_required
     def post(self):
