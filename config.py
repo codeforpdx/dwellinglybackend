@@ -38,6 +38,9 @@ class Development(Default):
     JWT_REFRESH_TOKEN_EXPIRES = False
     CORS_ORIGINS = ["*"]
 
+    # Send emails to the console
+    MAIL_BACKEND = "console"
+
 
 class Testing(Default):
     TESTING = True
