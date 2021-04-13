@@ -89,6 +89,7 @@ def test_tickets_PUT(client, auth_headers):
         "urgency": "high",
         "issue": "Leaky pipe",
         "note": "Tenant has a service dog",
+        "authorID": 2,
     }
 
     response = client.put(
