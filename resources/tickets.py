@@ -12,6 +12,7 @@ class Ticket(Resource):
     parser.add_argument("urgency")
     parser.add_argument("issue")
     parser.add_argument("note")
+    parser.add_argument("authorID")
     parser.add_argument("assignedUserID")
 
     @pm_level_required
@@ -48,7 +49,7 @@ class Ticket(Resource):
             ticket.issue = data.issue
 
         if data.note:
-            note = NotesModel(ticketid=id, text=data.note, userid=ticket.senderID)
+            note = NotesModel(ticketid=id, text=data.note, userid=data.authorID)
             note.save_to_db()
 
         ticket.save_to_db()
