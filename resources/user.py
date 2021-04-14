@@ -10,9 +10,9 @@ import json
 from flask_jwt_extended import (
     create_access_token,
     create_refresh_token,
-    get_raw_jwt,
+    get_jwt,
     get_jwt_identity,
-    jwt_refresh_token_required,
+    jwt_required,
 )
 
 
@@ -157,7 +157,7 @@ class ArchiveUser(Resource):
 
         if user.archived:
             # invalidate access token
-            jti = get_raw_jwt()["jti"]
+            jti = get_jwt()["jti"]
             revokedToken = RevokedTokensModel(jti=jti)
             revokedToken.save_to_db()
 
@@ -219,12 +219,12 @@ class UsersRole(Resource):
 # This endpoint allows the app to use a refresh token to get a new access token
 class UserAccessRefresh(Resource):
 
-    # The jwt_refresh_token_required decorator insures a valid refresh
+    # The jwt_required(refresh=True) decorator insures a valid refresh
     # token is present in the request before calling this endpoint. We
     # can use the get_jwt_identity() function to get the identity of
     # the refresh token, and use the create_access_token() function again
     # to make a new access token for this identity.
-    @jwt_refresh_token_required
+    @jwt_required(refresh=True)
     def post(self):
         current_user = get_jwt_identity()
         ret = {"access_token": create_access_token(identity=current_user)}

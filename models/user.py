@@ -60,7 +60,7 @@ class UserModel(BaseModel):
             {"user_id": self.id, "exp": time.time() + ten_minutes},
             current_app.secret_key,
             algorithm="HS256",
-        ).decode("utf-8")
+        )
 
     @staticmethod
     def validate_reset_password(token):
