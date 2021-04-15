@@ -1,6 +1,5 @@
 from flask_restful import Resource, reqparse
 from models.tickets import TicketModel
-from models.notes import NotesModel
 from utils.authorizations import pm_level_required
 
 
@@ -11,7 +10,6 @@ class Ticket(Resource):
     parser.add_argument("status")
     parser.add_argument("urgency")
     parser.add_argument("issue")
-    parser.add_argument("note")
     parser.add_argument("assignedUserID")
 
     @pm_level_required
@@ -46,10 +44,6 @@ class Ticket(Resource):
 
         if data.issue:
             ticket.issue = data.issue
-
-        if data.note:
-            note = NotesModel(ticketid=id, text=data.note, userid=ticket.senderID)
-            note.save_to_db()
 
         ticket.save_to_db()
         return ticket.json()
