@@ -26,19 +26,37 @@ def test_full_name(empty_test_db, create_admin_user):
     assert admin.full_name() == "first last"
 
 
-###################################################################################
-# TODO this is what I'm working on
-# def test_find_users_without_assigned_role(
-#    empty_test_db, find_users_without_assigned_role
-# ):
-# user = UserModel.find_by_id(1)
-# users = [user.json() for user in UserModel.find_users_without_assigned_role()]
-# stuff = UserModel.find_users_without_assigned_role()
-# thing_returned = find_users_without_assigned_role()
+@pytest.mark.usefixtures("empty_test_db")
+class TestFindUsersWithoutAssignedRole:
+    def test_find_users_authorized_active(self, create_admin_user):
+        user = create_admin_user(archived=False)
+        assert user.role == RoleEnum.ADMIN
+        assert user.archived is False
 
-# TODO 4 cases we want to test:
+        found_user = UserModel.find_users_without_assigned_role()
+        # TODO do I need to wipe the DB out after each test?
+        assert found_user
 
-# TODO what is hte behavior of the method & how do I want ot test it?
+    def test_find_users_authorized_inactive(self, create_admin_user):
+        user = create_admin_user(archived=True, firstName="Sara")
+        assert user.role == RoleEnum.ADMIN
+        assert user.archived is True
+
+        found_user = UserModel.find_users_without_assigned_role()
+        assert found_user
+
+    def test_find_users_unauthorized_active(self, create_unauthorized_user):
+        user = create_unauthorized_user(archived=False)
+        assert user.role is None
+
+        found_user = UserModel.find_users_without_assigned_role()
+        assert found_user
+
+    def test_find_users_unauthorized_inactive(self, create_unauthorized_user):
+        _ = create_unauthorized_user(archived=True)
+
+        found_user = UserModel.find_users_without_assigned_role()
+        assert found_user
 
 
 @pytest.mark.usefixtures("empty_test_db")
