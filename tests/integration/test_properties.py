@@ -16,12 +16,6 @@ def test_post_property(
 ):
     property_attrs = property_attributes()
 
-    """
-    The server should check for the correct credentials when posting a new property
-    """
-    response = client.post("/api/properties", json=property_attrs)
-    assert response.status_code == 401
-
     """The server should successfully add a new property"""
     response = client.post(
         "/api/properties", json=property_attrs, headers=auth_headers["admin"]
