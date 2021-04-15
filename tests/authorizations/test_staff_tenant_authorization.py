@@ -1,20 +1,19 @@
 import pytest
 
 
-def endpoint():
-    return "/api/staff-tenants"
-
-
-def valid_payload(tenants, staff):
-    return {"staff": staff, "tenants": tenants}
-
-
 @pytest.mark.usefixtures("client_class", "empty_test_db")
 class TestStaffTenantAuthorizations:
+    def setup(self):
+        self.endpoint = "/api/staff-tenants"
+
+    @staticmethod
+    def valid_payload(tenants, staff):
+        return {"staff": staff, "tenants": tenants}
+
     def test_unauthorized_update_request(self, create_tenant, create_join_staff):
         response = self.client.patch(
-            endpoint(),
-            json=valid_payload(
+            self.endpoint,
+            json=TestStaffTenantAuthorizations.valid_payload(
                 tenants=[create_tenant().id], staff=[create_join_staff().id]
             ),
         )
@@ -23,8 +22,8 @@ class TestStaffTenantAuthorizations:
 
     def test_pm_is_unauthorized(self, pm_header, create_tenant, create_join_staff):
         response = self.client.patch(
-            endpoint(),
-            json=valid_payload(
+            self.endpoint,
+            json=TestStaffTenantAuthorizations.valid_payload(
                 tenants=[create_tenant().id], staff=[create_join_staff().id]
             ),
             headers=pm_header,
@@ -36,8 +35,8 @@ class TestStaffTenantAuthorizations:
         self, staff_header, create_tenant, create_join_staff
     ):
         response = self.client.patch(
-            endpoint(),
-            json=valid_payload(
+            self.endpoint,
+            json=TestStaffTenantAuthorizations.valid_payload(
                 tenants=[create_tenant().id], staff=[create_join_staff().id]
             ),
             headers=staff_header,
@@ -47,8 +46,8 @@ class TestStaffTenantAuthorizations:
 
     def test_admin_is_authorized(self, admin_header, create_tenant, create_join_staff):
         response = self.client.patch(
-            endpoint(),
-            json=valid_payload(
+            self.endpoint,
+            json=TestStaffTenantAuthorizations.valid_payload(
                 tenants=[create_tenant().id], staff=[create_join_staff().id]
             ),
             headers=admin_header,
