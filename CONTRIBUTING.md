@@ -56,7 +56,7 @@ All schemas should have unit tests, which primarily should be validation tests. 
 
 ### Resources
 
-Flask-RESTful used the term "resources" in place of "controllers" in an MVC framework and that is also the term we use in this project. If your familiar with Django this would be a View.
+Flask-RESTful used the term "resources" in place of "controllers" in an MVC framework and that is also the term we use in this project. If you're familiar with Django this would be a View.
 
 A resource's main job is to coordinate a response for the incoming request. If data is provided, the resource will send that data to the schema for validation and deserialization. The resource will communicate with the model to query for data or insert/update a table row in the database. Finally, the resource will send a response back to the client. Resources can be found in the `resources` directory.
 
