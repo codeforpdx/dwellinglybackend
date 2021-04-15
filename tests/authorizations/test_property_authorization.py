@@ -1,5 +1,4 @@
 import pytest
-from models.property import PropertyModel
 
 
 @pytest.mark.usefixtures("client_class", "empty_test_db")
