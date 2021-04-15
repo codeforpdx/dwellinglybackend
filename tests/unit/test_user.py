@@ -26,6 +26,21 @@ def test_full_name(empty_test_db, create_admin_user):
     assert admin.full_name() == "first last"
 
 
+###################################################################################
+# TODO this is what I'm working on
+# def test_find_users_without_assigned_role(
+#    empty_test_db, find_users_without_assigned_role
+# ):
+# user = UserModel.find_by_id(1)
+# users = [user.json() for user in UserModel.find_users_without_assigned_role()]
+# stuff = UserModel.find_users_without_assigned_role()
+# thing_returned = find_users_without_assigned_role()
+
+# TODO 4 cases we want to test:
+
+# TODO what is hte behavior of the method & how do I want ot test it?
+
+
 @pytest.mark.usefixtures("empty_test_db")
 class TestFixtures:
     def test_create_admin_user(self, create_admin_user):
