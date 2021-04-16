@@ -14,16 +14,10 @@ def test_notes_POST(client, auth_headers):
 
     assert is_valid(response, 200)
     assert response.json["id"] != 0
-    assert response.json["issue"] == "The roof, the roof, the roof is on fire."
-    assert response.json["tenant"] == "Renty McRenter"
-    assert response.json["senderID"] == 1
-    assert response.json["tenantID"] == 1
-    assert response.json["status"] == "In Progress"
-    assert response.json["assignedUserID"] == 4
-    assert response.json["notes"][2]["id"] == 5
-    assert response.json["notes"][2]["ticketid"] == 1
-    assert response.json["notes"][2]["text"] == "We don't need no water"
-    assert response.json["notes"][2]["user"] == "Gray Pouponn"
+    assert response.json["id"] == 5
+    assert response.json["ticketid"] == 1
+    assert response.json["text"] == "We don't need no water"
+    assert response.json["user"] == "Gray Pouponn"
 
     response = client.post(
         f"{endpoint}/{invalidTicketID}/notes",
@@ -31,4 +25,4 @@ def test_notes_POST(client, auth_headers):
         headers=auth_headers["admin"],
     )
 
-    assert is_valid(response, 404)  # NOT FOUND - 'Ticket not found'
+    assert is_valid(response, 400)  # Bad Request- 'Invalid Ticket'
