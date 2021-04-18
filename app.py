@@ -99,7 +99,7 @@ def create_app(env):
     # checking if the token's jti (jwt id) is in the set of revoked tokens
     # this check is applied globally (to all routes that require jwt)
     @app.jwt.token_in_blocklist_loader
-    def check_if_token_in_blacklist(jwt_header, decrypted_token):
+    def check_if_token_in_blocklist(jwt_header, decrypted_token):
         jti = decrypted_token["jti"]
         return RevokedTokensModel.is_jti_blacklisted(jti)
 
