@@ -85,7 +85,7 @@ def create_app(env):
     app.mail = Mail(app)
 
     # check the user role in the JSON Web Token (JWT)
-    @app.jwt.user_claims_loader
+    @app.jwt.additional_claims_loader
     def role_loader(identity):
         user = UserModel.find(identity)
         return {
@@ -98,8 +98,8 @@ def create_app(env):
 
     # checking if the token's jti (jwt id) is in the set of revoked tokens
     # this check is applied globally (to all routes that require jwt)
-    @app.jwt.token_in_blacklist_loader
-    def check_if_token_in_blacklist(decrypted_token):
+    @app.jwt.token_in_blocklist_loader
+    def check_if_token_in_blocklist(jwt_header, decrypted_token):
         jti = decrypted_token["jti"]
         return RevokedTokensModel.is_jti_blacklisted(jti)
 

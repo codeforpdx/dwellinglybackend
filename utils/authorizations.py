@@ -1,11 +1,11 @@
-from flask_jwt_extended import jwt_required, get_jwt_claims
+from flask_jwt_extended import jwt_required, get_jwt
 from models.user import RoleEnum
 
 not_authorized_msg = {"message": "Not Authorized"}, 401
 
 
 def admin_required(func):
-    @jwt_required
+    @jwt_required()
     def check_admin_wrapper(*args, **kwargs):
         if admin():
             return func(*args, **kwargs)
@@ -16,7 +16,7 @@ def admin_required(func):
 
 
 def staff_level_required(func):
-    @jwt_required
+    @jwt_required()
     def check_staff_level(*args, **kwargs):
         if _staff_level():
             return func(*args, **kwargs)
@@ -27,7 +27,7 @@ def staff_level_required(func):
 
 
 def pm_level_required(func):
-    @jwt_required
+    @jwt_required()
     def check_pm_level(*args, **kwargs):
         if _pm_level():
             return func(*args, **kwargs)
@@ -38,15 +38,15 @@ def pm_level_required(func):
 
 
 def admin():
-    return get_jwt_claims()["role"] == RoleEnum.ADMIN.value
+    return get_jwt()["role"] == RoleEnum.ADMIN.value
 
 
 def staff():
-    return get_jwt_claims()["role"] == RoleEnum.STAFF.value
+    return get_jwt()["role"] == RoleEnum.STAFF.value
 
 
 def pm():
-    return get_jwt_claims()["role"] == RoleEnum.PROPERTY_MANAGER.value
+    return get_jwt()["role"] == RoleEnum.PROPERTY_MANAGER.value
 
 
 def _staff_level():
