@@ -26,9 +26,6 @@ class PropertyModel(BaseModel):
     )
 
     def json(self):
-
-        managers_name = [manager.full_name() for manager in self.managers]
-
         return {
             "id": self.id,
             "name": self.name,
@@ -37,14 +34,11 @@ class PropertyModel(BaseModel):
             "city": self.city,
             "state": self.state,
             "zipcode": self.zipcode,
-            "propertyManager": [user.json() for user in self.managers]
+            "propertyManagers": [user.json() for user in self.managers]
             if self.managers
-            else None,
-            "lease": [lease.json() for lease in self.leases] if self.leases else None,
-            "propertyManagerName": managers_name if managers_name else None,
-            "archived": self.archived,
-            "created_at": Time.format_date(self.created_at),
-            "updated_at": Time.format_date(self.updated_at),
+            else [],
+            "leases": [lease.json() for lease in self.leases] if self.leases else [],
+            "archived": self.archived
         }
 
     def tenants(self):
