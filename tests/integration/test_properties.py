@@ -44,8 +44,7 @@ def test_get_property_by_id(client, auth_headers, test_database):
     assert property_info["city"] == "Portland"
     assert property_info["state"] == "OR"
     assert property_info["zipcode"] == "97207"
-    assert property_info["propertyManager"] == [user_json]
-    assert property_info["propertyManagerName"] == ["Gray Pouponn"]
+    assert property_info["propertyManagers"] == [user_json]
     assert property_info["archived"] == 0
     assert property_info["tenants"] == [TenantModel.find(1).json()]
 
