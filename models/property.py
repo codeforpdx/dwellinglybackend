@@ -1,6 +1,4 @@
 from db import db
-from utils.time import Time
-
 from models.base_model import BaseModel
 from models.user import UserModel
 from models.property_assignment import PropertyAssignment
@@ -25,8 +23,8 @@ class PropertyModel(BaseModel):
         UserModel, secondary=PropertyAssignment.tablename(), backref="properties"
     )
 
-    def json(self):
-        return {
+    def json(self, include_tenants=False):
+        property = {
             "id": self.id,
             "name": self.name,
             "address": self.address,
@@ -38,8 +36,12 @@ class PropertyModel(BaseModel):
             if self.managers
             else [],
             "leases": [lease.json() for lease in self.leases] if self.leases else [],
-            "archived": self.archived
+            "archived": self.archived,
         }
+        if include_tenants:
+            property["tenants"] = self.tenants()
+
+        return property
 
     def tenants(self):
         tenants = []

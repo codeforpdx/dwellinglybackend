@@ -28,20 +28,21 @@ class TestPropertyModel:
         lease_2 = create_lease(property=property)
 
         assert property.json() == {
-            'id': property.id,
-            'name': property.name,
-            'address': property.address,
-            'city': property.city,
-            'state': property.state,
-            'zipcode': property.zipcode,
-            'num_units': property.num_units,
-            'leases': [
-                lease_1.json(),
-                lease_2.json()
-            ],
-            'propertyManagers': [
-                manager_1.json(),
-                manager_2.json()
-            ],
-            'archived': property.archived,
+            "id": property.id,
+            "name": property.name,
+            "address": property.address,
+            "city": property.city,
+            "state": property.state,
+            "zipcode": property.zipcode,
+            "num_units": property.num_units,
+            "leases": [lease_1.json(), lease_2.json()],
+            "propertyManagers": [manager_1.json(), manager_2.json()],
+            "archived": property.archived,
         }
+
+    def test_json_with_tenants(self, create_property, create_lease):
+        property = create_property()
+        lease = create_lease(property=property)
+        tenant = lease.tenant
+
+        assert property.json(include_tenants=True)["tenants"] == [tenant.json()]
