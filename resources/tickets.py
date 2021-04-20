@@ -101,10 +101,8 @@ class Tickets(Resource):
         if not ("ids" in data and type(data["ids"]) is list):
             return {"message": "Ticket IDs missing in request"}, 400
 
-        for id in data["ids"]:
-            ticket = TicketModel.find(id)
-            if not ticket:
-                continue
-            ticket.delete_from_db()
+        TicketModel.query.filter(TicketModel.id.in_(data["ids"])).delete(
+            synchronize_session="fetch"
+        )
 
         return {"message": "Tickets successfully deleted"}, 200
