@@ -141,7 +141,16 @@ def test_tickets_DELETE(client, auth_headers, create_ticket):
     assert is_valid(response, 404)
     assert response.json == {"message": "Ticket not found"}
 
+
+def test_tickets_DELETE_list(client, auth_headers, create_ticket):
     ticketsToDelete = [create_ticket().id, create_ticket().id]
+    deleteIds = {"ids": ticketsToDelete}
+    response = client.delete(endpoint, json=deleteIds, headers=auth_headers["pm"])
+    assert is_valid(response, 200)
+    assert response.json == {"message": "Tickets successfully deleted"}
+
+    nonExistentTicketId = 999
+    ticketsToDelete = [create_ticket().id, nonExistentTicketId]
     deleteIds = {"ids": ticketsToDelete}
     response = client.delete(endpoint, json=deleteIds, headers=auth_headers["pm"])
     assert is_valid(response, 200)
