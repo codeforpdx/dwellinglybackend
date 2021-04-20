@@ -2,6 +2,7 @@ from flask_restful import Resource, reqparse
 from models.tickets import TicketModel
 from models.notes import NotesModel
 from utils.authorizations import pm_level_required
+from flask import request
 
 
 class Ticket(Resource):
@@ -95,8 +96,7 @@ class Tickets(Resource):
 
     @pm_level_required
     def delete(self):
-        self.parser.add_argument("ids", action="append")
-        data = Tickets.parser.parse_args()
+        data = request.json
 
         if not ("ids" in data and type(data["ids"]) is list):
             return {"message": "Ticket IDs missing in request"}, 400
