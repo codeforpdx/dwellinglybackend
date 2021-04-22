@@ -62,14 +62,6 @@ def test_tenants_POST(
 
     response = client.post(endpoint, json=newTenant, headers=valid_header)
 
-    response = client.post(endpoint, json=newTenant, headers=auth_headers["pm"])
-    assert is_valid(response, 401)  # UNAUTHORIZED - Admin Access Required
-
-    response = client.post(endpoint, json=newTenant)
-    # UNAUTHORIZED - Missing Authorization Header
-    assert is_valid(response, 401)
-    assert response.json == {"message": "Missing authorization header"}
-
 
 def test_tenants_PUT(
     client, empty_test_db, valid_header, create_tenant, create_join_staff
@@ -93,19 +85,6 @@ def test_tenants_PUT(
     response = client.put(f"{endpoint}/{id}", json=updatedTenant, headers=valid_header)
     assert is_valid(response, 404)  # NOT FOUND
     assert response.json == {"message": "Tenant not found"}
-
-
-def test_unauthenticated_delete(client):
-    response = client.delete(f"{endpoint}/1")
-
-    assert is_valid(response, 401)
-    assert response.json == {"message": "Missing authorization header"}
-
-
-def test_pm_role_is_unauthorized_to_delete(client, auth_headers):
-    response = client.delete(f"{endpoint}/1", headers=auth_headers["pm"])
-
-    assert is_valid(response, 401)
 
 
 def test_admin_is_authorized_to_delete(client, auth_headers):
