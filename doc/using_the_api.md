@@ -277,26 +277,6 @@ All endpoints are prefixed with `/api/`
                 }
             ]]
         },
-        'reports':{
-            'title': 'Reports',
-            'link': '#',
-            'stats': [
-                [
-                    {
-                        'stat': 0,
-                        'desc': 'Compliments',
-                        'subtext': 'in the last week'
-                    },
-                ],
-                [
-                    {
-                        'stat': TicketModel.find_count_by_status("Closed"),
-                        'desc': "Closed tickets",
-                        'subtext': 'in the last week!'
-                    }
-                ]
-            ]
-        },
         'managers':{
                 'title': 'New Property Managers',
                 'link': '#',
