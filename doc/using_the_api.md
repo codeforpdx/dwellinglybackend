@@ -189,13 +189,14 @@ All endpoints are prefixed with `/api/`
 
 #### ENDPOINT: TICKETS
 
-| method | route              | action (all actions require user to be logged in)   |
-| :----- | :----------------- | :-------------------------------------------------- |
-| POST   | `/tickets/`        | Creates a new ticket                                |
-| GET    | `/tickets/`        | Gets all tickets                                    |
-| GET    | `/tickets/:id`     | Gets a single ticket                                |
-| PUT    | `/tickets/:id`     | Updates a single ticket                             |
-| DELETE | `/tickets/:id`     | Deletes a single ticket                             |
+| method | route              | action (all actions require user to be logged in)                 |
+| :----- | :----------------- | :---------------------------------------------------------------- |
+| POST   | `/tickets/`        | Creates a new ticket                                              |
+| GET    | `/tickets/`        | Gets all tickets                                                  |
+| DELETE | `/tickets/`        | Deletes tickets based on ticket ids listed in the request body's "ids" parameter      |
+| GET    | `/tickets/:id`     | Gets a single ticket                                              |
+| PUT    | `/tickets/:id`     | Updates a single ticket                                           |
+| DELETE | `/tickets/:id`     | Deletes a single ticket                                           |
 
 ```javascript
     id: 1,
