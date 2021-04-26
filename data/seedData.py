@@ -9,61 +9,76 @@ from models.revoked_tokens import RevokedTokensModel
 from models.emergency_contact import EmergencyContactModel
 from models.contact_number import ContactNumberModel
 from models.lease import LeaseModel
-from schemas import PropertySchema, TenantSchema, UserRegisterSchema
+from schemas import PropertySchema, TenantSchema, UserRegisterSchema, UserSchema, TicketSchema, EmergencyContactSchema, ContactNumberSchema
 
 
 def seedData():
     now = datetime.utcnow()
     future = now + timedelta(days=365)
 
-    user_1 = UserModel(
-        email="user1@dwellingly.org",
-        role=RoleEnum.ADMIN,
-        firstName="user1",
-        lastName="tester",
-        password="1234",
-        phone="555-555-5555",
-        archived=False,
+    user_1 = UserModel.create(
+        payload={
+            "email": "user1@dwellingly.org",
+            "role": RoleEnum.ADMIN.value,
+            "firstName": "user1",
+            "lastName": "tester",
+            "password": "1234",
+            "phone": "555-555-5555",
+            "archived": False,
+        },
+        schema=UserSchema,
     )
     user_1.save_to_db()
-    user_2 = UserModel(
-        email="user2@dwellingly.org",
-        role=RoleEnum.ADMIN,
-        firstName="user2",
-        lastName="tester",
-        password="1234",
-        phone="555-555-5555",
-        archived=False,
+    user_2 = UserModel.create(
+        payload={
+            "email": "user2@dwellingly.org",
+            "role": RoleEnum.ADMIN.value,
+            "firstName": "user2",
+            "lastName": "tester",
+            "password": "1234",
+            "phone": "555-555-5555",
+            "archived": False,
+        },
+        schema=UserSchema,
     )
     user_2.save_to_db()
-    user_3 = UserModel(
-        email="user3@dwellingly.org",
-        role=RoleEnum.ADMIN,
-        firstName="user3",
-        lastName="tester",
-        password="1234",
-        phone="555-555-5555",
-        archived=False,
+    user_3 = UserModel.create(
+        payload={
+            "email": "user3@dwellingly.org",
+            "role": RoleEnum.ADMIN.value,
+            "firstName": "user3",
+            "lastName": "tester",
+            "password": "1234",
+            "phone": "555-555-5555",
+            "archived": False,
+        },
+        schema=UserSchema,
     )
     user_3.save_to_db()
-    user_mister_sir = UserModel(
-        email="MisterSir@dwellingly.org",
-        role=RoleEnum.PROPERTY_MANAGER,
-        firstName="Mr.",
-        lastName="Sir",
-        password="1234",
-        phone="555-555-5555",
-        archived=False,
+    user_mister_sir = UserModel.create(
+        payload={
+            "email": "MisterSir@dwellingly.org",
+            "role": RoleEnum.PROPERTY_MANAGER.value,
+            "firstName": "Mr.",
+            "lastName": "Sir",
+            "password": "1234",
+            "phone": "555-555-5555",
+            "archived": False,
+        },
+        schema=UserSchema,
     )
     user_mister_sir.save_to_db()
-    user_gray_pouponn = UserModel(
-        email="GrayPouponn@dwellingly.org",
-        role=RoleEnum.PROPERTY_MANAGER,
-        firstName="Gray",
-        lastName="Pouponn",
-        password="1234",
-        phone="555-555-5555",
-        archived=False,
+    user_gray_pouponn = UserModel.create(
+        payload={
+            "email": "GrayPouponn@dwellingly.org",
+            "role": RoleEnum.PROPERTY_MANAGER.value,
+            "firstName": "Gray",
+            "lastName": "Pouponn",
+            "password": "1234",
+            "phone": "555-555-5555",
+            "archived": False,
+        },
+        schema=UserSchema,
     )
     user_gray_pouponn.save_to_db()
     UserModel.create(
@@ -106,34 +121,43 @@ def seedData():
         },
         schema=UserRegisterSchema,
     )
-    user_janice_joinstaff = UserModel(
-        email="janice@joinpdx.org",
-        role=RoleEnum.STAFF,
-        firstName="Janice",
-        lastName="Joinstaff",
-        password="1234",
-        phone="555-555-5555",
-        archived=False,
+    user_janice_joinstaff = UserModel.create(
+        payload={
+            "email": "janice@joinpdx.org",
+            "role": RoleEnum.STAFF.value,
+            "firstName": "Janice",
+            "lastName": "Joinstaff",
+            "password": "1234",
+            "phone": "555-555-5555",
+            "archived": False,
+        },
+        schema=UserSchema,
     )
     user_janice_joinstaff.save_to_db()
-    user_hector_chen = UserModel(
-        email="hector@joinpdx.org",
-        role=RoleEnum.STAFF,
-        firstName="Hector",
-        lastName="Chen",
-        password="1234",
-        phone="555-555-5555",
-        archived=False,
+    user_hector_chen = UserModel.create(
+        payload={
+            "email": "hector@joinpdx.org",
+            "role": RoleEnum.STAFF.value,
+            "firstName": "Hector",
+            "lastName": "Chen",
+            "password": "1234",
+            "phone": "555-555-5555",
+            "archived": False,
+        },
+        schema=UserSchema,
     )
     user_hector_chen.save_to_db()
-    user_xander_dander = UserModel(
-        email="xander@joinpdx.org",
-        role=RoleEnum.STAFF,
-        firstName="Xander",
-        lastName="Dander",
-        password="1234",
-        phone="555-555-5555",
-        archived=False,
+    user_xander_dander = UserModel.create(
+        payload={
+            "email": "xander@joinpdx.org",
+            "role": RoleEnum.STAFF.value,
+            "firstName": "Xander",
+            "lastName": "Dander",
+            "password": "1234",
+            "phone": "555-555-5555",
+            "archived": False,
+        },
+        schema=UserSchema,
     )
     user_xander_dander.save_to_db()
 
@@ -206,40 +230,52 @@ def seedData():
         },
     )
 
-    ticket_roof_on_fire = TicketModel(
-        issue="The roof, the roof, the roof is on fire.",
-        tenantID=tenant_renty_mcrenter.id,
-        senderID=user_1.id,
-        status=TicketStatus.In_Progress,
-        urgency="Low",
-        assignedUserID=user_mister_sir.id,
+    ticket_roof_on_fire = TicketModel.create(
+        payload={
+            "issue": "The roof, the roof, the roof is on fire.",
+            "tenantID": tenant_renty_mcrenter.id,
+            "senderID": user_1.id,
+            "status": TicketStatus.In_Progress,
+            "urgency": "Low",
+            "assignedUserID": user_janice_joinstaff.id
+        },
+        schema=TicketSchema,
     )
     ticket_roof_on_fire.save_to_db()
-    ticket_dumpster_fire = TicketModel(
-        issue="Flaming Dumpster Fire.",
-        tenantID=tenant_soho_muless.id,
-        senderID=user_3.id,
-        status=TicketStatus.New,
-        urgency="Critical",
-        assignedUserID=user_mister_sir.id,
+    ticket_dumpster_fire = TicketModel.create(
+        payload={
+            "issue": "Flaming Dumpster Fire.",
+            "tenantID": tenant_soho_muless.id,
+            "senderID": user_3.id,
+            "status": TicketStatus.New,
+            "urgency": "Critical",
+            "assignedUserID": user_janice_joinstaff.id
+        },
+        schema=TicketSchema,
     )
     ticket_dumpster_fire.save_to_db()
-    ticket_unpaid_rent = TicketModel(
-        issue="Unpaid Rent",
-        tenantID=tenant_renty_mcrenter.id,
-        senderID=user_1.id,
-        status=TicketStatus.New,
-        urgency="High",
-        assignedUserID=user_mister_sir.id,
+    ticket_unpaid_rent = TicketModel.create(
+        payload={
+            "issue": "Unpaid Rent",
+            "tenantID": tenant_renty_mcrenter.id,
+            "senderID": user_1.id,
+            "status": TicketStatus.New,
+            "urgency": "High",
+            "assignedUserID": user_janice_joinstaff.id
+        },
+        schema=TicketSchema,
     )
     ticket_unpaid_rent.save_to_db()
-    ticket_40_cats = TicketModel(
-        issue="Over 40 cats in domicile.",
-        tenantID=tenant_soho_muless.id,
-        senderID=user_3.id,
-        status=TicketStatus.Closed,
-        urgency="Low",
-        assignedUserID=user_mister_sir.id,
+    ticket_40_cats = TicketModel.create(
+        payload={
+            "issue": "Over 40 cats in domicile.",
+            "tenantID": tenant_soho_muless.id,
+            "senderID": user_3.id,
+            "status": TicketStatus.Closed,
+            "urgency": "Low",
+            "assignedUserID": user_janice_joinstaff.id
+        },
+        schema=TicketSchema,
     )
     ticket_40_cats.save_to_db()
 
@@ -270,10 +306,20 @@ def seedData():
 
     RevokedTokensModel(jti="855c5cb8-c871-4a61-b3d8-90249f979601").save_to_db()
 
-    EmergencyContactModel(
-        name="Narcotics Anonymous",
-        contact_numbers=[ContactNumberModel(number="503-345-9839")],
-    ).save_to_db()
+    EmergencyContactModel.Create(
+        payload={
+            "name": "Narcotics Anonymous",
+            "contact_numbers": [
+                ContactNumberModel.Create(
+                    payload={
+                        "number": "503-345-9839"
+                    },
+                    schema=ContactNumberSchema
+                )
+            ]
+        },
+        schema=EmergencyContactModelSchema
+    )
 
     EmergencyContactModel(
         name="Washington Co. Crisis Team",

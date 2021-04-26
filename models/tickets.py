@@ -8,7 +8,7 @@ import enum
 
 class TicketStatus(str, enum.Enum):
     New = "New"
-    In_Progress = "In Progress"
+    In_Progress = "In_Progress"
     Closed = "Closed"
 
 

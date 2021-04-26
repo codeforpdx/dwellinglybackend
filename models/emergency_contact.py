@@ -11,7 +11,7 @@ class EmergencyContactModel(BaseModel):
     name = db.Column(db.String(100), nullable=False, unique=True, index=True)
     description = db.Column(db.String(256))
 
-    contact_numbers = relationship(
+    contact_numbers = db.relationship(
         "ContactNumberModel",
         backref="emergency_contact",
         lazy=True,
