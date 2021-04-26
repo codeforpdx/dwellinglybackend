@@ -126,12 +126,6 @@ def test_tickets_PUT(client, auth_headers):
 
 
 def test_tickets_DELETE(client, auth_headers, create_ticket):
-
-    response = client.delete(f"{endpoint}/{validID}")
-    # UNAUTHORIZED - Missing Authorization Header
-    assert is_valid(response, 401)
-    assert response.json == {"message": "Missing authorization header"}
-
     response = client.delete(f"{endpoint}/{validID}", headers=auth_headers["admin"])
     assert is_valid(response, 200)
     assert response.json == {"message": "Ticket removed from database"}
