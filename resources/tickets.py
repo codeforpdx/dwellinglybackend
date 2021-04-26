@@ -1,6 +1,7 @@
 from flask_restful import Resource, reqparse
 from models.tickets import TicketModel
 from utils.authorizations import pm_level_required
+from flask import request
 
 
 class Ticket(Resource):
@@ -78,3 +79,16 @@ class Tickets(Resource):
 
         ticket.save_to_db()
         return ticket.json(), 201
+
+    @pm_level_required
+    def delete(self):
+        data = request.json
+
+        if not ("ids" in data and type(data["ids"]) is list):
+            return {"message": "Ticket IDs missing in request"}, 400
+
+        TicketModel.query.filter(TicketModel.id.in_(data["ids"])).delete(
+            synchronize_session="fetch"
+        )
+
+        return {"message": "Tickets successfully deleted"}, 200

@@ -189,13 +189,14 @@ All endpoints are prefixed with `/api/`
 
 #### ENDPOINT: TICKETS
 
-| method | route              | action (all actions require user to be logged in)   |
-| :----- | :----------------- | :-------------------------------------------------- |
-| POST   | `/tickets/`        | Creates a new ticket                                |
-| GET    | `/tickets/`        | Gets all tickets                                    |
-| GET    | `/tickets/:id`     | Gets a single ticket                                |
-| PUT    | `/tickets/:id`     | Updates a single ticket                             |
-| DELETE | `/tickets/:id`     | Deletes a single ticket                             |
+| method | route              | action (all actions require user to be logged in)                 |
+| :----- | :----------------- | :---------------------------------------------------------------- |
+| POST   | `/tickets/`        | Creates a new ticket                                              |
+| GET    | `/tickets/`        | Gets all tickets                                                  |
+| DELETE | `/tickets/`        | Deletes tickets based on ticket ids listed in the request body's "ids" parameter      |
+| GET    | `/tickets/:id`     | Gets a single ticket                                              |
+| PUT    | `/tickets/:id`     | Updates a single ticket                                           |
+| DELETE | `/tickets/:id`     | Deletes a single ticket                                           |
 
 ```javascript
     id: 1,
@@ -275,26 +276,6 @@ All endpoints are prefixed with `/api/`
                     "desc": 'In progress for > 1 week',
                 }
             ]]
-        },
-        'reports':{
-            'title': 'Reports',
-            'link': '#',
-            'stats': [
-                [
-                    {
-                        'stat': 0,
-                        'desc': 'Compliments',
-                        'subtext': 'in the last week'
-                    },
-                ],
-                [
-                    {
-                        'stat': TicketModel.find_count_by_status("Closed"),
-                        'desc': "Closed tickets",
-                        'subtext': 'in the last week!'
-                    }
-                ]
-            ]
         },
         'managers':{
                 'title': 'New Property Managers',
