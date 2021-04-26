@@ -16,12 +16,6 @@ def test_post_property(
 ):
     property_attrs = property_attributes()
 
-    """
-    The server should check for the correct credentials when posting a new property
-    """
-    response = client.post("/api/properties", json=property_attrs)
-    assert response.status_code == 401
-
     """The server should successfully add a new property"""
     response = client.post(
         "/api/properties", json=property_attrs, headers=auth_headers["admin"]
@@ -68,11 +62,6 @@ def test_get_property_by_id(client, auth_headers, test_database):
 def test_archive_property_by_id(client, auth_headers, create_property, test_database):
     test_property = create_property()
 
-    """The server responds with a 401 error if a non-admin tries to archive"""
-    responseNoAdmin = client.post(f"/api/properties/archive/{test_property.id}")
-    assert responseNoAdmin == 401
-    assert responseNoAdmin.json == {"message": "Missing authorization header"}
-
     """The archive property endpoint should return a 200 code when successful"""
     responseSuccess = client.post(
         f"/api/properties/archive/{test_property.id}", headers=auth_headers["admin"]
@@ -88,13 +77,6 @@ def test_archive_property_by_id(client, auth_headers, create_property, test_data
 
 @pytest.mark.usefixtures("client_class", "empty_test_db")
 class TestPropertyArchivalMethods:
-    def test_archive_properties_non_admin(self, staff_header):
-        """The server responds with a 401 error if a non-admin tries to archive"""
-        responseNoAdmin = self.client.patch(
-            "/api/properties/archive", json={}, headers=staff_header
-        )
-        assert responseNoAdmin == 401
-
     def test_archive_properties(self, admin_header, create_property):
         firstProperty = create_property()
         secondProperty = create_property()
@@ -181,11 +163,6 @@ def test_delete_property_by_id(client, auth_headers, test_database):
     )
     assert response.status_code == 404
     assert response.json == {"message": "Property not found"}
-
-    """The server responds with a 401 error if a non-admin tries to delete"""
-    responseNoAdmin = client.delete(f"/api/properties/{test_property.id}")
-    assert responseNoAdmin == 401
-    assert responseNoAdmin.json == {"message": "Missing authorization header"}
 
     """The server responds with a 404 error if property not exist"""
     response = client.delete("/api/properties/23", headers=auth_headers["admin"])

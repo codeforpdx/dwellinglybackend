@@ -83,26 +83,6 @@ class Widgets(Resource):
                     ],
                 ],
             },
-            "reports": {
-                "title": "Reports",
-                "link": "/reports/",
-                "stats": [
-                    [
-                        {
-                            "stat": 0,
-                            "desc": "Compliments",
-                            "subtext": "in the last week",
-                        },
-                    ],
-                    [
-                        {
-                            "stat": TicketModel.find_count_by_status("Closed"),
-                            "desc": "Closed tickets",
-                            "subtext": "in the last week!",
-                        }
-                    ],
-                ],
-            },
             "managers": {
                 "title": "New Property Managers",
                 "link": "/manage/managers/",

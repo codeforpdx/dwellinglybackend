@@ -125,7 +125,7 @@ def test_tickets_PUT(client, auth_headers):
     assert response.json == {"message": "Ticket not found"}
 
 
-def test_tickets_DELETE(client, auth_headers):
+def test_tickets_DELETE(client, auth_headers, create_ticket):
     response = client.delete(f"{endpoint}/{validID}", headers=auth_headers["admin"])
     assert is_valid(response, 200)
     assert response.json == {"message": "Ticket removed from database"}
@@ -134,6 +134,26 @@ def test_tickets_DELETE(client, auth_headers):
     # NOT FOUND - Trying to delete a non-existing ticket or an already deleted ticket
     assert is_valid(response, 404)
     assert response.json == {"message": "Ticket not found"}
+
+
+def test_tickets_DELETE_list(client, auth_headers, create_ticket):
+    ticketsToDelete = [create_ticket().id, create_ticket().id]
+    deleteIds = {"ids": ticketsToDelete}
+    response = client.delete(endpoint, json=deleteIds, headers=auth_headers["pm"])
+    assert is_valid(response, 200)
+    assert response.json == {"message": "Tickets successfully deleted"}
+
+    nonExistentTicketId = 999
+    ticketsToDelete = [create_ticket().id, nonExistentTicketId]
+    deleteIds = {"ids": ticketsToDelete}
+    response = client.delete(endpoint, json=deleteIds, headers=auth_headers["pm"])
+    assert is_valid(response, 200)
+    assert response.json == {"message": "Tickets successfully deleted"}
+
+    missingIds = {"notIds": [5]}
+    response = client.delete(endpoint, json=missingIds, headers=auth_headers["pm"])
+    assert is_valid(response, 400)
+    assert response.json == {"message": "Ticket IDs missing in request"}
 
 
 @pytest.mark.usefixtures("empty_test_db")
