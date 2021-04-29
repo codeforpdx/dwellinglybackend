@@ -29,34 +29,32 @@ def test_full_name(empty_test_db, create_admin_user):
 @pytest.mark.usefixtures("empty_test_db")
 class TestFindUsersWithoutAssignedRole:
     def test_find_users_authorized_active(self, create_admin_user):
-        user = create_admin_user(archived=False)
-        assert user.role == RoleEnum.ADMIN
-        assert user.archived is False
+        _ = create_admin_user()
 
         found_user = UserModel.find_users_without_assigned_role()
-        # TODO do I need to wipe the DB out after each test?
-        assert found_user
+        assert found_user.first() is None
 
     def test_find_users_authorized_inactive(self, create_admin_user):
-        user = create_admin_user(archived=True, firstName="Sara")
-        assert user.role == RoleEnum.ADMIN
-        assert user.archived is True
+        user = create_admin_user()
+        user.archived = True
+        user.save_to_db()
 
         found_user = UserModel.find_users_without_assigned_role()
-        assert found_user
+        assert found_user.first() is None
 
     def test_find_users_unauthorized_active(self, create_unauthorized_user):
-        user = create_unauthorized_user(archived=False)
-        assert user.role is None
+        user = create_unauthorized_user()
 
         found_user = UserModel.find_users_without_assigned_role()
-        assert found_user
+        assert found_user.first() == user
 
     def test_find_users_unauthorized_inactive(self, create_unauthorized_user):
-        _ = create_unauthorized_user(archived=True)
+        user = create_unauthorized_user()
+        user.archived = True
+        user.save_to_db()
 
         found_user = UserModel.find_users_without_assigned_role()
-        assert found_user
+        assert found_user.first() is None
 
 
 @pytest.mark.usefixtures("empty_test_db")

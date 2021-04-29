@@ -20,13 +20,12 @@ def user_attributes(faker):
 
 @pytest.fixture
 def create_admin_user(user_attributes):
-    def _create_admin_user(firstName=None, lastName=None, archived=False):
+    def _create_admin_user(firstName=None, lastName=None):
         admin = UserModel(
             **user_attributes(
                 role=RoleEnum.ADMIN,
                 firstName=firstName,
                 lastName=lastName,
-                archived=archived,
             )
         )
         admin.save_to_db()
@@ -57,8 +56,8 @@ def create_property_manager(user_attributes):
 
 @pytest.fixture
 def create_unauthorized_user(user_attributes):
-    def _create_unauthorized_user(archived=False):
-        user = UserModel(**user_attributes(archived=archived))
+    def _create_unauthorized_user():
+        user = UserModel(**user_attributes())
         user.save_to_db()
         return user
 
