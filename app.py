@@ -2,7 +2,7 @@ from flask import Flask
 from flask_restful import Api
 from flask_jwt_extended import JWTManager
 from flask_cors import CORS
-from flask_mail import Mail
+from flask_mailman import Mail
 from models.user import UserModel
 
 # This should not be imported here, but for now we can force Flake8 to ignore the error
@@ -85,9 +85,9 @@ def create_app(env):
     app.mail = Mail(app)
 
     # check the user role in the JSON Web Token (JWT)
-    @app.jwt.user_claims_loader
+    @app.jwt.additional_claims_loader
     def role_loader(identity):
-        user = UserModel.find_by_id(identity)
+        user = UserModel.find(identity)
         return {
             "email": user.email,
             "phone": user.phone,
@@ -98,8 +98,8 @@ def create_app(env):
 
     # checking if the token's jti (jwt id) is in the set of revoked tokens
     # this check is applied globally (to all routes that require jwt)
-    @app.jwt.token_in_blacklist_loader
-    def check_if_token_in_blacklist(decrypted_token):
+    @app.jwt.token_in_blocklist_loader
+    def check_if_token_in_blocklist(jwt_header, decrypted_token):
         jti = decrypted_token["jti"]
         return RevokedTokensModel.is_jti_blacklisted(jti)
 

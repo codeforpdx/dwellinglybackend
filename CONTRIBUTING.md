@@ -9,7 +9,7 @@ Dwellingly is developed using the following tools and extensions:
 - [SQLAlchemy](https://docs.sqlalchemy.org/en/14/) is used for object-relational mapping
  - [Flask-RESTful](https://flask-restful.readthedocs.io/en/latest/) is used for routing to encourage RESTful routes and resources.
 - [Marshmallow](https://marshmallow.readthedocs.io/en/stable/) is used for input validation, serialization, and deserialization.
-- Flask-mail is currently used to send mail and Jinja is used for templating the email messages. However, the mail library has been deprecated and there is an open issue to switch to another library.
+- Flask-Mailman is currently used to send mail and Jinja is used for templating the email messages.
 - [Flake8](https://gitlab.com/pycqa/flake8) is currently installed for linting, but it is probably not being used by many contributors. However, we will most likely be using [Black](https://github.com/psf/black) in the future, or a combination of Flake8 for linting and Black for formatting.
 - [Alembic](https://alembic.sqlalchemy.org/en/latest/) was recently installed for database migrations. However, while the app is under development, we rebuild the database whenever there is a change.
 
@@ -74,7 +74,7 @@ NOTE: Database is SQLite3 via SQLAlchemy
 
 1. Clone the repo (`git clone https://github.com/codeforpdx/dwellinglybackend.git`)
 2. Install [pipenv](https://pipenv.pypa.io/en/latest/#install-pipenv-today)
-    - Note: It is not necessary to install python before installing pipenv.
+    - Note: Pipenv handles the install for all dependencies. Including Python.
     - Please install pipenv according to their docs for your OS.
 3. Install dependencies `pipenv run dev-install`
    - Note: Pipenv may prompt you to install Python if it cannot find the correct version on your system. You should select Yes.

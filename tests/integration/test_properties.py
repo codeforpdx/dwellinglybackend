@@ -16,12 +16,6 @@ def test_post_property(
 ):
     property_attrs = property_attributes()
 
-    """
-    The server should check for the correct credentials when posting a new property
-    """
-    response = client.post("/api/properties", json=property_attrs)
-    assert response.status_code == 401
-
     """The server should successfully add a new property"""
     response = client.post(
         "/api/properties", json=property_attrs, headers=auth_headers["admin"]
@@ -42,7 +36,7 @@ def test_get_property_by_id(client, auth_headers, test_database):
     """The get property by name returns a successful response code."""
     response = client.get("/api/properties/1", headers=auth_headers["admin"])
     property_info = response.get_json()
-    user_json = UserModel.find_by_id(5).json()
+    user_json = UserModel.find(5).json()
     assert response.status_code == 200
     assert property_info["name"] == "test1"
     assert property_info["address"] == "123 NE FLanders St"
@@ -53,7 +47,7 @@ def test_get_property_by_id(client, auth_headers, test_database):
     assert property_info["propertyManager"] == [user_json]
     assert property_info["propertyManagerName"] == ["Gray Pouponn"]
     assert property_info["archived"] == 0
-    assert property_info["tenants"] == [TenantModel.find_by_id(1).json()]
+    assert property_info["tenants"] == [TenantModel.find(1).json()]
 
     """
     The server responds with an error if the URL contains a non-existent property id
@@ -68,11 +62,6 @@ def test_get_property_by_id(client, auth_headers, test_database):
 def test_archive_property_by_id(client, auth_headers, create_property, test_database):
     test_property = create_property()
 
-    """The server responds with a 401 error if a non-admin tries to archive"""
-    responseNoAdmin = client.post(f"/api/properties/archive/{test_property.id}")
-    assert responseNoAdmin == 401
-    assert responseNoAdmin.json == {"message": "Missing authorization header"}
-
     """The archive property endpoint should return a 200 code when successful"""
     responseSuccess = client.post(
         f"/api/properties/archive/{test_property.id}", headers=auth_headers["admin"]
@@ -85,27 +74,9 @@ def test_archive_property_by_id(client, auth_headers, create_property, test_data
     )
     assert json.loads(responseArchivedProperty.data)["archived"]
 
-    """
-    The server responds with a 400 error if the URL contains a non-existent property id
-    """
-    responseBadPropertyID = client.post(
-        "/api/properties/archive/99999", headers=auth_headers["admin"]
-    )
-    assert responseBadPropertyID.get_json() == {
-        "message": "Property cannot be archived"
-    }
-    assert responseBadPropertyID.status_code == 400
-
 
 @pytest.mark.usefixtures("client_class", "empty_test_db")
 class TestPropertyArchivalMethods:
-    def test_archive_properties_non_admin(self, staff_header):
-        """The server responds with a 401 error if a non-admin tries to archive"""
-        responseNoAdmin = self.client.patch(
-            "/api/properties/archive", json={}, headers=staff_header
-        )
-        assert responseNoAdmin == 401
-
     def test_archive_properties(self, admin_header, create_property):
         firstProperty = create_property()
         secondProperty = create_property()
@@ -160,18 +131,6 @@ class TestPropertyArchivalMethods:
 
         """
         The server responds with a 400 error if request body
-        contains a non-existent property id
-        """
-        responseBadPropertyID = self.client.patch(
-            "/api/properties/archive", json={"ids": [99999]}, headers=admin_header
-        )
-        assert responseBadPropertyID.get_json() == {
-            "message": "Properties cannot be archived"
-        }
-        assert responseBadPropertyID.status_code == 400
-
-        """
-        The server responds with a 400 error if request body
         does not contain a list of property ids
         """
         responseBadPropertyID = self.client.patch(
@@ -204,11 +163,6 @@ def test_delete_property_by_id(client, auth_headers, test_database):
     )
     assert response.status_code == 404
     assert response.json == {"message": "Property not found"}
-
-    """The server responds with a 401 error if a non-admin tries to delete"""
-    responseNoAdmin = client.delete(f"/api/properties/{test_property.id}")
-    assert responseNoAdmin == 401
-    assert responseNoAdmin.json == {"message": "Missing authorization header"}
 
     """The server responds with a 404 error if property not exist"""
     response = client.delete("/api/properties/23", headers=auth_headers["admin"])

@@ -83,6 +83,7 @@ def valid_header(admin_header):
 
 def _user_claims(user):
     return {
+        "sub": user.id,
         "email": user.email,
         "phone": user.phone,
         "firstName": user.firstName,
@@ -95,10 +96,10 @@ def _user_claims(user):
 def admin_header(create_admin_user):
     admin = create_admin_user()
     token = jwt.encode(
-        {"identity": admin.id, "user_claims": _user_claims(admin)},
+        _user_claims(admin),
         current_app.secret_key,
         algorithm="HS256",
-    ).decode("utf-8")
+    )
     return {"Authorization": f"Bearer {token}"}
 
 
@@ -106,10 +107,10 @@ def admin_header(create_admin_user):
 def staff_header(create_join_staff):
     staff = create_join_staff()
     token = jwt.encode(
-        {"identity": staff.id, "user_claims": _user_claims(staff)},
+        _user_claims(staff),
         current_app.secret_key,
         algorithm="HS256",
-    ).decode("utf-8")
+    )
     return {"Authorization": f"Bearer {token}"}
 
 
@@ -117,10 +118,10 @@ def staff_header(create_join_staff):
 def pm_header(create_property_manager):
     pm = create_property_manager()
     token = jwt.encode(
-        {"identity": pm.id, "user_claims": _user_claims(pm)},
+        _user_claims(pm),
         current_app.secret_key,
         algorithm="HS256",
-    ).decode("utf-8")
+    )
     return {"Authorization": f"Bearer {token}"}
 
 

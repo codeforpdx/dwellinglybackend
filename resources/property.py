@@ -35,9 +35,7 @@ class Properties(Resource):
 class ArchiveProperty(Resource):
     @admin_required
     def post(self, id):
-        property = PropertyModel.find_by_id(id)
-        if not property:
-            return {"message": "Property cannot be archived"}, 400
+        property = PropertyModel.find(id)
 
         property.archived = not property.archived
 
@@ -63,9 +61,7 @@ class ArchiveProperties(Resource):
             return {"message": "Property IDs missing in request"}, 400
 
         for id in data["ids"]:
-            property = PropertyModel.find_by_id(id)
-            if not property:
-                return {"message": "Properties cannot be archived"}, 400
+            property = PropertyModel.find(id)
             property.archived = True
             propertyList.append(property)
 
@@ -85,11 +81,9 @@ class Property(Resource):
 
     @admin_required
     def delete(self, id):
-        property = PropertyModel.find_by_id(id)
-        if property:
-            property.delete_from_db()
-            return {"message": "Property deleted"}
-        return {"message": "Property not found"}, 404
+        property = PropertyModel.find(id)
+        property.delete_from_db()
+        return {"message": "Property deleted"}
 
     @admin_required
     def put(self, id):

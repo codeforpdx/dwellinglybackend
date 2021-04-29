@@ -1,19 +1,18 @@
 from flask_restful import Resource, reqparse
 from flask import request
 from schemas import UserRegisterSchema
+from schemas import UserSchema
 from models.property import PropertyModel
 from utils.authorizations import admin_required, admin, pm_level_required
 from models.user import UserModel, RoleEnum
 from models.revoked_tokens import RevokedTokensModel
 import json
-from itertools import chain
-
 from flask_jwt_extended import (
     create_access_token,
     create_refresh_token,
-    get_raw_jwt,
+    get_jwt,
     get_jwt_identity,
-    jwt_refresh_token_required,
+    jwt_required,
 )
 
 
@@ -37,22 +36,14 @@ class User(Resource):
     @admin_required
     def get(self, user_id):
         user = UserModel.find(user_id)
-
-        user_info = user.json()
-
-        if user.role == RoleEnum.PROPERTY_MANAGER:
-            properties_list = PropertyModel.find_by_manager(user_id)
-            user_info["properties"] = [p.json() for p in properties_list]
-
-            tenants_json_2D = [p.tenants() for p in properties_list]
-            user_info["tenants"] = list(chain.from_iterable(tenants_json_2D))
+        user_info = UserSchema().dump(user)
 
         return user_info, 200
 
     @pm_level_required
     def patch(self, user_id):
 
-        user = UserModel.find_by_id(user_id)
+        user = UserModel.find(user_id)
 
         parser = reqparse.RequestParser()
         parser.add_argument(
@@ -87,9 +78,6 @@ class User(Resource):
         )
 
         data = parser.parse_args()
-
-        if not user:
-            return {"message": "User not found"}, 400
 
         if user_id != get_jwt_identity() and not admin():
             return (
@@ -149,9 +137,7 @@ class User(Resource):
         if user_id == get_jwt_identity():
             return {"message": "Cannot delete self"}, 400
 
-        user = UserModel.find_by_id(user_id)
-        if not user:
-            return {"message": "Unable to delete User"}, 400
+        user = UserModel.find(user_id)
 
         user.delete_from_db()
         return {"message": "User deleted"}, 200
@@ -163,9 +149,7 @@ class ArchiveUser(Resource):
         if user_id == get_jwt_identity():
             return {"message": "Cannot archive self"}, 400
 
-        user = UserModel.find_by_id(user_id)
-        if not user:
-            return {"message": "User cannot be archived"}, 400
+        user = UserModel.find(user_id)
 
         user.archived = not user.archived
 
@@ -173,7 +157,7 @@ class ArchiveUser(Resource):
 
         if user.archived:
             # invalidate access token
-            jti = get_raw_jwt()["jti"]
+            jti = get_jwt()["jti"]
             revokedToken = RevokedTokensModel(jti=jti)
             revokedToken.save_to_db()
 
@@ -235,12 +219,12 @@ class UsersRole(Resource):
 # This endpoint allows the app to use a refresh token to get a new access token
 class UserAccessRefresh(Resource):
 
-    # The jwt_refresh_token_required decorator insures a valid refresh
+    # The jwt_required(refresh=True) decorator insures a valid refresh
     # token is present in the request before calling this endpoint. We
     # can use the get_jwt_identity() function to get the identity of
     # the refresh token, and use the create_access_token() function again
     # to make a new access token for this identity.
-    @jwt_refresh_token_required
+    @jwt_required(refresh=True)
     def post(self):
         current_user = get_jwt_identity()
         ret = {"access_token": create_access_token(identity=current_user)}

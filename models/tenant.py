@@ -16,7 +16,7 @@ class TenantModel(BaseModel):
     archived = db.Column(db.Boolean, default=False, nullable=False)
 
     # relationships
-    staff = relationship("UserModel", secondary="staff_tenant_links")
+    staff = relationship("UserModel", secondary="staff_tenant_links", backref="tenants")
     leases = db.relationship(
         "LeaseModel", backref="tenant", lazy="dynamic", cascade="all, delete-orphan"
     )

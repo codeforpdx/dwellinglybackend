@@ -23,10 +23,7 @@ class Tenants(Resource):
             return {"tenants": [tenant.json() for tenant in TenantModel.query.all()]}
 
         # GET /tenants/<tenant_id>
-        tenant = TenantModel.find_by_id(tenant_id)
-        if not tenant:
-            return {"message": "Tenant not found"}, 404
-        return tenant.json()
+        return TenantModel.find(tenant_id).json()
 
     @admin_required
     def post(self):
