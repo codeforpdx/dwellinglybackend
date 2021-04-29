@@ -8,7 +8,6 @@ from models.user import UserModel
 # This should not be imported here, but for now we can force Flake8 to ignore the error
 # The "noqa" comment can be deleted when we figure out how to get around this.
 from models.staff_tenant_link import StaffTenantLink  # noqa: F401
-from models.emergency_contact import EmergencyContactModel #noqa: F401
 from models.revoked_tokens import RevokedTokensModel
 from resources.user import (
     UserRegister,

@@ -9,8 +9,7 @@ from models.revoked_tokens import RevokedTokensModel
 from models.emergency_contact import EmergencyContactModel
 from models.contact_number import ContactNumberModel
 from models.lease import LeaseModel
-from schemas import PropertySchema, TenantSchema, UserRegisterSchema, UserSchema, TicketSchema, EmergencyContactSchema, ContactNumberSchema
-
+from schemas import PropertySchema, TenantSchema, UserRegisterSchema, UserSchema, TicketSchema
 
 def seedData():
     now = datetime.utcnow()
@@ -306,20 +305,10 @@ def seedData():
 
     RevokedTokensModel(jti="855c5cb8-c871-4a61-b3d8-90249f979601").save_to_db()
 
-    EmergencyContactModel.Create(
-        payload={
-            "name": "Narcotics Anonymous",
-            "contact_numbers": [
-                ContactNumberModel.Create(
-                    payload={
-                        "number": "503-345-9839"
-                    },
-                    schema=ContactNumberSchema
-                )
-            ]
-        },
-        schema=EmergencyContactModelSchema
-    )
+    EmergencyContactModel(
+        name="Narcotics Anonymous",
+        contact_numbers=[ContactNumberModel(number="503-345-9839")],
+    ).save_to_db()
 
     EmergencyContactModel(
         name="Washington Co. Crisis Team",
