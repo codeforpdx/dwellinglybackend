@@ -1,27 +1,35 @@
+import pytest
 from conftest import is_valid
+from models.notes import NotesModel
 
-endpoint = "/api/tickets"
-validTicketID = 1
-invalidTicketID = 777
+newNote = {"text": "We don't need no water"}
 
 
-def test_notes_POST(client, auth_headers):
-    newNote = {"text": "We don't need no water"}
+@pytest.mark.usefixtures("client_class", "empty_test_db")
+class TestCreate:
+    def setup(self):
+        self.endpoint = "/api/tickets"
 
-    response = client.post(
-        f"{endpoint}/{validTicketID}/notes", json=newNote, headers=auth_headers["admin"]
-    )
-    assert is_valid(response, 200)
-    assert response.json["id"] != 0
-    assert response.json["id"] == 5
-    assert response.json["ticketid"] == 1
-    assert response.json["text"] == "We don't need no water"
-    assert response.json["user"] == "user4 admin"
+    def test_it_returns_the_created_note(
+        self, valid_header, create_admin_user, create_tenant, create_ticket
+    ):
+        create_admin_user()
+        create_tenant()
+        validTicketID = create_ticket().json()["id"]
 
-    response = client.post(
-        f"{endpoint}/{invalidTicketID}/notes",
-        json=newNote,
-        headers=auth_headers["admin"],
-    )
+        response = self.client.post(
+            f"{self.endpoint}/{validTicketID}/notes", json=newNote, headers=valid_header
+        )
+        createdNote = NotesModel.find(response.json["id"])
 
-    assert is_valid(response, 400)  # Bad Request- 'Invalid Ticket'
+        assert response.json == createdNote.json()
+
+    def test_it_returns_404_with_invalid_ticket(self, valid_header):
+        invalidTicketID = 777
+
+        response = self.client.post(
+            f"{self.endpoint}/{invalidTicketID}/notes",
+            json=newNote,
+            headers=valid_header,
+        )
+        assert is_valid(response, 404)  # Bad Request- 'Invalid Ticket'
