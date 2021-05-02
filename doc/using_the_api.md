@@ -77,19 +77,21 @@ All endpoints are prefixed with `/api/`
 | POST   | `/properties/`            | Creates a new property (admin only)     |
 | GET    | `/properties/`            | Gets all properties                     |
 | GET    | `/properties/:id`         | Gets a single property (admin only)     |
-| PATCH  | `/properties/:id`         | Updates a single property               | not implemented |
 | PUT    | `/properties/:id`         | Updates a single property (admin only)  |
 | DELETE | `/properties/:id`         | Deletes a single property (admin only)  |
 | POST   | `/properties/archive/:id` | Archives a single property (admin only) |
 
 ```javascript
   {
-    "id": "property1",
+    "id": 0,
     "name": "Garden Blocks",
     "address": "1654 NE 18th Ave.",
-    "zipCode": "97218",
     "city": "Portland",
     "state": "OR",
+    "zipCode": "97218",
+    "num_units": 1,
+    "leases": [serialized leases],
+    "propertyManagers": [serialized property managers]
     "archived": False
   },
 ```
