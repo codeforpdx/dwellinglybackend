@@ -58,21 +58,3 @@ class Tenants(Resource):
         return TenantModel.update(
             schema=TenantSchema, payload=request.json, id=tenant_id
         ).json()
-
-    @admin_required
-    def delete(self, tenant_id):
-        tenant = TenantModel.find(tenant_id)
-
-        def _toggle_archive():
-            if tenant.archived:
-                tenant.archived = False
-                status = {"message": "Tenant unarchived"}
-            else:
-                tenant.archived = True
-                status = {"message": "Tenant archived"}
-
-            tenant.save_to_db()
-            return status
-
-        response = _toggle_archive()
-        return response
