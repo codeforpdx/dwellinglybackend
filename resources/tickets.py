@@ -1,5 +1,6 @@
 from flask_restful import Resource, reqparse
 from models.tickets import TicketModel
+from models.tenant import TenantModel
 from utils.authorizations import pm_level_required
 from flask import request
 
@@ -63,14 +64,9 @@ class Tickets(Resource):
     def get(self):
         data = Tickets.parser.parse_args()
         if data["tenantID"]:
-            return {
-                "tickets": [
-                    ticket.json()
-                    for ticket in TicketModel.find_by_tenantID(data["tenantID"])
-                ]
-            }
+            return {"tickets": TenantModel.find(data["tenantID"]).tickets.json()}
         else:
-            return {"tickets": [ticket.json() for ticket in TicketModel.query.all()]}
+            return {"tickets": TicketModel.query.json()}
 
     @pm_level_required
     def post(self):
