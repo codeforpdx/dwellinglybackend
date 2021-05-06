@@ -36,3 +36,9 @@ class TestTenantAuthorization:
         response = self.client.delete(f"{self.endpoint}/1", headers=auth_headers["pm"])
 
         assert is_valid(response, 401)
+
+    def test_admin_is_authorized_to_delete(self, auth_headers):
+        response = self.client.delete(
+            f"{self.endpoint}/1", headers=auth_headers["admin"]
+        )
+        assert is_valid(response, 200)

@@ -87,11 +87,6 @@ def test_tenants_PUT(
     assert response.json == {"message": "Tenant not found"}
 
 
-def test_admin_is_authorized_to_delete(client, auth_headers):
-    response = client.delete(f"{endpoint}/1", headers=auth_headers["admin"])
-    assert is_valid(response, 200)
-
-
 def test_resource_not_found(client, auth_headers):
     response = client.delete(f"{endpoint}/10000", headers=auth_headers["admin"])
     assert is_valid(response, 404)
