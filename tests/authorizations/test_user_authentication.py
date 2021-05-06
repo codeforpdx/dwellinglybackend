@@ -59,12 +59,6 @@ class TestUserAuthentication:
         self, auth_headers, property_manager_user, create_admin_user, pm_header
     ):
 
-        payload = {
-            "role": RoleEnum.PROPERTY_MANAGER.value,
-            "email": "patch@test.com",
-            "phone": "503-867-5309",
-        }
-
         userToPatch = UserModel.find_by_email(property_manager_user.email)
 
         """
