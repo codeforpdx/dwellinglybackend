@@ -3,8 +3,9 @@ from conftest import is_valid
 from unittest.mock import patch
 
 
+
 @pytest.mark.usefixtures("client_class", "empty_test_db")
-class TestCreate:
+class TestNote:
     def setup(self):
         self.endpoint = "/api/tickets"
         self.new_note = {"text": "We don't need no water"}
@@ -29,7 +30,6 @@ class TestCreate:
         )
 
         assert is_valid(response, 404)  # Bad Request- 'Invalid Ticket'
-
 
 @pytest.mark.usefixtures("client_class", "empty_test_db")
 class TestDelete:
