@@ -19,3 +19,8 @@ class Note(Resource):
                 "userid": get_jwt_identity(),
             },
         ).json()
+
+    @pm_level_required
+    def delete(self, id):
+        TicketModel.delete(id)
+        return {"message": "Note deleted"}
