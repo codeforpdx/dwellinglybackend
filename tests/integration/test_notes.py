@@ -36,7 +36,7 @@ class TestNote:
         note = create_note(create_admin_user(), create_ticket())
 
         response = self.client.delete(
-            f"{self.endpoint}/{note.id}/notes", headers=valid_header
+            f"{self.endpoint}/{note.ticketid}/notes/{note.id}", headers=valid_header
         )
 
         assert response.json == {"message": "Note deleted"}

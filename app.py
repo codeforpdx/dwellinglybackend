@@ -64,7 +64,11 @@ def create_routes(app):
     api.add_resource(Leases, "lease")
     api.add_resource(Tickets, "tickets")
     api.add_resource(Ticket, "tickets/<int:id>")
-    api.add_resource(Note, "tickets/<int:id>/notes")
+    api.add_resource(
+        Note,
+        "tickets/<int:ticket_id>/notes",
+        "tickets/<int:ticket_id>/notes/<int:note_id>",
+    )
     api.add_resource(ResetPassword, "reset-password", "reset-password/<string:token>")
 
 
