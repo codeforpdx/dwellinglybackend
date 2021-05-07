@@ -2,8 +2,6 @@ import pytest
 from conftest import is_valid
 from unittest.mock import patch
 
-
-
 @pytest.mark.usefixtures("client_class", "empty_test_db")
 class TestNote:
     def setup(self):

@@ -22,6 +22,7 @@ class Notes(Resource):
 
 class Note(Resource):
     @pm_level_required
+
     def delete(self, ticket_id, id):
         ticket = TicketModel.find(ticket_id)
         ticket.notes.delete(NotesModel.find(id))
