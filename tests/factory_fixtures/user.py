@@ -23,7 +23,9 @@ def create_admin_user(user_attributes):
     def _create_admin_user(firstName=None, lastName=None):
         admin = UserModel(
             **user_attributes(
-                role=RoleEnum.ADMIN, firstName=firstName, lastName=lastName
+                role=RoleEnum.ADMIN,
+                firstName=firstName,
+                lastName=lastName,
             )
         )
         admin.save_to_db()
