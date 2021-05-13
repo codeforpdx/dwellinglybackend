@@ -85,7 +85,7 @@ def test_tickets_PUT(client, auth_headers):
         "senderID": 2,
         "tenantID": 2,
         "assignedUserID": 3,
-        "status": "In Progress",
+        "status": "In_Progress",
         "urgency": "high",
         "issue": "Leaky pipe",
         "note": "Tenant has a service dog",
