@@ -33,9 +33,9 @@ def test_tickets_GET_one(client, test_database, auth_headers):
     assert response.json["tenant"] == "Renty McRenter"
     assert response.json["senderID"] == 1
     assert response.json["tenantID"] == 1
-    assert response.json["assignedUserID"] == 4
+    assert response.json["assignedUserID"] == 10
     assert response.json["sender"] == "user1 tester"
-    assert response.json["assigned"] == "Mr. Sir"
+    assert response.json["assigned"] == "Janice Joinstaff"
     assert response.json["status"] == TicketStatus.In_Progress
     assert response.json["urgency"] == "Low"
     assert len(response.json["notes"]) == 2
