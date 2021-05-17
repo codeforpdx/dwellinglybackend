@@ -25,20 +25,3 @@ class TestTenantAuthorization:
         # UNAUTHORIZED - Missing Authorization Header
         assert is_valid(response, 401)
         assert response.json == {"message": "Missing authorization header"}
-
-    def test_unauthenticated_delete(self):
-        response = self.client.delete(f"{self.endpoint}/1")
-
-        assert is_valid(response, 401)
-        assert response.json == {"message": "Missing authorization header"}
-
-    def test_pm_role_is_unauthorized_to_delete(self, auth_headers):
-        response = self.client.delete(f"{self.endpoint}/1", headers=auth_headers["pm"])
-
-        assert is_valid(response, 401)
-
-    def test_admin_is_authorized_to_delete(self, auth_headers):
-        response = self.client.delete(
-            f"{self.endpoint}/1", headers=auth_headers["admin"]
-        )
-        assert is_valid(response, 200)
