@@ -1,5 +1,7 @@
 from flask import current_app
+from utils.nobiru import NobiruList
 from datetime import datetime
+from models.tickets import TicketModel
 import bcrypt
 import time
 import jwt
@@ -42,7 +44,21 @@ class UserModel(BaseModel):
     lastActive = db.Column(db.DateTime, default=datetime.utcnow)
 
     notes = db.relationship(
-        models.notes.NotesModel, backref=db.backref("user", lazy=True)
+        models.notes.NotesModel,
+        backref=db.backref("user", lazy=True),
+        collection_class=NobiruList,
+    )
+    assigned_tickets = db.relationship(
+        "TicketModel",
+        backref="assignee",
+        primaryjoin=id == TicketModel.assignedUserID,
+        collection_class=NobiruList,
+    )
+    authored_tickets = db.relationship(
+        "TicketModel",
+        backref="author",
+        primaryjoin=id == TicketModel.senderID,
+        collection_class=NobiruList,
     )
 
     def __init__(self, **kwargs):

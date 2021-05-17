@@ -59,11 +59,7 @@ class EmergencyContacts(Resource):
         if id:
             return EmergencyContactModel.find(id).json()
         else:
-            return {
-                "emergency_contacts": [
-                    e.json() for e in EmergencyContactModel.query.all()
-                ]
-            }, 200
+            return {"emergency_contacts": EmergencyContactModel.query.json()}
 
     @admin_required
     def post(self):

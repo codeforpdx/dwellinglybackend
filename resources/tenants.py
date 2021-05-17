@@ -22,7 +22,7 @@ class Tenant(Resource):
 class Tenants(Resource):
     @admin_required
     def get(self):
-        return {"tenants": [tenant.json() for tenant in TenantModel.query.all()]}
+        return {"tenants": TenantModel.query.json()}
 
     @admin_required
     def post(self):

@@ -1,5 +1,5 @@
-from sqlalchemy.orm import relationship
 from db import db
+from utils.nobiru import NobiruList
 from models.base_model import BaseModel
 from models.tickets import TicketModel
 from utils.time import Time
@@ -16,11 +16,22 @@ class TenantModel(BaseModel):
     archived = db.Column(db.Boolean, default=False, nullable=False)
 
     # relationships
-    staff = relationship("UserModel", secondary="staff_tenant_links", backref="tenants")
-    leases = db.relationship(
-        "LeaseModel", backref="tenant", lazy="dynamic", cascade="all, delete-orphan"
+    staff = db.relationship(
+        "UserModel",
+        secondary="staff_tenant_links",
+        backref="tenants",
+        collection_class=NobiruList,
     )
-    tickets = db.relationship(TicketModel, backref="tenant", lazy=True)
+    leases = db.relationship(
+        "LeaseModel",
+        backref="tenant",
+        lazy="dynamic",
+        cascade="all, delete-orphan",
+        collection_class=NobiruList,
+    )
+    tickets = db.relationship(
+        TicketModel, backref="tenant", lazy=True, collection_class=NobiruList
+    )
 
     def json(self):
         first_active_lease = self.leases.filter(LeaseModel.active()).first()
@@ -32,7 +43,7 @@ class TenantModel(BaseModel):
             "fullName": "{} {}".format(self.firstName, self.lastName),
             "phone": self.phone,
             "lease": active_lease_json,
-            "staff": [user.json() for user in self.staff] if self.staff else [],
+            "staff": self.staff.json(),
             "created_at": Time.format_date(self.created_at),
             "updated_at": Time.format_date(self.updated_at),
             "archived": self.archived,
