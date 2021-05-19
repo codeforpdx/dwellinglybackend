@@ -208,38 +208,34 @@ def seedData():
 
     ticket_roof_on_fire = TicketModel(
         issue="The roof, the roof, the roof is on fire.",
-        tenantID=tenant_renty_mcrenter.id,
-        senderID=user_1.id,
+        tenant_id=tenant_renty_mcrenter.id,
+        creator_id=user_1.id,
         status=TicketStatus.In_Progress,
         urgency="Low",
-        assignedUserID=user_mister_sir.id,
     )
     ticket_roof_on_fire.save_to_db()
     ticket_dumpster_fire = TicketModel(
         issue="Flaming Dumpster Fire.",
-        tenantID=tenant_soho_muless.id,
-        senderID=user_3.id,
+        tenant_id=tenant_soho_muless.id,
+        creator_id=user_3.id,
         status=TicketStatus.New,
         urgency="Critical",
-        assignedUserID=user_mister_sir.id,
     )
     ticket_dumpster_fire.save_to_db()
     ticket_unpaid_rent = TicketModel(
         issue="Unpaid Rent",
-        tenantID=tenant_renty_mcrenter.id,
-        senderID=user_1.id,
+        tenant_id=tenant_renty_mcrenter.id,
+        creator_id=user_1.id,
         status=TicketStatus.New,
         urgency="High",
-        assignedUserID=user_mister_sir.id,
     )
     ticket_unpaid_rent.save_to_db()
     ticket_40_cats = TicketModel(
         issue="Over 40 cats in domicile.",
-        tenantID=tenant_soho_muless.id,
-        senderID=user_3.id,
+        tenant_id=tenant_soho_muless.id,
+        creator_id=user_3.id,
         status=TicketStatus.Closed,
         urgency="Low",
-        assignedUserID=user_mister_sir.id,
     )
     ticket_40_cats.save_to_db()
 
