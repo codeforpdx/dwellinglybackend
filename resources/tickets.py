@@ -51,11 +51,8 @@ class Tickets(Resource):
 
     @pm_level_required
     def post(self):
-        data = Tickets.parser.parse_args()
-        ticket = TicketModel(**data)
-
-        ticket.save_to_db()
-        return ticket.json(), 201
+        TicketModel.create(schema=TicketSchema, payload=request.json)
+        return {"message": "Ticket successfully created"}, 201
 
     @pm_level_required
     def delete(self):
