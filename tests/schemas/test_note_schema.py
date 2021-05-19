@@ -7,7 +7,7 @@ class TestNotesSchemaSerialization:
     @pytest.mark.usefixtures("empty_test_db")
     def test_notes_serialization(self, create_note, create_ticket):
         ticket = create_ticket()
-        user = UserModel.query.filter_by(id=ticket.senderID).first()
+        user = UserModel.query.filter_by(id=ticket.creator_id).first()
         note = create_note(user, ticket)
 
         note_schema = NotesSchema()

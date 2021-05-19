@@ -10,20 +10,21 @@ class TestBaseTicketModel(BaseInterfaceTest):
         self.schema = TicketSchema
 
     def test_validate_tenant(self):
-        invalid_tenant = {"tenantID": 666}
+        invalid_tenant = {"tenant_id": 666}
 
-        invalid_tenant_validation_error = {"tenantID": ["666 is not a valid tenant ID"]}
+        invalid_tenant_validation_error = {
+            "tenant_id": ["666 is not a valid tenant ID"]
+        }
         assert invalid_tenant_validation_error == TicketSchema().validate(
             invalid_tenant
         )
 
-    def test_validate_assigned_user_and_sender(self):
-        invalid_assigned_user_and_sender = {"assignedUserID": 777, "senderID": 888}
+    def test_validate_creator(self):
+        invalid_creator = {"creator_id": 888}
 
-        invalid_assigned_user_validation_error = {
-            "assignedUserID": ["777 is not a valid user ID"],
-            "senderID": ["888 is not a valid user ID"],
+        invalid_creator_validation_error = {
+            "creator_id": ["888 is not a valid user ID"],
         }
-        assert invalid_assigned_user_validation_error == TicketSchema().validate(
-            invalid_assigned_user_and_sender
+        assert invalid_creator_validation_error == TicketSchema().validate(
+            invalid_creator
         )
