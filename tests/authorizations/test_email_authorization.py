@@ -13,9 +13,7 @@ class TestEmailAuthorizations:
         assert is_valid(response, 401)
         assert response.json == {"message": "Missing authorization header"}
 
-    def test_all_roles_except_admin_are_denied_access(self, auth_headers):
+    def test_all_roles_except_admin_are_denied_access(self, pm_header):
         payload = {"user_id": 1, "subject": "Some email subject", "body": "Some body"}
-        for role, token in auth_headers.items():
-            if role != "admin":
-                response = self.client.post(self.endpoint, json=payload, headers=token)
-                assert is_valid(response, 401)
+        response = self.client.post(self.endpoint, json=payload, headers=pm_header)
+        assert is_valid(response, 401)
