@@ -28,3 +28,10 @@ class Note(Resource):
         ticket.notes.delete(NotesModel.find(id))
 
         return {"message": "Note deleted"}
+
+    @pm_level_required
+    def patch(self, ticket_id, note_id):
+
+        return NotesModel.update(
+            schema=NotesSchema, id=note_id, payload={"text": request.json["text"]}
+        ).json()
