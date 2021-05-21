@@ -24,10 +24,11 @@ from resources.users.pending_users import UsersPending
 from resources.reset_password import ResetPassword
 from resources.property import Properties, Property, ArchiveProperty, ArchiveProperties
 from resources.staff_tenants import StaffTenants
-from resources.tenants import Tenants
+from resources.tenants import Tenants, Tenant
 from resources.emergency_contacts import EmergencyContacts
 from resources.email import Email
 from resources.tickets import Ticket, Tickets
+from resources.notes import Note
 from resources.lease import Lease, Leases
 from resources.widgets import Widgets
 from db import db
@@ -55,7 +56,8 @@ def create_routes(app):
     api.add_resource(Email, "user/message")
     api.add_resource(UserAccessRefresh, "refresh")
     api.add_resource(StaffTenants, "staff-tenants")
-    api.add_resource(Tenants, "tenants", "tenants/<int:tenant_id>")
+    api.add_resource(Tenants, "tenants")
+    api.add_resource(Tenant, "tenants/<int:id>")
     api.add_resource(
         EmergencyContacts, "emergencycontacts", "emergencycontacts/<int:id>"
     )
@@ -63,6 +65,7 @@ def create_routes(app):
     api.add_resource(Leases, "lease")
     api.add_resource(Tickets, "tickets")
     api.add_resource(Ticket, "tickets/<int:id>")
+    api.add_resource(Note, "tickets/<int:id>/notes")
     api.add_resource(ResetPassword, "reset-password", "reset-password/<string:token>")
 
 

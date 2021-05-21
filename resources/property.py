@@ -5,24 +5,10 @@ from db import db
 from models.property import PropertyModel
 from schemas.property import PropertySchema
 
-# | method | route                | action                     |
-# | :----- | :------------------- | :------------------------- |
-# | POST   | `v1/properties/`     | Creates a new property     |
-# | GET    | `v1/properties/`     | Gets all properties        |
-# | GET    | `v1/property/:id`    | Gets a single property     |
-# | PUT    | `v1/property/:id`    | Updates a single property  |
-# | DELETE | `v1/property/:id`    | Deletes a single property  |
-
-# TODO Incorporate JWT Claims for Admin
-
 
 class Properties(Resource):
     def get(self):
-        return {
-            "properties": [
-                property.json() for property in db.session.query(PropertyModel).all()
-            ]
-        }
+        return {"properties": PropertyModel.query.json()}
 
     @admin_required
     def post(self):
@@ -70,27 +56,23 @@ class ArchiveProperties(Resource):
         return {"properties": [p.json() for p in PropertyModel.query.all()]}, 200
 
 
-# single property/name
 class Property(Resource):
     @admin_required
     def get(self, id):
-        property = PropertyModel.find(id)
-        property_json = property.json()
-        property_json["tenants"] = property.tenants()
-        return property_json
+        return PropertyModel.find(id).json(include_tenants=True)
 
     @admin_required
     def delete(self, id):
-        property = PropertyModel.find(id)
-        property.delete_from_db()
+        PropertyModel.delete(id)
         return {"message": "Property deleted"}
 
     @admin_required
     def put(self, id):
         property = PropertyModel.find(id)
-        payload = request.json
-        context = {"name": property.name}
 
         return PropertyModel.update(
-            schema=PropertySchema, id=id, context=context, payload=payload
+            schema=PropertySchema,
+            id=id,
+            context={"name": property.name},
+            payload=request.json,
         ).json()

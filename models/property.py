@@ -1,6 +1,5 @@
 from db import db
-from utils.time import Time
-
+from utils.nobiru import NobiruList
 from models.base_model import BaseModel
 from models.user import UserModel
 from models.property_assignment import PropertyAssignment
@@ -19,17 +18,21 @@ class PropertyModel(BaseModel):
     archived = db.Column(db.Boolean, default=False, nullable=False)
 
     leases = db.relationship(
-        "LeaseModel", backref="property", lazy=True, cascade="all, delete-orphan"
+        "LeaseModel",
+        backref="property",
+        lazy=True,
+        cascade="all, delete-orphan",
+        collection_class=NobiruList,
     )
     managers = db.relationship(
-        UserModel, secondary=PropertyAssignment.tablename(), backref="properties"
+        UserModel,
+        secondary=PropertyAssignment.tablename(),
+        backref="properties",
+        collection_class=NobiruList,
     )
 
-    def json(self):
-
-        managers_name = [manager.full_name() for manager in self.managers]
-
-        return {
+    def json(self, include_tenants=False):
+        property = {
             "id": self.id,
             "name": self.name,
             "address": self.address,
@@ -37,15 +40,14 @@ class PropertyModel(BaseModel):
             "city": self.city,
             "state": self.state,
             "zipcode": self.zipcode,
-            "propertyManager": [user.json() for user in self.managers]
-            if self.managers
-            else None,
-            "lease": [lease.json() for lease in self.leases] if self.leases else None,
-            "propertyManagerName": managers_name if managers_name else None,
+            "propertyManagers": self.managers.json(),
+            "leases": self.leases.json(),
             "archived": self.archived,
-            "created_at": Time.format_date(self.created_at),
-            "updated_at": Time.format_date(self.updated_at),
         }
+        if include_tenants:
+            property["tenants"] = self.tenants()
+
+        return property
 
     def tenants(self):
         tenants = []

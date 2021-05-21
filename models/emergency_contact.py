@@ -1,6 +1,6 @@
-from sqlalchemy.orm import relationship
 from db import db
 from models.base_model import BaseModel
+from utils.nobiru import NobiruList
 from utils.time import Time
 
 
@@ -11,11 +11,12 @@ class EmergencyContactModel(BaseModel):
     name = db.Column(db.String(100), nullable=False, unique=True, index=True)
     description = db.Column(db.String(256))
 
-    contact_numbers = relationship(
+    contact_numbers = db.relationship(
         "ContactNumberModel",
         backref="emergency_contact",
         lazy=True,
         cascade="all, delete-orphan",
+        collection_class=NobiruList,
     )
 
     def json(self):
@@ -23,7 +24,7 @@ class EmergencyContactModel(BaseModel):
             "id": self.id,
             "name": self.name,
             "description": self.description,
-            "contact_numbers": [number.json() for number in self.contact_numbers],
+            "contact_numbers": self.contact_numbers.json(),
             "created_at": Time.format_date(self.created_at),
             "updated_at": Time.format_date(self.updated_at),
         }

@@ -7,3 +7,4 @@ updates:
     time: "13:00"
   labels:
   - dependencies
+  open-pull-requests-limit: 50
