@@ -20,8 +20,7 @@ class Ticket(Resource):
 
     @pm_level_required
     def delete(self, id):
-        ticket = TicketModel.find(id)
-        ticket.delete_from_db()
+        TicketModel.delete(id)
         return {"message": "Ticket removed from database"}
 
     @pm_level_required
