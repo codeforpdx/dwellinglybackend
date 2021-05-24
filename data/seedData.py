@@ -209,7 +209,7 @@ def seedData():
     ticket_roof_on_fire = TicketModel(
         issue="The roof, the roof, the roof is on fire.",
         tenant_id=tenant_renty_mcrenter.id,
-        creator_id=user_1.id,
+        author_id=user_1.id,
         status=TicketStatus.In_Progress,
         urgency="Low",
     )
@@ -217,7 +217,7 @@ def seedData():
     ticket_dumpster_fire = TicketModel(
         issue="Flaming Dumpster Fire.",
         tenant_id=tenant_soho_muless.id,
-        creator_id=user_3.id,
+        author_id=user_3.id,
         status=TicketStatus.New,
         urgency="Critical",
     )
@@ -225,7 +225,7 @@ def seedData():
     ticket_unpaid_rent = TicketModel(
         issue="Unpaid Rent",
         tenant_id=tenant_renty_mcrenter.id,
-        creator_id=user_1.id,
+        author_id=user_1.id,
         status=TicketStatus.New,
         urgency="High",
     )
@@ -233,7 +233,7 @@ def seedData():
     ticket_40_cats = TicketModel(
         issue="Over 40 cats in domicile.",
         tenant_id=tenant_soho_muless.id,
-        creator_id=user_3.id,
+        author_id=user_3.id,
         status=TicketStatus.Closed,
         urgency="Low",
     )

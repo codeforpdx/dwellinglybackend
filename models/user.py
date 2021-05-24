@@ -52,7 +52,7 @@ class UserModel(BaseModel):
     authored_tickets = db.relationship(
         "TicketModel",
         backref="author",
-        primaryjoin=id == TicketModel.creator_id,
+        primaryjoin=id == TicketModel.author_id,
         collection_class=NobiruList,
     )
 

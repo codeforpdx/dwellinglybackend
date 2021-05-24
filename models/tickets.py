@@ -17,9 +17,9 @@ class TicketModel(BaseModel):
 
     id = db.Column(db.Integer, primary_key=True)
     issue = db.Column(db.String(144))
-    tenant_id = db.Column(db.Integer, db.ForeignKey("tenants.id"))
-    creator_id = db.Column(db.Integer, db.ForeignKey("users.id"))
-    status = db.Column(db.Enum(TicketStatus), default=TicketStatus.New)
+    tenant_id = db.Column(db.Integer, db.ForeignKey("tenants.id"), nullable=False)
+    author_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    status = db.Column(db.Enum(TicketStatus), default=TicketStatus.New, nullable=False)
     urgency = db.Column(db.String(12))
 
     notes = db.relationship(
@@ -37,7 +37,7 @@ class TicketModel(BaseModel):
             "id": self.id,
             "issue": self.issue,
             "tenant": "{} {}".format(self.tenant.firstName, self.tenant.lastName),
-            "creator_id": self.creator_id,
+            "author_id": self.author_id,
             "tenant_id": self.tenant_id,
             "assigned_staff": self.tenant.staff.json(),
             "sender": self.author.full_name(),

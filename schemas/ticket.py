@@ -22,7 +22,7 @@ class TicketSchema(ma.SQLAlchemyAutoSchema):
         if not TenantModel.query.get(value):
             raise ValidationError(f"{value} is not a valid tenant ID")
 
-    @validates("creator_id")
+    @validates("author_id")
     def validate_creator(self, value):
         if not UserModel.query.get(value):
             raise ValidationError(f"{value} is not a valid user ID")

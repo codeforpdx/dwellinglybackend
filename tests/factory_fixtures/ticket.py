@@ -9,7 +9,7 @@ def ticket_attributes(faker):
         return {
             "issue": issue,
             "tenant_id": tenant.id,
-            "creator_id": creator.id,
+            "author_id": creator.id,
             "status": TicketStatus.New,
             "urgency": faker.random_element(("Low", "Medium", "High")),
         }

@@ -31,7 +31,7 @@ def test_tickets_GET_one(client, test_database, auth_headers):
     assert response.json["id"] == 1
     assert response.json["issue"] == "The roof, the roof, the roof is on fire."
     assert response.json["tenant"] == "Renty McRenter"
-    assert response.json["creator_id"] == 1
+    assert response.json["author_id"] == 1
     assert response.json["tenant_id"] == 1
     assert response.json["sender"] == "user1 tester"
     assert response.json["status"] == TicketStatus.In_Progress
@@ -51,7 +51,7 @@ def test_tickets_GET_one(client, test_database, auth_headers):
 
 def test_tickets_POST(client, auth_headers):
     newTicket = {
-        "creator_id": 1,
+        "author_id": 1,
         "tenant_id": 1,
         "status": "New",
         "urgency": "low",
@@ -66,7 +66,7 @@ def test_tickets_POST(client, auth_headers):
 
 def test_tickets_PUT(client, auth_headers):
     updatedTicket = {
-        "creator_id": 2,
+        "author_id": 2,
         "tenant_id": 2,
         "status": "In_Progress",
         "urgency": "high",
@@ -80,7 +80,7 @@ def test_tickets_PUT(client, auth_headers):
     assert is_valid(response, 200)
     assert response.json["issue"] == "Leaky pipe"
     assert response.json["tenant"] == "Soho Muless"
-    assert response.json["creator_id"] == 2
+    assert response.json["author_id"] == 2
     assert response.json["tenant_id"] == 2
     assert response.json["sender"] == "user2 tester"
     assert response.json["status"] == TicketStatus.In_Progress
