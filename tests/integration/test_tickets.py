@@ -68,7 +68,7 @@ def test_tickets_PUT(client, auth_headers):
     updatedTicket = {
         "creator_id": 2,
         "tenant_id": 2,
-        "status": "In Progress",
+        "status": "In_Progress",
         "urgency": "high",
         "issue": "Leaky pipe",
     }
