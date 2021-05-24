@@ -7,20 +7,22 @@ from schemas.notes import NotesSchema
 from flask_jwt_extended import get_jwt_identity
 
 
-class Note(Resource):
+class Notes(Resource):
     @pm_level_required
-    def post(self, ticket_id):
-        TicketModel.find(ticket_id)
+    def post(self, id):
+        TicketModel.find(id)
         return NotesModel.create(
             schema=NotesSchema,
             payload={
                 "text": request.json["text"],
-                "ticketid": ticket_id,
+                "ticketid": id,
                 "userid": get_jwt_identity(),
             },
         ).json()
 
+
+class Note(Resource):
     @pm_level_required
-    def delete(self, ticket_id, note_id):
-        NotesModel.delete(note_id)
+    def delete(self, ticket_id, id):
+        NotesModel.delete(id)
         return {"message": "Note deleted"}

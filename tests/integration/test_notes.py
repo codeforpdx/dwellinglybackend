@@ -1,10 +1,9 @@
 import pytest
 from conftest import is_valid
-from models.notes import NotesModel
 
 
 @pytest.mark.usefixtures("client_class", "empty_test_db")
-class TestNote:
+class TestCreate:
     def setup(self):
         self.endpoint = "/api/tickets"
         self.new_note = {"text": "We don't need no water"}
@@ -30,6 +29,13 @@ class TestNote:
         )
         assert is_valid(response, 404)  # Bad Request- 'Invalid Ticket'
 
+
+@pytest.mark.usefixtures("client_class", "empty_test_db")
+class TestDelete:
+    def setup(self):
+        self.endpoint = "/api/tickets"
+        self.new_note = {"text": "We don't need no water"}
+
     def test_it_deletes_one_note(
         self, valid_header, create_note, create_admin_user, create_ticket
     ):
@@ -40,8 +46,3 @@ class TestNote:
         )
 
         assert response.json == {"message": "Note deleted"}
-
-        with pytest.raises(Exception) as e_info:
-            NotesModel.find(note.id)
-
-        assert "404 Not Found: Notes not found" in str(e_info.value)
