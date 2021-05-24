@@ -1,6 +1,7 @@
 import pytest
 from models.tickets import TicketModel
 from models.tickets import TicketStatus
+from schemas.ticket import TicketSchema
 
 
 @pytest.fixture
@@ -23,7 +24,10 @@ def create_ticket(faker, ticket_attributes, create_tenant, create_join_staff):
         if not issue:
             issue = faker.sentence()
         tenant = create_tenant()
-        ticket = TicketModel(**ticket_attributes(issue, tenant, create_join_staff()))
+        ticket = TicketModel.create(
+            schema=TicketSchema,
+            payload=ticket_attributes(issue, tenant, create_join_staff()),
+        )
         ticket.save_to_db()
         return ticket
 
