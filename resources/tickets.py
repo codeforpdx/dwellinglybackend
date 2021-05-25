@@ -1,4 +1,4 @@
-from flask_restful import Resource, reqparse
+from flask_restful import Resource
 from models.tickets import TicketModel
 from models.tenant import TenantModel
 from utils.authorizations import pm_level_required
@@ -7,14 +7,6 @@ from schemas.ticket import TicketSchema
 
 
 class Ticket(Resource):
-    parser = reqparse.RequestParser()
-    parser.add_argument("senderID")
-    parser.add_argument("tenantID")
-    parser.add_argument("status")
-    parser.add_argument("urgency")
-    parser.add_argument("issue")
-    parser.add_argument("assignedUserID")
-
     @pm_level_required
     def get(self, id):
         return TicketModel.find(id).json()
@@ -32,14 +24,6 @@ class Ticket(Resource):
 
 
 class Tickets(Resource):
-    parser = reqparse.RequestParser()
-    parser.add_argument("senderID")
-    parser.add_argument("tenantID")
-    parser.add_argument("status")
-    parser.add_argument("urgency")
-    parser.add_argument("issue")
-    parser.add_argument("assignedUserID")
-
     @pm_level_required
     def get(self):
         if request.args and request.args["tenantID"]:
