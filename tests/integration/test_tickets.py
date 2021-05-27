@@ -84,8 +84,8 @@ def test_tickets_PUT(client, auth_headers):
     updatedTicket = {
         "senderID": 2,
         "tenantID": 2,
-        "assignedUserID": 3,
-        "status": "In Progress",
+        "assignedUserID": 10,
+        "status": "In_Progress",
         "urgency": "high",
         "issue": "Leaky pipe",
     }
@@ -99,9 +99,9 @@ def test_tickets_PUT(client, auth_headers):
     assert response.json["tenant"] == "Soho Muless"
     assert response.json["senderID"] == 2
     assert response.json["tenantID"] == 2
-    assert response.json["assignedUserID"] == 3
+    assert response.json["assignedUserID"] == 10
     assert response.json["sender"] == "user2 tester"
-    assert response.json["assigned"] == "user3 tester"
+    assert response.json["assigned"] == "Janice Joinstaff"
     assert response.json["status"] == TicketStatus.In_Progress
     assert response.json["urgency"] == "high"
 

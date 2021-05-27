@@ -6,7 +6,7 @@ from models.property import PropertyModel
 
 
 @pytest.mark.usefixtures("client_class", "empty_test_db")
-class TestProperty:
+class TestPropertyGet:
     def setup(self):
         self.endpoint = "/api/properties/"
 
@@ -18,6 +18,12 @@ class TestProperty:
 
         assert response.json == property.json(include_tenants=True)
 
+
+@pytest.mark.usefixtures("client_class", "empty_test_db")
+class TestPropertyDelete:
+    def setup(self):
+        self.endpoint = "/api/properties/"
+
     def test_delete(self, valid_header, create_property):
         with patch.object(PropertyModel, "delete") as mock_delete:
             response = self.client.delete(f"{self.endpoint}1", headers=valid_header)
@@ -25,6 +31,12 @@ class TestProperty:
         mock_delete.assert_called_once_with(1)
         assert response.status_code == 200
         assert response.json == {"message": "Property deleted"}
+
+
+@pytest.mark.usefixtures("client_class", "empty_test_db")
+class TestPropertyPut:
+    def setup(self):
+        self.endpoint = "/api/properties/"
 
     def test_put(self, valid_header, create_property):
         property = create_property()
@@ -46,52 +58,33 @@ class TestProperty:
         assert response.json == property.json()
 
 
-def test_get_properties(client, test_database):
-    """the server should successfully retrieve all properties"""
-    response = client.get("/api/properties")
-    assert response.status_code == 200
+@pytest.mark.usefixtures("client_class", "empty_test_db")
+class TestPropertyPost:
+    def setup(self):
+        self.endpoint = "/api/properties"
 
+    def test_post(self, valid_header, property_attributes, create_property_manager):
+        property_attrs = property_attributes()
 
-def test_post_property(
-    client, auth_headers, property_attributes, create_property_manager
-):
-    property_attrs = property_attributes()
+        """The server should successfully add a new property"""
+        response = self.client.post(
+            self.endpoint, json=property_attrs, headers=valid_header
+        )
+        assert response.status_code == 201
 
-    """The server should successfully add a new property"""
-    response = client.post(
-        "/api/properties", json=property_attrs, headers=auth_headers["admin"]
-    )
-    assert response.status_code == 201
-
-    """The server should return with an error if a duplicate property is posted"""
-    response = client.post(
-        "/api/properties", json=property_attrs, headers=auth_headers["admin"]
-    )
-    assert response.get_json() == {
-        "message": {"name": ["A property with this name already exists"]}
-    }
-    assert response.status_code == 400
-
-
-def test_archive_property_by_id(client, auth_headers, create_property, test_database):
-    test_property = create_property()
-
-    """The archive property endpoint should return a 200 code when successful"""
-    responseSuccess = client.post(
-        f"/api/properties/archive/{test_property.id}", headers=auth_headers["admin"]
-    )
-    assert responseSuccess.status_code == 200
-
-    """The property should have its 'archived' key set to True"""
-    responseArchivedProperty = client.get(
-        f"/api/properties/{test_property.id}", headers=auth_headers["admin"]
-    )
-    assert json.loads(responseArchivedProperty.data)["archived"]
+        """The server should return with an error if a duplicate property is posted"""
+        response = self.client.post(
+            self.endpoint, json=property_attrs, headers=valid_header
+        )
+        assert response.get_json() == {
+            "message": {"name": ["A property with this name already exists"]}
+        }
+        assert response.status_code == 400
 
 
 @pytest.mark.usefixtures("client_class", "empty_test_db")
 class TestPropertyArchivalMethods:
-    def test_archive_properties(self, admin_header, create_property):
+    def test_archive_properties(self, valid_header, create_property):
         firstProperty = create_property()
         secondProperty = create_property()
         thirdProperty = create_property()
@@ -103,7 +96,7 @@ class TestPropertyArchivalMethods:
         responseSuccess = self.client.patch(
             "/api/properties/archive",
             json={"ids": [firstPropertyId]},
-            headers=admin_header,
+            headers=valid_header,
         )
         assert responseSuccess.status_code == 200
 
@@ -114,7 +107,7 @@ class TestPropertyArchivalMethods:
         responseSuccess = self.client.patch(
             "/api/properties/archive",
             json={"ids": [firstPropertyId]},
-            headers=admin_header,
+            headers=valid_header,
         )
         propertiesReturnedByEndpoint = json.loads(responseSuccess.data)["properties"]
         assert len(propertiesReturnedByEndpoint) == len(propertiesInfo)
@@ -122,7 +115,7 @@ class TestPropertyArchivalMethods:
 
         """The (single) archived property has its 'archived' key set to True"""
         response = self.client.get(
-            f"/api/properties/{firstProperty.id}", headers=admin_header
+            f"/api/properties/{firstProperty.id}", headers=valid_header
         )
         assert json.loads(response.data)["archived"]
 
@@ -133,9 +126,9 @@ class TestPropertyArchivalMethods:
         responseSuccess = self.client.patch(
             "/api/properties/archive",
             json={"ids": allPropertyIds},
-            headers=admin_header,
+            headers=valid_header,
         )
-        responseAllProperties = self.client.get("/api/properties", headers=admin_header)
+        responseAllProperties = self.client.get("/api/properties", headers=valid_header)
         assert all(
             [
                 prop["archived"]
@@ -148,9 +141,24 @@ class TestPropertyArchivalMethods:
         does not contain a list of property ids
         """
         responseBadPropertyID = self.client.patch(
-            "/api/properties/archive", json={}, headers=admin_header
+            "/api/properties/archive", json={}, headers=valid_header
         )
         assert responseBadPropertyID.get_json() == {
             "message": "Property IDs missing in request"
         }
         assert responseBadPropertyID.status_code == 400
+
+    def test_archive_property_by_id(self, valid_header, create_property):
+        test_property = create_property()
+
+        """The archive property endpoint should return a 200 code when successful"""
+        responseSuccess = self.client.post(
+            f"/api/properties/archive/{test_property.id}", headers=valid_header
+        )
+        assert responseSuccess.status_code == 200
+
+        """The property should have its 'archived' key set to True"""
+        responseArchivedProperty = self.client.get(
+            f"/api/properties/{test_property.id}", headers=valid_header
+        )
+        assert json.loads(responseArchivedProperty.data)["archived"]
