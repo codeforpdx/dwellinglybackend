@@ -1,5 +1,6 @@
 import pytest
 from models.notes import NotesModel
+from schemas.notes import NotesSchema
 
 
 @pytest.fixture
@@ -17,8 +18,9 @@ def create_note(faker, note_attributes, create_admin_user, create_ticket):
         user = user or create_admin_user()
         ticket = ticket or create_ticket()
 
-        note = NotesModel(**note_attributes(text, user, ticket))
-        note.save_to_db()
-        return note
+        return NotesModel.create(
+            schema=NotesSchema,
+            payload={"text": text, "user_id": user.id, "ticket_id": ticket.id},
+        )
 
     yield _create_note
