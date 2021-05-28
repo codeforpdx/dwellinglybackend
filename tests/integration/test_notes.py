@@ -1,5 +1,7 @@
 import pytest
+from models.notes import NotesModel
 from conftest import is_valid
+from unittest.mock import patch
 
 
 @pytest.mark.usefixtures("client_class", "empty_test_db")
@@ -41,8 +43,10 @@ class TestDelete:
     ):
         note = create_note(create_admin_user(), create_ticket())
 
-        response = self.client.delete(
-            f"{self.endpoint}/{note.ticketid}/notes/{note.id}", headers=valid_header
-        )
-
+        with patch.object(NotesModel, "delete") as mock_delete:
+            response = self.client.delete(
+                f"{self.endpoint}/{note.ticketid}/notes/{note.id}", headers=valid_header
+            )
+        mock_delete.assert_called_once_with(1)
+        assert response.status_code == 200
         assert response.json == {"message": "Note deleted"}
