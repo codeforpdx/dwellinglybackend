@@ -15,7 +15,7 @@ class Note(Resource):
             schema=NotesSchema,
             payload={
                 "text": request.json["text"],
-                "ticketid": id,
-                "userid": get_jwt_identity(),
+                "ticket_id": id,
+                "user_id": get_jwt_identity(),
             },
         ).json()

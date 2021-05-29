@@ -39,10 +39,10 @@ def test_tickets_GET_one(client, test_database, auth_headers):
     assert response.json["status"] == TicketStatus.In_Progress
     assert response.json["urgency"] == "Low"
     assert len(response.json["notes"]) == 2
-    assert response.json["notes"][0]["ticketid"] == 1
+    assert response.json["notes"][0]["ticket_id"] == 1
     assert response.json["notes"][0]["text"] == "Tenant has over 40 cats."
     assert response.json["notes"][0]["user"] == "user2 tester"
-    assert response.json["notes"][1]["ticketid"] == 1
+    assert response.json["notes"][1]["ticket_id"] == 1
     assert response.json["notes"][1]["text"] == "Issue Resolved with phone call"
     assert response.json["notes"][1]["user"] == "user3 tester"
 

@@ -22,7 +22,7 @@ class TestNotesModel:
 
         assert note.json() == {
             "id": note.id,
-            "ticketid": note.ticketid,
+            "ticket_id": note.ticket_id,
             "text": note.text,
             "user": user.full_name(),
             "created_at": Time.format_date(note.created_at),

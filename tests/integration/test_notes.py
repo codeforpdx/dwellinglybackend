@@ -16,7 +16,6 @@ class TestCreate:
             json=self.new_note,
             headers=valid_header,
         )
-
         assert response.json == ticket.notes[-1].json()
 
     def test_it_returns_404_with_invalid_ticket(self, valid_header):

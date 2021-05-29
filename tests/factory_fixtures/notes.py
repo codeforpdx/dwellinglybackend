@@ -5,7 +5,7 @@ from models.notes import NotesModel
 @pytest.fixture
 def note_attributes():
     def _note_attributes(text, user, ticket):
-        return {"text": text, "userid": user.id, "ticketid": ticket.id}
+        return {"text": text, "user_id": user.id, "ticket_id": ticket.id}
 
     yield _note_attributes
 
