@@ -58,26 +58,13 @@ def test_tickets_POST(client, auth_headers):
         "status": "New",
         "urgency": "low",
         "issue": "Lead paint issue",
-        "assignedUserID": 4,
+        "assignedUserID": 10,
     }
 
     response = client.post(endpoint, json=newTicket, headers=auth_headers["admin"])
 
     assert is_valid(response, 201)
-    assert response.json["id"] != 0
-    assert response.json["issue"] == "Lead paint issue"
-    assert response.json["tenant"] == "Renty McRenter"
-    assert response.json["senderID"] == 1
-    assert response.json["tenantID"] == 1
-    assert response.json["assignedUserID"] == 4
-    assert response.json["sender"] == "user1 tester"
-    assert response.json["assigned"] == "Mr. Sir"
-    assert response.json["status"] == TicketStatus.New
-    assert response.json["urgency"] == "low"
-
-    # verify jwt only
-    response = client.post(endpoint, json=newTicket, headers=auth_headers["admin"])
-    assert is_valid(response, 201)
+    assert response.json == {"message": "Ticket successfully created"}
 
 
 def test_tickets_PUT(client, auth_headers):
