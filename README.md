@@ -1,5 +1,5 @@
 # Dwellingly App Backend
-[![Build Status](https://travis-ci.com/codeforpdx/dwellinglybackend.svg?branch=development)](https://travis-ci.com/codeforpdx/dwellinglybackend)
+[![CI Tests](https://github.com/codeforpdx/dwellinglybackend/actions/workflows/pytest.yml/badge.svg?event=push)](https://github.com/codeforpdx/dwellinglybackend/actions/workflows/pytest.yml)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 _Looking for the [Dwellingly App front end?](https://github.com/codeforpdx/dwellingly-app)_
