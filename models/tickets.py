@@ -1,5 +1,5 @@
 from db import db
-from utils.nobiru import NobiruList
+from nobiru.nobiru_list import NobiruList
 from datetime import datetime, timedelta
 from models.base_model import BaseModel
 from utils.time import Time
