@@ -18,9 +18,9 @@ class TestBaseTicketModel(BaseInterfaceTest):
         assert invalid_tenant_validation_error == validation_errors["tenant_id"]
 
     def test_validate_author(self):
-        invalid_creator = {"author_id": 888}
+        invalid_author = {"author_id": 888}
 
         invalid_author_validation_error = ["888 is not a valid user ID"]
 
-        validation_errors = TicketSchema().validate(invalid_creator)
+        validation_errors = TicketSchema().validate(invalid_author)
         assert invalid_author_validation_error == validation_errors["author_id"]

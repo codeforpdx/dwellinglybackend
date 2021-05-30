@@ -6,11 +6,11 @@ from schemas.ticket import TicketSchema
 
 @pytest.fixture
 def ticket_attributes(faker):
-    def _ticket_attributes(issue, tenant, creator):
+    def _ticket_attributes(issue, tenant, author):
         return {
             "issue": issue,
             "tenant_id": tenant.id,
-            "author_id": creator.id,
+            "author_id": author.id,
             "status": TicketStatus.New,
             "urgency": faker.random_element(("Low", "Medium", "High")),
         }
