@@ -48,16 +48,11 @@ class UserModel(BaseModel):
         backref=db.backref("user", lazy=True),
         collection_class=NobiruList,
     )
-    assigned_tickets = db.relationship(
-        "TicketModel",
-        backref="assignee",
-        primaryjoin=id == TicketModel.assignedUserID,
-        collection_class=NobiruList,
-    )
+
     authored_tickets = db.relationship(
         "TicketModel",
         backref="author",
-        primaryjoin=id == TicketModel.senderID,
+        primaryjoin=id == TicketModel.author_id,
         collection_class=NobiruList,
     )
 

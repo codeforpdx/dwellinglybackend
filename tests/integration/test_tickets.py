@@ -18,11 +18,11 @@ def test_tickets_GET_all(client, test_database, auth_headers):
 
 
 def test_tickets_GET_byTenant(client, test_database, auth_headers):
-    response = client.get(f"{endpoint}?tenantID=1", headers=auth_headers["admin"])
+    response = client.get(f"{endpoint}?tenant_id=1", headers=auth_headers["admin"])
     assert is_valid(response, 200)
     assert len(response.json["tickets"]) == 2
-    assert response.json["tickets"][0]["tenantID"] == 1
-    assert response.json["tickets"][1]["tenantID"] == 1
+    assert response.json["tickets"][0]["tenant_id"] == 1
+    assert response.json["tickets"][1]["tenant_id"] == 1
 
 
 def test_tickets_GET_one(client, test_database, auth_headers):
@@ -31,11 +31,9 @@ def test_tickets_GET_one(client, test_database, auth_headers):
     assert response.json["id"] == 1
     assert response.json["issue"] == "The roof, the roof, the roof is on fire."
     assert response.json["tenant"] == "Renty McRenter"
-    assert response.json["senderID"] == 1
-    assert response.json["tenantID"] == 1
-    assert response.json["assignedUserID"] == 4
+    assert response.json["author_id"] == 1
+    assert response.json["tenant_id"] == 1
     assert response.json["sender"] == "user1 tester"
-    assert response.json["assigned"] == "Mr. Sir"
     assert response.json["status"] == TicketStatus.In_Progress
     assert response.json["urgency"] == "Low"
     assert len(response.json["notes"]) == 2
@@ -53,12 +51,11 @@ def test_tickets_GET_one(client, test_database, auth_headers):
 
 def test_tickets_POST(client, auth_headers):
     newTicket = {
-        "senderID": 1,
-        "tenantID": 1,
+        "author_id": 1,
+        "tenant_id": 1,
         "status": "New",
         "urgency": "low",
         "issue": "Lead paint issue",
-        "assignedUserID": 10,
     }
 
     response = client.post(endpoint, json=newTicket, headers=auth_headers["admin"])
@@ -69,9 +66,8 @@ def test_tickets_POST(client, auth_headers):
 
 def test_tickets_PUT(client, auth_headers):
     updatedTicket = {
-        "senderID": 2,
-        "tenantID": 2,
-        "assignedUserID": 10,
+        "author_id": 2,
+        "tenant_id": 2,
         "status": "In_Progress",
         "urgency": "high",
         "issue": "Leaky pipe",
@@ -84,11 +80,9 @@ def test_tickets_PUT(client, auth_headers):
     assert is_valid(response, 200)
     assert response.json["issue"] == "Leaky pipe"
     assert response.json["tenant"] == "Soho Muless"
-    assert response.json["senderID"] == 2
-    assert response.json["tenantID"] == 2
-    assert response.json["assignedUserID"] == 10
+    assert response.json["author_id"] == 2
+    assert response.json["tenant_id"] == 2
     assert response.json["sender"] == "user2 tester"
-    assert response.json["assigned"] == "Janice Joinstaff"
     assert response.json["status"] == TicketStatus.In_Progress
     assert response.json["urgency"] == "high"
 

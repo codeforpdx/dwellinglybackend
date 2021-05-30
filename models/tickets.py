@@ -17,12 +17,10 @@ class TicketModel(BaseModel):
 
     id = db.Column(db.Integer, primary_key=True)
     issue = db.Column(db.String(144))
-    tenantID = db.Column(db.Integer, db.ForeignKey("tenants.id"))
-    assignedUserID = db.Column(db.Integer, db.ForeignKey("users.id"))
-    senderID = db.Column(db.Integer, db.ForeignKey("users.id"))
-    status = db.Column(db.Enum(TicketStatus))
+    tenant_id = db.Column(db.Integer, db.ForeignKey("tenants.id"), nullable=False)
+    author_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    status = db.Column(db.Enum(TicketStatus), default=TicketStatus.New, nullable=False)
     urgency = db.Column(db.String(12))
-    notelog = db.Column(db.Text)
 
     notes = db.relationship(
         "NotesModel",
@@ -39,11 +37,10 @@ class TicketModel(BaseModel):
             "id": self.id,
             "issue": self.issue,
             "tenant": "{} {}".format(self.tenant.firstName, self.tenant.lastName),
-            "senderID": self.senderID,
-            "tenantID": self.tenantID,
-            "assignedUserID": self.assignedUserID,
+            "author_id": self.author_id,
+            "tenant_id": self.tenant_id,
+            "assigned_staff": self.tenant.staff.json(),
             "sender": self.author.full_name(),
-            "assigned": self.assignee.full_name(),
             "status": self.status,
             "minsPastUpdate": minsPastUpdate,
             "urgency": self.urgency,

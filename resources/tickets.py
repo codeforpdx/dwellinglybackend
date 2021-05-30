@@ -26,9 +26,9 @@ class Ticket(Resource):
 class Tickets(Resource):
     @pm_level_required
     def get(self):
-        if request.args and request.args["tenantID"]:
+        if request.args and request.args["tenant_id"]:
             return {
-                "tickets": TenantModel.find(request.args["tenantID"]).tickets.json()
+                "tickets": TenantModel.find(request.args["tenant_id"]).tickets.json()
             }
         else:
             return {"tickets": TicketModel.query.json()}
