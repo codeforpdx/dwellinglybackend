@@ -446,11 +446,11 @@
         },
         "black": {
             "hashes": [
-                "sha256:bff7067d8bc25eb21dcfdbc8c72f2baafd9ec6de4663241a52fb904b304d391f",
-                "sha256:fc9bcf3b482b05c1f35f6a882c079dc01b9c7795827532f4cc43c0ec88067bbc"
+                "sha256:1fc0e0a2c8ae7d269dfcf0c60a89afa299664f3e811395d40b1922dff8f854b5",
+                "sha256:e5cf21ebdffc7a9b29d73912b6a6a9a4df4ce70220d523c21647da2eae0751ef"
             ],
             "index": "pypi",
-            "version": "==21.4b2"
+            "version": "==21.5b2"
         },
         "cfgv": {
             "hashes": [
@@ -474,6 +474,9 @@
             "version": "==0.4.4"
         },
         "coverage": {
+            "extras": [
+                "toml"
+            ],
             "hashes": [
                 "sha256:004d1880bed2d97151facef49f08e255a20ceb6f9432df75f4eef018fdd5a78c",
                 "sha256:01d84219b5cdbfc8122223b39a954820929497a1cb1422824bb86b07b74594b6",
@@ -546,11 +549,11 @@
         },
         "faker": {
             "hashes": [
-                "sha256:156854f36d4086bb21ff85a79b4d6a6403a240cd2c17a33a44b8ea4ff4e957c2",
-                "sha256:a2ed065342e91a7672407325848cd5728d5e5eb4928d0a1c478fd4f0dd97d1f7"
+                "sha256:5b1c0781c0c2f6b177adf4018feec265bbcd0118b301dbec64a1908c29124ed6",
+                "sha256:c94240c40073400b269c50b14da765fd4d3b4dda8ae25c2753afc809c72f1062"
             ],
             "index": "pypi",
-            "version": "==8.1.2"
+            "version": "==8.4.0"
         },
         "filelock": {
             "hashes": [
@@ -561,11 +564,11 @@
         },
         "flake8": {
             "hashes": [
-                "sha256:1aa8990be1e689d96c745c5682b687ea49f2e05a443aff1f8251092b0014e378",
-                "sha256:3b9f848952dddccf635be78098ca75010f073bfe14d2c6bda867154bea728d2a"
+                "sha256:07528381786f2a6237b061f6e96610a4167b226cb926e2aa2b6b1d78057c576b",
+                "sha256:bf8fd333346d844f616e8d47905ef3a3384edae6b4e9beb0c5101e25e3110907"
             ],
             "index": "pypi",
-            "version": "==3.9.1"
+            "version": "==3.9.2"
         },
         "flake8-bugbear": {
             "hashes": [
@@ -703,11 +706,11 @@
         },
         "pre-commit": {
             "hashes": [
-                "sha256:70c5ec1f30406250b706eda35e868b87e3e4ba099af8787e3e8b4b01e84f4712",
-                "sha256:900d3c7e1bf4cf0374bb2893c24c23304952181405b4d88c9c40b72bda1bb8a9"
+                "sha256:764972c60693dc668ba8e86eb29654ec3144501310f7198742a767bec385a378",
+                "sha256:b679d0fddd5b9d6d98783ae5f10fd0c4c59954f375b70a58cbe1ce9bcf9809a4"
             ],
             "index": "pypi",
-            "version": "==2.12.1"
+            "version": "==2.13.0"
         },
         "py": {
             "hashes": [
@@ -747,11 +750,11 @@
         },
         "pytest-cov": {
             "hashes": [
-                "sha256:359952d9d39b9f822d9d29324483e7ba04a3a17dd7d05aa6beb7ea01e359e5f7",
-                "sha256:bdb9fdb0b85a7cc825269a4c56b48ccaa5c7e365054b6038772c32ddcdc969da"
+                "sha256:8535764137fecce504a49c2b742288e3d34bc09eed298ad65963616cc98fd45e",
+                "sha256:95d4933dcbbacfa377bb60b29801daa30d90c33981ab2a79e9ab4452c165066e"
             ],
             "index": "pypi",
-            "version": "==2.11.1"
+            "version": "==2.12.0"
         },
         "pytest-flask": {
             "hashes": [
