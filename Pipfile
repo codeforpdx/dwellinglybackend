@@ -20,7 +20,7 @@ black = "*"
 
 [packages]
 Flask = "==1.1.2"
-Flask-JWT-Extended = "==4.1.0"
+Flask-JWT-Extended = "==4.2.1"
 Flask-RESTful = "==0.3.9"
 Flask-SQLAlchemy = "==2.5.1"
 Jinja2 = "==3.0.1"
