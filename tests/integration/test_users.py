@@ -147,7 +147,7 @@ def test_archive_user(client, test_database, valid_header, new_user, admin_user)
     assert responseLoginArchivedUser.json == {"message": "Invalid user"}
 
     """Admin user attempting to archive themselves should get error"""
-    valid_user = UserModel.query.filter_by(email='gwilliams@yahoo.com').first()
+    valid_user = UserModel.query.filter_by(email="gwilliams@yahoo.com").first()
     response = client.post(
         f"/api/user/archive/{valid_user.id}", json={}, headers=valid_header
     )
@@ -162,19 +162,17 @@ def test_unique_user_constraint(client, test_database, valid_header, new_user):
         client.patch(
             f"/api/user/{userToPatch.id}",
             json={"email": "user1@dwellingly.org"},
-            headers=valid_header
+            headers=valid_header,
         )
 
 
 def test_delete_user(client, test_database, valid_header, new_user):
     userToDelete = UserModel.find_by_email(new_user.email)
 
-    response = client.delete(
-        f"/api/user/{userToDelete.id}", headers=valid_header
-    )
+    response = client.delete(f"/api/user/{userToDelete.id}", headers=valid_header)
     assert is_valid(response, 200)  # OK
 
-    valid_user = UserModel.query.filter_by(email='gwilliams@yahoo.com').first()
+    valid_user = UserModel.query.filter_by(email="gwilliams@yahoo.com").first()
     response = client.delete(f"api/user/{valid_user.id}", headers=valid_header)
     assert is_valid(response, 400)
 
