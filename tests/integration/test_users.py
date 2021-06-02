@@ -84,21 +84,21 @@ def test_get_pm_by_id(
     assert tenants_list == [lease_1.tenant.json(), lease_2.tenant.json()]
 
 
-def test_user_roles(client, auth_headers):
+def test_user_roles(client, test_database, valid_header):
     """The get users by role route returns a successful response code."""
     response = client.post(
         "/api/users/role",
         json={"userrole": RoleEnum.ADMIN.value},
-        headers=auth_headers["admin"],
+        headers=valid_header,
     )
-    assert len(response.get_json()["users"]) == 4
+    assert len(response.get_json()["users"]) == 5
     assert response.status_code == 200
 
     """The get users by role route returns only property managers."""
     response = client.post(
         "/api/users/role",
         json={"userrole": RoleEnum.PROPERTY_MANAGER.value},
-        headers=auth_headers["admin"],
+        headers=valid_header,
     )
     managers = response.get_json()["users"]
     assert len(managers) == 3
@@ -109,7 +109,7 @@ def test_user_roles(client, auth_headers):
     response = client.post(
         "/api/users/role",
         json={"name": "ray", "userrole": RoleEnum.PROPERTY_MANAGER.value},
-        headers=auth_headers["admin"],
+        headers=valid_header,
     )
     managers = response.get_json()["users"]
     assert len(managers) == 1
@@ -121,21 +121,21 @@ def test_user_roles(client, auth_headers):
     response = client.post(
         "/api/users/role",
         json={"name": "ABCDEFG", "userrole": RoleEnum.PROPERTY_MANAGER.value},
-        headers=auth_headers["admin"],
+        headers=valid_header,
     )
     managers = response.get_json()["users"]
     assert len(managers) == 0
     assert response.status_code == 200
 
 
-def test_archive_user(client, auth_headers, new_user, admin_user):
+def test_archive_user(client, test_database, valid_header, new_user, admin_user):
     """
     The archive user by id route returns a successful response code
     and changes the user's status.
     """
     userToArchive = UserModel.find_by_email(new_user.email)
     response = client.post(
-        f"/api/user/archive/{userToArchive.id}", json={}, headers=auth_headers["admin"]
+        f"/api/user/archive/{userToArchive.id}", json={}, headers=valid_header
     )
     assert response.status_code == 201
     assert response.json["archived"] is True
@@ -147,41 +147,43 @@ def test_archive_user(client, auth_headers, new_user, admin_user):
     assert responseLoginArchivedUser.json == {"message": "Invalid user"}
 
     """Admin user attempting to archive themselves should get error"""
+    valid_user = UserModel.query.filter_by(email='gwilliams@yahoo.com').first()
     response = client.post(
-        f"/api/user/archive/{admin_user.id}", json={}, headers=auth_headers["admin"]
+        f"/api/user/archive/{valid_user.id}", json={}, headers=valid_header
     )
     assert response.status_code == 400
     assert response.json == {"message": "Cannot archive self"}
 
 
-def test_unique_user_constraint(client, auth_headers, new_user):
+def test_unique_user_constraint(client, test_database, valid_header, new_user):
     """Emails must be unique, otherwise an Exception is thrown"""
     with pytest.raises(Exception):
         userToPatch = UserModel.find_by_email(new_user.email)
         client.patch(
             f"/api/user/{userToPatch.id}",
             json={"email": "user1@dwellingly.org"},
-            headers=auth_headers["admin"],
+            headers=valid_header
         )
 
 
-def test_delete_user(client, auth_headers, new_user, admin_user):
+def test_delete_user(client, test_database, valid_header, new_user):
     userToDelete = UserModel.find_by_email(new_user.email)
 
     response = client.delete(
-        f"/api/user/{userToDelete.id}", headers=auth_headers["admin"]
+        f"/api/user/{userToDelete.id}", headers=valid_header
     )
     assert is_valid(response, 200)  # OK
 
-    response = client.delete(f"api/user/{admin_user.id}", headers=auth_headers["admin"])
+    valid_user = UserModel.query.filter_by(email='gwilliams@yahoo.com').first()
+    response = client.delete(f"api/user/{valid_user.id}", headers=valid_header)
     assert is_valid(response, 400)
 
 
-def test_get_user(client, auth_headers, new_user):
+def test_get_user(client, empty_test_db, valid_header, new_user):
     """GET '/user' returns a list of all users queried by role"""
 
     admin_user_response = client.get(
-        f"/api/user?r={RoleEnum.ADMIN.value}", headers=auth_headers["admin"]
+        f"/api/user?r={RoleEnum.ADMIN.value}", headers=valid_header
     )
 
     assert is_valid(admin_user_response, 200)
@@ -194,7 +196,7 @@ def test_get_user(client, auth_headers, new_user):
 
     unknown_role = max(RoleEnum.get_values()) + 1
     unknown_user_response = client.get(
-        f"api/user?r={unknown_role}", headers=auth_headers["admin"]
+        f"api/user?r={unknown_role}", headers=valid_header
     )
     assert is_valid(unknown_user_response, 400)
 
