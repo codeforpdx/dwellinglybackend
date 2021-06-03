@@ -61,9 +61,9 @@ class TestPropertyModel:
         )
 
         property = PropertyModel.find(expired_lease.propertyID)
-        property_json = property.json()
+        property_json = property.json(include_tenants=True)
 
         assert len(property_json["tenants"]) == 1
-        assert len(property_json["lease"]) == 2
+        assert len(property_json["leases"]) == 2
         assert active_lease.tenant.json() in property_json["tenants"]
         assert expired_lease.tenant.json() not in property_json["tenants"]
