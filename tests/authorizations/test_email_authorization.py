@@ -13,27 +13,27 @@ class TestEmailAuthorizations:
         assert is_valid(response, 401)
         assert response.json == {"message": "Missing authorization header"}
 
-    def test_property_manager_is_denied_access(self, pm_header):
+    def test_property_manager_is_denied_access(self, pm_header, create_join_staff):
         payload = {
-            "user_id": 1,
+            "user_id": create_join_staff().id,
             "subject": "PM's email subject",
             "body": "I'm a property manager",
         }
         response = self.client.post(self.endpoint, json=payload, headers=pm_header)
         assert is_valid(response, 401)
 
-    # def test_admin_is_allowed_access(self, admin_header):
-    #     payload = {
-    #     "user_id": 2,
-    #     "subject": "Admin's email subject",
-    #     "body": "I'm an admin",
-    #     }
-    #     response = self.client.post(self.endpoint, json=payload, headers=admin_header)
-    #     assert is_valid(response, 200)
-
-    def test_staff_is_denied_access(self, staff_header):
+    def test_admin_is_allowed_access(self, admin_header, create_join_staff):
         payload = {
-            "user_id": 3,
+            "user_id": create_join_staff().id,
+            "subject": "Admin's email subject",
+            "body": "I'm an admin",
+        }
+        response = self.client.post(self.endpoint, json=payload, headers=admin_header)
+        assert is_valid(response, 200)
+
+    def test_staff_is_denied_access(self, staff_header, create_join_staff):
+        payload = {
+            "user_id": create_join_staff().id,
             "subject": "Staff's email subject",
             "body": "I'm staff",
         }
