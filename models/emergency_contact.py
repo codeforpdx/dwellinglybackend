@@ -1,6 +1,6 @@
 from db import db
 from models.base_model import BaseModel
-from utils.nobiru import NobiruList
+from nobiru.nobiru_list import NobiruList
 from utils.time import Time
 
 
