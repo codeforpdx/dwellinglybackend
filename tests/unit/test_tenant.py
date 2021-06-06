@@ -1,8 +1,9 @@
-from models.property import PropertyModel
 import pytest
 from tests.unit.base_interface_test import BaseInterfaceTest
+from models.property import PropertyModel
 from models.tenant import TenantModel
 from schemas.tenant import TenantSchema
+from utils.time import Time
 import datetime
 
 
@@ -12,6 +13,9 @@ class TestBaseTenantModel(BaseInterfaceTest):
         self.custom_404_msg = "Tenant not found"
         self.schema = TenantSchema
 
+
+@pytest.mark.usefixtures("empty_test_db")
+class TestTenantModel:
     def test_only_active_lease_returned(self, faker, create_lease, create_tenant):
         tenant = create_tenant()
 
@@ -33,6 +37,23 @@ class TestBaseTenantModel(BaseInterfaceTest):
 
         # Active lease should be the only one that shows up
         assert tenant.json()["lease"] == lease_active.json()
+
+    def test_json(self, create_tenant, create_lease):
+        tenant = create_tenant()
+        lease = create_lease(tenant=tenant)
+
+        assert tenant.json() == {
+            "id": tenant.id,
+            "firstName": tenant.firstName,
+            "lastName": tenant.lastName,
+            "fullName": "{} {}".format(tenant.firstName, tenant.lastName),
+            "phone": tenant.phone,
+            "staff": tenant.staff,
+            "lease": lease.json(),
+            "created_at": Time.format_date(tenant.created_at),
+            "updated_at": Time.format_date(tenant.updated_at),
+            "archived": tenant.archived,
+        }
 
 
 @pytest.mark.usefixtures("empty_test_db")
