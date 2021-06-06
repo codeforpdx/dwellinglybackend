@@ -4,6 +4,7 @@ from models.base_model import BaseModel
 from models.tickets import TicketModel
 from utils.time import Time
 from models.lease import LeaseModel
+from models.staff_tenant_link import StaffTenantLink
 
 
 class TenantModel(BaseModel):
@@ -18,7 +19,7 @@ class TenantModel(BaseModel):
     # relationships
     staff = db.relationship(
         "UserModel",
-        secondary="staff_tenant_links",
+        secondary=StaffTenantLink.tablename(),
         backref="tenants",
         collection_class=NobiruList,
     )
