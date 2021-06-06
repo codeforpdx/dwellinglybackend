@@ -73,27 +73,29 @@ NOTE: Database is SQLite3 via SQLAlchemy
 [Mac OS Troubleshooting](#Mac-OS-Troubleshooting)
 
 1. Clone the repo (`git clone https://github.com/codeforpdx/dwellinglybackend.git`)
-2. Install [pipenv](https://pipenv.pypa.io/en/latest/#install-pipenv-today)
+2. Install [pyenv](https://github.com/pyenv/pyenv) | This step is optional but recommended.
+   - With pyenv installed pipenv will automatically install the correct python version.
+3. Install [pipenv](https://pipenv.pypa.io/en/latest/#install-pipenv-today)
     - Note: Pipenv handles the install for all dependencies. Including Python.
     - Please install pipenv according to their docs for your OS.
-3. Install dependencies `pipenv run dev-install`
+4. Install dependencies `pipenv run dev-install`
    - Note: Pipenv may prompt you to install Python if it cannot find the correct version on your system. You should select Yes.
    - Note: If you get the error `ImportError: cannot import name 'Feature' from 'setuptools'`, your setuptools version might be at 46 or later. You may be able to get it to work using version 45 (e.g. `pip3 install setuptools==45`)
-4. Install our pre-commit hook:
+5. Install our pre-commit hook:
    - Run: `pipenv run pre-commit install`
-5. copy the contents of the `.env.example` to a new file called `.env`
+6. copy the contents of the `.env.example` to a new file called `.env`
     - `cp .env.example .env`
-6. Create and Seed the database
+7. Create and Seed the database
    - Run: `pipenv run flask db create`
 
    - Some other useful commands are:
      - To re-seed the database from scratch run: `pipenv run flask db recreate`
      - To find other database set-up commands run: `pipenv run flask db --help`
      - To drop the database run: `pipenv run flask db drop`
-7. Start the server using the flask environment (required every time the project is re-opened):
+8. Start the server using the flask environment (required every time the project is re-opened):
    - Run: `pipenv run flask run`
    - Run and restart the server on changes: `pipenv run flask run --reload`
-8. Test the server and view coverage reports. Use of coverage reporting is recommended to indicate test suite completeness and to locate defunct code in the code base.
+9. Test the server and view coverage reports. Use of coverage reporting is recommended to indicate test suite completeness and to locate defunct code in the code base.
     - Run all the tests: `pipenv run pytest --cov .`
       - Run tests in a particular directory: `pipenv run pytest --cov [path to directory]`
         - Example: Just the integration tests: `pipenv run pytest --cov tests/integration`
@@ -105,7 +107,7 @@ NOTE: Database is SQLite3 via SQLAlchemy
       - As a web page: `pipenv run python view_coverage.py`
       - In the console: `pipenv run view_coverage`
     - Tests can be run automatically after each file save using [pytest-watch](https://pypi.org/project/pytest-watch/). Visit the documentation to learn how to run it for your system. See [PR #72](https://github.com/codeforpdx/dwellinglybackend/pull/72) for a preview of what it can do.
-9. (OPTIONAL) Set up your workflow using the [Advanced Setup documentation](./advanced_setup.md)
+10. (OPTIONAL) Set up your workflow using the [Advanced Setup documentation](./advanced_setup.md)
 
 Queries can be made with the Postman Collection link ( https://www.getpostman.com/collections/a86a292798c7895425e2 )
 [![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/0078de8f58d4ea0b78eb)
