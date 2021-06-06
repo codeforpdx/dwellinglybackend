@@ -1,5 +1,5 @@
 from db import db
-from utils.nobiru import NobiruList
+from nobiru.nobiru_list import NobiruList
 from models.base_model import BaseModel
 from models.user import UserModel
 from models.property_assignment import PropertyAssignment

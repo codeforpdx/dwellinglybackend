@@ -1,5 +1,5 @@
 from flask import current_app
-from utils.nobiru import NobiruList
+from nobiru.nobiru_list import NobiruList
 from datetime import datetime
 from models.tickets import TicketModel
 import bcrypt
