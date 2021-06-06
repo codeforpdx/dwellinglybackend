@@ -54,4 +54,8 @@ class Production(Default):
     CORS_ORIGINS = ["UPDATE THIS WITH FRONTEND ORIGINS"]
 
 
-app_config = {"development": Development, "testing": Testing, "production": Production}
+app_environments = {
+    "development": Development,
+    "testing": Testing,
+    "production": Production,
+}

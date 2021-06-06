@@ -30,7 +30,7 @@ from resources.widgets import Widgets
 from db import db
 from ma import ma
 from manage import dbsetup
-from config import app_config
+from config.environment import app_environments
 
 
 def create_routes(app):
@@ -68,7 +68,7 @@ def create_routes(app):
 def create_app(env):
     app = Flask(__name__)
 
-    app.config.from_object(app_config[env])
+    app.config.from_object(app_environments[env])
     app.register_blueprint(dbsetup)
 
     # declare the available routes
