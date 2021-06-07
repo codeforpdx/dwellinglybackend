@@ -1,5 +1,8 @@
 import pytest
 from models.user import UserModel, RoleEnum
+from models.users.admin import Admin
+from models.users.staff import Staff
+from models.users.property_manager import PropertyManager
 
 
 @pytest.fixture
@@ -21,7 +24,7 @@ def user_attributes(faker):
 @pytest.fixture
 def create_admin_user(user_attributes):
     def _create_admin_user(firstName=None, lastName=None):
-        admin = UserModel(
+        admin = Admin(
             **user_attributes(
                 role=RoleEnum.ADMIN,
                 firstName=firstName,
@@ -37,7 +40,7 @@ def create_admin_user(user_attributes):
 @pytest.fixture
 def create_join_staff(user_attributes):
     def _create_join_staff():
-        staff = UserModel(**user_attributes(role=RoleEnum.STAFF))
+        staff = Staff(**user_attributes(role=RoleEnum.STAFF))
         staff.save_to_db()
         return staff
 
@@ -47,7 +50,7 @@ def create_join_staff(user_attributes):
 @pytest.fixture
 def create_property_manager(user_attributes):
     def _create_property_manager():
-        pm = UserModel(**user_attributes(role=RoleEnum.PROPERTY_MANAGER))
+        pm = PropertyManager(**user_attributes(role=RoleEnum.PROPERTY_MANAGER))
         pm.save_to_db()
         return pm
 
