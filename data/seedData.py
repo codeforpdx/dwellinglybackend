@@ -208,63 +208,59 @@ def seedData():
 
     ticket_roof_on_fire = TicketModel(
         issue="The roof, the roof, the roof is on fire.",
-        tenantID=tenant_renty_mcrenter.id,
-        senderID=user_1.id,
+        tenant_id=tenant_renty_mcrenter.id,
+        author_id=user_1.id,
         status=TicketStatus.In_Progress,
         urgency="Low",
-        assignedUserID=user_mister_sir.id,
     )
     ticket_roof_on_fire.save_to_db()
     ticket_dumpster_fire = TicketModel(
         issue="Flaming Dumpster Fire.",
-        tenantID=tenant_soho_muless.id,
-        senderID=user_3.id,
+        tenant_id=tenant_soho_muless.id,
+        author_id=user_3.id,
         status=TicketStatus.New,
         urgency="Critical",
-        assignedUserID=user_mister_sir.id,
     )
     ticket_dumpster_fire.save_to_db()
     ticket_unpaid_rent = TicketModel(
         issue="Unpaid Rent",
-        tenantID=tenant_renty_mcrenter.id,
-        senderID=user_1.id,
+        tenant_id=tenant_renty_mcrenter.id,
+        author_id=user_1.id,
         status=TicketStatus.New,
         urgency="High",
-        assignedUserID=user_mister_sir.id,
     )
     ticket_unpaid_rent.save_to_db()
     ticket_40_cats = TicketModel(
         issue="Over 40 cats in domicile.",
-        tenantID=tenant_soho_muless.id,
-        senderID=user_3.id,
+        tenant_id=tenant_soho_muless.id,
+        author_id=user_3.id,
         status=TicketStatus.Closed,
         urgency="Low",
-        assignedUserID=user_mister_sir.id,
     )
     ticket_40_cats.save_to_db()
 
     note_not_responding = NotesModel(
-        ticketid=ticket_unpaid_rent.id,
+        ticket_id=ticket_unpaid_rent.id,
         text="Tenant not responding to phone calls.",
-        userid=user_1.id,
+        user_id=user_1.id,
     )
     note_not_responding.save_to_db()
     note_over_40_cats = NotesModel(
-        ticketid=ticket_roof_on_fire.id,
+        ticket_id=ticket_roof_on_fire.id,
         text="Tenant has over 40 cats.",
-        userid=user_2.id,
+        user_id=user_2.id,
     )
     note_over_40_cats.save_to_db()
     note_issue_resolved = NotesModel(
-        ticketid=ticket_roof_on_fire.id,
+        ticket_id=ticket_roof_on_fire.id,
         text="Issue Resolved with phone call",
-        userid=user_3.id,
+        user_id=user_3.id,
     )
     note_issue_resolved.save_to_db()
     note_contacted_tenant = NotesModel(
-        ticketid=ticket_dumpster_fire.id,
+        ticket_id=ticket_dumpster_fire.id,
         text="Contacted Tenant -- follow up tomorrow.",
-        userid=user_3.id,
+        user_id=user_3.id,
     )
     note_contacted_tenant.save_to_db()
 

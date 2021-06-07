@@ -8,11 +8,7 @@ from schemas.property import PropertySchema
 
 class Properties(Resource):
     def get(self):
-        return {
-            "properties": [
-                property.json() for property in db.session.query(PropertyModel).all()
-            ]
-        }
+        return {"properties": PropertyModel.query.json()}
 
     @admin_required
     def post(self):

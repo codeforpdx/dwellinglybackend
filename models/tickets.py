@@ -1,5 +1,5 @@
 from db import db
-from models.user import UserModel
+from nobiru.nobiru_list import NobiruList
 from datetime import datetime, timedelta
 from models.base_model import BaseModel
 from utils.time import Time
@@ -17,44 +17,34 @@ class TicketModel(BaseModel):
 
     id = db.Column(db.Integer, primary_key=True)
     issue = db.Column(db.String(144))
-    tenantID = db.Column(db.Integer, db.ForeignKey("tenants.id"))
-    assignedUserID = db.Column(db.Integer, db.ForeignKey("users.id"))
-    senderID = db.Column(db.Integer, db.ForeignKey("users.id"))
-    status = db.Column(db.Enum(TicketStatus))
+    tenant_id = db.Column(db.Integer, db.ForeignKey("tenants.id"), nullable=False)
+    author_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    status = db.Column(db.Enum(TicketStatus), default=TicketStatus.New, nullable=False)
     urgency = db.Column(db.String(12))
-    notelog = db.Column(db.Text)
 
     notes = db.relationship(
-        "NotesModel", backref="ticket", lazy=False, cascade="all, delete-orphan"
+        "NotesModel",
+        backref="ticket",
+        lazy=False,
+        cascade="all, delete-orphan",
+        collection_class=NobiruList,
     )
 
     def json(self):
-        message_notes = []
-        for note in self.notes:
-            message_notes.append(note.json())
-
-        senderData = UserModel.find(self.senderID)
-        senderName = "{} {}".format(senderData.firstName, senderData.lastName)
-
-        assignedUserData = UserModel.find(self.assignedUserID)
-        assignedUser = "{} {}".format(
-            assignedUserData.firstName, assignedUserData.lastName
-        )
         minsPastUpdate = int((datetime.utcnow() - self.updated_at).total_seconds() / 60)
 
         return {
             "id": self.id,
             "issue": self.issue,
             "tenant": "{} {}".format(self.tenant.firstName, self.tenant.lastName),
-            "senderID": self.senderID,
-            "tenantID": self.tenantID,
-            "assignedUserID": self.assignedUserID,
-            "sender": senderName,
-            "assigned": assignedUser,
+            "author_id": self.author_id,
+            "tenant_id": self.tenant_id,
+            "assigned_staff": self.tenant.staff.json(),
+            "sender": self.author.full_name(),
             "status": self.status,
             "minsPastUpdate": minsPastUpdate,
             "urgency": self.urgency,
-            "notes": message_notes,
+            "notes": self.notes.json(),
             "created_at": Time.format_date(self.created_at),
             "updated_at": Time.format_date(self.updated_at),
         }
@@ -75,8 +65,3 @@ class TicketModel(BaseModel):
             .filter(TicketModel.status == status)
             .count()
         )
-
-    # Get tenant by ID
-    @classmethod
-    def find_by_tenantID(cls, tenantID):
-        return cls.query.filter_by(tenantID=tenantID).all()

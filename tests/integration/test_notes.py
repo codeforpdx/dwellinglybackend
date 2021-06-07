@@ -1,5 +1,5 @@
 import pytest
-from models.notes import NotesModel
+from models.tickets import TicketModel
 from conftest import is_valid
 from unittest.mock import patch
 
@@ -18,7 +18,6 @@ class TestCreate:
             json=self.new_note,
             headers=valid_header,
         )
-
         assert response.json == ticket.notes[-1].json()
 
     def test_it_returns_404_with_invalid_ticket(self, valid_header):
@@ -29,6 +28,7 @@ class TestCreate:
             json=self.new_note,
             headers=valid_header,
         )
+
         assert is_valid(response, 404)  # Bad Request- 'Invalid Ticket'
 
 
@@ -36,17 +36,18 @@ class TestCreate:
 class TestDelete:
     def setup(self):
         self.endpoint = "/api/tickets"
-        self.new_note = {"text": "We don't need no water"}
 
     def test_it_deletes_one_note(
         self, valid_header, create_note, create_admin_user, create_ticket
     ):
-        note = create_note(create_admin_user(), create_ticket())
+        note = create_note()
+        ticket = TicketModel.find(note.ticket_id)
 
-        with patch.object(NotesModel, "delete") as mock_delete:
+        with patch.object(ticket.notes, "delete") as mock_delete:
             response = self.client.delete(
-                f"{self.endpoint}/{note.ticketid}/notes/{note.id}", headers=valid_header
+                f"{self.endpoint}/{note.ticket_id}/notes/{note.id}",
+                headers=valid_header,
             )
-        mock_delete.assert_called_once_with(1)
+        mock_delete.assert_called_once_with(note)
         assert response.status_code == 200
         assert response.json == {"message": "Note deleted"}

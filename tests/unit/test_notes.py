@@ -17,12 +17,12 @@ class TestBaseNotesModel(BaseInterfaceTest):
 class TestNotesModel:
     def test_json(self, create_note, create_ticket):
         ticket = create_ticket()
-        user = UserModel.query.filter_by(id=ticket.senderID).first()
+        user = UserModel.query.filter_by(id=ticket.author_id).first()
         note = create_note(user, ticket)
 
         assert note.json() == {
             "id": note.id,
-            "ticketid": note.ticketid,
+            "ticket_id": note.ticket_id,
             "text": note.text,
             "user": user.full_name(),
             "created_at": Time.format_date(note.created_at),
