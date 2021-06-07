@@ -6,3 +6,10 @@ from nobiru.nobiru_list import NobiruList
 
 class Staff(UserModel):
     __mapper_args__ = {"polymorphic_identity": "staff"}
+
+    tenants = db.relationship(
+        "TenantModel",
+        secondary=StaffTenantLink.tablename(),
+        collection_class=NobiruList,
+        viewonly=True,
+    )
