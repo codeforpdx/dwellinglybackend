@@ -13,6 +13,7 @@ class TicketSchema(ma.SQLAlchemyAutoSchema):
 
     tenant = fields.Nested("TenantSchema")
     author = fields.Nested("UserSchema")
+    note = fields.Nested("NotesSchema", required=False)
 
     created_at = fields.DateTime(time_format)
     updated_at = fields.DateTime(time_format)
