@@ -22,10 +22,10 @@ class TestTicketValidations:
         valid_payload = {
             "tenant_id": create_tenant().id,
             "author_id": author_id,
-            "note": {**create_note().json(), "user_id": author_id},
+            "notes": {**create_note().json(), "user_id": author_id},
         }
 
-        del valid_payload["note"]["user"]
+        del valid_payload["notes"]["user"]
 
         no_validation_errors = {}
         assert no_validation_errors == TicketSchema().validate(valid_payload)

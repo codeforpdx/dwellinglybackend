@@ -2,6 +2,7 @@ from ma import ma
 from models.tickets import TicketModel
 from models.tenant import TenantModel
 from models.user import UserModel
+from models.notes import NotesModel
 from utils.time import time_format
 from marshmallow import fields, validates, ValidationError
 
@@ -13,7 +14,7 @@ class TicketSchema(ma.SQLAlchemyAutoSchema):
 
     tenant = fields.Nested("TenantSchema")
     author = fields.Nested("UserSchema")
-    note = fields.Nested("NotesSchema", required=False)
+    notes = fields.Nested("NotesSchema")
 
     created_at = fields.DateTime(time_format)
     updated_at = fields.DateTime(time_format)
@@ -27,3 +28,8 @@ class TicketSchema(ma.SQLAlchemyAutoSchema):
     def validate_author(self, value):
         if not UserModel.query.get(value):
             raise ValidationError(f"{value} is not a valid user ID")
+
+    @validates("notes")
+    def validate_note(self, value):
+        if not NotesModel.query.get(value):
+            raise ValidationError(f"{value} is not a valid note")

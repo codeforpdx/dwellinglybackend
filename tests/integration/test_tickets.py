@@ -64,6 +64,21 @@ def test_tickets_POST(client, auth_headers):
     assert response.json == {"message": "Ticket successfully created"}
 
 
+def test_tickets_with_note_POST(client, auth_headers):
+    newTicket = {
+        "author_id": 1,
+        "tenant_id": 1,
+        "status": "New",
+        "urgency": "low",
+        "issue": "Lead paint issue",
+        "notes": {"text": "note text", "user_id": 1, "ticket_id": 1},
+    }
+
+    response = client.post(endpoint, json=newTicket, headers=auth_headers["admin"])
+    assert is_valid(response, 201)
+    assert response.json == {"message": "Ticket successfully created"}
+
+
 def test_tickets_PUT(client, auth_headers):
     updatedTicket = {
         "author_id": 2,
