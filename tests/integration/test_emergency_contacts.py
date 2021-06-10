@@ -13,11 +13,6 @@ import pytest
 # 1. Action on non-existent entries
 # 2. Duplicate creation
 
-# Also test for appropriate auth restriction, such as:
-# 1. Valid access token
-# 2. Valid role (admin, property-manager, pending, etc.)
-
-
 endpoint = "/api/emergencycontacts"
 
 
@@ -39,7 +34,7 @@ def test_emergency_contacts_GET_one(client, test_database):
     assert response.json == {"message": "EmergencyContact not found"}
 
 
-def test_emergency_contacts_POST(client, auth_headers):
+def test_emergency_contacts_POST(client, valid_header, empty_test_db):
     newContact = {
         "name": "Narcotics Anonymous",
         "description": "Cool description",
@@ -58,7 +53,7 @@ def test_emergency_contacts_POST(client, auth_headers):
         ],
     }
 
-    response = client.post(endpoint, json=newContact, headers=auth_headers["admin"])
+    response = client.post(endpoint, json=newContact, headers=valid_header)
     assert is_valid(
         response, 400
     )  # UNAUTHORIZED - Emergency Contact With This Name Already Exists
@@ -66,9 +61,7 @@ def test_emergency_contacts_POST(client, auth_headers):
         "message": {"name": ["Narcotics Anonymous is already an emergency contact"]}
     }
 
-    response = client.post(
-        endpoint, json=invalidContactNum, headers=auth_headers["admin"]
-    )
+    response = client.post(endpoint, json=invalidContactNum, headers=valid_header)
     assert is_valid(
         response, 400
     )  # BAD REQUEST - Invalid contact number - number is not string type
@@ -77,13 +70,13 @@ def test_emergency_contacts_POST(client, auth_headers):
     }
 
     newContact["name"] = "Cooler Name"
-    response = client.post(endpoint, json=newContact, headers=auth_headers["admin"])
+    response = client.post(endpoint, json=newContact, headers=valid_header)
     assert is_valid(response, 201)  # CREATED
     assert response.json["name"] == "Cooler Name"
     assert response.json["contact_numbers"][0]["number"] == "503-291-9111"
 
     newContact = {}
-    response = client.post(endpoint, json=newContact, headers=auth_headers["admin"])
+    response = client.post(endpoint, json=newContact, headers=valid_header)
     assert is_valid(
         response, 400
     )  # BAD REQUEST - {'name': 'This Field Cannot Be Blank.'}
@@ -92,7 +85,7 @@ def test_emergency_contacts_POST(client, auth_headers):
 @pytest.mark.skip(
     reason="This is testing a successful update action on a non-existent id..."
 )
-def test_emergency_contacts_PUT(client, auth_headers):
+def test_emergency_contacts_PUT(client, valid_header, empty_test_db):
     id = 1
     updatedInfo = {
         "name": "Greg",
@@ -102,9 +95,7 @@ def test_emergency_contacts_PUT(client, auth_headers):
         ],
     }
 
-    response = client.put(
-        f"{endpoint}/{id}", json=updatedInfo, headers=auth_headers["admin"]
-    )
+    response = client.put(f"{endpoint}/{id}", json=updatedInfo, headers=valid_header)
     assert is_valid(response, 200)  # OK
     assert response.json["name"] == "Greg"
     # assert response.json['contact_numbers'][0]['number'] == '503-291-9111'
@@ -113,19 +104,17 @@ def test_emergency_contacts_PUT(client, auth_headers):
     # TODO: Create issue to address non restful behavior.
 
     id = 100
-    response = client.put(
-        f"{endpoint}/{id}", json=updatedInfo, headers=auth_headers["admin"]
-    )
+    response = client.put(f"{endpoint}/{id}", json=updatedInfo, headers=valid_header)
     assert is_valid(response, 404)  # NOT FOUND
     assert response.json == {"message": "Emergency contact not found"}
 
 
-def test_emergency_contacts_DELETE(client, auth_headers):
+def test_emergency_contacts_DELETE(client, valid_header, empty_test_db):
     id = 1
 
-    response = client.delete(f"{endpoint}/{id}", headers=auth_headers["admin"])
+    response = client.delete(f"{endpoint}/{id}", headers=valid_header)
     assert is_valid(response, 200)  # OK
 
-    response = client.delete(f"{endpoint}/{id}", headers=auth_headers["admin"])
+    response = client.delete(f"{endpoint}/{id}", headers=valid_header)
     assert is_valid(response, 404)  # NOT FOUND - Emergency Contact Not Found
     assert response.json == {"message": "EmergencyContact not found"}
