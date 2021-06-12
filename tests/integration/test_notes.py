@@ -1,5 +1,4 @@
 import pytest
-from models.tickets import TicketModel
 from conftest import is_valid
 from unittest.mock import patch
 
@@ -41,7 +40,7 @@ class TestDelete:
         self, valid_header, create_note, create_admin_user, create_ticket
     ):
         note = create_note()
-        ticket = TicketModel.find(note.ticket_id)
+        ticket = note.ticket
 
         with patch.object(ticket.notes, "delete") as mock_delete:
             response = self.client.delete(
