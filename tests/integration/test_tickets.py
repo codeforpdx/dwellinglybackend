@@ -1,6 +1,7 @@
 import pytest
 from conftest import is_valid
-from models.tickets import TicketStatus
+from db import db
+from models.tickets import TicketModel, TicketStatus
 
 endpoint = "/api/tickets"
 validID = 1
@@ -129,6 +130,19 @@ def test_tickets_DELETE_list(client, auth_headers, create_ticket):
     response = client.delete(endpoint, json=missingIds, headers=auth_headers["pm"])
     assert is_valid(response, 400)
     assert response.json == {"message": "Ticket IDs missing in request"}
+
+
+def test_tickets_delete_many(client, empty_test_db, valid_header, create_ticket):
+    ticket_1 = create_ticket()
+    ticket_2 = create_ticket()
+    delete_ids = {"ids": [ticket_1.id, ticket_2.id]}
+
+    response = client.delete(endpoint, json=delete_ids, headers=valid_header)
+    db.session.rollback()
+
+    assert response.status_code == 200
+    assert response.json == {"message": "Tickets successfully deleted"}
+    assert TicketModel.query.all() == []
 
 
 @pytest.mark.usefixtures("empty_test_db")

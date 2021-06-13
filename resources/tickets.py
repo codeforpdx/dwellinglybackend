@@ -1,3 +1,4 @@
+from db import db
 from flask_restful import Resource
 from models.tickets import TicketModel
 from models.tenant import TenantModel
@@ -48,5 +49,6 @@ class Tickets(Resource):
         TicketModel.query.filter(TicketModel.id.in_(data["ids"])).delete(
             synchronize_session="fetch"
         )
+        db.session.commit()
 
         return {"message": "Tickets successfully deleted"}, 200
