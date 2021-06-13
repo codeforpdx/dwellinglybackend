@@ -7,7 +7,7 @@ from schemas.notes import NotesSchema
 from flask_jwt_extended import get_jwt_identity
 
 
-class Note(Resource):
+class Notes(Resource):
     @pm_level_required
     def post(self, id):
         TicketModel.find(id)
@@ -19,3 +19,11 @@ class Note(Resource):
                 "user_id": get_jwt_identity(),
             },
         ).json()
+
+
+class Note(Resource):
+    @pm_level_required
+    def delete(self, ticket_id, id):
+        ticket = TicketModel.find(ticket_id)
+        ticket.notes.delete(NotesModel.find(id))
+        return {"message": "Note deleted"}

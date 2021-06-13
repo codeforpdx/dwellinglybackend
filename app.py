@@ -4,6 +4,7 @@ from flask_cors import CORS
 from flask_mailman import Mail
 from models.user import UserModel
 from models.revoked_tokens import RevokedTokensModel
+
 from db import db
 from ma import ma
 from manage import dbsetup

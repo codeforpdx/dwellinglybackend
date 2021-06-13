@@ -18,7 +18,7 @@ from resources.tenants import Tenants, Tenant
 from resources.emergency_contacts import EmergencyContacts
 from resources.email import Email
 from resources.tickets import Ticket, Tickets
-from resources.notes import Note
+from resources.notes import Notes, Note
 from resources.lease import Lease, Leases
 from resources.widgets import Widgets
 
@@ -53,7 +53,8 @@ class Routes:
         api.add_resource(Leases, "lease")
         api.add_resource(Tickets, "tickets")
         api.add_resource(Ticket, "tickets/<int:id>")
-        api.add_resource(Note, "tickets/<int:id>/notes")
+        api.add_resource(Notes, "tickets/<int:id>/notes")
+        api.add_resource(Note, "tickets/<int:ticket_id>/notes/<int:id>")
         api.add_resource(
             ResetPassword, "reset-password", "reset-password/<string:token>"
         )
