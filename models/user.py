@@ -95,7 +95,7 @@ class UserModel(BaseModel):
         return bcrypt.checkpw(bytes(plaintext_password, "utf-8"), self.hash_digest)
 
     def json(self):
-        return {
+        base_json = {
             "id": self.id,
             "firstName": self.firstName,
             "lastName": self.lastName,
@@ -107,6 +107,10 @@ class UserModel(BaseModel):
             "created_at": Time.format_date(self.created_at),
             "updated_at": Time.format_date(self.updated_at),
         }
+        return {**base_json, **self.serialize()}
+
+    def serialize(self):
+        return {}
 
     def widgetJson(self, propertyName, date):
         return {

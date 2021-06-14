@@ -50,38 +50,12 @@ def test_get_user_by_id(client, empty_test_db, create_admin_user, valid_header):
     assert responseBadUserId.json == {"message": "User not found"}
 
 
-def test_get_pm_by_id(
-    client,
-    empty_test_db,
-    create_property_manager,
-    create_property,
-    create_lease,
-    valid_header,
-):
+def test_get_pm_by_id(client, empty_test_db, create_property_manager, valid_header):
     user = create_property_manager()
-    prop = create_property(manager_ids=[user.id])
-    lease_1 = create_lease(property=prop)
-    lease_2 = create_lease(property=prop)
-
     response = client.get(f"/api/user/{user.id}", headers=valid_header)
 
-    property_list = response.json["properties"]
-    tenants_list = response.json["tenants"]
-
-    """
-    The get user by id route returns a successful response code
-    when the queried user is a property manager
-    """
     assert response.status_code == 200
-
-    """The PM's properties are returned as a list of JSON objects"""
-    assert property_list == [prop.json()]
-
-    """
-    Tenants are retreived through the leases on each
-    property and returned as a list of JSON objects
-    """
-    assert tenants_list == [lease_1.tenant.json(), lease_2.tenant.json()]
+    assert response.json == user.json()
 
 
 def test_user_roles(client, test_database, valid_header):

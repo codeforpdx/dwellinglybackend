@@ -1,7 +1,6 @@
 from flask_restful import Resource, reqparse
 from flask import request
 from schemas import UserRegisterSchema
-from schemas import UserSchema
 from models.property import PropertyModel
 from utils.authorizations import admin_required, admin, pm_level_required
 from models.user import UserModel, RoleEnum
@@ -35,10 +34,7 @@ class UserRegister(Resource):
 class User(Resource):
     @admin_required
     def get(self, user_id):
-        user = UserModel.find(user_id)
-        user_info = UserSchema().dump(user)
-
-        return user_info, 200
+        return UserModel.find(user_id).json()
 
     @pm_level_required
     def patch(self, user_id):
