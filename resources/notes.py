@@ -20,9 +20,9 @@ class Notes(Resource):
             },
         ).json()
 
+
 class Note(Resource):
     @pm_level_required
-
     def delete(self, ticket_id, id):
         ticket = TicketModel.find(ticket_id)
         ticket.notes.delete(NotesModel.find(id))
@@ -30,8 +30,10 @@ class Note(Resource):
         return {"message": "Note deleted"}
 
     @pm_level_required
-    def patch(self, ticket_id, note_id):
-
-        return NotesModel.update(
-            schema=NotesSchema, id=note_id, payload={"text": request.json["text"]}
-        ).json()
+    def patch(self, ticket_id, id):
+        ticket = TicketModel.find(ticket_id)
+        updated_note = NotesModel.update(
+            schema=NotesSchema, id=id, payload={"text": request.json["text"]}
+        )
+        ticket.notes.update(NotesModel.find(id), updated_note)
+        return updated_note.json()

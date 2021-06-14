@@ -2,8 +2,9 @@ import pytest
 from conftest import is_valid
 from unittest.mock import patch
 
+
 @pytest.mark.usefixtures("client_class", "empty_test_db")
-class TestNote:
+class TestCreate:
     def setup(self):
         self.endpoint = "/api/tickets"
         self.new_note = {"text": "We don't need no water"}
@@ -29,14 +30,13 @@ class TestNote:
 
         assert is_valid(response, 404)  # Bad Request- 'Invalid Ticket'
 
+
 @pytest.mark.usefixtures("client_class", "empty_test_db")
 class TestDelete:
     def setup(self):
         self.endpoint = "/api/tickets"
 
-    def test_it_deletes_one_note(
-        self, valid_header, create_note, create_admin_user, create_ticket
-    ):
+    def test_it_deletes_one_note(self, valid_header, create_note):
         note = create_note()
         ticket = note.ticket
 
@@ -48,3 +48,27 @@ class TestDelete:
         mock_delete.assert_called_once_with(note)
         assert response.status_code == 200
         assert response.json == {"message": "Note deleted"}
+
+
+@pytest.mark.usefixtures("client_class", "empty_test_db")
+class TestUpdate:
+    def setup(self):
+        self.endpoint = "/api/tickets"
+        self.new_text = "We don't need no water"
+
+    def test_it_updates_one_note(self, valid_header, create_note):
+        note = create_note()
+        # ticket = note.ticket
+
+        # with patch.object(ticket.notes, "update") as mock_update:
+        response = self.client.patch(
+            f"{self.endpoint}/{note.ticket_id}/notes/{note.id}",
+            json={"text": self.new_text},
+            headers=valid_header,
+        )
+
+        # mock_update.assert_called_once()
+
+        assert response.status_code == 200
+        assert response.json["id"] == note.id
+        assert response.json["text"] == self.new_text
