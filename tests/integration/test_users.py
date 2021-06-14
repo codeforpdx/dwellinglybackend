@@ -1,6 +1,7 @@
 import pytest
 from unittest.mock import patch
 from models.user import UserModel
+from models.users.admin import Admin
 from schemas import UserRegisterSchema
 from tests.schemas.test_user_schema import user_register_valid_payload
 from conftest import is_valid
@@ -171,6 +172,16 @@ def test_get_user(client, empty_test_db, valid_header, new_user):
         f"api/user?r={unknown_role}", headers=valid_header
     )
     assert is_valid(unknown_user_response, 400)
+
+
+@pytest.mark.usefixtures("client_class", "empty_test_db")
+class TestUser:
+    def test_role_update(self, valid_header, create_unauthorized_user):
+        id = create_unauthorized_user().id
+        payload = {"role": RoleEnum.ADMIN.value}
+        self.client.patch(f"api/user/{id}", json=payload, headers=valid_header)
+
+        assert Admin.find(id).role == RoleEnum.ADMIN
 
 
 @pytest.mark.usefixtures("client_class", "empty_test_db")

@@ -89,6 +89,7 @@ class User(Resource):
 
         if data["role"]:
             user.role = RoleEnum(data["role"])
+            user.type = RoleEnum(data["role"]).name.lower()
         if data["firstName"] is not None:
             user.firstName = data["firstName"]
         if data["lastName"] is not None:
