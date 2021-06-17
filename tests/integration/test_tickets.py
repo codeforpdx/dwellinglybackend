@@ -10,6 +10,43 @@ class BaseConfig:
     endpoint = "/api/tickets"
 
 
+class TestTicketGET(BaseConfig):
+    def test_get(self, valid_header, create_ticket):
+        ticket = create_ticket()
+        response = self.client.get(f"{self.endpoint}/{ticket.id}", headers=valid_header)
+
+        assert response.status_code == 200
+        assert response.json == ticket.json()
+
+
+class TestTicketPUT(BaseConfig):
+    def test_update(self, valid_header, create_ticket):
+        ticket = create_ticket()
+        with patch.object(TicketModel, "update", return_value=ticket) as mock_update:
+            response = self.client.put(
+                f"{self.endpoint}/{ticket.id}",
+                json={"hello": "world"},
+                headers=valid_header,
+            )
+
+        mock_update.assert_called_once_with(
+            schema=TicketSchema, id=ticket.id, payload={"hello": "world"}
+        )
+
+        assert response.status_code == 200
+        assert response.json == ticket.json()
+
+
+class TestTicketDELETE(BaseConfig):
+    def test_delete(self, valid_header):
+        with patch.object(TicketModel, "delete") as mock_delete:
+            response = self.client.delete(f"{self.endpoint}/1", headers=valid_header)
+
+        mock_delete.assert_called_once_with(1)
+        assert response.status_code == 200
+        assert response.json == {"message": "Ticket removed from database"}
+
+
 class TestTicketsGET(BaseConfig):
     def test_tickets_get_all(self, valid_header, create_ticket):
         ticket_1 = create_ticket()
@@ -31,23 +68,10 @@ class TestTicketsGET(BaseConfig):
         assert response.status_code == 200
         assert response.json == {"tickets": [ticket_1.json()]}
 
-    def test_tickets_get_one(self, valid_header, create_ticket):
-        ticket = create_ticket()
-        response = self.client.get(f"{self.endpoint}/{ticket.id}", headers=valid_header)
-
-        assert response.status_code == 200
-        assert response.json == ticket.json()
-
 
 class TestTicketsPOST(BaseConfig):
-    def test_create_ticket(self, valid_header):
-        new_ticket = {
-            "author_id": 1,
-            "tenant_id": 1,
-            "status": "New",
-            "urgency": "low",
-            "issue": "Lead paint issue",
-        }
+    def test_create_ticket(self, valid_header, ticket_attributes):
+        new_ticket = ticket_attributes()
 
         with patch.object(TicketModel, "create") as mock_create:
             response = self.client.post(
@@ -60,34 +84,8 @@ class TestTicketsPOST(BaseConfig):
         assert response.json == {"message": "Ticket successfully created"}
 
 
-class TestTicketsPUT(BaseConfig):
-    def test_update_ticket(self, valid_header, create_ticket):
-        ticket = create_ticket()
-        with patch.object(TicketModel, "update", return_value=ticket) as mock_update:
-            response = self.client.put(
-                f"{self.endpoint}/{ticket.id}",
-                json={"hello": "world"},
-                headers=valid_header,
-            )
-
-        mock_update.assert_called_once_with(
-            schema=TicketSchema, id=ticket.id, payload={"hello": "world"}
-        )
-
-        assert response.status_code == 200
-        assert response.json == ticket.json()
-
-
 class TestTicketsDELETE(BaseConfig):
-    def test_tickets_delete_one(self, valid_header):
-        with patch.object(TicketModel, "delete") as mock_delete:
-            response = self.client.delete(f"{self.endpoint}/1", headers=valid_header)
-
-        mock_delete.assert_called_once_with(1)
-        assert response.status_code == 200
-        assert response.json == {"message": "Ticket removed from database"}
-
-    def test_tickets_delete_many(self, valid_header, create_ticket):
+    def test_delete_many(self, valid_header, create_ticket):
         ticket_1 = create_ticket()
         ticket_2 = create_ticket()
         delete_ids = {"ids": [ticket_1.id, ticket_2.id]}
