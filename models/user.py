@@ -38,7 +38,6 @@ class UserModel(BaseModel):
     firstName = db.Column(db.String(100), nullable=False)
     lastName = db.Column(db.String(100), nullable=False)
     phone = db.Column(db.String(20), nullable=False)
-    # hash_digest = db.Column(db.LargeBinary(60))
     _password = db.Column("password", db.LargeBinary(60))
     archived = db.Column(db.Boolean, default=False, nullable=False)
     lastActive = db.Column(db.DateTime, default=datetime.utcnow)
@@ -88,7 +87,7 @@ class UserModel(BaseModel):
             return None
 
     def check_pw(self, plaintext_password):
-        return bcrypt.checkpw(bytes(plaintext_password, "utf-8"), self.password)
+        return bcrypt.checkpw(plaintext_password.encode("utf-8"), self.password)
 
     def json(self):
         return {
