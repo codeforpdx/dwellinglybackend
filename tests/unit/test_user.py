@@ -116,8 +116,9 @@ class TestOverwrittenAndInheritedMethods:
         UserModel.update(UserSchema, user.id, {"email": email})
         lookedup = UserModel.find(user.id)
         assert lookedup.email == email
-        assert lookedup.password is None
-        assert lookedup.hash_digest == user.hash_digest
+        # assert lookedup.password is None
+        # assert lookedup.hash_digest == user.hash_digest
+        assert lookedup.password == user.password
 
     def test_create_class_method(self, user_attributes):
         user = UserModel.create(UserSchema, user_attributes(role=RoleEnum.STAFF.value))

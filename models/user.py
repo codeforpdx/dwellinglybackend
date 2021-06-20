@@ -38,8 +38,8 @@ class UserModel(BaseModel):
     firstName = db.Column(db.String(100), nullable=False)
     lastName = db.Column(db.String(100), nullable=False)
     phone = db.Column(db.String(20), nullable=False)
-    hash_digest = db.Column(db.LargeBinary(60))
-    password = db.Column(db.String(), default=None, onupdate=None)
+    # hash_digest = db.Column(db.LargeBinary(60))
+    _password = db.Column('password', db.LargeBinary(60))
     archived = db.Column(db.Boolean, default=False, nullable=False)
     lastActive = db.Column(db.DateTime, default=datetime.utcnow)
 
@@ -56,10 +56,16 @@ class UserModel(BaseModel):
         collection_class=NobiruList,
     )
 
-    def __init__(self, **kwargs):
-        super(UserModel, self).__init__(**kwargs)
-        self.hash_digest = UserModel._hash_pw(kwargs["password"])
-        self.archived = False
+    @property
+    def password(self):
+        return self._password
+
+    @password.setter
+    def password(self, plaintext_password):
+        self._password = bcrypt.hashpw(
+            plaintext_password.encode('utf-8'),
+            bcrypt.gensalt(current_app.config["WORK_FACTOR"]),
+        )
 
     def update_last_active(self):
         self.lastActive = datetime.utcnow()
@@ -81,15 +87,8 @@ class UserModel(BaseModel):
         except ExpiredSignatureError:
             return None
 
-    @staticmethod
-    def _hash_pw(plaintext_password):
-        return bcrypt.hashpw(
-            bytes(plaintext_password, "utf-8"),
-            bcrypt.gensalt(current_app.config["WORK_FACTOR"]),
-        )
-
     def check_pw(self, plaintext_password):
-        return bcrypt.checkpw(bytes(plaintext_password, "utf-8"), self.hash_digest)
+        return bcrypt.checkpw(bytes(plaintext_password, "utf-8"), self.password)
 
     def json(self):
         return {
@@ -146,9 +145,3 @@ class UserModel(BaseModel):
     def full_name(self):
         return "{} {}".format(self.firstName, self.lastName)
 
-    def save_to_db(self):
-        if self.password:
-            self.hash_digest = UserModel._hash_pw(self.password)
-            self.password = None
-        db.session.add(self)
-        db.session.commit()
