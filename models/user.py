@@ -39,7 +39,7 @@ class UserModel(BaseModel):
     lastName = db.Column(db.String(100), nullable=False)
     phone = db.Column(db.String(20), nullable=False)
     # hash_digest = db.Column(db.LargeBinary(60))
-    _password = db.Column('password', db.LargeBinary(60))
+    _password = db.Column("password", db.LargeBinary(60))
     archived = db.Column(db.Boolean, default=False, nullable=False)
     lastActive = db.Column(db.DateTime, default=datetime.utcnow)
 
@@ -63,7 +63,7 @@ class UserModel(BaseModel):
     @password.setter
     def password(self, plaintext_password):
         self._password = bcrypt.hashpw(
-            plaintext_password.encode('utf-8'),
+            plaintext_password.encode("utf-8"),
             bcrypt.gensalt(current_app.config["WORK_FACTOR"]),
         )
 
@@ -144,4 +144,3 @@ class UserModel(BaseModel):
 
     def full_name(self):
         return "{} {}".format(self.firstName, self.lastName)
-
