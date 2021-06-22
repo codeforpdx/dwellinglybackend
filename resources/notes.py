@@ -32,8 +32,6 @@ class Note(Resource):
     @pm_level_required
     def patch(self, ticket_id, id):
         ticket = TicketModel.find(ticket_id)
-        updated_note = NotesModel.update(
-            schema=NotesSchema, id=id, payload={"text": request.json["text"]}
-        )
-        ticket.notes.update(NotesModel.find(id), updated_note)
-        return updated_note.json()
+        note = ticket.notes.find(id)
+
+        return note.update(schema=NotesSchema, payload=request.json, id=id).json()

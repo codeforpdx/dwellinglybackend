@@ -58,17 +58,24 @@ class TestUpdate:
 
     def test_it_updates_one_note(self, valid_header, create_note):
         note = create_note()
-        # ticket = note.ticket
 
-        # with patch.object(ticket.notes, "update") as mock_update:
         response = self.client.patch(
             f"{self.endpoint}/{note.ticket_id}/notes/{note.id}",
             json={"text": self.new_text},
             headers=valid_header,
         )
 
-        # mock_update.assert_called_once()
-
         assert response.status_code == 200
         assert response.json["id"] == note.id
         assert response.json["text"] == self.new_text
+
+    def test_it_updates_one_note_fails(self, valid_header, create_ticket):
+        ticket = create_ticket()
+
+        response = self.client.patch(
+            f"{self.endpoint}/{ticket.id}/notes/777",
+            json={"text": self.new_text},
+            headers=valid_header,
+        )
+
+        assert response.status_code == 404

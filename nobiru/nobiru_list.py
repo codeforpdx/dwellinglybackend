@@ -17,11 +17,9 @@ class NobiruList(InstrumentedList):
         except ValueError:
             abort(404, f"{entity._name()} not found")
 
-    @collection.replaces(1)
-    def update(self, entity, new_entity):
+    def find(self, id):
         try:
-            self.remove(entity)
-            self.append(new_entity)
-            db.session.commit()
-        except ValueError:
-            abort(404, f"{entity.name()} note found")
+            return next(x for x in self if x.json()["id"] == id)
+
+        except StopIteration:
+            abort(404, "Not found")
