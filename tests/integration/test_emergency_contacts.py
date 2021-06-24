@@ -34,7 +34,7 @@ def test_emergency_contacts_GET_one(client, test_database):
     assert response.json == {"message": "EmergencyContact not found"}
 
 
-def test_emergency_contacts_POST(client, valid_header, empty_test_db):
+def test_emergency_contacts_POST(test_database, client, valid_header):
     newContact = {
         "name": "Narcotics Anonymous",
         "description": "Cool description",
@@ -109,7 +109,7 @@ def test_emergency_contacts_PUT(client, valid_header, empty_test_db):
     assert response.json == {"message": "Emergency contact not found"}
 
 
-def test_emergency_contacts_DELETE(client, valid_header, empty_test_db):
+def test_emergency_contacts_DELETE(test_database, client, valid_header):
     id = 1
 
     response = client.delete(f"{endpoint}/{id}", headers=valid_header)
