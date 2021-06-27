@@ -1,6 +1,6 @@
 from ma import ma
 from models.tenant import TenantModel
-from models.user import UserModel
+from models.users.staff import Staff
 from marshmallow import fields, validate, validates, post_load
 from utils.time import time_format
 from schemas.staff_tenants import StaffTenantSchema
@@ -42,6 +42,6 @@ class TenantSchema(ma.SQLAlchemyAutoSchema):
     @post_load
     def make_tenant_attributes(self, data, **kwargs):
         if "staffIDs" in data:
-            data["staff"] = [UserModel.find(staff) for staff in data["staffIDs"]]
+            data["staff"] = [Staff.find(id) for id in data["staffIDs"]]
             del data["staffIDs"]
         return data

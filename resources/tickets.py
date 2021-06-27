@@ -1,6 +1,6 @@
+from db import db
 from flask_restful import Resource
 from models.tickets import TicketModel
-from models.tenant import TenantModel
 from utils.authorizations import pm_level_required
 from flask import request
 from schemas.ticket import TicketSchema
@@ -26,12 +26,10 @@ class Ticket(Resource):
 class Tickets(Resource):
     @pm_level_required
     def get(self):
-        if request.args and request.args["tenant_id"]:
-            return {
-                "tickets": TenantModel.find(request.args["tenant_id"]).tickets.json()
-            }
-        else:
-            return {"tickets": TicketModel.query.json()}
+        tickets = TicketModel.query
+        if "tenant_id" in request.args:
+            tickets = tickets.where(TicketModel.tenant_id == request.args["tenant_id"])
+        return {"tickets": tickets.json()}
 
     @pm_level_required
     def post(self):
@@ -48,5 +46,6 @@ class Tickets(Resource):
         TicketModel.query.filter(TicketModel.id.in_(data["ids"])).delete(
             synchronize_session="fetch"
         )
+        db.session.commit()
 
         return {"message": "Tickets successfully deleted"}, 200
