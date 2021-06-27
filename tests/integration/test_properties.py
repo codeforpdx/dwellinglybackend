@@ -7,26 +7,25 @@ from models.property import PropertyModel
 
 @pytest.mark.usefixtures("client_class", "empty_test_db")
 class TestPropertyGet:
-    def setup(self):
-        self.endpoint = "/api/properties/"
-
     def test_get(self, valid_header, create_property):
-        property = create_property()
-        response = self.client.get(
-            f"{self.endpoint}{property.id}", headers=valid_header
-        )
+        property = PropertyModel()
+        json = {"key": "value"}
 
-        assert response.json == property.json(include_tenants=True)
+        with patch.object(PropertyModel, "find", return_value=property) as mock_find:
+            with patch.object(property, "json", return_value=json) as mock_json:
+                response = self.client.get("/api/properties/7", headers=valid_header)
+
+        mock_find.assert_called_once_with(7)
+        mock_json.assert_called_once_with(include_tenants=True)
+        assert response.json == json
+        assert response.status_code == 200
 
 
 @pytest.mark.usefixtures("client_class", "empty_test_db")
 class TestPropertyDelete:
-    def setup(self):
-        self.endpoint = "/api/properties/"
-
     def test_delete(self, valid_header, create_property):
         with patch.object(PropertyModel, "delete") as mock_delete:
-            response = self.client.delete(f"{self.endpoint}1", headers=valid_header)
+            response = self.client.delete("/api/properties/1", headers=valid_header)
 
         mock_delete.assert_called_once_with(1)
         assert response.status_code == 200
@@ -35,9 +34,6 @@ class TestPropertyDelete:
 
 @pytest.mark.usefixtures("client_class", "empty_test_db")
 class TestPropertyPut:
-    def setup(self):
-        self.endpoint = "/api/properties/"
-
     def test_put(self, valid_header, create_property):
         property = create_property()
 
@@ -45,7 +41,7 @@ class TestPropertyPut:
             PropertyModel, "update", return_value=property
         ) as mock_update:
             response = self.client.put(
-                f"{self.endpoint}1", json={"num_units": 2}, headers=valid_header
+                "/api/properties/1", json={"num_units": 2}, headers=valid_header
             )
 
         mock_update.assert_called_once_with(
@@ -59,27 +55,37 @@ class TestPropertyPut:
 
 
 @pytest.mark.usefixtures("client_class", "empty_test_db")
-class TestPropertyPost:
-    def setup(self):
-        self.endpoint = "/api/properties"
+class TestPropertiesGet:
+    def test_get(self, valid_header, create_property):
+        property = create_property()
+        response = self.client.get("/api/properties", headers=valid_header)
 
-    def test_post(self, valid_header, property_attributes, create_property_manager):
+        assert response.json == {"properties": [property.json()]}
+        assert response.status_code == 200
+
+
+@pytest.mark.usefixtures("client_class", "empty_test_db")
+class TestPropertiesPost:
+    def test_post(self, valid_header, property_attributes):
         property_attrs = property_attributes()
+        property = PropertyModel()
+        json = {"key": "value"}
 
-        """The server should successfully add a new property"""
-        response = self.client.post(
-            self.endpoint, json=property_attrs, headers=valid_header
+        with patch.object(
+            PropertyModel, "create", return_value=property
+        ) as mock_create:
+            with patch.object(property, "json", return_value=json) as mock_json:
+                response = self.client.post(
+                    "/api/properties", json=property_attrs, headers=valid_header
+                )
+
+        mock_create.assert_called_once_with(
+            schema=PropertySchema,
+            payload=property_attrs,
         )
+        mock_json.assert_called()
+        assert response.json == json
         assert response.status_code == 201
-
-        """The server should return with an error if a duplicate property is posted"""
-        response = self.client.post(
-            self.endpoint, json=property_attrs, headers=valid_header
-        )
-        assert response.get_json() == {
-            "message": {"name": ["A property with this name already exists"]}
-        }
-        assert response.status_code == 400
 
 
 @pytest.mark.usefixtures("client_class", "empty_test_db")
@@ -112,12 +118,7 @@ class TestPropertyArchivalMethods:
         propertiesReturnedByEndpoint = json.loads(responseSuccess.data)["properties"]
         assert len(propertiesReturnedByEndpoint) == len(propertiesInfo)
         assert all([p["name"] and p["address"] for p in propertiesReturnedByEndpoint])
-
-        """The (single) archived property has its 'archived' key set to True"""
-        response = self.client.get(
-            f"/api/properties/{firstProperty.id}", headers=valid_header
-        )
-        assert json.loads(response.data)["archived"]
+        assert firstProperty.archived
 
         """
         When archiving multiple properties,
@@ -156,9 +157,4 @@ class TestPropertyArchivalMethods:
             f"/api/properties/archive/{test_property.id}", headers=valid_header
         )
         assert responseSuccess.status_code == 200
-
-        """The property should have its 'archived' key set to True"""
-        responseArchivedProperty = self.client.get(
-            f"/api/properties/{test_property.id}", headers=valid_header
-        )
-        assert json.loads(responseArchivedProperty.data)["archived"]
+        assert test_property.archived
