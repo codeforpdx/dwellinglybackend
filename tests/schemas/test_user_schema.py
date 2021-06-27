@@ -1,4 +1,3 @@
-import pytest
 from schemas.user import UserSchema, UserRegisterSchema
 from models.user import RoleEnum
 
@@ -79,27 +78,3 @@ class TestUserRegisterSchemaValidations:
         validation_errors = UserRegisterSchema().validate({})
 
         assert "password" in validation_errors
-
-
-@pytest.mark.usefixtures("empty_test_db")
-class TestPropertyManagerSerialization:
-    def test_property_manager_serialization(
-        self, create_property_manager, create_lease, create_property, create_tenant
-    ):
-        pm = create_property_manager()
-        property1 = create_property(manager_ids=[pm.id])
-        property2 = create_property(manager_ids=[pm.id])
-        tenant1 = create_tenant()
-        tenant2 = create_tenant()
-        create_lease(property=property1, tenant=tenant1)
-        create_lease(property=property2, tenant=tenant2)
-
-        json_output = UserSchema().dump(pm)
-        assert json_output["tenants"] == [tenant1.json(), tenant2.json()]
-        assert json_output["properties"] == [property1.json(), property2.json()]
-
-    def test_user_serialization(self, create_join_staff):
-        user = create_join_staff()
-        json_output = UserSchema().dump(user)
-        assert json_output["tenants"] == []
-        assert json_output["properties"] == []

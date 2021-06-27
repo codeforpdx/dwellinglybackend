@@ -1,6 +1,7 @@
 import pytest
 from unittest.mock import patch
 from models.user import UserModel
+from models.users.admin import Admin
 from schemas import UserRegisterSchema
 from tests.schemas.test_user_schema import user_register_valid_payload
 from conftest import is_valid
@@ -50,38 +51,12 @@ def test_get_user_by_id(client, empty_test_db, create_admin_user, valid_header):
     assert responseBadUserId.json == {"message": "User not found"}
 
 
-def test_get_pm_by_id(
-    client,
-    empty_test_db,
-    create_property_manager,
-    create_property,
-    create_lease,
-    valid_header,
-):
+def test_get_pm_by_id(client, empty_test_db, create_property_manager, valid_header):
     user = create_property_manager()
-    prop = create_property(manager_ids=[user.id])
-    lease_1 = create_lease(property=prop)
-    lease_2 = create_lease(property=prop)
-
     response = client.get(f"/api/user/{user.id}", headers=valid_header)
 
-    property_list = response.json["properties"]
-    tenants_list = response.json["tenants"]
-
-    """
-    The get user by id route returns a successful response code
-    when the queried user is a property manager
-    """
     assert response.status_code == 200
-
-    """The PM's properties are returned as a list of JSON objects"""
-    assert property_list == [prop.json()]
-
-    """
-    Tenants are retreived through the leases on each
-    property and returned as a list of JSON objects
-    """
-    assert tenants_list == [lease_1.tenant.json(), lease_2.tenant.json()]
+    assert response.json == user.json()
 
 
 def test_user_roles(client, test_database, valid_header):
@@ -197,6 +172,16 @@ def test_get_user(client, empty_test_db, valid_header, new_user):
         f"api/user?r={unknown_role}", headers=valid_header
     )
     assert is_valid(unknown_user_response, 400)
+
+
+@pytest.mark.usefixtures("client_class", "empty_test_db")
+class TestUser:
+    def test_role_update(self, valid_header, create_unauthorized_user):
+        id = create_unauthorized_user().id
+        payload = {"role": RoleEnum.ADMIN.value}
+        self.client.patch(f"api/user/{id}", json=payload, headers=valid_header)
+
+        assert Admin.find(id).role == RoleEnum.ADMIN
 
 
 @pytest.mark.usefixtures("client_class", "empty_test_db")

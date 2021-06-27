@@ -1,6 +1,9 @@
 from datetime import datetime, timedelta
 
 from models.user import UserModel, RoleEnum
+from models.users.admin import Admin
+from models.users.staff import Staff
+from models.users.property_manager import PropertyManager
 from models.property import PropertyModel
 from models.tenant import TenantModel
 from models.tickets import TicketModel, TicketStatus
@@ -16,7 +19,7 @@ def seedData():
     now = datetime.utcnow()
     future = now + timedelta(days=365)
 
-    user_1 = UserModel(
+    user_1 = Admin(
         email="user1@dwellingly.org",
         role=RoleEnum.ADMIN,
         firstName="user1",
@@ -26,7 +29,7 @@ def seedData():
         archived=False,
     )
     user_1.save_to_db()
-    user_2 = UserModel(
+    user_2 = Admin(
         email="user2@dwellingly.org",
         role=RoleEnum.ADMIN,
         firstName="user2",
@@ -36,7 +39,7 @@ def seedData():
         archived=False,
     )
     user_2.save_to_db()
-    user_3 = UserModel(
+    user_3 = Admin(
         email="user3@dwellingly.org",
         role=RoleEnum.ADMIN,
         firstName="user3",
@@ -46,7 +49,7 @@ def seedData():
         archived=False,
     )
     user_3.save_to_db()
-    user_mister_sir = UserModel(
+    user_mister_sir = PropertyManager(
         email="MisterSir@dwellingly.org",
         role=RoleEnum.PROPERTY_MANAGER,
         firstName="Mr.",
@@ -56,7 +59,7 @@ def seedData():
         archived=False,
     )
     user_mister_sir.save_to_db()
-    user_gray_pouponn = UserModel(
+    user_gray_pouponn = PropertyManager(
         email="GrayPouponn@dwellingly.org",
         role=RoleEnum.PROPERTY_MANAGER,
         firstName="Gray",
@@ -106,7 +109,7 @@ def seedData():
         },
         schema=UserRegisterSchema,
     )
-    user_janice_joinstaff = UserModel(
+    user_janice_joinstaff = Staff(
         email="janice@joinpdx.org",
         role=RoleEnum.STAFF,
         firstName="Janice",
@@ -116,7 +119,7 @@ def seedData():
         archived=False,
     )
     user_janice_joinstaff.save_to_db()
-    user_hector_chen = UserModel(
+    user_hector_chen = Staff(
         email="hector@joinpdx.org",
         role=RoleEnum.STAFF,
         firstName="Hector",
@@ -126,7 +129,7 @@ def seedData():
         archived=False,
     )
     user_hector_chen.save_to_db()
-    user_xander_dander = UserModel(
+    user_xander_dander = Staff(
         email="xander@joinpdx.org",
         role=RoleEnum.STAFF,
         firstName="Xander",
