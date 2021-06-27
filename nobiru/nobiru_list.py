@@ -6,8 +6,8 @@ from sqlalchemy.orm.collections import collection
 
 
 class NobiruList(InstrumentedList):
-    def json(self):
-        return Nobiru.json(self)
+    def json(self, **kwargs):
+        return Nobiru.json(self, **kwargs)
 
     @collection.remover
     def delete(self, entity):
