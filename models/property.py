@@ -55,7 +55,8 @@ class PropertyModel(BaseModel):
     def tenants(self):
         tenants = []
         for lease in self.leases:
-            tenants.append(lease.tenant.json())
+            if lease.is_active():
+                tenants.append(lease.tenant.json())
         return tenants
 
     @classmethod
