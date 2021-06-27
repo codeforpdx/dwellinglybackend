@@ -26,28 +26,17 @@ class Tenants(Resource):
 
     @admin_required
     def post(self):
-        tenantEntry = TenantModel.create(schema=TenantSchema, payload=request.json)
+        tenantEntry = TenantModel.create(
+            schema=TenantSchema, payload=request.json
+        ).json()
 
-        returnData = tenantEntry.json()
+        if request.json.keys() > {"dateTimeEnd", "dateTimeStart", "propertyID"}:
 
-        leaseData = request.json
-        leaseData.update({"tenantID": tenantEntry.id})
+            leaseEntry = LeaseModel.create(
+                schema=LeaseSchema,
+                payload={**request.json, "tenantID": tenantEntry["id"]},
+            ).json()
 
-        def _lease():
-            return (
-                "dateTimeEnd" in leaseData
-                and "dateTimeStart" in leaseData
-                and "propertyID" in leaseData
-            )
+            tenantEntry = {**leaseEntry, **tenantEntry}
 
-        if _lease():
-            LeaseModel.create(schema=LeaseSchema, payload=leaseData)
-            returnData.update(
-                {
-                    "occupants": leaseData["occupants"],
-                    "propertyID": leaseData["propertyID"],
-                    "unitNum": leaseData["unitNum"],
-                }
-            )
-
-        return returnData, 201
+        return tenantEntry, 201

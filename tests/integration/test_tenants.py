@@ -1,5 +1,8 @@
 import pytest
 from models.tenant import TenantModel
+from unittest.mock import patch
+
+from schemas import TenantSchema
 
 
 @pytest.mark.usefixtures("client_class", "empty_test_db")
@@ -59,9 +62,39 @@ class TestCreate:
             "archived": False,
         }
 
-    def test_create_tenant(self, valid_header):
-        response = self.client.post(
-            self.endpoint, json=self.new_tenant, headers=valid_header
+    def test_create_tenant(self, valid_header, create_tenant):
+
+        with patch.object(
+            TenantModel, "create", return_value=create_tenant()
+        ) as mock_create:
+            response = self.client.post(
+                self.endpoint, json=self.new_tenant, headers=valid_header
+            )
+
+        mock_create.assert_called_once_with(
+            schema=TenantSchema, payload=self.new_tenant
         )
 
-        assert response.json == TenantModel.find(response.json["id"]).json()
+        assert response.status_code == 201
+
+    def test_create_tenant_with_lease(
+        self, valid_header, create_property, create_lease
+    ):
+        lease = {
+            "occupants": 47,
+            "dateTimeStart": "2021-06-19T07:00:00.000Z",
+            "dateTimeEnd": "2022-07-16T07:00:00.000Z",
+            "unitNum": "5351",
+            "propertyID": create_property().id,
+        }
+
+        response = self.client.post(
+            self.endpoint, json={**self.new_tenant, **lease}, headers=valid_header
+        )
+
+        assert response.status_code == 201
+        assert response.json["firstName"] == self.new_tenant["firstName"]
+        assert response.json["lastName"] == self.new_tenant["lastName"]
+        assert response.json["phone"] == self.new_tenant["phone"]
+        assert response.json["unitNum"] == lease["unitNum"]
+        assert response.json["occupants"] == lease["occupants"]
