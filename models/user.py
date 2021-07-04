@@ -32,7 +32,10 @@ class RoleEnum(Enum):
 class UserModel(BaseModel):
     __tablename__ = "users"
 
+    __mapper_args__ = {"polymorphic_identity": "user", "polymorphic_on": "type"}
+
     id = db.Column(db.Integer, primary_key=True)
+    type = db.Column(db.String())
     email = db.Column(db.String(100), unique=True, nullable=False)
     role = db.Column(db.Enum(RoleEnum), default=None)
     firstName = db.Column(db.String(100), nullable=False)
@@ -90,7 +93,7 @@ class UserModel(BaseModel):
         return bcrypt.checkpw(plaintext_password.encode("utf-8"), self._password)
 
     def json(self):
-        return {
+        base_json = {
             "id": self.id,
             "firstName": self.firstName,
             "lastName": self.lastName,
@@ -102,6 +105,10 @@ class UserModel(BaseModel):
             "created_at": Time.format_date(self.created_at),
             "updated_at": Time.format_date(self.updated_at),
         }
+        return {**base_json, **self.serialize()}
+
+    def serialize(self):
+        return {}
 
     def widgetJson(self, propertyName, date):
         return {
