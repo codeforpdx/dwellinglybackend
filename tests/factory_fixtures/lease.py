@@ -5,6 +5,18 @@ from utils.time import Time
 
 
 @pytest.fixture
+def lease_payload(faker, create_property):
+    def _lease_payload():
+        return {
+            "propertyID": create_property().id,
+            "dateTimeStart": Time.yesterday_iso(),
+            "dateTimeEnd": Time.one_year_from_now_iso(),
+        }
+
+    yield _lease_payload
+
+
+@pytest.fixture
 def lease_attributes(faker):
     def _lease_attributes(unitNum, tenant, property, dateTimeStart, dateTimeEnd):
         return {
