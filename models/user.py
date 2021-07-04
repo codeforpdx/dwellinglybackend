@@ -57,7 +57,7 @@ class UserModel(BaseModel):
 
     @property
     def password(self):
-        return self._password
+        raise AttributeError('password field is not allowed to access')
 
     @password.setter
     def password(self, plaintext_password):
@@ -87,7 +87,7 @@ class UserModel(BaseModel):
             return None
 
     def check_pw(self, plaintext_password):
-        return bcrypt.checkpw(plaintext_password.encode("utf-8"), self.password)
+        return bcrypt.checkpw(plaintext_password.encode("utf-8"), self._password)
 
     def json(self):
         return {
