@@ -101,25 +101,9 @@ class TestFixtures:
 
 @pytest.mark.usefixtures("empty_test_db")
 class TestOverwrittenAndInheritedMethods:
-    def test_user_save_to_db(self, user_attributes):
-        attrs = UserModel.validate(
-            UserSchema, user_attributes(role=RoleEnum.STAFF.value)
-        )
-        user = UserModel(**attrs)
-        user.save_to_db()
-        lookedup = UserModel.find(user.id)
-        assert lookedup.password is None
-
     def test_update_class_method(self, create_join_staff, faker):
         user = create_join_staff()
         email = faker.unique.email()
         UserModel.update(UserSchema, user.id, {"email": email})
         lookedup = UserModel.find(user.id)
         assert lookedup.email == email
-        assert lookedup.password is None
-        assert lookedup.hash_digest == user.hash_digest
-
-    def test_create_class_method(self, user_attributes):
-        user = UserModel.create(UserSchema, user_attributes(role=RoleEnum.STAFF.value))
-        lookedup = UserModel.find(user.id)
-        assert lookedup.password is None
