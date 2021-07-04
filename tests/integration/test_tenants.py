@@ -33,9 +33,7 @@ class TestTenantPut:
                 headers=valid_header,
             )
 
-        mock_update.assert_called_once_with(
-            schema=TenantSchema, id=tenant.id, payload=updated_fields
-        )
+        mock_update.assert_called_once_with(schema=TenantSchema, payload=updated_fields)
         assert response.status_code == 200
         assert response.json == tenant.json()
 

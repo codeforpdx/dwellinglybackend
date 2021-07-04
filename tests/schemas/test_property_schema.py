@@ -89,9 +89,7 @@ class TestPostLoadDeserialization:
         payload = {"propertyManagerIDs": [pm_2.id, pm_3.id]}
         context = {"name": property.name}
 
-        PropertyModel.update(
-            schema=PropertySchema, context=context, id=property.id, payload=payload
-        )
+        property.update(schema=PropertySchema, context=context, payload=payload)
         db.session.rollback()
 
         assert property.managers == [pm_2, pm_3]

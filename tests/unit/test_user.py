@@ -1,10 +1,18 @@
 import pytest
-from models.user import UserModel, RoleEnum
-from schemas.user import UserSchema
-from unittest.mock import patch
 import jwt
 import time
+from unittest.mock import patch
+from models.user import UserModel, RoleEnum
+from schemas.user import UserSchema
 from freezegun import freeze_time
+from tests.unit.base_interface_test import BaseInterfaceTest
+
+
+class TestUserModel(BaseInterfaceTest):
+    def setup(self):
+        self.object = UserModel(password="1234")
+        self.schema = UserSchema
+        self.custom_404_msg = "User not found"
 
 
 @patch.object(jwt, "encode")
@@ -97,13 +105,3 @@ class TestFixtures:
             return create_unauthorized_user()
 
         assert test_multiple_users_can_be_created()
-
-
-@pytest.mark.usefixtures("empty_test_db")
-class TestOverwrittenAndInheritedMethods:
-    def test_update_class_method(self, create_join_staff, faker):
-        user = create_join_staff()
-        email = faker.unique.email()
-        UserModel.update(UserSchema, user.id, {"email": email})
-        lookedup = UserModel.find(user.id)
-        assert lookedup.email == email

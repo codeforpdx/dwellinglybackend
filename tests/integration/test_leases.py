@@ -65,7 +65,7 @@ class TestLease:
             )
 
         mock_update.assert_called_once_with(
-            schema=LeaseSchema, id=1, payload={"hello": "world"}
+            schema=LeaseSchema, payload={"hello": "world"}
         )
         assert response.status_code == 200
         assert response.json == LeaseSerializer.serialize(lease)

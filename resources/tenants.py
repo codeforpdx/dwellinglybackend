@@ -12,9 +12,8 @@ class Tenant(Resource):
 
     @admin_required
     def put(self, id):
-        return TenantModel.update(
-            schema=TenantSchema, payload=request.json, id=id
-        ).json()
+        tenant = TenantModel.find(id)
+        return tenant.update(schema=TenantSchema, payload=request.json).json()
 
 
 class Tenants(Resource):
