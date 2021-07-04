@@ -2,8 +2,6 @@ from flask_restful import Resource
 from flask import request
 from utils.authorizations import admin_required
 from models.tenant import TenantModel
-from models.lease import LeaseModel
-from schemas.lease import LeaseSchema
 from schemas.tenant import TenantSchema
 
 
@@ -26,28 +24,23 @@ class Tenants(Resource):
 
     @admin_required
     def post(self):
-        tenantEntry = TenantModel.create(schema=TenantSchema, payload=request.json)
+        return (
+            TenantModel.create(
+                schema=TenantSchema, payload=self._build_payload()
+            ).json(),
+            201,
+        )
 
-        returnData = tenantEntry.json()
+    def _build_payload(self):
+        valid_tenant_params = ["firstName", "lastName", "phone", "staffIDs"]
+        valid_lease_params = ["dateTimeEnd", "dateTimeStart", "propertyID"]
 
-        leaseData = request.json
-        leaseData.update({"tenantID": tenantEntry.id})
+        params = {}
+        for param in valid_tenant_params:
+            params[param] = request.json.get(param, "")
 
-        def _lease():
-            return (
-                "dateTimeEnd" in leaseData
-                and "dateTimeStart" in leaseData
-                and "propertyID" in leaseData
-            )
+        params["leases"] = [{}]
+        for param in valid_lease_params:
+            params["leases"][0][param] = request.json.get(param, "")
 
-        if _lease():
-            LeaseModel.create(schema=LeaseSchema, payload=leaseData)
-            returnData.update(
-                {
-                    "occupants": leaseData["occupants"],
-                    "propertyID": leaseData["propertyID"],
-                    "unitNum": leaseData["unitNum"],
-                }
-            )
-
-        return returnData, 201
+        return params

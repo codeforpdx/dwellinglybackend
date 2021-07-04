@@ -1,77 +1,28 @@
 import pytest
-from conftest import is_valid
-from models.tenant import TenantModel
-from schemas.tenant import TenantSchema
-from utils.time import Time
 from unittest.mock import patch
-
-endpoint = "/api/tenants"
-
-
-def test_tenants_GET_all(client, test_database, auth_headers):
-    response = client.get(endpoint, headers=auth_headers["admin"])
-    assert is_valid(response, 200)  # OK
-    assert response.json["tenants"][0]["firstName"] == "Renty"
-
-
-def test_tenants_GET_one(client, test_database, auth_headers):
-    id = 1
-    response = client.get(f"{endpoint}/{id}", headers=auth_headers["admin"])
-    assert is_valid(response, 200)  # OK
-    assert response.json["firstName"] == "Renty"
-
-    id = 100
-    response = client.get(f"{endpoint}/{id}", headers=auth_headers["admin"])
-    assert is_valid(response, 404)  # NOT FOUND - 'Tenant not found'
-    assert response.json == {"message": "Tenant not found"}
-
-
-def test_tenants_POST(
-    client,
-    empty_test_db,
-    auth_headers,
-    valid_header,
-    create_property,
-    create_join_staff,
-):
-    staff_1 = create_join_staff()
-    staff_2 = create_join_staff()
-    newTenant = {
-        "firstName": "Jake",
-        "lastName": "The Dog",
-        "phone": "111-111-1111",
-        "staffIDs": [staff_1.id, staff_2.id],
-    }
-
-    newTenantWithLease = {
-        "firstName": "Finn",
-        "lastName": "The Human",
-        "phone": "123-555-4321",
-        "propertyID": create_property().id,
-        "occupants": 3,
-        "dateTimeEnd": Time.one_year_from_now_iso(),
-        "dateTimeStart": Time.yesterday_iso(),
-        "unitNum": "413",
-    }
-
-    response = client.post(endpoint, json=newTenant, headers=valid_header)
-
-    assert is_valid(response, 201)  # CREATED
-    assert response.json["firstName"] == "Jake"
-
-    response = client.post(endpoint, json=newTenantWithLease, headers=valid_header)
-    assert is_valid(response, 201)
-    assert response.json["unitNum"] == "413"
-
-    response = client.post(endpoint, json=newTenant, headers=valid_header)
+from models.tenant import TenantModel
+from schemas import TenantSchema
 
 
 @pytest.mark.usefixtures("client_class", "empty_test_db")
-class TestTenant:
+class TestTenantGet:
     def setup(self):
         self.endpoint = "/api/tenants"
 
-    def test_update_tenant(self, empty_test_db, valid_header, create_tenant):
+    def test_get(self, valid_header, create_tenant):
+        tenant = create_tenant()
+
+        response = self.client.get(f"{self.endpoint}/{tenant.id}", headers=valid_header)
+
+        assert response.json == tenant.json()
+
+
+@pytest.mark.usefixtures("client_class", "empty_test_db")
+class TestTenantPut:
+    def setup(self):
+        self.endpoint = "/api/tenants"
+
+    def test_update_tenant(self, valid_header, create_tenant):
         tenant = create_tenant()
         updated_fields = {"archived": True}
 
@@ -87,3 +38,39 @@ class TestTenant:
         )
         assert response.status_code == 200
         assert response.json == tenant.json()
+
+
+@pytest.mark.usefixtures("client_class", "empty_test_db")
+class TestTenantsGet:
+    def test_get_all_tenants(self, valid_header, create_tenant):
+        tenant = create_tenant()
+        tenant_two = create_tenant()
+
+        response = self.client.get("/api/tenants", headers=valid_header)
+
+        assert response.status_code == 200
+        assert response.json == {"tenants": [tenant.json(), tenant_two.json()]}
+
+
+@pytest.mark.usefixtures("client_class", "empty_test_db")
+class TestTenantsPost:
+    def test_create(
+        self, valid_header, tenant_attributes, lease_payload, create_tenant
+    ):
+        tenant_attrs = tenant_attributes()
+        lease_attrs = lease_payload()
+        tenant = create_tenant()
+
+        with patch.object(TenantModel, "create", return_value=tenant) as mock_create:
+            response = self.client.post(
+                "/api/tenants",
+                json={**tenant_attrs, **lease_attrs},
+                headers=valid_header,
+            )
+
+        mock_create.assert_called_once_with(
+            schema=TenantSchema, payload={**tenant_attrs, "leases": [{**lease_attrs}]}
+        )
+
+        assert response.json == tenant.json()
+        assert response.status_code == 201
