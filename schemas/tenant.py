@@ -14,6 +14,7 @@ class TenantSchema(ma.SQLAlchemyAutoSchema):
     updated_at = fields.DateTime(time_format)
 
     staffIDs = fields.List(fields.Integer(), required=False)
+    leases = fields.List(fields.Nested("BuildLeaseSchema"))
 
     firstName = fields.Str(
         required=True,
