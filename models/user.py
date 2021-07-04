@@ -57,7 +57,7 @@ class UserModel(BaseModel):
 
     @property
     def password(self):
-        raise AttributeError('password field is not allowed to access')
+        raise AttributeError("password field is not allowed to access")
 
     @password.setter
     def password(self, plaintext_password):

@@ -101,7 +101,6 @@ class TestFixtures:
 
 @pytest.mark.usefixtures("empty_test_db")
 class TestOverwrittenAndInheritedMethods:
-
     def test_update_class_method(self, create_join_staff, faker):
         user = create_join_staff()
         email = faker.unique.email()

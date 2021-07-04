@@ -15,7 +15,6 @@ class TestLease:
         with patch.object(LeaseModel, "find", return_value=lease) as mock_find:
             response = self.client.get(f"{self.endpoint}/1", headers=valid_header)
 
-        # mock_find.asseasdflkjalskdjfasd_once_with(1)
         mock_find.assert_called_once_with(1)
         assert response.status_code == 200
         assert response.json == LeaseSerializer.serialize(lease)
