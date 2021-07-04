@@ -313,11 +313,11 @@
         },
         "marshmallow-sqlalchemy": {
             "hashes": [
-                "sha256:4cef3d7f275978e2fb502c8693365a5ebe86921d9d021ad2e7401a2e2e3f97a3",
-                "sha256:cc335437f74427e47a2fdd68f1c2836c60643a001a1fea602ebd4114ce3f75b0"
+                "sha256:ba7493eeb8669a3bf00d8f906b657feaa87a740ae9e4ecf829cfd6ddf763d276",
+                "sha256:d8525f74de51554b5c8491effe036f60629a426229befa33ff614c8569a16a73"
             ],
             "index": "pypi",
-            "version": "==0.26.0"
+            "version": "==0.26.1"
         },
         "mergedeep": {
             "hashes": [
