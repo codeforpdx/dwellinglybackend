@@ -1,5 +1,5 @@
 from db import db
-from utils.nobiru import NobiruList
+from nobiru.nobiru_list import NobiruList
 from models.base_model import BaseModel
 from models.user import UserModel
 from models.property_assignment import PropertyAssignment
@@ -24,14 +24,15 @@ class PropertyModel(BaseModel):
         cascade="all, delete-orphan",
         collection_class=NobiruList,
     )
+
     managers = db.relationship(
-        UserModel,
+        "PropertyManager",
         secondary=PropertyAssignment.tablename(),
-        backref="properties",
+        back_populates="properties",
         collection_class=NobiruList,
     )
 
-    def json(self, include_tenants=False):
+    def json(self, include_tenants=False, include_managers=True):
         property = {
             "id": self.id,
             "name": self.name,
@@ -40,19 +41,22 @@ class PropertyModel(BaseModel):
             "city": self.city,
             "state": self.state,
             "zipcode": self.zipcode,
-            "propertyManagers": self.managers.json(),
             "leases": self.leases.json(),
             "archived": self.archived,
         }
         if include_tenants:
             property["tenants"] = self.tenants()
 
+        if include_managers:
+            property["propertyManagers"] = self.managers.json()
+
         return property
 
     def tenants(self):
         tenants = []
         for lease in self.leases:
-            tenants.append(lease.tenant.json())
+            if lease.is_active():
+                tenants.append(lease.tenant.json())
         return tenants
 
     @classmethod

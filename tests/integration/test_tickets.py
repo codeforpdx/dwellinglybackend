@@ -1,134 +1,122 @@
 import pytest
-from conftest import is_valid
-from models.tickets import TicketStatus
-
-endpoint = "/api/tickets"
-validID = 1
-invalidID = 777
+from db import db
+from models.tickets import TicketModel
+from schemas.ticket import TicketSchema
+from unittest.mock import patch
 
 
-def test_tickets_GET_all(client, test_database, auth_headers):
-    response = client.get(endpoint, headers=auth_headers["admin"])
-    assert is_valid(response, 200)
-    assert len(response.json["tickets"]) == 4
-    assert len(response.json["tickets"][0]["notes"]) == 2
-    assert len(response.json["tickets"][1]["notes"]) == 1
-    assert len(response.json["tickets"][2]["notes"]) == 1
-    assert len(response.json["tickets"][3]["notes"]) == 0
+@pytest.mark.usefixtures("client_class", "empty_test_db")
+class BaseConfig:
+    endpoint = "/api/tickets"
 
 
-def test_tickets_GET_byTenant(client, test_database, auth_headers):
-    response = client.get(f"{endpoint}?tenant_id=1", headers=auth_headers["admin"])
-    assert is_valid(response, 200)
-    assert len(response.json["tickets"]) == 2
-    assert response.json["tickets"][0]["tenant_id"] == 1
-    assert response.json["tickets"][1]["tenant_id"] == 1
+class TestTicketGET(BaseConfig):
+    def test_get(self, valid_header, create_ticket):
+        ticket = create_ticket()
+        response = self.client.get(f"{self.endpoint}/{ticket.id}", headers=valid_header)
+
+        assert response.status_code == 200
+        assert response.json == ticket.json()
 
 
-def test_tickets_GET_one(client, test_database, auth_headers):
-    response = client.get(f"{endpoint}/{validID}", headers=auth_headers["admin"])
-    assert is_valid(response, 200)
-    assert response.json["id"] == 1
-    assert response.json["issue"] == "The roof, the roof, the roof is on fire."
-    assert response.json["tenant"] == "Renty McRenter"
-    assert response.json["author_id"] == 1
-    assert response.json["tenant_id"] == 1
-    assert response.json["sender"] == "user1 tester"
-    assert response.json["status"] == TicketStatus.In_Progress
-    assert response.json["urgency"] == "Low"
-    assert len(response.json["notes"]) == 2
-    assert response.json["notes"][0]["ticket_id"] == 1
-    assert response.json["notes"][0]["text"] == "Tenant has over 40 cats."
-    assert response.json["notes"][0]["user"] == "user2 tester"
-    assert response.json["notes"][1]["ticket_id"] == 1
-    assert response.json["notes"][1]["text"] == "Issue Resolved with phone call"
-    assert response.json["notes"][1]["user"] == "user3 tester"
+class TestTicketPUT(BaseConfig):
+    def test_update(self, valid_header, create_ticket):
+        ticket = create_ticket()
+        with patch.object(TicketModel, "update", return_value=ticket) as mock_update:
+            response = self.client.put(
+                f"{self.endpoint}/{ticket.id}",
+                json={"hello": "world"},
+                headers=valid_header,
+            )
 
-    response = client.get(f"{endpoint}/{invalidID}", headers=auth_headers["admin"])
-    assert is_valid(response, 404)
-    assert response.json == {"message": "Ticket not found"}
+        mock_update.assert_called_once_with(
+            schema=TicketSchema, id=ticket.id, payload={"hello": "world"}
+        )
+
+        assert response.status_code == 200
+        assert response.json == ticket.json()
 
 
-def test_tickets_POST(client, auth_headers):
-    newTicket = {
-        "author_id": 1,
-        "tenant_id": 1,
-        "status": "New",
-        "urgency": "low",
-        "issue": "Lead paint issue",
-    }
+class TestTicketDELETE(BaseConfig):
+    def test_delete(self, valid_header):
+        with patch.object(TicketModel, "delete") as mock_delete:
+            response = self.client.delete(f"{self.endpoint}/1", headers=valid_header)
 
-    response = client.post(endpoint, json=newTicket, headers=auth_headers["admin"])
-
-    assert is_valid(response, 201)
-    assert response.json == {"message": "Ticket successfully created"}
+        mock_delete.assert_called_once_with(1)
+        assert response.status_code == 200
+        assert response.json == {"message": "Ticket removed from database"}
 
 
-def test_tickets_PUT(client, auth_headers):
-    updatedTicket = {
-        "author_id": 2,
-        "tenant_id": 2,
-        "status": "In_Progress",
-        "urgency": "high",
-        "issue": "Leaky pipe",
-    }
+class TestTicketsGET(BaseConfig):
+    def test_tickets_get_all(self, valid_header, create_ticket):
+        ticket_1 = create_ticket()
+        ticket_2 = create_ticket()
+        response = self.client.get(self.endpoint, headers=valid_header)
 
-    response = client.put(
-        f"{endpoint}/{validID}", json=updatedTicket, headers=auth_headers["admin"]
-    )
+        assert response.status_code == 200
+        assert response.json == {"tickets": [ticket_1.json(), ticket_2.json()]}
 
-    assert is_valid(response, 200)
-    assert response.json["issue"] == "Leaky pipe"
-    assert response.json["tenant"] == "Soho Muless"
-    assert response.json["author_id"] == 2
-    assert response.json["tenant_id"] == 2
-    assert response.json["sender"] == "user2 tester"
-    assert response.json["status"] == TicketStatus.In_Progress
-    assert response.json["urgency"] == "high"
+    def test_tickets_get_by_tenant(self, valid_header, create_ticket):
+        ticket_1 = create_ticket()
+        create_ticket()
+        create_ticket()
 
-    # verify jwt only
-    response = client.put(
-        f"{endpoint}/{validID}", json=updatedTicket, headers=auth_headers["admin"]
-    )
-    assert is_valid(response, 200)
+        response = self.client.get(
+            f"{self.endpoint}?tenant_id={ticket_1.tenant.id}", headers=valid_header
+        )
 
-    response = client.put(
-        f"{endpoint}/{invalidID}", json=updatedTicket, headers=auth_headers["admin"]
-    )
-    # NOT FOUND - Trying to update a non-existing ticket
-    assert is_valid(response, 404)
-    assert response.json == {"message": "Ticket not found"}
+        assert response.status_code == 200
+        assert response.json == {"tickets": [ticket_1.json()]}
 
 
-def test_tickets_DELETE(client, auth_headers, create_ticket):
-    response = client.delete(f"{endpoint}/{validID}", headers=auth_headers["admin"])
-    assert is_valid(response, 200)
-    assert response.json == {"message": "Ticket removed from database"}
+class TestTicketsPOST(BaseConfig):
+    def test_create_ticket(self, valid_header, ticket_attributes):
+        new_ticket = ticket_attributes()
 
-    response = client.delete(f"{endpoint}/{validID}", headers=auth_headers["admin"])
-    # NOT FOUND - Trying to delete a non-existing ticket or an already deleted ticket
-    assert is_valid(response, 404)
-    assert response.json == {"message": "Ticket not found"}
+        with patch.object(TicketModel, "create") as mock_create:
+            response = self.client.post(
+                self.endpoint, json=new_ticket, headers=valid_header
+            )
+
+        mock_create.assert_called_once_with(schema=TicketSchema, payload=new_ticket)
+
+        assert response.status_code == 201
+        assert response.json == {"message": "Ticket successfully created"}
 
 
-def test_tickets_DELETE_list(client, auth_headers, create_ticket):
-    ticketsToDelete = [create_ticket().id, create_ticket().id]
-    deleteIds = {"ids": ticketsToDelete}
-    response = client.delete(endpoint, json=deleteIds, headers=auth_headers["pm"])
-    assert is_valid(response, 200)
-    assert response.json == {"message": "Tickets successfully deleted"}
+class TestTicketsDELETE(BaseConfig):
+    def test_delete_many(self, valid_header, create_ticket):
+        ticket_1 = create_ticket()
+        ticket_2 = create_ticket()
+        delete_ids = {"ids": [ticket_1.id, ticket_2.id]}
 
-    nonExistentTicketId = 999
-    ticketsToDelete = [create_ticket().id, nonExistentTicketId]
-    deleteIds = {"ids": ticketsToDelete}
-    response = client.delete(endpoint, json=deleteIds, headers=auth_headers["pm"])
-    assert is_valid(response, 200)
-    assert response.json == {"message": "Tickets successfully deleted"}
+        response = self.client.delete(
+            self.endpoint, json=delete_ids, headers=valid_header
+        )
+        db.session.rollback()
 
-    missingIds = {"notIds": [5]}
-    response = client.delete(endpoint, json=missingIds, headers=auth_headers["pm"])
-    assert is_valid(response, 400)
-    assert response.json == {"message": "Ticket IDs missing in request"}
+        assert response.status_code == 200
+        assert response.json == {"message": "Tickets successfully deleted"}
+        assert TicketModel.query.all() == []
+
+    def test_delete_many_ignores_nonexistent_ids(self, valid_header, create_ticket):
+        nonExistentTicketId = 999
+        ticketsToDelete = [create_ticket().id, nonExistentTicketId]
+        deleteIds = {"ids": ticketsToDelete}
+        response = self.client.delete(
+            self.endpoint, json=deleteIds, headers=valid_header
+        )
+
+        assert response.status_code == 200
+        assert response.json == {"message": "Tickets successfully deleted"}
+
+    def test_delete_many_requires_ids_field(self, valid_header):
+        missingIds = {"notIds": [5]}
+        response = self.client.delete(
+            self.endpoint, json=missingIds, headers=valid_header
+        )
+        assert response.status_code == 400
+        assert response.json == {"message": "Ticket IDs missing in request"}
 
 
 @pytest.mark.usefixtures("empty_test_db")

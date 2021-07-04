@@ -1,9 +1,10 @@
 from db import db
-from utils.nobiru import NobiruList
+from nobiru.nobiru_list import NobiruList
 from models.base_model import BaseModel
 from models.tickets import TicketModel
 from utils.time import Time
 from models.lease import LeaseModel
+from models.staff_tenant_link import StaffTenantLink
 
 
 class TenantModel(BaseModel):
@@ -17,11 +18,11 @@ class TenantModel(BaseModel):
 
     # relationships
     staff = db.relationship(
-        "UserModel",
-        secondary="staff_tenant_links",
-        backref="tenants",
+        "Staff",
+        secondary=StaffTenantLink.tablename(),
         collection_class=NobiruList,
     )
+
     leases = db.relationship(
         "LeaseModel",
         backref="tenant",
@@ -29,6 +30,7 @@ class TenantModel(BaseModel):
         cascade="all, delete-orphan",
         collection_class=NobiruList,
     )
+
     tickets = db.relationship(
         TicketModel, backref="tenant", lazy=True, collection_class=NobiruList
     )

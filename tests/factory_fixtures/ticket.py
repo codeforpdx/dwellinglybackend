@@ -5,12 +5,12 @@ from schemas.ticket import TicketSchema
 
 
 @pytest.fixture
-def ticket_attributes(faker):
-    def _ticket_attributes(issue, tenant, author):
+def ticket_attributes(faker, create_tenant, create_join_staff):
+    def _ticket_attributes(issue=None, tenant=None, author=None):
         return {
-            "issue": issue,
-            "tenant_id": tenant.id,
-            "author_id": author.id,
+            "issue": issue or faker.sentence(),
+            "tenant_id": tenant.id if tenant else create_tenant().id,
+            "author_id": author.id if author else create_join_staff().id,
             "status": TicketStatus.New,
             "urgency": faker.random_element(("Low", "Medium", "High")),
         }

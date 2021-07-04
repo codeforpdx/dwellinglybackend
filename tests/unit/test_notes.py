@@ -25,6 +25,6 @@ class TestNotesModel:
             "ticket_id": note.ticket_id,
             "text": note.text,
             "user": user.full_name(),
-            "created_at": Time.format_date(note.created_at),
-            "updated_at": Time.format_date(note.updated_at),
+            "created_at": Time.to_iso(note.created_at),
+            "updated_at": Time.to_iso(note.updated_at),
         }
