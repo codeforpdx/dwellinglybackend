@@ -51,32 +51,6 @@ def new_user():
 
 
 @pytest.fixture
-def property_manager_user():
-    return UserModel(
-        email="manager@domain.com",
-        password=plaintext_password,
-        firstName="Leslie",
-        lastName="Knope",
-        phone="505-503-4455",
-        role=RoleEnum.PROPERTY_MANAGER,
-        archived=0,
-    )
-
-
-# Returns an object with authorization headers for users of all roles
-# (admin, property-manager, pending)
-@pytest.fixture
-def auth_headers(client, test_database, admin_user, new_user, property_manager_user):
-    admin_auth_header = get_auth_header(client, admin_user)
-    pm_auth_header = get_auth_header(client, property_manager_user)
-
-    return {
-        "admin": admin_auth_header,
-        "pm": pm_auth_header,
-    }
-
-
-@pytest.fixture
 def valid_header(admin_header):
     return admin_header
 
@@ -93,47 +67,47 @@ def _user_claims(user):
 
 
 @pytest.fixture
-def admin_header(create_admin_user):
-    admin = create_admin_user()
-    token = jwt.encode(
-        _user_claims(admin),
-        current_app.secret_key,
-        algorithm="HS256",
-    )
-    return {"Authorization": f"Bearer {token}"}
+def header():
+    def _header(user):
+        token = jwt.encode(
+            _user_claims(user),
+            current_app.secret_key,
+            algorithm="HS256",
+        )
+        return {"Authorization": f"Bearer {token}"}
+
+    yield _header
 
 
 @pytest.fixture
-def staff_header(create_join_staff):
-    staff = create_join_staff()
-    token = jwt.encode(
-        _user_claims(staff),
-        current_app.secret_key,
-        algorithm="HS256",
-    )
-    return {"Authorization": f"Bearer {token}"}
+def admin_header(header, create_admin_user):
+    return header(create_admin_user())
 
 
 @pytest.fixture
-def pm_header(create_property_manager):
-    pm = create_property_manager()
-    token = jwt.encode(
-        _user_claims(pm),
-        current_app.secret_key,
-        algorithm="HS256",
-    )
-    return {"Authorization": f"Bearer {token}"}
+def staff_header(header, create_join_staff):
+    def _staff_header(staff=None):
+        return header(staff or create_join_staff())
+
+    yield _staff_header
 
 
 @pytest.fixture
-def test_database(app, admin_user, new_user, property_manager_user):
+def pm_header(header, create_property_manager):
+    def _pm_header(pm=None):
+        return header(pm or create_property_manager())
+
+    yield _pm_header
+
+
+@pytest.fixture
+def test_database(app, admin_user, new_user):
     db.create_all()
 
     seedData()
 
     db.session.add(admin_user)
     db.session.add(new_user)
-    db.session.add(property_manager_user)
     db.session.commit()
 
     yield db
@@ -150,15 +124,6 @@ def empty_test_db(app):
 
 
 # -------------     NON-FIXTURE FUNCTIONS     --------------------
-
-# Logs a user in and returns their auth header
-# To log a user in, you must also load the "test_database" fixture
-def get_auth_header(client, userModel):
-    login_response = client.post(
-        "/api/login", json={"email": userModel.email, "password": plaintext_password}
-    )
-    auth_header = {"Authorization": f"Bearer {login_response.json['access_token']}"}
-    return auth_header
 
 
 def has_valid_headers(response):

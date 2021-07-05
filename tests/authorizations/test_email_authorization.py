@@ -19,7 +19,7 @@ class TestEmailAuthorizations:
             "subject": "PM's email subject",
             "body": "I'm a property manager",
         }
-        response = self.client.post(self.endpoint, json=payload, headers=pm_header)
+        response = self.client.post(self.endpoint, json=payload, headers=pm_header())
         assert is_valid(response, 401)
 
     def test_admin_is_allowed_access(self, admin_header, create_join_staff):
@@ -37,5 +37,5 @@ class TestEmailAuthorizations:
             "subject": "Staff's email subject",
             "body": "I'm staff",
         }
-        response = self.client.post(self.endpoint, json=payload, headers=staff_header)
+        response = self.client.post(self.endpoint, json=payload, headers=staff_header())
         assert is_valid(response, 401)

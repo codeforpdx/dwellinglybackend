@@ -52,19 +52,18 @@ class TestResetPasswordGET:
         assert response.status == "422 UNPROCESSABLE ENTITY"
         assert response.json == {"message": "Not enough segments"}
 
-    def test_request_with_expired_token(self, new_user):
+    def test_request_with_expired_token(self, create_user):
         with freeze_time(Time.yesterday()):
-            token = new_user.reset_password_token()
+            token = create_user().reset_password_token()
 
         response = self.client.get(f"{self.endpoint}/{token}")
 
         assert response.status == "422 UNPROCESSABLE ENTITY"
         assert response.json == {"message": "Expired token"}
 
-    def test_request_with_valid_token(self, new_user):
-        token = new_user.reset_password_token()
-
-        response = self.client.get(f"{self.endpoint}/{token}")
+    def test_request_with_valid_token(self, create_user):
+        user = create_user()
+        response = self.client.get(f"{self.endpoint}/{user.reset_password_token()}")
 
         assert response.status == "200 OK"
-        assert response.json == {"message": "Valid token", "user_id": new_user.id}
+        assert response.json == {"message": "Valid token", "user_id": user.id}
