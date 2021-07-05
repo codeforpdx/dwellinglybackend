@@ -59,50 +59,6 @@ def test_get_pm_by_id(client, empty_test_db, create_property_manager, valid_head
     assert response.json == user.json()
 
 
-def test_user_roles(client, test_database, valid_header):
-    """The get users by role route returns a successful response code."""
-    response = client.post(
-        "/api/users/role",
-        json={"userrole": RoleEnum.ADMIN.value},
-        headers=valid_header,
-    )
-    assert len(response.get_json()["users"]) == 5
-    assert response.status_code == 200
-
-    """The get users by role route returns only property managers."""
-    response = client.post(
-        "/api/users/role",
-        json={"userrole": RoleEnum.PROPERTY_MANAGER.value},
-        headers=valid_header,
-    )
-    managers = response.get_json()["users"]
-    assert len(managers) == 3
-    assert all([RoleEnum.PROPERTY_MANAGER.value == pm["role"] for pm in managers])
-    assert response.status_code == 200
-
-    """The get users by role route returns only property managers named Gray Pouponn."""
-    response = client.post(
-        "/api/users/role",
-        json={"name": "ray", "userrole": RoleEnum.PROPERTY_MANAGER.value},
-        headers=valid_header,
-    )
-    managers = response.get_json()["users"]
-    assert len(managers) == 1
-    assert all(["Gray" == pm["firstName"] for pm in managers])
-    assert all(["Pouponn" == pm["lastName"] for pm in managers])
-    assert response.status_code == 200
-
-    """The get users by role route returns zero users when no names match."""
-    response = client.post(
-        "/api/users/role",
-        json={"name": "ABCDEFG", "userrole": RoleEnum.PROPERTY_MANAGER.value},
-        headers=valid_header,
-    )
-    managers = response.get_json()["users"]
-    assert len(managers) == 0
-    assert response.status_code == 200
-
-
 def test_archive_user(client, test_database, valid_header, new_user, admin_user):
     """
     The archive user by id route returns a successful response code
