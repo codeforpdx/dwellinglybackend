@@ -14,7 +14,6 @@ from resources.property import Properties, Property, ArchiveProperty, ArchivePro
 from resources.staff_tenants import StaffTenants
 from resources.tenants import Tenants, Tenant
 from resources.emergency_contacts import EmergencyContacts
-from resources.email import Email
 from resources.tickets import Ticket, Tickets
 from resources.notes import Notes, Note
 from resources.lease import Lease, Leases
@@ -37,7 +36,6 @@ class Routes:
         api.add_resource(ArchiveUser, "user/archive/<int:user_id>")
         api.add_resource(UserLogin, "login")
         api.add_resource(Widgets, "widgets")
-        api.add_resource(Email, "user/message")
         api.add_resource(UserAccessRefresh, "refresh")
         api.add_resource(StaffTenants, "staff-tenants")
         api.add_resource(Tenants, "tenants")
