@@ -86,17 +86,6 @@ def test_archive_user(client, test_database, valid_header, new_user, admin_user)
     assert response.json == {"message": "Cannot archive self"}
 
 
-def test_unique_user_constraint(client, test_database, valid_header, new_user):
-    """Emails must be unique, otherwise an Exception is thrown"""
-    with pytest.raises(Exception):
-        userToPatch = UserModel.find_by_email(new_user.email)
-        client.patch(
-            f"/api/user/{userToPatch.id}",
-            json={"email": "user1@dwellingly.org"},
-            headers=valid_header,
-        )
-
-
 def test_delete_user(client, test_database, valid_header, new_user):
     userToDelete = UserModel.find_by_email(new_user.email)
 

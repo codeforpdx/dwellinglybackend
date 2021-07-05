@@ -217,4 +217,4 @@ class TestUserLogic:
         )
 
         assert response.status_code == 403
-        assert response.json == {"message": "Only admins can change roles"}
+        assert response.json == {"message": "Not Authorized"}

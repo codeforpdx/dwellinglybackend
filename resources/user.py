@@ -1,7 +1,7 @@
 from flask_restful import Resource, reqparse
 from flask import request
-from schemas import UserRegisterSchema
-from utils.authorizations import admin_required, admin, pm_level_required
+from schemas import UserRegisterSchema, UserSchema
+from utils.authorizations import admin_required, pm_level_required
 from models.user import UserModel, RoleEnum
 from models.revoked_tokens import RevokedTokensModel
 from flask_jwt_extended import (
@@ -22,108 +22,47 @@ class UserRegister(Resource):
 
 class User(Resource):
     @admin_required
-    def get(self, user_id):
-        return UserModel.find(user_id).json()
+    def get(self, id):
+        return UserModel.find(id).json()
 
     @pm_level_required
-    def patch(self, user_id):
+    def patch(self, id):
+        current_user = UserModel.find(get_jwt_identity())
+        user = UserModel.find(id)
+        role = request.json.get("role")
+        password = request.json.get("new_password")
 
-        user = UserModel.find(user_id)
+        if not self._authorized(current_user=current_user, user=user, role_change=role):
+            return {"message": "Not Authorized"}, 403
 
-        parser = reqparse.RequestParser()
-        parser.add_argument(
-            "role", type=int, required=False, help="This field is not required"
-        )
-        parser.add_argument(
-            "firstName", type=str, required=False, help="This field is not required"
-        )
-        parser.add_argument(
-            "lastName", type=str, required=False, help="This field is not required"
-        )
-        parser.add_argument(
-            "email", type=str, required=False, help="This field is not required"
-        )
-        parser.add_argument(
-            "phone", type=str, required=False, help="This field is not required"
-        )
-        parser.add_argument(
-            "current_password",
-            type=str,
-            required=False,
-            help="This field is not required",
-        )
-        parser.add_argument(
-            "new_password", type=str, required=False, help="This field is not required"
-        )
-        parser.add_argument(
-            "confirm_password",
-            type=str,
-            required=False,
-            help="This field is not required",
-        )
+        if role:
+            user.role = RoleEnum(role)
+            user.type = RoleEnum(role).name.lower()
 
-        data = parser.parse_args()
-
-        if user_id != get_jwt_identity() and not admin():
-            return (
-                {
-                    "message": "You cannot change another user's information \
-                    unless you are an admin"
-                },
-                403,
-            )
-
-        if data["role"] and not admin():
-            return {"message": "Only admins can change roles"}, 403
-
-        if data["role"]:
-            user.role = RoleEnum(data["role"])
-            user.type = RoleEnum(data["role"]).name.lower()
-        if data["firstName"] is not None:
-            user.firstName = data["firstName"]
-        if data["lastName"] is not None:
-            user.lastName = data["lastName"]
-        if data["email"]:
-            user.email = data["email"]
-        if data["phone"]:
-            user.phone = data["phone"]
-
-        # Reset Password
-        if (
-            data["current_password"]
-            and data["new_password"]
-            and data["confirm_password"]
-        ):
-
-            # Step #1: Check if current password matches the one in the db
-            if not user.check_pw(data["current_password"]):
+        if password:
+            if password != request.json.get("confirm_password"):
+                return {"message": "Unconfirmed password"}, 422
+            if user.check_pw(request.json.get("current_password")):
+                user.password = password
+            else:
                 return {"message": "Password does not match."}, 401
 
-            # Step #2: Check if new password and confirm password match
-            if data["new_password"] != data["confirm_password"]:
-                return {"message": "New password does not match."}, 422
+        return user.update(schema=UserSchema, payload=request.json).json(
+            refresh_token=current_user == user
+        )
 
-            # Step #3: Set the new password
-            user.password = data["new_password"]
-
-        user.save_to_db()
-
-        if user_id == get_jwt_identity():
-            new_tokens = {
-                "access_token": create_access_token(identity=user.id, fresh=True),
-                "refresh_token": create_refresh_token(user.id),
-            }
-            user.update_last_active()
-            return {**user.json(), **new_tokens}, 200
-
-        return user.json(), 200
+    def _authorized(self, current_user, user, role_change):
+        if role_change or current_user != user:
+            return current_user.is_admin()
+        else:
+            return True
 
     @admin_required
-    def delete(self, user_id):
-        if user_id == get_jwt_identity():
-            return {"message": "Cannot delete self"}, 400
+    def delete(self, id):
+        user = UserModel.find(id)
 
-        user = UserModel.find(user_id)
+        if user.id == get_jwt_identity():
+            return {"message": "Cannot delete self"}, 400
 
         user.delete_from_db()
         return {"message": "User deleted"}, 200
