@@ -4,9 +4,7 @@ from resources.user import (
     User,
     UserLogin,
     ArchiveUser,
-    UsersRole,
     UserAccessRefresh,
-    UserRoles,
     Users,
 )
 from resources.user_invite import UserInvite
@@ -35,11 +33,9 @@ class Routes:
         api.add_resource(User, "user/<int:user_id>")
         api.add_resource(UserInvite, "user/invite")
         api.add_resource(Users, "user")
-        api.add_resource(UsersRole, "users/role")
         api.add_resource(UsersPending, "users/pending")
         api.add_resource(ArchiveUser, "user/archive/<int:user_id>")
         api.add_resource(UserLogin, "login")
-        api.add_resource(UserRoles, "roles")
         api.add_resource(Widgets, "widgets")
         api.add_resource(Email, "user/message")
         api.add_resource(UserAccessRefresh, "refresh")

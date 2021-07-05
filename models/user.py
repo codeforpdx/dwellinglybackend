@@ -123,10 +123,6 @@ class UserModel(BaseModel):
         return cls.query.filter_by(email=email).first()
 
     @classmethod
-    def find_by_role(cls, role):
-        return cls.query.filter_by(role=role).all()
-
-    @classmethod
     def find_recent_role(cls, role, days):
         return (
             db.session.query(UserModel)

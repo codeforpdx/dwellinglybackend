@@ -1,11 +1,9 @@
 from flask_restful import Resource, reqparse
 from flask import request
 from schemas import UserRegisterSchema
-from models.property import PropertyModel
 from utils.authorizations import admin_required, admin, pm_level_required
 from models.user import UserModel, RoleEnum
 from models.revoked_tokens import RevokedTokensModel
-import json
 from flask_jwt_extended import (
     create_access_token,
     create_refresh_token,
@@ -13,15 +11,6 @@ from flask_jwt_extended import (
     get_jwt_identity,
     jwt_required,
 )
-
-
-class UserRoles(Resource):
-    def get(self):
-        roles = {}
-        for role in RoleEnum:
-            roles[role.name] = role.value
-        result = json.dumps(roles)
-        return result, 200
 
 
 class UserRegister(Resource):
@@ -187,32 +176,6 @@ class UserLogin(Resource):
         return {"message": "Invalid credentials"}, 401
 
 
-class UsersRole(Resource):
-    parser = reqparse.RequestParser()
-    parser.add_argument(
-        "userrole", type=int, required=True, help="This field cannot be blank"
-    )
-    parser.add_argument("name", type=str, required=False)
-
-    @admin_required
-    def post(self):
-        data = UsersRole.parser.parse_args()
-        if data["name"]:
-            users = UserModel.find_by_role_and_name(
-                RoleEnum(data["userrole"]), data["name"]
-            )
-        else:
-            users = UserModel.find_by_role(RoleEnum(data["userrole"]))
-        users_info = []
-        for user in users:
-            info = user.json()
-            info["properties"] = [
-                p.json() for p in PropertyModel.find_by_manager(user.id) if p
-            ]
-            users_info.append(info)
-        return {"users": users_info}
-
-
 # This endpoint allows the app to use a refresh token to get a new access token
 class UserAccessRefresh(Resource):
 
@@ -231,26 +194,11 @@ class UserAccessRefresh(Resource):
 class Users(Resource):
     @admin_required
     def get(self):
-
-        role_query = int(request.args["r"])
-
-        if not RoleEnum.has_role(role_query):
-            return {"message": "Invalid role"}, 400
-
-        role = RoleEnum(role_query)
-        users = [user.json() for user in UserModel.find_by_role(role)]
-        ret = [
-            {
-                "id": user["id"],
-                "firstName": user["firstName"],
-                "lastName": user["lastName"],
-                "email": user["email"],
-                "phone": user["phone"],
-                "role": user["role"],
-                "tickets": "TODO",
-                "tenants": "TODO",
+        if RoleEnum.has_role(int(request.args["r"])):
+            return {
+                "users": UserModel.query.filter_by(
+                    role=RoleEnum(int(request.args["r"]))
+                ).json()
             }
-            for user in users
-        ]
-
-        return {"users": ret}, 200
+        else:
+            return {"message": "Invalid role"}, 400
