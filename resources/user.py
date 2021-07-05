@@ -114,9 +114,9 @@ class User(Resource):
                 "refresh_token": create_refresh_token(user.id),
             }
             user.update_last_active()
-            return {**user.json(), **new_tokens}, 201
+            return {**user.json(), **new_tokens}, 200
 
-        return user.json(), 201
+        return user.json(), 200
 
     @admin_required
     def delete(self, user_id):

@@ -1,11 +1,11 @@
 import pytest
 from conftest import is_valid
-from models.user import RoleEnum, UserModel
+from models.user import RoleEnum
 from flask_jwt_extended import create_access_token, create_refresh_token
 
 
 @pytest.mark.usefixtures("client_class", "empty_test_db")
-class TestUserAuthentication:
+class TestUserAuthorization:
     def setup(self):
         self.plaintext_password = "1234"
         self.new_password = "newPassword"
@@ -55,24 +55,99 @@ class TestUserAuthentication:
         )
         assert login_response.status_code == 401
 
-    def test_patch_user(
-        self, auth_headers, property_manager_user, create_admin_user, pm_header
+    def test_get_user(self, pm_header):
+
+        """Non-admin requests return a 401 status code"""
+
+        unauthorized_user_response = self.client.get(
+            f"api/user?r={RoleEnum.PROPERTY_MANAGER.value}", headers=pm_header()
+        )
+        assert is_valid(unauthorized_user_response, 401)
+
+
+@pytest.mark.usefixtures("client_class", "empty_test_db")
+class TestUserDeleteAuthorization:
+    def test_admin_is_authorized(self, admin_header, create_user):
+        response = self.client.delete(
+            f"/api/user/{create_user().id}", headers=admin_header
+        )
+        assert response.status_code == 200
+
+    def test_join_staff_is_not_authorized(self, staff_header, create_user):
+        response = self.client.delete(
+            f"/api/user/{create_user().id}", headers=staff_header()
+        )
+        assert response.status_code == 401
+
+    def test_pm_is_not_authorized(self, pm_header, create_user):
+        response = self.client.delete(
+            f"/api/user/{create_user().id}", headers=pm_header()
+        )
+        assert response.status_code == 401
+
+
+@pytest.mark.usefixtures("client_class", "empty_test_db")
+class TestUserPatchAuthorization:
+    def test_auth_token_is_required(self):
+        response = self.client.patch("api/user/5", json={})
+        assert response.status_code == 401
+
+    def test_admin_is_authorized_to_update_anyone(self, admin_header, create_user):
+        response = self.client.patch(
+            f"api/user/{create_user().id}", json={}, headers=admin_header
+        )
+        assert response == 200
+
+    def test_staff_is_not_authorized_to_update_anyone(self, staff_header, create_user):
+        response = self.client.patch(
+            f"api/user/{create_user().id}", json={}, headers=staff_header()
+        )
+        assert response == 403
+
+    def test_pm_is_not_authorized_to_update_anyone(self, pm_header, create_user):
+        response = self.client.patch(
+            f"api/user/{create_user().id}", json={}, headers=pm_header()
+        )
+        assert response == 403
+
+    def test_staff_is_authorized_to_update_themselves(
+        self, staff_header, create_join_staff
     ):
+        staff = create_join_staff()
+        response = self.client.patch(
+            f"api/user/{staff.id}", json={}, headers=staff_header(staff)
+        )
+        assert response == 200
 
-        userToPatch = UserModel.find_by_email(property_manager_user.email)
+    def test_pm_is_authorized_to_update_themselves(
+        self, pm_header, create_property_manager
+    ):
+        pm = create_property_manager()
+        response = self.client.patch(
+            f"api/user/{pm.id}", json={}, headers=pm_header(pm)
+        )
+        assert response == 200
 
+
+@pytest.mark.usefixtures("client_class", "empty_test_db")
+class TestUserLogic:
+    # TODO: This doesn't belong in auth tests
+    def test_password(self, header, create_user, faker):
         """
         The server responds with a 401 if a patch for a pw reset is made
         and the current pw does not match the pw in the db
         """
+        password = "strongestpasswordever"
+        user = create_user(pw=password)
+        new_password = faker.password()
         responseInvalidCurrentPassword = self.client.patch(
-            f"api/user/{userToPatch.id}",
+            f"api/user/{user.id}",
             json={
-                "current_password": "incorrect",
-                "new_password": self.new_password,
-                "confirm_password": self.new_password,
+                "current_password": "askdjf",
+                "new_password": new_password,
+                "confirm_password": new_password,
             },
-            headers=auth_headers["admin"],
+            headers=header(user),
         )
         assert responseInvalidCurrentPassword.status_code == 401
 
@@ -81,13 +156,13 @@ class TestUserAuthentication:
         and the current pw matches but the new and confirm pw does not
         """
         responseInvalidConfirmPassword = self.client.patch(
-            f"api/user/{userToPatch.id}",
+            f"api/user/{user.id}",
             json={
-                "current_password": self.plaintext_password,
-                "new_password": self.new_password,
-                "confirm_password": "not_new_password",
+                "current_password": password,
+                "new_password": new_password,
+                "confirm_password": f"{new_password}oops",
             },
-            headers=auth_headers["admin"],
+            headers=header(user),
         )
         assert responseInvalidConfirmPassword.status_code == 422
 
@@ -95,79 +170,51 @@ class TestUserAuthentication:
         The server responds with a 201 if a patch for a pw reset is made
         and the current pw matches the pw in the db
         """
+        new_password = "new password"
         responseValidCurrentPassword = self.client.patch(
-            f"api/user/{userToPatch.id}",
+            f"api/user/{user.id}",
             json={
-                "current_password": self.plaintext_password,
-                "new_password": self.new_password,
-                "confirm_password": self.new_password,
+                "current_password": password,
+                "new_password": new_password,
+                "confirm_password": new_password,
             },
-            headers=auth_headers["admin"],
+            headers=header(user),
         )
-        assert responseValidCurrentPassword.status_code == 201
+        assert responseValidCurrentPassword.status_code == 200
 
-        """
-        The server responds with a 403 error if a non-admin
-        attempts to edit another user's information
-        """
-
-        newEmail = "unauthorizedpatch@test.com"
-
-        unauthorizedResponse = self.client.patch(
-            f"/api/user/{userToPatch.id}", json={"email": newEmail}, headers=pm_header
-        )
-
-        assert unauthorizedResponse.status_code == 403
-
+    # TODO: this doesn't belong in auth tests.
+    def test_jwt_refresh(self, header, create_user):
         """
         The server responds with updated user information
         and a new jwt token when a user patches his own information
         """
 
-        original_access_token = create_access_token(identity=userToPatch.id, fresh=True)
-        original_refresh_token = create_refresh_token(userToPatch.id)
+        user = create_user()
+        original_access_token = create_access_token(identity=user.id, fresh=True)
+        original_refresh_token = create_refresh_token(user.id)
 
         newPhone = "555-555-5555"
 
-        tokenTestResponse = self.client.patch(
-            f"/api/user/{userToPatch.id}",
+        response = self.client.patch(
+            f"/api/user/{user.id}",
             json={"phone": newPhone},
-            headers={"Authorization": f"Bearer {original_access_token}"},
+            headers=header(user),
         )
 
-        new_access_token = tokenTestResponse.json["access_token"]
-        new_refresh_token = tokenTestResponse.json["refresh_token"]
+        new_access_token = response.json["access_token"]
+        new_refresh_token = response.json["refresh_token"]
 
-        assert newPhone == tokenTestResponse.json["phone"]
+        assert newPhone == response.json["phone"]
         assert original_access_token != new_access_token
         assert original_refresh_token != new_refresh_token
 
         """Non-Admin users cannot change their own role"""
-
-        newRole = RoleEnum.ADMIN.value
-
-        changeOwnRoleResponse = self.client.patch(
-            f"/api/user/{userToPatch.id}",
-            json={"role": newRole},
-            headers={"Authorization": f"Bearer {new_access_token}"},
+        user = create_user(admin=False)
+        response = self.client.patch(
+            f"/api/user/{user.id}",
+            json={"role": RoleEnum.ADMIN.value},
+            headers=header(user),
         )
 
-        assert changeOwnRoleResponse.status_code == 403
-        assert changeOwnRoleResponse.json == {"message": "Only admins can change roles"}
-
-    def test_delete_user(self, auth_headers, new_user):
-        userToDelete = UserModel.find_by_email(new_user.email)
-
-        response = self.client.delete(
-            f"/api/user/{userToDelete.id}", headers=auth_headers["pm"]
-        )
-        assert is_valid(response, 401)  # UNAUTHORIZED - Admin Access Required
-
-    def test_get_user(self, auth_headers):
-
-        """Non-admin requests return a 401 status code"""
-
-        unauthorized_user_response = self.client.get(
-            f"api/user?r={RoleEnum.PROPERTY_MANAGER.value}", headers=auth_headers["pm"]
-        )
-        assert is_valid(unauthorized_user_response, 401)
+        assert response.status_code == 403
+        assert response.json == {"message": "Only admins can change roles"}

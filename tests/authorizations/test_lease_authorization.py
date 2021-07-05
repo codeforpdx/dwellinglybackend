@@ -37,13 +37,13 @@ class TestLeaseAuthorizations:
     def test_pm_authorized_to_get(self, pm_header, create_lease):
         lease = create_lease()
 
-        response = self.client.get(f"/api/lease/{lease.id}", headers=pm_header)
+        response = self.client.get(f"/api/lease/{lease.id}", headers=pm_header())
         assert response.status_code == 200
 
     def test_staff_are_authorized_to_get(self, staff_header, create_lease):
         lease = create_lease()
 
-        response = self.client.get(f"/api/lease/{lease.id}", headers=staff_header)
+        response = self.client.get(f"/api/lease/{lease.id}", headers=staff_header())
         assert response.status_code == 200
 
     def test_admin_is_authorized_to_get(self, admin_header, create_lease):
@@ -54,12 +54,12 @@ class TestLeaseAuthorizations:
 
     def test_pm_is_authorized_to_get_all(self, pm_header, create_lease):
 
-        response = self.client.get("/api/lease", headers=pm_header)
+        response = self.client.get("/api/lease", headers=pm_header())
         assert response.status_code == 200
 
     def test_staff_are_authorized_to_get_all(self, staff_header, create_lease):
 
-        response = self.client.get("/api/lease", headers=staff_header)
+        response = self.client.get("/api/lease", headers=staff_header())
         assert response.status_code == 200
 
     def test_admin_is_authorized_to_get_all(self, admin_header, create_lease):
@@ -67,13 +67,11 @@ class TestLeaseAuthorizations:
         response = self.client.get("/api/lease", headers=admin_header)
         assert response.status_code == 200
 
-    def test_pm_is_authorized_to_create(
-        self, pm_header, create_tenant, lease_payload
-    ):
+    def test_pm_is_authorized_to_create(self, pm_header, create_tenant, lease_payload):
         response = self.client.post(
             "/api/lease",
             json=self.valid_payload(create_tenant(), lease_payload()),
-            headers=pm_header,
+            headers=pm_header(),
         )
 
         assert response.status_code == 201
@@ -84,7 +82,7 @@ class TestLeaseAuthorizations:
         response = self.client.post(
             "/api/lease",
             json=self.valid_payload(create_tenant(), lease_payload()),
-            headers=staff_header,
+            headers=staff_header(),
         )
         assert response.status_code == 201
 
@@ -101,7 +99,7 @@ class TestLeaseAuthorizations:
     def test_pm_is_authorized_to_delete_lease(self, pm_header, create_lease):
         lease = create_lease()
         response = self.client.delete(
-            f"/api/lease/{lease.id}".format(id), headers=pm_header
+            f"/api/lease/{lease.id}".format(id), headers=pm_header()
         )
 
         assert response.status_code == 200
@@ -109,7 +107,7 @@ class TestLeaseAuthorizations:
     def test_staff_are_authorized_to_delete_lease(self, staff_header, create_lease):
         lease = create_lease()
         response = self.client.delete(
-            f"/api/lease/{lease.id}".format(id), headers=staff_header
+            f"/api/lease/{lease.id}".format(id), headers=staff_header()
         )
 
         assert response.status_code == 200
@@ -129,7 +127,7 @@ class TestLeaseAuthorizations:
             "dateTimeEnd": Time.one_year_from_now_iso(),
         }
         response = self.client.put(
-            f"/api/lease/{lease.id}", json=payload, headers=pm_header
+            f"/api/lease/{lease.id}", json=payload, headers=pm_header()
         )
         assert response.status_code == 200
 
@@ -140,7 +138,7 @@ class TestLeaseAuthorizations:
             "dateTimeEnd": Time.one_year_from_now_iso(),
         }
         response = self.client.put(
-            f"/api/lease/{lease.id}", json=payload, headers=staff_header
+            f"/api/lease/{lease.id}", json=payload, headers=staff_header()
         )
         assert response.status_code == 200
 
