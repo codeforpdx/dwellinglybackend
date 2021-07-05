@@ -1,4 +1,4 @@
-from flask_restful import Resource, reqparse
+from flask_restful import Resource
 from flask import request
 from schemas import UserRegisterSchema, UserSchema
 from utils.authorizations import admin_required, pm_level_required
@@ -90,23 +90,13 @@ class ArchiveUser(Resource):
 
 
 class UserLogin(Resource):
-    parser = reqparse.RequestParser()
-    parser.add_argument(
-        "email", type=str, required=True, help="This field cannot be blank"
-    )
-    parser.add_argument(
-        "password", type=str, required=True, help="This field cannot be blank"
-    )
-
     def post(self):
-        data = UserLogin.parser.parse_args()
-
-        user = UserModel.find_by_email(data["email"])
+        user = UserModel.find_by_email(request.json.get("email", ""))
 
         if user and (user.archived or user.role is None):
             return {"message": "Invalid user"}, 403
 
-        if user and user.check_pw(data["password"]):
+        if user and user.check_pw(request.json.get("password", "")):
             access_token = create_access_token(identity=user.id, fresh=True)
             refresh_token = create_refresh_token(user.id)
             user.update_last_active()

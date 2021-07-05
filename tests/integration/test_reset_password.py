@@ -13,7 +13,7 @@ class TestResetPasswordPOST:
         self.endpoint = "/api/reset-password"
 
     def test_request_with_invalid_params(self):
-        response = self.client.post(self.endpoint)
+        response = self.client.post(self.endpoint, json={})
         assert is_valid(response, 400)
 
     def test_request_with_invalid_email(self):

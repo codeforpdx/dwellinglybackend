@@ -1,15 +1,12 @@
-from flask_restful import Resource, reqparse
+from flask import request
+from flask_restful import Resource
 from models.user import UserModel
 from resources.email import Email
 
 
 class ResetPassword(Resource):
-    parser = reqparse.RequestParser()
-    parser.add_argument("email", required=True)
-
     def post(self):
-        data = ResetPassword.parser.parse_args()
-        user = UserModel.find_by_email(data["email"])
+        user = UserModel.find_by_email(request.json.get("email", ""))
 
         if user:
             Email.send_reset_password_msg(user)

@@ -1,6 +1,6 @@
 # Contributing
 ## App Architecture
-This section describes the structure of the Python backend for the Dwellingly application. This does not cover the React frontend. The app is currently under a major refactoring to make the application more robust. We are removing code that uses the deprecated request parser from [Flask-RESTful](https://flask-restful.readthedocs.io/en/latest/reqparse.html) and are replacing it with [Marshmallow](https://marshmallow.readthedocs.io/en/stable/). After the refactoring is complete, all API request parsing will be handled by Marshmallow.
+This section describes the structure of the Python backend for the Dwellingly application. This does not cover the React frontend.
 
 Dwellingly is developed using the following tools and extensions:
 
