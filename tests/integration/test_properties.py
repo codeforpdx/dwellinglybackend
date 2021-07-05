@@ -46,7 +46,6 @@ class TestPropertyPut:
 
         mock_update.assert_called_once_with(
             schema=PropertySchema,
-            id=1,
             context={"name": property.name},
             payload={"num_units": 2},
         )

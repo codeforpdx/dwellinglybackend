@@ -31,18 +31,18 @@ class TestUpdate:
     def setup(self):
         db.session.add(DummyModel(**{"first_name": "Bye"}))
         db.session.commit()
-        self.id = DummyModel.query.first().id
+        self.dummy_model = DummyModel.query.first()
 
     def test_partial_update(self):
-        DummyModel.update(DummySchema, self.id, {"last_name": "World"})
+        self.dummy_model.update(schema=DummySchema, payload={"last_name": "World"})
         obj = DummyModel.query.first()
 
         assert obj.first_name == "Bye"
         assert obj.last_name == "World"
 
     def test_full_update(self):
-        DummyModel.update(
-            DummySchema, self.id, {"first_name": "Hello", "last_name": "World"}
+        self.dummy_model.update(
+            schema=DummySchema, payload={"first_name": "Hello", "last_name": "World"}
         )
         obj = DummyModel.query.first()
 
@@ -50,7 +50,7 @@ class TestUpdate:
         assert obj.last_name == "World"
 
     def test_no_update(self):
-        DummyModel.update(DummySchema, self.id, {})
+        self.dummy_model.update(schema=DummySchema, payload={})
         obj = DummyModel.query.first()
 
         assert obj.first_name == "Bye"

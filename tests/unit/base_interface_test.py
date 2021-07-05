@@ -56,15 +56,9 @@ class BaseInterfaceTest:
 
     @patch.object(db, "session")
     def test_update(self, mock_session):
-        with patch.object(
-            self.object.__class__, "find", return_value=self.object
-        ) as mock_find:
-            with patch.object(
-                self.object.__class__, "validate", return_value={}
-            ) as mock_validate:
-                response = self.object.__class__.update(self.schema, 1, {})
+        with patch.object(self.object, "validate", return_value={}) as mock_validate:
+            response = self.object.update(schema=self.schema, payload={})
 
-        mock_find.assert_called_with(1)
         mock_validate.assert_called_with(self.schema, {}, context=None, partial=True)
         mock_session.add.assert_called_with(self.object)
         mock_session.commit.assert_called()
