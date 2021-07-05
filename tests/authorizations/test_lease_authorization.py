@@ -4,13 +4,8 @@ import pytest
 
 @pytest.mark.usefixtures("client_class", "empty_test_db")
 class TestLeaseAuthorizations:
-    def valid_payload(self, tenant_id, property_id):
-        return {
-            "dateTimeStart": Time.today_iso(),
-            "dateTimeEnd": Time.one_year_from_now_iso(),
-            "tenantID": tenant_id,
-            "propertyID": property_id,
-        }
+    def valid_payload(self, tenant, lease):
+        return {"tenantID": tenant.id, **lease}
 
     # Test auth is in place at each endpoint
     def test_unauthorized_get_request(self):
@@ -73,38 +68,32 @@ class TestLeaseAuthorizations:
         assert response.status_code == 200
 
     def test_pm_is_authorized_to_create(
-        self, pm_header, create_tenant, create_property
+        self, pm_header, create_tenant, lease_payload
     ):
-        tenant = create_tenant()
-        propertyID = create_property().id
         response = self.client.post(
             "/api/lease",
-            json=self.valid_payload(tenant.id, propertyID),
+            json=self.valid_payload(create_tenant(), lease_payload()),
             headers=pm_header,
         )
 
         assert response.status_code == 201
 
     def test_staff_are_authorized_to_create(
-        self, staff_header, create_tenant, create_property
+        self, staff_header, create_tenant, lease_payload
     ):
-        tenant = create_tenant()
-        propertyID = create_property().id
         response = self.client.post(
             "/api/lease",
-            json=self.valid_payload(tenant.id, propertyID),
+            json=self.valid_payload(create_tenant(), lease_payload()),
             headers=staff_header,
         )
         assert response.status_code == 201
 
     def test_admin_is_authorized_to_create(
-        self, admin_header, create_tenant, create_property
+        self, admin_header, create_tenant, lease_payload
     ):
-        tenant = create_tenant()
-        propertyID = create_property().id
         response = self.client.post(
             "/api/lease",
-            json=self.valid_payload(tenant.id, propertyID),
+            json=self.valid_payload(create_tenant(), lease_payload()),
             headers=admin_header,
         )
         assert response.status_code == 201
