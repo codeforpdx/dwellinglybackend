@@ -30,7 +30,7 @@ class Routes:
         api.add_resource(Properties, "properties")
         api.add_resource(ArchiveProperties, "properties/archive")
         api.add_resource(ArchiveProperty, "properties/archive/<int:id>")
-        api.add_resource(User, "user/<int:user_id>")
+        api.add_resource(User, "user/<int:id>")
         api.add_resource(UserInvite, "user/invite")
         api.add_resource(Users, "user")
         api.add_resource(UsersPending, "users/pending")

@@ -1,12 +1,16 @@
 from flask import current_app
-from nobiru.nobiru_list import NobiruList
-from datetime import datetime
-from models.tickets import TicketModel
+from flask_jwt_extended import (
+    create_access_token,
+    create_refresh_token,
+)
 import bcrypt
 import time
 import jwt
-from db import db
 from enum import Enum
+from db import db
+from datetime import datetime
+from nobiru.nobiru_list import NobiruList
+from models.tickets import TicketModel
 from models.base_model import BaseModel
 import models.notes
 from jwt import ExpiredSignatureError
@@ -92,7 +96,7 @@ class UserModel(BaseModel):
     def check_pw(self, plaintext_password):
         return bcrypt.checkpw(plaintext_password.encode("utf-8"), self._password)
 
-    def json(self):
+    def json(self, refresh_token=False):
         base_json = {
             "id": self.id,
             "firstName": self.firstName,
@@ -105,7 +109,7 @@ class UserModel(BaseModel):
             "created_at": Time.format_date(self.created_at),
             "updated_at": Time.format_date(self.updated_at),
         }
-        return {**base_json, **self.serialize()}
+        return {**base_json, **self.serialize(), **self._make_token(refresh_token)}
 
     def serialize(self):
         return {}
@@ -146,3 +150,15 @@ class UserModel(BaseModel):
 
     def full_name(self):
         return "{} {}".format(self.firstName, self.lastName)
+
+    def is_admin(self):
+        return False
+
+    def _make_token(self, refresh):
+        if refresh:
+            return {
+                "access_token": create_access_token(identity=self.id, fresh=True),
+                "refresh_token": create_refresh_token(self.id),
+            }
+        else:
+            return {}
