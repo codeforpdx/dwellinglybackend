@@ -19,7 +19,7 @@ class NobiruList(InstrumentedList):
 
     def find(self, id):
         try:
-            return next(x for x in self if x.json()["id"] == id)
+            return next(x for x in self if x.id == id)
 
         except StopIteration:
-            abort(404, "Not found")
+            abort(404, "ID not found")
