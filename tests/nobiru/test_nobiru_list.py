@@ -65,3 +65,23 @@ class TestFunctionalNobiruList:
             err.exconly()
             == "werkzeug.exceptions.NotFound: 404 Not Found: DummyRelation not found"
         )
+
+    def test_find(self):
+        fake = self.create_fake_model()
+        value_id = fake.values[0].id
+
+        with patch.object(fake.values, "find") as mock_find:
+            fake.values.find(value_id)
+
+        mock_find.assert_called_once_with(value_id)
+
+    def test_find_with_non_existent_entity(self):
+        fake = self.create_fake_model()
+        non_id = 777
+
+        with pytest.raises(NotFound) as err:
+            fake.values.find(non_id)
+
+        assert (
+            err.exconly() == "werkzeug.exceptions.NotFound: 404 Not Found: ID not found"
+        )
