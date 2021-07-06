@@ -15,18 +15,21 @@ class TestUserModel(BaseInterfaceTest):
         self.custom_404_msg = "User not found"
 
 
-@patch.object(jwt, "encode")
-def test_reset_password_token(stubbed_encode, app, test_database):
-    user = UserModel.find(1)
+@pytest.mark.usefixtures("empty_test_db")
+class TestResetPasswordToken:
+    def test_reset_password_token(stubbed_encode, app, create_user):
+        user = create_user()
 
-    with freeze_time(time.ctime(time.time())):
-        ten_minutes = time.time() + 600
-        payload = {"user_id": user.id, "exp": ten_minutes}
+        with freeze_time(time.ctime(time.time())):
+            ten_minutes = time.time() + 600
+            payload = {"user_id": user.id, "exp": ten_minutes}
 
-        assert user.reset_password_token()
-        stubbed_encode.assert_called_once_with(
-            payload, app.secret_key, algorithm="HS256"
-        )
+            with patch.object(jwt, "encode") as stubbed_encode:
+                user.reset_password_token()
+
+            stubbed_encode.assert_called_once_with(
+                payload, app.secret_key, algorithm="HS256"
+            )
 
 
 def test_full_name(empty_test_db, create_admin_user):
