@@ -6,14 +6,12 @@ from flask_jwt_extended import create_access_token, create_refresh_token
 
 @pytest.mark.usefixtures("client_class", "empty_test_db")
 class TestUserAuthorization:
-    def setup(self):
-        self.plaintext_password = "1234"
-        self.new_password = "newPassword"
-
-    def test_user_auth(self, test_database, admin_user):
+    def test_user_auth(self, create_admin_user):
+        password = "strongestpasswordever"
+        admin = create_admin_user(pw=password)
         login_response = self.client.post(
             "/api/login",
-            json={"email": admin_user.email, "password": self.plaintext_password},
+            json={"email": admin.email, "password": password},
         )
         """When an admin user logs in, the request should succeed."""
         assert is_valid(login_response, 200)  # OK
@@ -23,20 +21,20 @@ class TestUserAuthorization:
         The server responds with an error when a user attempts to login
         to an account without a valid role
         """
-        admin_user.role = None
+        admin.role = None
         responseBadPassword = self.client.post(
             "/api/login",
-            json={"email": admin_user.email, "password": self.plaintext_password},
+            json={"email": admin.email, "password": password},
         )
         assert responseBadPassword.status_code == 403
         assert responseBadPassword.json == {"message": "Invalid user"}
-        admin_user.role = RoleEnum.ADMIN
+        admin.role = RoleEnum.ADMIN
         """
         The server responds with an error when a user attempts to
         login with an incorrect password.
         """
         responseBadPassword = self.client.post(
-            "/api/login", json={"email": admin_user.email, "password": "incorrect"}
+            "/api/login", json={"email": admin.email, "password": "incorrect"}
         )
         assert responseBadPassword.status_code == 401
         assert responseBadPassword.json == {"message": "Invalid credentials"}

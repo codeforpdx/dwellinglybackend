@@ -65,7 +65,7 @@ class User(Resource):
             return {"message": "Cannot delete self"}, 400
 
         user.delete_from_db()
-        return {"message": "User deleted"}, 200
+        return {"message": "User deleted"}
 
 
 class ArchiveUser(Resource):
