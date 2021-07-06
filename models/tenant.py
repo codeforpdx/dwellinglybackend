@@ -16,7 +16,6 @@ class TenantModel(BaseModel):
     phone = db.Column(db.String(20), nullable=False)
     archived = db.Column(db.Boolean, default=False, nullable=False)
 
-    # relationships
     staff = db.relationship(
         "Staff",
         secondary=StaffTenantLink.tablename(),
