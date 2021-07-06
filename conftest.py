@@ -1,20 +1,14 @@
 import pytest
+import jwt
 from flask import current_app
 from app import create_app
 from db import db
 from data.seedData import seedData
 from models.user import UserModel, RoleEnum
-import jwt
 
-# For now, we can have Flake8 ignore the star import errors
 from tests.factory_fixtures import *  # noqa: F401, F403
 
 plaintext_password = "1234"
-
-# Note: this repo uses the "pytest-flask" plugin which exposes
-# the following fixtures for use in tests:
-#   client: an instance of flask's app.test_client -
-#   for making requests i.e. client.get('/')
 
 
 @pytest.fixture
@@ -124,8 +118,6 @@ def empty_test_db(app):
 
 
 # -------------     NON-FIXTURE FUNCTIONS     --------------------
-
-
 def has_valid_headers(response):
     if response.content_type != "application/json":
         return False
