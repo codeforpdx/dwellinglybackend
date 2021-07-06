@@ -1,5 +1,7 @@
 import pytest
+from db import db
 from schemas import PropertySchema
+from models.property import PropertyModel
 
 
 @pytest.mark.usefixtures("empty_test_db")
@@ -74,21 +76,23 @@ class TestPostLoadDeserialization:
         pm_2 = create_property_manager()
         property_attrs = property_attributes(manager_ids=[pm_1.id, pm_2.id])
 
-        prop = PropertySchema().load(property_attrs)
+        prop = PropertyModel.create(schema=PropertySchema, payload=property_attrs)
+        db.session.rollback()
 
         assert prop
-        assert prop["managers"] == [pm_1, pm_2]
+        assert prop.managers == [pm_1, pm_2]
 
     def test_manager_update(self, create_property, create_property_manager):
-        prop = create_property()
+        property = create_property()
         pm_2 = create_property_manager()
         pm_3 = create_property_manager()
         payload = {"propertyManagerIDs": [pm_2.id, pm_3.id]}
-        context = {"name": prop.name}
+        context = {"name": property.name}
 
-        updated_prop = PropertySchema(context=context).load(payload, partial=True)
+        property.update(schema=PropertySchema, context=context, payload=payload)
+        db.session.rollback()
 
-        assert updated_prop["managers"] == [pm_2, pm_3]
+        assert property.managers == [pm_2, pm_3]
 
     def test_property_update_without_managers(self, create_property):
         prop = create_property()

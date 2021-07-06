@@ -16,13 +16,12 @@ class TenantModel(BaseModel):
     phone = db.Column(db.String(20), nullable=False)
     archived = db.Column(db.Boolean, default=False, nullable=False)
 
-    # relationships
     staff = db.relationship(
-        "UserModel",
+        "Staff",
         secondary=StaffTenantLink.tablename(),
-        backref="tenants",
         collection_class=NobiruList,
     )
+
     leases = db.relationship(
         "LeaseModel",
         backref="tenant",
@@ -30,6 +29,7 @@ class TenantModel(BaseModel):
         cascade="all, delete-orphan",
         collection_class=NobiruList,
     )
+
     tickets = db.relationship(
         TicketModel, backref="tenant", lazy=True, collection_class=NobiruList
     )

@@ -1,6 +1,6 @@
 # Contributing
 ## App Architecture
-This section describes the structure of the Python backend for the Dwellingly application. This does not cover the React frontend. The app is currently under a major refactoring to make the application more robust. We are removing code that uses the deprecated request parser from [Flask-RESTful](https://flask-restful.readthedocs.io/en/latest/reqparse.html) and are replacing it with [Marshmallow](https://marshmallow.readthedocs.io/en/stable/). After the refactoring is complete, all API request parsing will be handled by Marshmallow.
+This section describes the structure of the Python backend for the Dwellingly application. This does not cover the React frontend.
 
 Dwellingly is developed using the following tools and extensions:
 
@@ -25,22 +25,20 @@ The Dwellingly app is developed using the following environments:
 
 We use [pytest](https://docs.pytest.org/en/latest/) for automated testing.
 
-All new functionality, changes in behavior, or bug fixes **must** be validated by pytest using test cases.
+All new functionality, changes in behavior, or bug fixes should be tested.
 
 
 ## Project Components
 
 The three main areas of the application to be familiar with are resources, models, and schemas. The models and resources align respectively with the model and controller components of a Model-View-Controller (MVC) web application. Schemas are used for input validation and deserialization.
 
-A fourth potential main area is the `serializers` folder, which will be used to build the response.
-
-There is one more file to be familiar with and that is the `app.py` file. This is the file that executes when the application starts. This is also where we are describing the routes for the app.
+There is one more file to be familiar with and that is the `app.py` file. This is the file that executes when the application starts.
 
 The rest of this section will describe the three main areas, and how each of those areas should be tested.
 
 ### Models
 
-Models define the database tables, the methods used to fetch data from the database, the tables to create, and what columns to use. They can also contain other methods that relate to the business logic of the application. All models in this application inherit from the BaseModel class, which adds `created_at` and `updated_at` timestamps for all the tables in the database. It also contains methods that are used to find, create, update, and delete database rows. As of this writing, some models still have an init method. However, for most of the models, the init method is not needed and will be removed. This is because Flask-RESTful provides an init method that works with keyword arguments, and it is recommended to call super if a custom init method is needed. You can see an example of this in the User Model. Currently, all models except for the lease model have a JSON method that defines how to serialize that object. Models can be found in the `models` directory.
+Models define the database tables, the methods used to fetch data from the database, the tables to create, and what columns to use. They can also contain other methods that relate to the business logic of the application. All models in this application inherit from the BaseModel class, which adds `created_at` and `updated_at` timestamps for all the tables in the database. It also contains methods that are used to find, create, update, and delete database rows. Models can be found in the `models` directory.
 
 #### Testing Models
 
@@ -48,11 +46,11 @@ All models should have unit tests that can be found in the `tests/unit` director
 
 ### Schemas
 
-Marshmallow schemas are used primarily for input validation and deserialization. Eventually we will probably use it for serialization too. Schemas validate the data that is received by the client at the back end, before the data is inserted into the database or used by other parts of the app. They can also describe how the data is serialized before sending data to the client. Schemas can be found in the `schemas` directory.
+Marshmallow schemas are used primarily for input validation and deserialization. Schemas validate the data that is received by the client at the back end, before the data is inserted into the database or used by other parts of the app. Schemas can be found in the `schemas` directory.
 
 #### Testing Schemas
 
-All schemas should have unit tests, which primarily should be validation tests. This app uses Flask-Marshmallow, which provides an auto-schema that infers some basic validations based on the table definition in the Models class. Any additional validations defined in the schema must be tested. Schema tests can be found in the `tests/schemas` directory. Deserialization should also be tested here when used. Serialization is currently not used and does not need to be tested here at this time. Testing serialization may take place elsewhere.
+All schemas should have unit tests, which primarily should be validation tests. This app uses Flask-Marshmallow, which provides an auto-schema that infers some basic validations based on the table definition in the Models class. Any additional validations defined in the schema must be tested. Schema tests can be found in the `tests/schemas` directory. Deserialization should also be tested here when used.
 
 ### Resources
 

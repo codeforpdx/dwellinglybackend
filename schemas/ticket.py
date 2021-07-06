@@ -2,7 +2,6 @@ from ma import ma
 from models.tickets import TicketModel
 from models.tenant import TenantModel
 from models.user import UserModel
-from utils.time import time_format
 from marshmallow import fields, validates, ValidationError
 
 
@@ -13,9 +12,6 @@ class TicketSchema(ma.SQLAlchemyAutoSchema):
 
     tenant = fields.Nested("TenantSchema")
     author = fields.Nested("UserSchema")
-
-    created_at = fields.DateTime(time_format)
-    updated_at = fields.DateTime(time_format)
 
     @validates("tenant_id")
     def validate_tenant(self, value):
