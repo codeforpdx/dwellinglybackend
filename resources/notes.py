@@ -34,4 +34,4 @@ class Note(Resource):
         ticket = TicketModel.find(ticket_id)
         note = ticket.notes.find(id)
 
-        return note.update(schema=NotesSchema, payload=request.json, id=id).json()
+        return note.update(schema=NotesSchema, payload=request.json).json()
