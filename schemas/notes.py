@@ -1,6 +1,5 @@
 from models.user import UserModel
 from models.tickets import TicketModel
-from utils.time import time_format
 from marshmallow import fields, Schema, validates, ValidationError
 
 
@@ -9,9 +8,6 @@ class NotesSchema(Schema):
     text = fields.Str()
     user_id = fields.Integer(required=True)
     ticket_id = fields.Integer(required=True)
-
-    created_at = fields.DateTime(time_format)
-    updated_at = fields.DateTime(time_format)
 
     user = fields.Nested("UserSchema")
     user = fields.Method("showFullName")
