@@ -3,11 +3,9 @@ from flask import request
 from schemas import UserRegisterSchema, UserSchema
 from utils.authorizations import admin_required, pm_level_required
 from models.user import UserModel, RoleEnum
-from models.revoked_tokens import RevokedTokensModel
 from flask_jwt_extended import (
     create_access_token,
     create_refresh_token,
-    get_jwt,
     get_jwt_identity,
     jwt_required,
 )
@@ -79,12 +77,6 @@ class ArchiveUser(Resource):
         user.archived = not user.archived
 
         user.save_to_db()
-
-        if user.archived:
-            # invalidate access token
-            jti = get_jwt()["jti"]
-            revokedToken = RevokedTokensModel(jti=jti)
-            revokedToken.save_to_db()
 
         return user.json(), 201
 

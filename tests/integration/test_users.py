@@ -92,7 +92,7 @@ class TestUsersGet:
 
 @pytest.mark.usefixtures("client_class", "empty_test_db")
 class TestArchiveUser:
-    def test_archive_user(self, create_user, valid_header):
+    def test_archive_user(self, create_user, valid_header, header):
         """
         The archive user by id route returns a successful response code
         and changes the user's status.
@@ -104,6 +104,11 @@ class TestArchiveUser:
         )
         assert response.status_code == 201
         assert response.json["archived"] is True
+
+        # TODO: Make this pass! Issue codeforpdx/dwellingly-app/issues/660
+        """An archived user should not have access"""
+        # response = self.client.get("/api/lease", json={}, headers=header(user))
+        # assert response.status_code == 403
 
         """An archived user is prevented from logging in."""
         data = {"email": user.email, "password": password}
