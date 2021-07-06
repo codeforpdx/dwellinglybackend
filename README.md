@@ -17,7 +17,7 @@ Dwellingly is being built from [these FIGMA designs](https://drive.google.com/fi
 
 ## Specs
 
-The backend is being built with Python, Flask and SQLAlchemy.  The frontend is built in node with the React framework.
+The backend is being built with Python, Flask and SQLAlchemy.  The frontend is built with React.
 
 ## Contributing
 
@@ -26,8 +26,6 @@ The backend is being built with Python, Flask and SQLAlchemy.  The frontend is b
  - To learn about our workflow, app architecture, and how to install the project for development. View the [CONTRIBUTING.MD](./CONTRIBUTING.md) doc.
 
  - To learn about how to get a JWT token, use the API for development, and about all our endpoints, please see our [API Usage](./doc/using_the_api.md) page. (Warning: endpoint info may be out of date)
-
- - View our <a href="https://dbdiagram.io/d/5f28f4b27543d301bf5dc585" target="_blank">Database Diagram</a> to get a birds eye view of the data storage.
 
 ## Contributors
 
