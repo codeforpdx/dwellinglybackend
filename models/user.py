@@ -1,12 +1,16 @@
 from flask import current_app
-from nobiru.nobiru_list import NobiruList
-from datetime import datetime
-from models.tickets import TicketModel
+from flask_jwt_extended import (
+    create_access_token,
+    create_refresh_token,
+)
 import bcrypt
 import time
 import jwt
-from db import db
 from enum import Enum
+from db import db
+from datetime import datetime
+from nobiru.nobiru_list import NobiruList
+from models.tickets import TicketModel
 from models.base_model import BaseModel
 import models.notes
 from jwt import ExpiredSignatureError
@@ -41,8 +45,7 @@ class UserModel(BaseModel):
     firstName = db.Column(db.String(100), nullable=False)
     lastName = db.Column(db.String(100), nullable=False)
     phone = db.Column(db.String(20), nullable=False)
-    hash_digest = db.Column(db.LargeBinary(60))
-    password = db.Column(db.String(), default=None, onupdate=None)
+    _password = db.Column("password", db.LargeBinary(60))
     archived = db.Column(db.Boolean, default=False, nullable=False)
     lastActive = db.Column(db.DateTime, default=datetime.utcnow)
 
@@ -59,10 +62,16 @@ class UserModel(BaseModel):
         collection_class=NobiruList,
     )
 
-    def __init__(self, **kwargs):
-        super(UserModel, self).__init__(**kwargs)
-        self.hash_digest = UserModel._hash_pw(kwargs["password"])
-        self.archived = False
+    @property
+    def password(self):
+        raise AttributeError("password field is not allowed to access")
+
+    @password.setter
+    def password(self, plaintext_password):
+        self._password = bcrypt.hashpw(
+            plaintext_password.encode("utf-8"),
+            bcrypt.gensalt(current_app.config["WORK_FACTOR"]),
+        )
 
     def update_last_active(self):
         self.lastActive = datetime.utcnow()
@@ -84,17 +93,10 @@ class UserModel(BaseModel):
         except ExpiredSignatureError:
             return None
 
-    @staticmethod
-    def _hash_pw(plaintext_password):
-        return bcrypt.hashpw(
-            bytes(plaintext_password, "utf-8"),
-            bcrypt.gensalt(current_app.config["WORK_FACTOR"]),
-        )
-
     def check_pw(self, plaintext_password):
-        return bcrypt.checkpw(bytes(plaintext_password, "utf-8"), self.hash_digest)
+        return bcrypt.checkpw(plaintext_password.encode("utf-8"), self._password)
 
-    def json(self):
+    def json(self, refresh_token=False):
         base_json = {
             "id": self.id,
             "firstName": self.firstName,
@@ -107,7 +109,7 @@ class UserModel(BaseModel):
             "created_at": Time.format_date(self.created_at),
             "updated_at": Time.format_date(self.updated_at),
         }
-        return {**base_json, **self.serialize()}
+        return {**base_json, **self.serialize(), **self._make_token(refresh_token)}
 
     def serialize(self):
         return {}
@@ -123,10 +125,6 @@ class UserModel(BaseModel):
     @classmethod
     def find_by_email(cls, email):
         return cls.query.filter_by(email=email).first()
-
-    @classmethod
-    def find_by_role(cls, role):
-        return cls.query.filter_by(role=role).all()
 
     @classmethod
     def find_recent_role(cls, role, days):
@@ -153,9 +151,14 @@ class UserModel(BaseModel):
     def full_name(self):
         return "{} {}".format(self.firstName, self.lastName)
 
-    def save_to_db(self):
-        if self.password:
-            self.hash_digest = UserModel._hash_pw(self.password)
-            self.password = None
-        db.session.add(self)
-        db.session.commit()
+    def is_admin(self):
+        return False
+
+    def _make_token(self, refresh):
+        if refresh:
+            return {
+                "access_token": create_access_token(identity=self.id, fresh=True),
+                "refresh_token": create_refresh_token(self.id),
+            }
+        else:
+            return {}

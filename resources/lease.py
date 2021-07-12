@@ -13,8 +13,9 @@ class Lease(Resource):
 
     @pm_level_required
     def put(self, id):
+        lease = LeaseModel.find(id)
         return LeaseSerializer.serialize(
-            LeaseModel.update(schema=LeaseSchema, id=id, payload=request.json)
+            lease.update(schema=LeaseSchema, payload=request.json)
         )
 
     @pm_level_required

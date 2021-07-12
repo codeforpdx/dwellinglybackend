@@ -30,7 +30,7 @@ class TestTicketPUT(BaseConfig):
             )
 
         mock_update.assert_called_once_with(
-            schema=TicketSchema, id=ticket.id, payload={"hello": "world"}
+            schema=TicketSchema, payload={"hello": "world"}
         )
 
         assert response.status_code == 200

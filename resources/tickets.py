@@ -18,9 +18,8 @@ class Ticket(Resource):
 
     @pm_level_required
     def put(self, id):
-        return TicketModel.update(
-            schema=TicketSchema, id=id, payload=request.json
-        ).json()
+        ticket = TicketModel.find(id)
+        return ticket.update(schema=TicketSchema, payload=request.json).json()
 
 
 class Tickets(Resource):

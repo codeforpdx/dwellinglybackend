@@ -30,25 +30,25 @@ class TestEmergenyContactsAuthorizations:
 
     def test_prop_manager_denied_emerg_contacts_POST(self, pm_header):
         response = self.client.post(
-            self.endpoint, json=self.newContact, headers=pm_header
+            self.endpoint, json=self.newContact, headers=pm_header()
         )
         assert is_valid(response, 401)  # UNAUTHORIZED - Admin Access Required
 
     def test_prop_manager_denied_emerg_contacts_DELETE(self, pm_header):
         response = self.client.delete(
-            f"{self.endpoint}/{self.user_id}", headers=pm_header
+            f"{self.endpoint}/{self.user_id}", headers=pm_header()
         )
         assert is_valid(response, 401)  # UNAUTHORIZED - Admin Access Required
 
     def test_staff_denied_emerg_contacts_POST(self, staff_header):
         response = self.client.post(
-            self.endpoint, json=self.newContact, headers=staff_header
+            self.endpoint, json=self.newContact, headers=staff_header()
         )
         assert is_valid(response, 401)  # UNAUTHORIZED - Admin Access Required
 
     def test_staff_denied_emerg_contacts_DELETE(self, staff_header):
         response = self.client.delete(
-            f"{self.endpoint}/{self.user_id}", headers=staff_header
+            f"{self.endpoint}/{self.user_id}", headers=staff_header()
         )
         assert is_valid(response, 401)  # UNAUTHORIZED - Admin Access Required
 
