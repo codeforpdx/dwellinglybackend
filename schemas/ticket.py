@@ -12,6 +12,7 @@ class TicketSchema(ma.SQLAlchemyAutoSchema):
 
     tenant = fields.Nested("TenantSchema")
     author = fields.Nested("UserSchema")
+    notes = fields.List(fields.Nested("CreateNotesSchema"))
 
     @validates("tenant_id")
     def validate_tenant(self, value):

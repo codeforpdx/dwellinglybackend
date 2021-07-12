@@ -1,5 +1,6 @@
 import pytest
 from schemas import TicketSchema
+from models.user import UserModel
 
 
 @pytest.mark.usefixtures("empty_test_db")
@@ -23,3 +24,18 @@ class TestTicketValidations:
         payload["status"] = "123456789"
         validation_errors = TicketSchema().validate(payload)
         assert "status" in validation_errors
+
+
+@pytest.mark.usefixtures("empty_test_db")
+class TestTicketSerialization:
+    def test_ticket_serialization(
+        self, create_ticket, create_note, ticket_attributes, note_attributes
+    ):
+        ticket = create_ticket()
+        user = UserModel.query.filter_by(id=ticket.author_id).first()
+        create_note(user, ticket, "text")
+
+        ticket_schema = TicketSchema()
+        ticket_json = ticket_schema.dump(ticket)
+
+        assert ticket_json["issue"] == ticket.issue

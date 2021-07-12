@@ -1,6 +1,7 @@
 from models.user import UserModel
 from models.tickets import TicketModel
-from marshmallow import fields, Schema, validates, ValidationError
+from models.notes import NotesModel
+from marshmallow import fields, Schema, validates, ValidationError, post_load
 
 
 class NotesSchema(Schema):
@@ -24,3 +25,9 @@ class NotesSchema(Schema):
     def validates_existing_ticket(self, value):
         if not TicketModel.query.get(value):
             raise ValidationError(f"{value} is not a valid Ticket ID")
+
+
+class CreateNotesSchema(NotesSchema):
+    @post_load
+    def create_note(self, data, **kwargs):
+        return NotesModel.create(**data)
