@@ -71,11 +71,8 @@ def pm_header(header, create_property_manager):
 
 @pytest.fixture
 def empty_test_db(app):
-    db.create_all()
-
-    yield
-
     db.drop_all()
+    db.create_all()
 
 
 # -------------     NON-FIXTURE FUNCTIONS     --------------------

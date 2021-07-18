@@ -28,11 +28,11 @@ PyJWT = "==2.1.0"
 Werkzeug = "==2.0.1"
 Flask-Mailman = "==0.2.4"
 Flask-Cors = "*"
-psycopg2-binary = "*"
 bcrypt = "==3.2.0"
 flask-marshmallow = "*"
 marshmallow-sqlalchemy = "*"
 alembic = "*"
+psycopg2 = "*"
 
 [requires]
 python_version = "3.8"
