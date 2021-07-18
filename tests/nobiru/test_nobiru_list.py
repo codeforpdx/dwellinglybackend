@@ -68,12 +68,8 @@ class TestFunctionalNobiruList:
 
     def test_find(self):
         fake = self.create_fake_model()
-        value_id = fake.values[0].id
-
-        with patch.object(fake.values, "find") as mock_find:
-            fake.values.find(value_id)
-
-        mock_find.assert_called_once_with(value_id)
+        value = fake.values[0]
+        assert value == fake.values.find(value.id)
 
     def test_find_with_non_existent_entity(self):
         fake = self.create_fake_model()
