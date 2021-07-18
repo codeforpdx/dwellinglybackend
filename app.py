@@ -56,7 +56,7 @@ def create_app(env):
         return {app.config["JWT_ERROR_MESSAGE_KEY"]: message.capitalize()}, 401
 
     logging.basicConfig()
-    logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
+    logging.getLogger("sqlalchemy.engine").setLevel(logging.INFO)
     db.init_app(app)
     ma.init_app(app)
     return app
