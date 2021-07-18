@@ -39,7 +39,7 @@ class Development(Default):
 
 
 class Testing(Default):
-    os.environ['FLASK_ENV'] = 'testing'
+    os.environ["FLASK_ENV"] = "testing"
     TESTING = True
     SQLALCHEMY_DATABASE_URI = os.environ.get("TEST_DATABASE_URL") or "sqlite://"
     WORK_FACTOR = 4
