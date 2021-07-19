@@ -267,8 +267,6 @@ def seedData():
     )
     note_contacted_tenant.save_to_db()
 
-    RevokedTokensModel(jti="855c5cb8-c871-4a61-b3d8-90249f979601").save_to_db()
-
     EmergencyContactModel(
         name="Narcotics Anonymous",
         contact_numbers=[ContactNumberModel(number="503-345-9839")],
