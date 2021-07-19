@@ -63,8 +63,7 @@ A resource's main job is to coordinate a response for the incoming request. If d
 Each resource will usually have one test for each action (GET, POST, DELETE, etc...). When the Models and Schemas have unit tests, and when the resource uses the models and schemas appropriately, then **generally** only a successful response (The Happy Path) needs to be tested. All other responses that can occur are already tested elsewhere, including validation errors or database rows that cannot be found. Errors such as these should not be tested, as they're already built into the architecture of the app and happen automatically as long as the schemas are used along with the appropriate methods defined in the BaseModel. Tests for the resources can be found in the `tests/integration` directory.
 
 ## Installation
-Set up Dwelling Flask Testing Backend (for the first time)
-NOTE: Database is SQLite3 via SQLAlchemy
+NOTE: Default development database is SQLite3. (Optionally setup and use [PostgreSQL](#PostgreSQL-Setup) as the database.)
 
 [Note for Windows users](#Note-For-Windows-Users)
 
@@ -110,6 +109,17 @@ NOTE: Database is SQLite3 via SQLAlchemy
 Queries can be made with the Postman Collection link ( https://www.getpostman.com/collections/a86a292798c7895425e2 )
 [![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/0078de8f58d4ea0b78eb)
 
+### PostgreSQL Setup
+1. Install [PostgreSQL](https://www.postgresql.org/download/).
+2. Manually create the database.
+   - From a linux or mac command line run the following:
+     ```shell
+      createdb dwellingly_development
+      createdb dwellingly_test
+     ```
+3. Open up `.env` and uncomment the `DEV_DATABASE_URL` and `TEST_DATABASE_URL` env vars.
+4. Run `pipenv run flask db create`.
+
 ### Note For Windows Users
 
 Python does not come by default for Windows users. Sometimes the PATH variable in Windows will point to the wrong path and you will have trouble running the `python` and `pipenv` commands. If you don't have Python installed then follow these steps. If the steps listed above did not work for you, try the following.
@@ -130,7 +140,7 @@ If you don't see something similar, you may have several versions of Python inst
 
 ### Database migrations.
 
-Database migrations are not used for development. Please ignore do not use migrations during development.
+Database migrations are currently not used. We will start using them soon.
 
 Database migrations are managed through [Alembic](https://alembic.sqlalchemy.org/en/latest/index.html). After making a change to a model, a database migration is necessary.
 
