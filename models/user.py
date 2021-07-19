@@ -44,7 +44,7 @@ class UserModel(BaseModel):
     role = db.Column(db.Enum(RoleEnum), default=None)
     firstName = db.Column(db.String(100), nullable=False)
     lastName = db.Column(db.String(100), nullable=False)
-    phone = db.Column(db.String(20), nullable=False)
+    phone = db.Column(db.String(40), nullable=False)
     _password = db.Column("password", db.LargeBinary(60))
     archived = db.Column(db.Boolean, default=False, nullable=False)
     lastActive = db.Column(db.DateTime, default=datetime.utcnow)
