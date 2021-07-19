@@ -8,7 +8,6 @@ from models.property import PropertyModel
 from models.tenant import TenantModel
 from models.tickets import TicketModel, TicketStatus
 from models.notes import NotesModel
-from models.revoked_tokens import RevokedTokensModel
 from models.emergency_contact import EmergencyContactModel
 from models.contact_number import ContactNumberModel
 from models.lease import LeaseModel
