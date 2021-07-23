@@ -17,10 +17,10 @@ def allowed_params(params: Set[str]):
 
 
 def invalid_field_error(field_set):
-    if current_app.env == "development":
-        raise GatekeeperError(field_set)
-    else:
+    if current_app.env == "production":
         return {"message": "Invalid request field"}, 400
+    else:
+        raise GatekeeperError(field_set)
 
 
 class GatekeeperError(Exception):
