@@ -1,3 +1,4 @@
+from tests.factory_fixtures.dummy_resource import DummyResource
 from flask_restful import Api
 from resources.user import (
     UserRegister,
@@ -51,3 +52,6 @@ class Routes:
         api.add_resource(
             ResetPassword, "reset-password", "reset-password/<string:token>"
         )
+
+        if app.env == "testing":
+            api.add_resource(DummyResource, "dummy")
