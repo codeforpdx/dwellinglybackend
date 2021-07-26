@@ -7,8 +7,14 @@ from db import db
 from tests.factory_fixtures import *  # noqa: F401, F403
 
 
+@pytest.fixture(autouse=True)
+def environment(monkeypatch):
+    monkeypatch.setenv("FLASK_ENV", "testing")
+
+
 @pytest.fixture
-def app():
+def app(monkeypatch):
+    monkeypatch.setenv("FLASK_ENV", "testing")
     app = create_app("testing")
     return app
 
