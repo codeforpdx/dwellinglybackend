@@ -54,7 +54,10 @@ class TestTicketsGET(BaseConfig):
         response = self.client.get(self.endpoint, headers=valid_header)
 
         assert response.status_code == 200
-        assert response.json == {"tickets": [ticket_1.json(), ticket_2.json()]}
+        # SQLite and Postgresql returns different orders. Just compare both orders
+        assert response.json == {
+            "tickets": [ticket_1.json(), ticket_2.json()]
+        } or response.json == {"tickets": [ticket_2.json(), ticket_1.json()]}
 
     def test_tickets_get_by_tenant(self, valid_header, create_ticket):
         ticket_1 = create_ticket()
