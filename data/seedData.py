@@ -8,7 +8,6 @@ from models.property import PropertyModel
 from models.tenant import TenantModel
 from models.tickets import TicketModel, TicketStatus
 from models.notes import NotesModel
-from models.revoked_tokens import RevokedTokensModel
 from models.emergency_contact import EmergencyContactModel
 from models.contact_number import ContactNumberModel
 from models.lease import LeaseModel
@@ -266,8 +265,6 @@ def seedData():
         user_id=user_3.id,
     )
     note_contacted_tenant.save_to_db()
-
-    RevokedTokensModel(jti="855c5cb8-c871-4a61-b3d8-90249f979601").save_to_db()
 
     EmergencyContactModel(
         name="Narcotics Anonymous",
