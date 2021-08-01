@@ -16,3 +16,10 @@ class NobiruList(InstrumentedList):
             db.session.commit()
         except ValueError:
             abort(404, f"{entity._name()} not found")
+
+    def find(self, id):
+        try:
+            return next(x for x in self if x.id == id)
+
+        except StopIteration:
+            abort(404, "ID not found")
