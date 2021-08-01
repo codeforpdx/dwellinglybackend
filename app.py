@@ -48,7 +48,7 @@ def create_app(env):
     @app.jwt.token_in_blocklist_loader
     def check_if_token_in_blocklist(jwt_header, decrypted_token):
         jti = decrypted_token["jti"]
-        return RevokedTokensModel.is_jti_blacklisted(jti)
+        return RevokedTokensModel.is_jti_revoked(jti)
 
     # Format jwt "Missing authorization header" messages
     @app.jwt.unauthorized_loader
