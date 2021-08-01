@@ -728,11 +728,11 @@
         },
         "faker": {
             "hashes": [
-                "sha256:08c08ce6e4d3ae5859e11f6d2e4e7652f513565bb805ebd7b97d6becce9d8b90",
-                "sha256:28ae027ce17b0d938dc0adcb827b81eea814050acd6d08f9ccacbd43cdf3c600"
+                "sha256:771b21ab55924867ac865f4b0c2f547c200172293b1056be16289584ef1215cb",
+                "sha256:f27a2a5c34042752f9d5fea2a9667aed5265d7d7bdd5ce83bc03b2f8a540d148"
             ],
             "index": "pypi",
-            "version": "==8.9.0"
+            "version": "==8.10.3"
         },
         "filelock": {
             "hashes": [
