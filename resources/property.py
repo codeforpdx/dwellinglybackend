@@ -40,22 +40,6 @@ class Properties(Resource):
         )
 
 
-class ArchiveProperty(Resource):
-    @admin_required
-    def post(self, id):
-        property = PropertyModel.find(id)
-
-        property.archived = not property.archived
-
-        property.save_to_db()
-        message = (
-            "Property archived successfully"
-            if property.archived
-            else "Property unarchived successfully"
-        )
-        return {"message": message}, 200
-
-
 class ArchiveProperties(Resource):
     @admin_required
     def patch(self):
