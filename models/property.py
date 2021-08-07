@@ -3,6 +3,7 @@ from nobiru.nobiru_list import NobiruList
 from models.base_model import BaseModel
 from models.user import UserModel
 from models.property_assignment import PropertyAssignment
+from utils.time import Time
 
 
 class PropertyModel(BaseModel):
@@ -43,6 +44,8 @@ class PropertyModel(BaseModel):
             "zipcode": self.zipcode,
             "leases": self.leases.json(),
             "archived": self.archived,
+            "created_at": Time.format_date(self.created_at),
+            "updated_at": Time.format_date(self.updated_at),
         }
         if include_tenants:
             property["tenants"] = self.tenants()
