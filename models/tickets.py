@@ -40,7 +40,7 @@ class TicketModel(BaseModel):
             "author_id": self.author_id,
             "tenant_id": self.tenant_id,
             "assigned_staff": self.tenant.staff.json(),
-            "sender": self.author.full_name(),
+            "author": self.author.full_name(),
             "status": self.status,
             "minsPastUpdate": minsPastUpdate,
             "urgency": self.urgency,
