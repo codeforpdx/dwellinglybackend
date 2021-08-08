@@ -155,7 +155,7 @@ class TestPropertyArchivalMethods:
         responseSuccess = self.client.put(
             f"/api/properties/{test_property.id}",
             headers=valid_header,
-            json={"archived": not test_property.archived},
+            json={"archived": True},
         )
         assert responseSuccess.status_code == 200
         assert test_property.archived
