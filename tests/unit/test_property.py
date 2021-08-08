@@ -40,6 +40,8 @@ class TestPropertyModel:
             "leases": [lease_1.json(), lease_2.json()],
             "propertyManagers": [manager_1.json(), manager_2.json()],
             "archived": property.archived,
+            "created_at": Time.format_date(property.created_at),
+            "updated_at": Time.format_date(property.updated_at),
         }
 
     def test_json_with_tenants(self, create_property, create_lease):
