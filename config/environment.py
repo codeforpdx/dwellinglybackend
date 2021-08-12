@@ -27,7 +27,7 @@ class Default(object):
 
 
 class Development(Default):
-    SQLALCHEMY_DATABASE_URI = os.environ.get(
+    SQLALCHEMY_DATABASE_URI = os.getenv(
         "DEV_DATABASE_URL"
     ) or "sqlite:///" + os.path.join(basedir, "data-dev.sqlite")
     JWT_ACCESS_TOKEN_EXPIRES = False
@@ -40,7 +40,7 @@ class Development(Default):
 
 class Testing(Default):
     TESTING = True
-    SQLALCHEMY_DATABASE_URI = os.environ.get("TEST_DATABASE_URL") or "sqlite://"
+    SQLALCHEMY_DATABASE_URI = os.getenv("TEST_DATABASE_URL") or "sqlite://"
     WORK_FACTOR = 4
     JWT_ACCESS_TOKEN_EXPIRES = False
     JWT_REFRESH_TOKEN_EXPIRES = False
@@ -54,4 +54,8 @@ class Production(Default):
     CORS_ORIGINS = ["UPDATE THIS WITH FRONTEND ORIGINS"]
 
 
-app_config = {"development": Development, "testing": Testing, "production": Production}
+app_environments = {
+    "development": Development,
+    "testing": Testing,
+    "production": Production,
+}

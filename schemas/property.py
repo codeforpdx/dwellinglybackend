@@ -1,6 +1,6 @@
 from ma import ma
 from models.property import PropertyModel
-from models.user import UserModel
+from models.users.property_manager import PropertyManager
 from schemas.property_assignment import PropertyAssignSchema
 from marshmallow import fields, validates, ValidationError, post_load
 from utils.time import time_format
@@ -38,7 +38,7 @@ class PropertySchema(ma.SQLAlchemyAutoSchema):
     def make_property_attributes(self, data, **kwargs):
         if "propertyManagerIDs" in data:
             data["managers"] = [
-                UserModel.find(manager) for manager in data["propertyManagerIDs"]
+                PropertyManager.find(id) for id in data["propertyManagerIDs"]
             ]
             del data["propertyManagerIDs"]
         return data

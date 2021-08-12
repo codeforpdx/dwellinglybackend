@@ -1,14 +1,11 @@
 from models.tenant import TenantModel
 from models.user import UserModel, RoleEnum
-from utils.time import time_format
 from marshmallow import Schema, fields, validates, ValidationError
 
 
 class StaffTenantSchema(Schema):
     tenants = fields.List(fields.Int(), required=True)
     staff = fields.List(fields.Int(), required=True)
-    created_at = fields.DateTime(time_format)
-    updated_at = fields.DateTime(time_format)
 
     @validates("tenants")
     def validate_tenant(self, value):

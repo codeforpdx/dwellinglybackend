@@ -1,6 +1,6 @@
 # Contributing
 ## App Architecture
-This section describes the structure of the Python backend for the Dwellingly application. This does not cover the React frontend. The app is currently under a major refactoring to make the application more robust. We are removing code that uses the deprecated request parser from [Flask-RESTful](https://flask-restful.readthedocs.io/en/latest/reqparse.html) and are replacing it with [Marshmallow](https://marshmallow.readthedocs.io/en/stable/). After the refactoring is complete, all API request parsing will be handled by Marshmallow.
+This section describes the structure of the Python backend for the Dwellingly application. This does not cover the React frontend.
 
 Dwellingly is developed using the following tools and extensions:
 
@@ -25,22 +25,20 @@ The Dwellingly app is developed using the following environments:
 
 We use [pytest](https://docs.pytest.org/en/latest/) for automated testing.
 
-All new functionality, changes in behavior, or bug fixes **must** be validated by pytest using test cases.
+All new functionality, changes in behavior, or bug fixes should be tested.
 
 
 ## Project Components
 
 The three main areas of the application to be familiar with are resources, models, and schemas. The models and resources align respectively with the model and controller components of a Model-View-Controller (MVC) web application. Schemas are used for input validation and deserialization.
 
-A fourth potential main area is the `serializers` folder, which will be used to build the response.
-
-There is one more file to be familiar with and that is the `app.py` file. This is the file that executes when the application starts. This is also where we are describing the routes for the app.
+There is one more file to be familiar with and that is the `app.py` file. This is the file that executes when the application starts.
 
 The rest of this section will describe the three main areas, and how each of those areas should be tested.
 
 ### Models
 
-Models define the database tables, the methods used to fetch data from the database, the tables to create, and what columns to use. They can also contain other methods that relate to the business logic of the application. All models in this application inherit from the BaseModel class, which adds `created_at` and `updated_at` timestamps for all the tables in the database. It also contains methods that are used to find, create, update, and delete database rows. As of this writing, some models still have an init method. However, for most of the models, the init method is not needed and will be removed. This is because Flask-RESTful provides an init method that works with keyword arguments, and it is recommended to call super if a custom init method is needed. You can see an example of this in the User Model. Currently, all models except for the lease model have a JSON method that defines how to serialize that object. Models can be found in the `models` directory.
+Models define the database tables, the methods used to fetch data from the database, the tables to create, and what columns to use. They can also contain other methods that relate to the business logic of the application. All models in this application inherit from the BaseModel class, which adds `created_at` and `updated_at` timestamps for all the tables in the database. It also contains methods that are used to find, create, update, and delete database rows. Models can be found in the `models` directory.
 
 #### Testing Models
 
@@ -48,11 +46,11 @@ All models should have unit tests that can be found in the `tests/unit` director
 
 ### Schemas
 
-Marshmallow schemas are used primarily for input validation and deserialization. Eventually we will probably use it for serialization too. Schemas validate the data that is received by the client at the back end, before the data is inserted into the database or used by other parts of the app. They can also describe how the data is serialized before sending data to the client. Schemas can be found in the `schemas` directory.
+Marshmallow schemas are used primarily for input validation and deserialization. Schemas validate the data that is received by the client at the back end, before the data is inserted into the database or used by other parts of the app. Schemas can be found in the `schemas` directory.
 
 #### Testing Schemas
 
-All schemas should have unit tests, which primarily should be validation tests. This app uses Flask-Marshmallow, which provides an auto-schema that infers some basic validations based on the table definition in the Models class. Any additional validations defined in the schema must be tested. Schema tests can be found in the `tests/schemas` directory. Deserialization should also be tested here when used. Serialization is currently not used and does not need to be tested here at this time. Testing serialization may take place elsewhere.
+All schemas should have unit tests, which primarily should be validation tests. This app uses Flask-Marshmallow, which provides an auto-schema that infers some basic validations based on the table definition in the Models class. Any additional validations defined in the schema must be tested. Schema tests can be found in the `tests/schemas` directory. Deserialization should also be tested here when used.
 
 ### Resources
 
@@ -65,35 +63,36 @@ A resource's main job is to coordinate a response for the incoming request. If d
 Each resource will usually have one test for each action (GET, POST, DELETE, etc...). When the Models and Schemas have unit tests, and when the resource uses the models and schemas appropriately, then **generally** only a successful response (The Happy Path) needs to be tested. All other responses that can occur are already tested elsewhere, including validation errors or database rows that cannot be found. Errors such as these should not be tested, as they're already built into the architecture of the app and happen automatically as long as the schemas are used along with the appropriate methods defined in the BaseModel. Tests for the resources can be found in the `tests/integration` directory.
 
 ## Installation
-Set up Dwelling Flask Testing Backend (for the first time)
-NOTE: Database is SQLite3 via SQLAlchemy
+NOTE: Default development database is SQLite3. (Optionally setup and use [PostgreSQL](#PostgreSQL-Setup) as the database.)
 
 [Note for Windows users](#Note-For-Windows-Users)
 
 [Mac OS Troubleshooting](#Mac-OS-Troubleshooting)
 
 1. Clone the repo (`git clone https://github.com/codeforpdx/dwellinglybackend.git`)
-2. Install [pipenv](https://pipenv.pypa.io/en/latest/#install-pipenv-today)
+2. Install [pyenv](https://github.com/pyenv/pyenv) | This step is optional but recommended.
+   - With pyenv installed pipenv will automatically install the correct python version.
+3. Install [pipenv](https://pipenv.pypa.io/en/latest/#install-pipenv-today)
     - Note: Pipenv handles the install for all dependencies. Including Python.
     - Please install pipenv according to their docs for your OS.
-3. Install dependencies `pipenv run dev-install`
+4. Install dependencies `pipenv run dev-install`
    - Note: Pipenv may prompt you to install Python if it cannot find the correct version on your system. You should select Yes.
    - Note: If you get the error `ImportError: cannot import name 'Feature' from 'setuptools'`, your setuptools version might be at 46 or later. You may be able to get it to work using version 45 (e.g. `pip3 install setuptools==45`)
-4. Install our pre-commit hook:
+5. Install our pre-commit hook:
    - Run: `pipenv run pre-commit install`
-5. copy the contents of the `.env.example` to a new file called `.env`
+6. copy the contents of the `.env.example` to a new file called `.env`
     - `cp .env.example .env`
-6. Create and Seed the database
+7. Create and Seed the database
    - Run: `pipenv run flask db create`
 
    - Some other useful commands are:
      - To re-seed the database from scratch run: `pipenv run flask db recreate`
      - To find other database set-up commands run: `pipenv run flask db --help`
      - To drop the database run: `pipenv run flask db drop`
-7. Start the server using the flask environment (required every time the project is re-opened):
+8. Start the server using the flask environment (required every time the project is re-opened):
    - Run: `pipenv run flask run`
    - Run and restart the server on changes: `pipenv run flask run --reload`
-8. Test the server and view coverage reports. Use of coverage reporting is recommended to indicate test suite completeness and to locate defunct code in the code base.
+9. Test the server and view coverage reports. Use of coverage reporting is recommended to indicate test suite completeness and to locate defunct code in the code base.
     - Run all the tests: `pipenv run pytest --cov .`
       - Run tests in a particular directory: `pipenv run pytest --cov [path to directory]`
         - Example: Just the integration tests: `pipenv run pytest --cov tests/integration`
@@ -105,10 +104,21 @@ NOTE: Database is SQLite3 via SQLAlchemy
       - As a web page: `pipenv run python view_coverage.py`
       - In the console: `pipenv run view_coverage`
     - Tests can be run automatically after each file save using [pytest-watch](https://pypi.org/project/pytest-watch/). Visit the documentation to learn how to run it for your system. See [PR #72](https://github.com/codeforpdx/dwellinglybackend/pull/72) for a preview of what it can do.
-9. (OPTIONAL) Set up your workflow using the [Advanced Setup documentation](./advanced_setup.md)
+10. (OPTIONAL) Set up your workflow using the [Advanced Setup documentation](./advanced_setup.md)
 
 Queries can be made with the Postman Collection link ( https://www.getpostman.com/collections/a86a292798c7895425e2 )
 [![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/0078de8f58d4ea0b78eb)
+
+### PostgreSQL Setup
+1. Install [PostgreSQL](https://www.postgresql.org/download/).
+2. Manually create the database.
+   - From a linux or mac command line run the following:
+     ```shell
+      createdb dwellingly_development
+      createdb dwellingly_test
+     ```
+3. Open up `.env` and uncomment the `DEV_DATABASE_URL` and `TEST_DATABASE_URL` env vars.
+4. Run `pipenv run flask db create`.
 
 ### Note For Windows Users
 
@@ -130,7 +140,7 @@ If you don't see something similar, you may have several versions of Python inst
 
 ### Database migrations.
 
-Database migrations are not used for development. Please ignore do not use migrations during development.
+Database migrations are currently not used. We will start using them soon.
 
 Database migrations are managed through [Alembic](https://alembic.sqlalchemy.org/en/latest/index.html). After making a change to a model, a database migration is necessary.
 

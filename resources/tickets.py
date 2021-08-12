@@ -1,20 +1,12 @@
-from flask_restful import Resource, reqparse
+from db import db
+from flask_restful import Resource
 from models.tickets import TicketModel
-from models.tenant import TenantModel
 from utils.authorizations import pm_level_required
 from flask import request
 from schemas.ticket import TicketSchema
 
 
 class Ticket(Resource):
-    parser = reqparse.RequestParser()
-    parser.add_argument("senderID")
-    parser.add_argument("tenantID")
-    parser.add_argument("status")
-    parser.add_argument("urgency")
-    parser.add_argument("issue")
-    parser.add_argument("assignedUserID")
-
     @pm_level_required
     def get(self, id):
         return TicketModel.find(id).json()
@@ -26,36 +18,22 @@ class Ticket(Resource):
 
     @pm_level_required
     def put(self, id):
-        return TicketModel.update(
-            schema=TicketSchema, id=id, payload=request.json
-        ).json()
+        ticket = TicketModel.find(id)
+        return ticket.update(schema=TicketSchema, payload=request.json).json()
 
 
 class Tickets(Resource):
-    parser = reqparse.RequestParser()
-    parser.add_argument("senderID")
-    parser.add_argument("tenantID")
-    parser.add_argument("status")
-    parser.add_argument("urgency")
-    parser.add_argument("issue")
-    parser.add_argument("assignedUserID")
-
     @pm_level_required
     def get(self):
-        if request.args and request.args["tenantID"]:
-            return {
-                "tickets": TenantModel.find(request.args["tenantID"]).tickets.json()
-            }
-        else:
-            return {"tickets": TicketModel.query.json()}
+        tickets = TicketModel.query
+        if "tenant_id" in request.args:
+            tickets = tickets.where(TicketModel.tenant_id == request.args["tenant_id"])
+        return {"tickets": tickets.json()}
 
     @pm_level_required
     def post(self):
-        data = Tickets.parser.parse_args()
-        ticket = TicketModel(**data)
-
-        ticket.save_to_db()
-        return ticket.json(), 201
+        TicketModel.create(schema=TicketSchema, payload=request.json)
+        return {"message": "Ticket successfully created"}, 201
 
     @pm_level_required
     def delete(self):
@@ -67,5 +45,6 @@ class Tickets(Resource):
         TicketModel.query.filter(TicketModel.id.in_(data["ids"])).delete(
             synchronize_session="fetch"
         )
+        db.session.commit()
 
         return {"message": "Tickets successfully deleted"}, 200

@@ -37,6 +37,23 @@ def parseContactNumbersFromJson(json_data):
 
 
 class EmergencyContacts(Resource):
+    def get(self):
+        return {"emergency_contacts": EmergencyContactModel.query.json()}
+
+    @admin_required
+    def post(self):
+        return (
+            EmergencyContactModel.create(
+                schema=EmergencyContactSchema, payload=request.json
+            ).json(),
+            201,
+        )
+
+
+class EmergencyContact(Resource):
+    def get(self, id):
+        return EmergencyContactModel.find(id).json()
+
     # Keeping this here until PUT endpoint has been refactored
     parser = reqparse.RequestParser()
     parser.add_argument(
@@ -54,19 +71,6 @@ class EmergencyContacts(Resource):
         required=True,
         help="This field cannot be blank",
     )
-
-    def get(self, id=None):
-        if id:
-            return EmergencyContactModel.find(id).json()
-        else:
-            return {"emergency_contacts": EmergencyContactModel.query.json()}
-
-    @admin_required
-    def post(self):
-        return (
-            EmergencyContactModel.create(EmergencyContactSchema, request.json).json(),
-            201,
-        )
 
     @admin_required
     def put(self, id):

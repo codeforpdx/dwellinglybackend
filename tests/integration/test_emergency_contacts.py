@@ -1,98 +1,69 @@
-from conftest import is_valid
 import pytest
-
-# NOTE: Each endpoint should be tested for all valid request types --
-# (GET, POST, PUT, PATCH, DELETE, etc.)
-
-# Each request should be tested to return valid:
-# 1. Status Code
-# 2. Headers
-# 3. JSON
-
-# Also test invalid requests, such as:
-# 1. Action on non-existent entries
-# 2. Duplicate creation
-
-# Also test for appropriate auth restriction, such as:
-# 1. Valid access token
-# 2. Valid role (admin, property-manager, pending, etc.)
-
+from unittest.mock import patch
+from conftest import is_valid
+from models.emergency_contact import EmergencyContactModel
+from schemas.emergency_contact import EmergencyContactSchema
 
 endpoint = "/api/emergencycontacts"
 
 
-def test_emergency_contacts_GET_all(client, test_database):
-    response = client.get(endpoint)
-    assert is_valid(response, 200)  # OK
-    assert response.json["emergency_contacts"][0]["name"] == "Narcotics Anonymous"
+@pytest.mark.usefixtures("client_class", "empty_test_db")
+class TestEmergencyContactGet:
+    def test_get(self, valid_header, create_emergency_contact):
+        contact = create_emergency_contact()
+        with patch.object(
+            EmergencyContactModel, "find", return_value=contact
+        ) as mock_find:
+            response = self.client.get(f"{endpoint}/4321", headers=valid_header)
+
+        mock_find.assert_called_once_with(4321)
+        assert response.status_code == 200
+        assert response.json == contact.json()
 
 
-def test_emergency_contacts_GET_one(client, test_database):
-    id = 1
-    response = client.get(f"{endpoint}/{id}")
-    assert is_valid(response, 200)  # OK
-    assert response.json["name"] == "Narcotics Anonymous"
+@pytest.mark.usefixtures("client_class", "empty_test_db")
+class TestEmergencyContactsDelete:
+    def test_get(self, valid_header, create_emergency_contact):
+        with patch.object(EmergencyContactModel, "delete") as mock_delete:
+            response = self.client.delete(f"{endpoint}/8745", headers=valid_header)
 
-    id = 100
-    response = client.get(f"{endpoint}/{id}")
-    assert is_valid(response, 404)  # NOT FOUND - 'Emergency Contact not found'
-    assert response.json == {"message": "EmergencyContact not found"}
+        mock_delete.assert_called_once_with(8745)
+        assert response.status_code == 200
+        assert response.json == {"message": "Emergency contact deleted"}
 
 
-def test_emergency_contacts_POST(client, auth_headers):
-    newContact = {
-        "name": "Narcotics Anonymous",
-        "description": "Cool description",
-        "contact_numbers": [
-            {"number": "503-291-9111", "numtype": "Call"},
-            {"number": "503-555-3321", "numtype": "Text"},
-        ],
-    }
+@pytest.mark.usefixtures("client_class", "empty_test_db")
+class TestEmergencyContactsPost:
+    def test_post(self, valid_header, create_emergency_contact):
+        contact = create_emergency_contact()
+        with patch.object(
+            EmergencyContactModel, "create", return_value=contact
+        ) as mock_create:
+            response = self.client.post(
+                endpoint, json={"yes": "ok"}, headers=valid_header
+            )
 
-    invalidContactNum = {
-        "name": "Contact Name",
-        "description": "An invalid contact number",
-        "contact_numbers": [
-            {"number": 503 - 291 - 9111, "numtype": "Call"},
-            {"number": "503-555-3321", "numtype": "Text"},
-        ],
-    }
+        mock_create.assert_called_once_with(
+            schema=EmergencyContactSchema, payload={"yes": "ok"}
+        )
+        assert response.status_code == 201
+        assert response.json == contact.json()
 
-    response = client.post(endpoint, json=newContact, headers=auth_headers["admin"])
-    assert is_valid(
-        response, 400
-    )  # UNAUTHORIZED - Emergency Contact With This Name Already Exists
-    assert response.json == {
-        "message": {"name": ["Narcotics Anonymous is already an emergency contact"]}
-    }
 
-    response = client.post(
-        endpoint, json=invalidContactNum, headers=auth_headers["admin"]
-    )
-    assert is_valid(
-        response, 400
-    )  # BAD REQUEST - Invalid contact number - number is not string type
-    assert response.json == {
-        "message": {"contact_numbers": {"0": {"number": ["Not a valid string."]}}}
-    }
+@pytest.mark.usefixtures("client_class", "empty_test_db")
+class TestEmergencyContactsGet:
+    def test_get(self, valid_header, create_emergency_contact):
+        contact = create_emergency_contact()
+        response = self.client.get(endpoint, headers=valid_header)
 
-    newContact["name"] = "Cooler Name"
-    response = client.post(endpoint, json=newContact, headers=auth_headers["admin"])
-    assert is_valid(response, 201)  # CREATED
-    assert response.json["name"] == "Cooler Name"
-    assert response.json["contact_numbers"][0]["number"] == "503-291-9111"
-
-    newContact = {}
-    response = client.post(endpoint, json=newContact, headers=auth_headers["admin"])
-    assert is_valid(
-        response, 400
-    )  # BAD REQUEST - {'name': 'This Field Cannot Be Blank.'}
+        assert response.status_code == 200
+        assert response.json == {"emergency_contacts": [contact.json()]}
 
 
 @pytest.mark.skip(
     reason="This is testing a successful update action on a non-existent id..."
 )
-def test_emergency_contacts_PUT(client, auth_headers):
+def test_emergency_contacts_PUT(client, valid_header, empty_test_db):
     id = 1
     updatedInfo = {
         "name": "Greg",
@@ -102,9 +73,7 @@ def test_emergency_contacts_PUT(client, auth_headers):
         ],
     }
 
-    response = client.put(
-        f"{endpoint}/{id}", json=updatedInfo, headers=auth_headers["admin"]
-    )
+    response = client.put(f"{endpoint}/{id}", json=updatedInfo, headers=valid_header)
     assert is_valid(response, 200)  # OK
     assert response.json["name"] == "Greg"
     # assert response.json['contact_numbers'][0]['number'] == '503-291-9111'
@@ -113,19 +82,6 @@ def test_emergency_contacts_PUT(client, auth_headers):
     # TODO: Create issue to address non restful behavior.
 
     id = 100
-    response = client.put(
-        f"{endpoint}/{id}", json=updatedInfo, headers=auth_headers["admin"]
-    )
+    response = client.put(f"{endpoint}/{id}", json=updatedInfo, headers=valid_header)
     assert is_valid(response, 404)  # NOT FOUND
     assert response.json == {"message": "Emergency contact not found"}
-
-
-def test_emergency_contacts_DELETE(client, auth_headers):
-    id = 1
-
-    response = client.delete(f"{endpoint}/{id}", headers=auth_headers["admin"])
-    assert is_valid(response, 200)  # OK
-
-    response = client.delete(f"{endpoint}/{id}", headers=auth_headers["admin"])
-    assert is_valid(response, 404)  # NOT FOUND - Emergency Contact Not Found
-    assert response.json == {"message": "EmergencyContact not found"}

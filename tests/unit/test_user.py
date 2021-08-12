@@ -1,24 +1,35 @@
 import pytest
-from models.user import UserModel, RoleEnum
-from schemas.user import UserSchema
-from unittest.mock import patch
 import jwt
 import time
+from unittest.mock import patch
+from models.user import UserModel, RoleEnum
+from schemas.user import UserSchema
 from freezegun import freeze_time
+from tests.unit.base_interface_test import BaseInterfaceTest
 
 
-@patch.object(jwt, "encode")
-def test_reset_password_token(stubbed_encode, app, test_database):
-    user = UserModel.find(1)
+class TestUserModel(BaseInterfaceTest):
+    def setup(self):
+        self.object = UserModel(password="1234")
+        self.schema = UserSchema
+        self.custom_404_msg = "User not found"
 
-    with freeze_time(time.ctime(time.time())):
-        ten_minutes = time.time() + 600
-        payload = {"user_id": user.id, "exp": ten_minutes}
 
-        assert user.reset_password_token()
-        stubbed_encode.assert_called_once_with(
-            payload, app.secret_key, algorithm="HS256"
-        )
+@pytest.mark.usefixtures("empty_test_db")
+class TestResetPasswordToken:
+    def test_reset_password_token(stubbed_encode, app, create_user):
+        user = create_user()
+
+        with freeze_time(time.ctime(time.time())):
+            ten_minutes = time.time() + 600
+            payload = {"user_id": user.id, "exp": ten_minutes}
+
+            with patch.object(jwt, "encode") as stubbed_encode:
+                user.reset_password_token()
+
+            stubbed_encode.assert_called_once_with(
+                payload, app.secret_key, algorithm="HS256"
+            )
 
 
 def test_full_name(empty_test_db, create_admin_user):
@@ -97,29 +108,3 @@ class TestFixtures:
             return create_unauthorized_user()
 
         assert test_multiple_users_can_be_created()
-
-
-@pytest.mark.usefixtures("empty_test_db")
-class TestOverwrittenAndInheritedMethods:
-    def test_user_save_to_db(self, user_attributes):
-        attrs = UserModel.validate(
-            UserSchema, user_attributes(role=RoleEnum.STAFF.value)
-        )
-        user = UserModel(**attrs)
-        user.save_to_db()
-        lookedup = UserModel.find(user.id)
-        assert lookedup.password is None
-
-    def test_update_class_method(self, create_join_staff, faker):
-        user = create_join_staff()
-        email = faker.unique.email()
-        UserModel.update(UserSchema, user.id, {"email": email})
-        lookedup = UserModel.find(user.id)
-        assert lookedup.email == email
-        assert lookedup.password is None
-        assert lookedup.hash_digest == user.hash_digest
-
-    def test_create_class_method(self, user_attributes):
-        user = UserModel.create(UserSchema, user_attributes(role=RoleEnum.STAFF.value))
-        lookedup = UserModel.find(user.id)
-        assert lookedup.password is None

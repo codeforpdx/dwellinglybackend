@@ -31,17 +31,15 @@ class BaseModel(db.Model):
 
         return obj
 
-    @classmethod
-    def update(cls, schema, id, payload, context=None):
-        obj = cls.find(id)
-        attrs = cls.validate(schema, payload, context=context, partial=True)
+    def update(self, schema, payload, context=None):
+        attrs = self.validate(schema, payload, context=context, partial=True)
 
         for k, v in attrs.items():
-            setattr(obj, k, v)
+            setattr(self, k, v)
 
-        obj.save_to_db()
+        self.save_to_db()
 
-        return obj
+        return self
 
     @staticmethod
     def validate(schema, payload, context=None, partial=False):

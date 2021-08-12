@@ -7,7 +7,7 @@ class TestTenantAuthorization:
     def setup(self):
         self.endpoint = "/api/tenants"
 
-    def test_post(self, create_join_staff, auth_headers):
+    def test_post(self, create_join_staff, pm_header):
         staff_1 = create_join_staff()
         staff_2 = create_join_staff()
         newTenant = {
@@ -16,9 +16,7 @@ class TestTenantAuthorization:
             "phone": "111-111-1111",
             "staffIDs": [staff_1.id, staff_2.id],
         }
-        response = self.client.post(
-            self.endpoint, json=newTenant, headers=auth_headers["pm"]
-        )
+        response = self.client.post(self.endpoint, json=newTenant, headers=pm_header())
         assert is_valid(response, 401)  # UNAUTHORIZED - Admin Access Required
 
         response = self.client.post(self.endpoint, json=newTenant)

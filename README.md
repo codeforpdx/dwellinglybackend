@@ -1,5 +1,5 @@
 # Dwellingly App Backend
-[![Build Status](https://travis-ci.com/codeforpdx/dwellinglybackend.svg?branch=development)](https://travis-ci.com/codeforpdx/dwellinglybackend)
+[![CI Tests](https://github.com/codeforpdx/dwellinglybackend/actions/workflows/pytest.yml/badge.svg?event=push)](https://github.com/codeforpdx/dwellinglybackend/actions/workflows/pytest.yml)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 _Looking for the [Dwellingly App front end?](https://github.com/codeforpdx/dwellingly-app)_
@@ -17,7 +17,7 @@ Dwellingly is being built from [these FIGMA designs](https://drive.google.com/fi
 
 ## Specs
 
-The backend is being built with Python, Flask and SQLAlchemy.  The frontend is built in node with the React framework.
+The backend is being built with Python, Flask and SQLAlchemy.  The frontend is built with React.
 
 ## Contributing
 
@@ -26,8 +26,6 @@ The backend is being built with Python, Flask and SQLAlchemy.  The frontend is b
  - To learn about our workflow, app architecture, and how to install the project for development. View the [CONTRIBUTING.MD](./CONTRIBUTING.md) doc.
 
  - To learn about how to get a JWT token, use the API for development, and about all our endpoints, please see our [API Usage](./doc/using_the_api.md) page. (Warning: endpoint info may be out of date)
-
- - View our <a href="https://dbdiagram.io/d/5f28f4b27543d301bf5dc585" target="_blank">Database Diagram</a> to get a birds eye view of the data storage.
 
 ## Contributors
 

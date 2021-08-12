@@ -33,6 +33,6 @@ class TestPropertyAuthorizations:
     def test_archive_properties_non_admin(self, staff_header):
         """The server responds with a 401 error if a non-admin tries to archive"""
         responseNoAdmin = self.client.patch(
-            "/api/properties/archive", json={}, headers=staff_header
+            "/api/properties/archive", json={}, headers=staff_header()
         )
         assert responseNoAdmin == 401

@@ -1,11 +1,13 @@
 from datetime import datetime, timedelta
 
 from models.user import UserModel, RoleEnum
+from models.users.admin import Admin
+from models.users.staff import Staff
+from models.users.property_manager import PropertyManager
 from models.property import PropertyModel
 from models.tenant import TenantModel
 from models.tickets import TicketModel, TicketStatus
 from models.notes import NotesModel
-from models.revoked_tokens import RevokedTokensModel
 from models.emergency_contact import EmergencyContactModel
 from models.contact_number import ContactNumberModel
 from models.lease import LeaseModel
@@ -16,7 +18,7 @@ def seedData():
     now = datetime.utcnow()
     future = now + timedelta(days=365)
 
-    user_1 = UserModel(
+    user_1 = Admin(
         email="user1@dwellingly.org",
         role=RoleEnum.ADMIN,
         firstName="user1",
@@ -26,7 +28,7 @@ def seedData():
         archived=False,
     )
     user_1.save_to_db()
-    user_2 = UserModel(
+    user_2 = Admin(
         email="user2@dwellingly.org",
         role=RoleEnum.ADMIN,
         firstName="user2",
@@ -36,7 +38,7 @@ def seedData():
         archived=False,
     )
     user_2.save_to_db()
-    user_3 = UserModel(
+    user_3 = Admin(
         email="user3@dwellingly.org",
         role=RoleEnum.ADMIN,
         firstName="user3",
@@ -46,7 +48,7 @@ def seedData():
         archived=False,
     )
     user_3.save_to_db()
-    user_mister_sir = UserModel(
+    user_mister_sir = PropertyManager(
         email="MisterSir@dwellingly.org",
         role=RoleEnum.PROPERTY_MANAGER,
         firstName="Mr.",
@@ -56,7 +58,7 @@ def seedData():
         archived=False,
     )
     user_mister_sir.save_to_db()
-    user_gray_pouponn = UserModel(
+    user_gray_pouponn = PropertyManager(
         email="GrayPouponn@dwellingly.org",
         role=RoleEnum.PROPERTY_MANAGER,
         firstName="Gray",
@@ -106,7 +108,7 @@ def seedData():
         },
         schema=UserRegisterSchema,
     )
-    user_janice_joinstaff = UserModel(
+    user_janice_joinstaff = Staff(
         email="janice@joinpdx.org",
         role=RoleEnum.STAFF,
         firstName="Janice",
@@ -116,7 +118,7 @@ def seedData():
         archived=False,
     )
     user_janice_joinstaff.save_to_db()
-    user_hector_chen = UserModel(
+    user_hector_chen = Staff(
         email="hector@joinpdx.org",
         role=RoleEnum.STAFF,
         firstName="Hector",
@@ -126,7 +128,7 @@ def seedData():
         archived=False,
     )
     user_hector_chen.save_to_db()
-    user_xander_dander = UserModel(
+    user_xander_dander = Staff(
         email="xander@joinpdx.org",
         role=RoleEnum.STAFF,
         firstName="Xander",
@@ -208,67 +210,61 @@ def seedData():
 
     ticket_roof_on_fire = TicketModel(
         issue="The roof, the roof, the roof is on fire.",
-        tenantID=tenant_renty_mcrenter.id,
-        senderID=user_1.id,
+        tenant_id=tenant_renty_mcrenter.id,
+        author_id=user_1.id,
         status=TicketStatus.In_Progress,
         urgency="Low",
-        assignedUserID=user_mister_sir.id,
     )
     ticket_roof_on_fire.save_to_db()
     ticket_dumpster_fire = TicketModel(
         issue="Flaming Dumpster Fire.",
-        tenantID=tenant_soho_muless.id,
-        senderID=user_3.id,
+        tenant_id=tenant_soho_muless.id,
+        author_id=user_3.id,
         status=TicketStatus.New,
         urgency="Critical",
-        assignedUserID=user_mister_sir.id,
     )
     ticket_dumpster_fire.save_to_db()
     ticket_unpaid_rent = TicketModel(
         issue="Unpaid Rent",
-        tenantID=tenant_renty_mcrenter.id,
-        senderID=user_1.id,
+        tenant_id=tenant_renty_mcrenter.id,
+        author_id=user_1.id,
         status=TicketStatus.New,
         urgency="High",
-        assignedUserID=user_mister_sir.id,
     )
     ticket_unpaid_rent.save_to_db()
     ticket_40_cats = TicketModel(
         issue="Over 40 cats in domicile.",
-        tenantID=tenant_soho_muless.id,
-        senderID=user_3.id,
+        tenant_id=tenant_soho_muless.id,
+        author_id=user_3.id,
         status=TicketStatus.Closed,
         urgency="Low",
-        assignedUserID=user_mister_sir.id,
     )
     ticket_40_cats.save_to_db()
 
     note_not_responding = NotesModel(
-        ticketid=ticket_unpaid_rent.id,
+        ticket_id=ticket_unpaid_rent.id,
         text="Tenant not responding to phone calls.",
-        userid=user_1.id,
+        user_id=user_1.id,
     )
     note_not_responding.save_to_db()
     note_over_40_cats = NotesModel(
-        ticketid=ticket_roof_on_fire.id,
+        ticket_id=ticket_roof_on_fire.id,
         text="Tenant has over 40 cats.",
-        userid=user_2.id,
+        user_id=user_2.id,
     )
     note_over_40_cats.save_to_db()
     note_issue_resolved = NotesModel(
-        ticketid=ticket_roof_on_fire.id,
+        ticket_id=ticket_roof_on_fire.id,
         text="Issue Resolved with phone call",
-        userid=user_3.id,
+        user_id=user_3.id,
     )
     note_issue_resolved.save_to_db()
     note_contacted_tenant = NotesModel(
-        ticketid=ticket_dumpster_fire.id,
+        ticket_id=ticket_dumpster_fire.id,
         text="Contacted Tenant -- follow up tomorrow.",
-        userid=user_3.id,
+        user_id=user_3.id,
     )
     note_contacted_tenant.save_to_db()
-
-    RevokedTokensModel(jti="855c5cb8-c871-4a61-b3d8-90249f979601").save_to_db()
 
     EmergencyContactModel(
         name="Narcotics Anonymous",

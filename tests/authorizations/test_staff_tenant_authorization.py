@@ -26,7 +26,7 @@ class TestStaffTenantAuthorizations:
             json=TestStaffTenantAuthorizations.valid_payload(
                 tenants=[create_tenant().id], staff=[create_join_staff().id]
             ),
-            headers=pm_header,
+            headers=pm_header(),
         )
 
         assert response.status_code == 401
@@ -39,7 +39,7 @@ class TestStaffTenantAuthorizations:
             json=TestStaffTenantAuthorizations.valid_payload(
                 tenants=[create_tenant().id], staff=[create_join_staff().id]
             ),
-            headers=staff_header,
+            headers=staff_header(),
         )
 
         assert response.status_code == 401

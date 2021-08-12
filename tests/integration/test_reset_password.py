@@ -1,5 +1,4 @@
 import pytest
-from models.user import UserModel
 from conftest import is_valid
 from unittest.mock import patch
 from resources.email import Email
@@ -7,13 +6,13 @@ from freezegun import freeze_time
 from utils.time import Time
 
 
-@pytest.mark.usefixtures("client_class", "test_database")
+@pytest.mark.usefixtures("client_class", "empty_test_db")
 class TestResetPasswordPOST:
     def setup(self):
         self.endpoint = "/api/reset-password"
 
     def test_request_with_invalid_params(self):
-        response = self.client.post(self.endpoint)
+        response = self.client.post(self.endpoint, json={})
         assert is_valid(response, 400)
 
     def test_request_with_invalid_email(self):
@@ -24,8 +23,8 @@ class TestResetPasswordPOST:
         assert response.json == {"message": "Invalid email"}
 
     @patch.object(Email, "send_reset_password_msg")
-    def test_request_with_valid_email(self, send_reset_email):
-        user = UserModel.find(1)
+    def test_request_with_valid_email(self, send_reset_email, create_user):
+        user = create_user()
         response = self.client.post(self.endpoint, json={"email": user.email})
 
         assert is_valid(response, 200)
@@ -42,7 +41,7 @@ class TestResetPasswordPOST:
         assert is_valid(response, 400)
 
 
-@pytest.mark.usefixtures("client_class", "test_database")
+@pytest.mark.usefixtures("client_class", "empty_test_db")
 class TestResetPasswordGET:
     def setup(self):
         self.endpoint = "/api/reset-password"
@@ -52,19 +51,18 @@ class TestResetPasswordGET:
         assert response.status == "422 UNPROCESSABLE ENTITY"
         assert response.json == {"message": "Not enough segments"}
 
-    def test_request_with_expired_token(self, new_user):
+    def test_request_with_expired_token(self, create_user):
         with freeze_time(Time.yesterday()):
-            token = new_user.reset_password_token()
+            token = create_user().reset_password_token()
 
         response = self.client.get(f"{self.endpoint}/{token}")
 
         assert response.status == "422 UNPROCESSABLE ENTITY"
         assert response.json == {"message": "Expired token"}
 
-    def test_request_with_valid_token(self, new_user):
-        token = new_user.reset_password_token()
-
-        response = self.client.get(f"{self.endpoint}/{token}")
+    def test_request_with_valid_token(self, create_user):
+        user = create_user()
+        response = self.client.get(f"{self.endpoint}/{user.reset_password_token()}")
 
         assert response.status == "200 OK"
-        assert response.json == {"message": "Valid token", "user_id": new_user.id}
+        assert response.json == {"message": "Valid token", "user_id": user.id}
