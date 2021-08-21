@@ -58,6 +58,9 @@ class Production(Default):
     CORS_ORIGINS = ["UPDATE THIS WITH FRONTEND ORIGINS"]
     JWT_ACCESS_TOKEN_EXPIRES = 900
     JWT_REFRESH_TOKEN_EXPIRES = 604800
+    MAIL_PORT = 2525
+    MAIL_USE_TLS = True
+    MAIL_USE_SSL = False
 
 
 app_environments = {
