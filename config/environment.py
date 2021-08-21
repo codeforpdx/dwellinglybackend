@@ -48,9 +48,13 @@ class Testing(Default):
 
 
 class Production(Default):
-    SQLALCHEMY_DATABASE_URI = os.environ.get(
-        "DATABASE_URL"
-    ) or "sqlite:///" + os.path.join(basedir, "data.sqlite")
+    # Heroku hack to connect to postgres dialect since sqlalchemy does things differently. # noqa
+    # https://help.heroku.com/ZKNTJQSK/why-is-sqlalchemy-1-4-x-not-connecting-to-heroku-postgres # noqa
+    # https://github.com/sqlalchemy/sqlalchemy/discussions/5799
+    db_uri = os.getenv("DATABASE_URL") or ""
+    if db_uri.startswith("postgres://"):
+        db_uri = db_uri.replace("postgres://", "postgresql://", 1)
+    SQLALCHEMY_DATABASE_URI = db_uri
     CORS_ORIGINS = ["UPDATE THIS WITH FRONTEND ORIGINS"]
 
 
