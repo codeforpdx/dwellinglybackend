@@ -33,6 +33,7 @@ flask-marshmallow = "*"
 marshmallow-sqlalchemy = "*"
 alembic = "*"
 psycopg2 = "*"
+gunicorn = "*"
 
 [requires]
 python_version = "3.9.6"
