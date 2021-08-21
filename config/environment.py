@@ -56,6 +56,8 @@ class Production(Default):
         db_uri = db_uri.replace("postgres://", "postgresql://", 1)
     SQLALCHEMY_DATABASE_URI = db_uri
     CORS_ORIGINS = ["UPDATE THIS WITH FRONTEND ORIGINS"]
+    JWT_ACCESS_TOKEN_EXPIRES = 900
+    JWT_REFRESH_TOKEN_EXPIRES = 604800
 
 
 app_environments = {
