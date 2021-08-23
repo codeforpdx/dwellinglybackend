@@ -1,5 +1,5 @@
 from schemas.user import UserSchema, UserRegisterSchema
-from models.user import RoleEnum
+from models.user import RoleEnum, UserTypes
 
 
 def user_register_valid_payload(user):
@@ -73,6 +73,14 @@ class TestUserRegisterSchemaValidations:
 
         assert "role" in validation_errors
         assert validation_errors["role"] == ["Role is not allowed"]
+
+    def test_presence_of_type_is_not_valid(self):
+        payload = {"type": UserTypes.ADMIN.value}
+
+        validation_errors = UserRegisterSchema().validate(payload)
+
+        assert "type" in validation_errors
+        assert validation_errors["type"] == ["Type is not allowed"]
 
     def test_password_is_required(self):
         validation_errors = UserRegisterSchema().validate({})

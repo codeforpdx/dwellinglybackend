@@ -2,12 +2,12 @@ from flask_restful import Resource
 from flask import request
 from schemas import UserRegisterSchema, UserSchema
 from utils.authorizations import admin_required, pm_level_required
-from models.user import UserModel, RoleEnum
+from models.user import UserModel, RoleEnum, UserTypes
 from flask_jwt_extended import (
     create_access_token,
     create_refresh_token,
-    get_jwt_identity,
     jwt_required,
+    current_user,
 )
 
 
@@ -25,17 +25,22 @@ class User(Resource):
 
     @pm_level_required
     def patch(self, id):
-        current_user = UserModel.find(get_jwt_identity())
         user = UserModel.find(id)
         role = request.json.get("role")
+        user_type = UserTypes.get(request.json.get("type"))
         password = request.json.get("new_password")
+        role_change = role or user_type
 
-        if not self._authorized(current_user=current_user, user=user, role_change=role):
+        if not self._authorized(
+            current_user=current_user, user=user, role_change=role_change
+        ):
             return {"message": "Not Authorized"}, 403
 
         if role:
-            user.role = RoleEnum(role)
             user.type = RoleEnum(role).name.lower()
+
+        if user_type:
+            user.type = user_type
 
         if password:
             if password != request.json.get("confirm_password"):
@@ -59,7 +64,7 @@ class User(Resource):
     def delete(self, id):
         user = UserModel.find(id)
 
-        if user.id == get_jwt_identity():
+        if user == current_user:
             return {"message": "Cannot delete self"}, 400
 
         user.delete_from_db()
@@ -69,7 +74,7 @@ class User(Resource):
 class ArchiveUser(Resource):
     @admin_required
     def post(self, user_id):
-        if user_id == get_jwt_identity():
+        if user_id == current_user.id:
             return {"message": "Cannot archive self"}, 400
 
         user = UserModel.find(user_id)
@@ -89,8 +94,8 @@ class UserLogin(Resource):
             return {"message": "Invalid user"}, 403
 
         if user and user.check_pw(request.json.get("password", "")):
-            access_token = create_access_token(identity=user.id, fresh=True)
-            refresh_token = create_refresh_token(user.id)
+            access_token = create_access_token(identity=user, fresh=True)
+            refresh_token = create_refresh_token(user)
             user.update_last_active()
             return {"access_token": access_token, "refresh_token": refresh_token}, 200
 
@@ -107,7 +112,6 @@ class UserAccessRefresh(Resource):
     # to make a new access token for this identity.
     @jwt_required(refresh=True)
     def post(self):
-        current_user = get_jwt_identity()
         ret = {"access_token": create_access_token(identity=current_user)}
         return ret, 200
 
@@ -115,11 +119,15 @@ class UserAccessRefresh(Resource):
 class Users(Resource):
     @admin_required
     def get(self):
-        if RoleEnum.has_role(int(request.args["r"])):
+        user_type = UserTypes.get(request.args.get("type"))
+        # TODO: This is temporary. Switching to type from role lookup.
+        if RoleEnum.has_role(int(request.args.get("r", 99))):
             return {
                 "users": UserModel.query.filter_by(
                     role=RoleEnum(int(request.args["r"]))
                 ).json()
             }
-        else:
-            return {"message": "Invalid role"}, 400
+        elif user_type:
+            return {"users": UserModel.query.filter_by(type=user_type).json()}
+
+        return {"message": "Invalid role"}, 400

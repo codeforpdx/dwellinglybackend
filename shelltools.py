@@ -1,5 +1,5 @@
 from db import db
-from models.user import UserModel, RoleEnum
+from models.user import UserModel, UserTypes
 from models.users.admin import Admin
 from models.users.property_manager import PropertyManager
 from models.users.staff import Staff

@@ -33,6 +33,20 @@ class RoleEnum(Enum):
         return role in role_values
 
 
+class UserTypes(Enum):
+    ADMIN = "admin"
+    STAFF = "staff"
+    PROPERTY_MANAGER = "property_manager"
+
+    @classmethod
+    def get(cls, value, default=None):
+        return cls._values().get(value, default)
+
+    @classmethod
+    def _values(cls):
+        return {member.value: member.value for member in cls.__members__.values()}
+
+
 class UserModel(BaseModel):
     __tablename__ = "users"
 
@@ -149,11 +163,17 @@ class UserModel(BaseModel):
     def is_admin(self):
         return False
 
+    def has_staff_privs(self):
+        return False
+
+    def has_pm_privs(self):
+        return False
+
     def _make_token(self, refresh):
         if refresh:
             return {
-                "access_token": create_access_token(identity=self.id, fresh=True),
-                "refresh_token": create_refresh_token(self.id),
+                "access_token": create_access_token(identity=self, fresh=True),
+                "refresh_token": create_refresh_token(self),
             }
         else:
             return {}

@@ -188,8 +188,8 @@ class TestUserLogic:
         """
 
         user = create_user()
-        original_access_token = create_access_token(identity=user.id, fresh=True)
-        original_refresh_token = create_refresh_token(user.id)
+        original_access_token = create_access_token(identity=user, fresh=True)
+        original_refresh_token = create_refresh_token(user)
 
         newPhone = "555-555-5555"
 
