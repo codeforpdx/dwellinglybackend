@@ -131,6 +131,18 @@ class UserModel(BaseModel):
     def serialize(self):
         return {}
 
+    @staticmethod
+    def authenticate(user, password):
+        if user and (user.archived or user.type == "user" or user.role is None):
+            return {"message": "Invalid user"}, 403
+        elif user and user.check_pw(password):
+            access_token = create_access_token(identity=user, fresh=True)
+            refresh_token = create_refresh_token(user)
+            user.update_last_active()
+            return {"access_token": access_token, "refresh_token": refresh_token}, 200
+        else:
+            return {"message": "Invalid credentials"}, 401
+
     @classmethod
     def find_by_email(cls, email):
         return cls.query.filter_by(email=email).first()

@@ -5,7 +5,6 @@ from utils.authorizations import admin_required, pm_level_required
 from models.user import UserModel, RoleEnum, UserTypes
 from flask_jwt_extended import (
     create_access_token,
-    create_refresh_token,
     jwt_required,
     current_user,
 )
@@ -88,18 +87,10 @@ class ArchiveUser(Resource):
 
 class UserLogin(Resource):
     def post(self):
-        user = UserModel.find_by_email(request.json.get("email", ""))
-
-        if user and (user.archived or user.role is None):
-            return {"message": "Invalid user"}, 403
-
-        if user and user.check_pw(request.json.get("password", "")):
-            access_token = create_access_token(identity=user, fresh=True)
-            refresh_token = create_refresh_token(user)
-            user.update_last_active()
-            return {"access_token": access_token, "refresh_token": refresh_token}, 200
-
-        return {"message": "Invalid credentials"}, 401
+        return UserModel.authenticate(
+            UserModel.find_by_email(request.json.get("email", "")),
+            request.json.get("password", ""),
+        )
 
 
 # This endpoint allows the app to use a refresh token to get a new access token

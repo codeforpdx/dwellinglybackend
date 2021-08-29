@@ -38,8 +38,13 @@ def create_app(env):
 
     @app.jwt.user_lookup_loader
     def user_lookup_callback(_jwt_header, jwt_data):
-        identity = jwt_data["sub"]
-        return UserModel.query.filter_by(id=identity, archived=False).one_or_none()
+        user = UserModel.query.filter_by(
+            id=jwt_data["sub"], archived=False
+        ).one_or_none()
+        if user and user.type == "user":
+            return None
+        else:
+            return user
 
     @app.jwt.additional_claims_loader
     def role_loader(user):
