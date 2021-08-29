@@ -75,7 +75,7 @@ NOTE: Default development database is SQLite3. (Optionally setup and use [Postgr
 2. Install [pyenv](https://github.com/pyenv/pyenv) | This step is optional but recommended.
    - With pyenv installed pipenv will automatically install the correct python version.
    - NOTE:
-     - If you previously had the project running, but need to upgrade to Python 3.9.6, check out the OS-specific documentation under [Mac OS Troubleshooting](#Mac-OS-Troubleshooting) and [Note for Windows users](#Note-For-Windows-Users)
+     - If you previously had the project running, but need to upgrade to Python, check out the OS-specific documentation under [Mac OS Troubleshooting](#Mac-OS-Troubleshooting) and [Note for Windows users](#Note-For-Windows-Users)
 3. Install [pipenv](https://pipenv.pypa.io/en/latest/#install-pipenv-today)
    - Note: Pipenv handles the install for all dependencies. Including Python.
    - Please install pipenv according to their docs for your OS.
