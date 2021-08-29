@@ -1,5 +1,7 @@
 # Contributing
+
 ## App Architecture
+
 This section describes the structure of the Python backend for the Dwellingly application. This does not cover the React frontend.
 
 Dwellingly is developed using the following tools and extensions:
@@ -7,7 +9,7 @@ Dwellingly is developed using the following tools and extensions:
 - [Flask](https://palletsprojects.com/p/flask/) is used for the main web application framework
 - [SQLite](https://sqlite.org/index.html) is used for database management ([Postgres](https://www.postgresql.org/) for production)
 - [SQLAlchemy](https://docs.sqlalchemy.org/en/14/) is used for object-relational mapping
- - [Flask-RESTful](https://flask-restful.readthedocs.io/en/latest/) is used for routing to encourage RESTful routes and resources.
+- [Flask-RESTful](https://flask-restful.readthedocs.io/en/latest/) is used for routing to encourage RESTful routes and resources.
 - [Marshmallow](https://marshmallow.readthedocs.io/en/stable/) is used for input validation, serialization, and deserialization.
 - Flask-Mailman is currently used to send mail and Jinja is used for templating the email messages.
 - [Flake8](https://gitlab.com/pycqa/flake8) is currently installed for linting, but it is probably not being used by many contributors. However, we will most likely be using [Black](https://github.com/psf/black) in the future, or a combination of Flake8 for linting and Black for formatting.
@@ -26,7 +28,6 @@ The Dwellingly app is developed using the following environments:
 We use [pytest](https://docs.pytest.org/en/latest/) for automated testing.
 
 All new functionality, changes in behavior, or bug fixes should be tested.
-
 
 ## Project Components
 
@@ -63,6 +64,7 @@ A resource's main job is to coordinate a response for the incoming request. If d
 Each resource will usually have one test for each action (GET, POST, DELETE, etc...). When the Models and Schemas have unit tests, and when the resource uses the models and schemas appropriately, then **generally** only a successful response (The Happy Path) needs to be tested. All other responses that can occur are already tested elsewhere, including validation errors or database rows that cannot be found. Errors such as these should not be tested, as they're already built into the architecture of the app and happen automatically as long as the schemas are used along with the appropriate methods defined in the BaseModel. Tests for the resources can be found in the `tests/integration` directory.
 
 ## Installation
+
 NOTE: Default development database is SQLite3. (Optionally setup and use [PostgreSQL](#PostgreSQL-Setup) as the database.)
 
 [Note for Windows users](#Note-For-Windows-Users)
@@ -72,44 +74,49 @@ NOTE: Default development database is SQLite3. (Optionally setup and use [Postgr
 1. Clone the repo (`git clone https://github.com/codeforpdx/dwellinglybackend.git`)
 2. Install [pyenv](https://github.com/pyenv/pyenv) | This step is optional but recommended.
    - With pyenv installed pipenv will automatically install the correct python version.
+   - NOTE:
+     - If you previously had the project running, but need to upgrade to Python, check out the OS-specific documentation under [Mac OS Troubleshooting](#Mac-OS-Troubleshooting) and [Note for Windows users](#Note-For-Windows-Users)
 3. Install [pipenv](https://pipenv.pypa.io/en/latest/#install-pipenv-today)
-    - Note: Pipenv handles the install for all dependencies. Including Python.
-    - Please install pipenv according to their docs for your OS.
+   - Note: Pipenv handles the install for all dependencies. Including Python.
+   - Please install pipenv according to their docs for your OS.
 4. Install dependencies `pipenv run dev-install`
    - Note: Pipenv may prompt you to install Python if it cannot find the correct version on your system. You should select Yes.
    - Note: If you get the error `ImportError: cannot import name 'Feature' from 'setuptools'`, your setuptools version might be at 46 or later. You may be able to get it to work using version 45 (e.g. `pip3 install setuptools==45`)
 5. Install our pre-commit hook:
    - Run: `pipenv run pre-commit install`
 6. copy the contents of the `.env.example` to a new file called `.env`
-    - `cp .env.example .env`
+   - `cp .env.example .env`
 7. Create and Seed the database
+
    - Run: `pipenv run flask db create`
 
    - Some other useful commands are:
      - To re-seed the database from scratch run: `pipenv run flask db recreate`
      - To find other database set-up commands run: `pipenv run flask db --help`
      - To drop the database run: `pipenv run flask db drop`
+
 8. Start the server using the flask environment (required every time the project is re-opened):
    - Run: `pipenv run flask run`
    - Run and restart the server on changes: `pipenv run flask run --reload`
 9. Test the server and view coverage reports. Use of coverage reporting is recommended to indicate test suite completeness and to locate defunct code in the code base.
-    - Run all the tests: `pipenv run pytest --cov .`
-      - Run tests in a particular directory: `pipenv run pytest --cov [path to directory]`
-        - Example: Just the integration tests: `pipenv run pytest --cov tests/integration`
-      - Run tests in a single file : `pipenv run pytest -s [path to test file]`
-        - Example: Just the users integration tests: `pipenv run pytest -s tests/integration/test_users.py`
-      - Run a specific test in a file: `pipenv run pytest -s [path to test file] -k '[test name]'`
-        - Example: Just test_archive_user from the users integration tests: `pipenv run pytest -s tests/integration/test_users.py -k 'test_archive_user'`
-    - View detailed coverage reports, with listings for untested lines of code ...
-      - As a web page: `pipenv run python view_coverage.py`
-      - In the console: `pipenv run view_coverage`
-    - Tests can be run automatically after each file save using [pytest-watch](https://pypi.org/project/pytest-watch/). Visit the documentation to learn how to run it for your system. See [PR #72](https://github.com/codeforpdx/dwellinglybackend/pull/72) for a preview of what it can do.
+   - Run all the tests: `pipenv run pytest --cov .`
+     - Run tests in a particular directory: `pipenv run pytest --cov [path to directory]`
+       - Example: Just the integration tests: `pipenv run pytest --cov tests/integration`
+     - Run tests in a single file : `pipenv run pytest -s [path to test file]`
+       - Example: Just the users integration tests: `pipenv run pytest -s tests/integration/test_users.py`
+     - Run a specific test in a file: `pipenv run pytest -s [path to test file] -k '[test name]'`
+       - Example: Just test_archive_user from the users integration tests: `pipenv run pytest -s tests/integration/test_users.py -k 'test_archive_user'`
+   - View detailed coverage reports, with listings for untested lines of code ...
+     - As a web page: `pipenv run python view_coverage.py`
+     - In the console: `pipenv run view_coverage`
+   - Tests can be run automatically after each file save using [pytest-watch](https://pypi.org/project/pytest-watch/). Visit the documentation to learn how to run it for your system. See [PR #72](https://github.com/codeforpdx/dwellinglybackend/pull/72) for a preview of what it can do.
 10. (OPTIONAL) Set up your workflow using the [Advanced Setup documentation](./advanced_setup.md)
 
 Queries can be made with the Postman Collection link ( https://www.getpostman.com/collections/a86a292798c7895425e2 )
 [![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/0078de8f58d4ea0b78eb)
 
 ### PostgreSQL Setup
+
 1. Install [PostgreSQL](https://www.postgresql.org/download/).
 2. Manually create the database.
    - From a linux or mac command line run the following:
@@ -129,6 +136,14 @@ Python does not come by default for Windows users. Sometimes the PATH variable i
 3. Once Python is installed, run `pip3 install --user pipenv` If this command doesn't work, try running `python -m pip install --user pipenv`
 4. Follow instructions 4-6 from the previous instructions section.
 
+#### Upgrading project to Python 3.9.6 on Windows
+
+To upgrade your pipenv environment to use Python 3.9.6, try the following steps:
+
+1. Navigate to the project folder using the terminal and run `pipenv --rm` to remove the existing virtual environment.
+2. Download Python 3.9.6 from https://www.python.org/downloads/ and install by following the instructions on the installer. Note: You do **not** need to add this version of Python to your PATH if you do not intend to use it as your default Python version.
+3. Once the new version of Python is installed, open your terminal to the `dwellinglybackend` directory and run the following command: `pipenv run dev-install` Pipenv should create the new virtual environment for you using Python 3.9.6
+
 #### Still having issues on Windows?
 
 If you are still having issues or if your command prompt is throwing an error that says `python is not a command` or `pip is not a command`, it is most likely a pathing issue where the ENV variable is pointing to the wrong directory. To try to troubleshoot, I suggest following this guide: ( https://github.com/LambdaSchool/CS-Wiki/wiki/Installing-Python-3-and-pipenv ).
@@ -137,6 +152,16 @@ If you are still having issues or if your command prompt is throwing an error th
 
 Check to see where the Python you're running is located (`which python`). You should see something like `/Users/your_account_shortname/.pyenv/shims/python`.
 If you don't see something similar, you may have several versions of Python installed elsewhere (via Anaconda or Homebrew). If (and only if) you'd like to clear out any previous homebrew-based installs, type `brew uninstall --ignore-dependencies python3 && brew uninstall --ignore-dependencies python`.
+
+#### Upgrading project to Python 3.9.6 on MacOS
+
+To upgrade your pipenv environment to use Python 3.9.6, try running the following commands with the terminal opened to the `dwellinglybackend` directory:
+
+```bash
+pipenv --rm
+brew update && brew upgrade pyenv
+pipenv run dev-install
+```
 
 ### Database migrations.
 
@@ -174,11 +199,11 @@ How to contribute to this project.
 (Step #3 creates a new branch titled <name of branch> and navigates you to that branch)
 
 4. Commit your changes (and resolve commit errors)
-    - Our pre-commit hook is designed to be strict in order to ensure all code being committed to the codebase is as clean and uniform as possible. Commit errors are a good thing, and completely expected!
-    - The pre-commit hook will check your code every time you try to commit. If your code needs re-formatting, that will happen automatically. If you have non-formatting errors in your code, these will be printed to the terminal with the error, filename and line number. You will need to resolve these yourself.
-    - After your code has been reformatted and/or you have resolved other errors, you will need to add and commit those files again (because they have been modified).
-    - Successful commits can then be pushed to your remote branch like normal.
-    - NOTE: If you did not set up pre-commit as described in Step 4 of [Installation](#Installation), our CI will still perform these checks when you make a PR into `development`. If the build fails, you will be asked to push the appropriate changes to your branch before it can be merged.
+   - Our pre-commit hook is designed to be strict in order to ensure all code being committed to the codebase is as clean and uniform as possible. Commit errors are a good thing, and completely expected!
+   - The pre-commit hook will check your code every time you try to commit. If your code needs re-formatting, that will happen automatically. If you have non-formatting errors in your code, these will be printed to the terminal with the error, filename and line number. You will need to resolve these yourself.
+   - After your code has been reformatted and/or you have resolved other errors, you will need to add and commit those files again (because they have been modified).
+   - Successful commits can then be pushed to your remote branch like normal.
+   - NOTE: If you did not set up pre-commit as described in Step 4 of [Installation](#Installation), our CI will still perform these checks when you make a PR into `development`. If the build fails, you will be asked to push the appropriate changes to your branch before it can be merged.
 
 (For more information on the pre-commit hook, Flake8 and the Black formatter, see the [Advanced Setup documentation](./advanced_setup.md))
 
@@ -187,15 +212,19 @@ How to contribute to this project.
 To update your development branch with the latest changes:
 
 1. First checkout the development branch if not already checked out.
- - Then run: `git checkout development`
+
+- Then run: `git checkout development`
 
 2. Pull the latest changes from github down to your local copy.
- - Assuming origin is set to the GitHub Code for PDX dev branch run:
- - `git pull origin development`
+
+- Assuming origin is set to the GitHub Code for PDX dev branch run:
+- `git pull origin development`
 
 3. After pulling fresh copy it is a good habit to install any new deps and rebuild the database. Run the following two commands:
- - `pipenv run dev-install`
- - `pipenv run flask db recreate`
+
+- `pipenv run dev-install`
+- `pipenv run flask db recreate`
 
 4. Finally - run the tests to ensure everything is passing.
- - `pipenv run pytest`
+
+- `pipenv run pytest`
