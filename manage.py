@@ -1,6 +1,6 @@
 import click
 from db import db
-from data.seedData import seedData
+from data.seed import seed
 from flask import Blueprint
 
 dbsetup = Blueprint("db", __name__)
@@ -13,14 +13,14 @@ dbsetup = Blueprint("db", __name__)
 @dbsetup.cli.command("populate")
 def populate():
     """Seed the database with default data"""
-    seedData()
+    seed()
 
 
 @dbsetup.cli.command("create")
 def create():
     """Creates database tables and populates with seed data"""
     db.create_all()
-    seedData()
+    seed()
 
 
 @dbsetup.cli.command("drop")
@@ -39,7 +39,7 @@ def recreate():
     if click.confirm("Are you sure you want to lose all your data"):
         db.drop_all()
         db.create_all()
-        seedData()
+        seed()
 
 
 if __name__ == "__main__":
