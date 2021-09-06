@@ -1,6 +1,7 @@
 import pytest
 from models.property import PropertyModel
 from schemas.property import PropertySchema
+from tests.attributes import property_attrs
 
 
 @pytest.fixture
@@ -9,13 +10,7 @@ def property_attributes(faker, create_property_manager):
         if manager_ids is None:
             manager_ids = [create_property_manager().id]
         return {
-            "name": faker.unique.name(),
-            "address": faker.address(),
-            "city": faker.city(),
-            "num_units": faker.random_int(min=1),
-            "state": faker.state(),
-            "zipcode": faker.postcode(),
-            "archived": archived,
+            **property_attrs(faker, archived),
             "propertyManagerIDs": manager_ids,
         }
 
