@@ -8,6 +8,7 @@ class UserSchema(ma.SQLAlchemyAutoSchema):
         model = UserModel
 
     role = fields.Method("get_role_value", deserialize="load_role_enum")
+    password = fields.Str(required=False)
 
     @validates("email")
     def validate_uniqueness_of_email(self, value):

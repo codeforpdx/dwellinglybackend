@@ -89,6 +89,7 @@ NOTE: Default development database is SQLite3. (Optionally setup and use [Postgr
 7. Create and Seed the database
 
    - Run: `pipenv run flask db create`
+   - Run: `pipenv run flask db seed`
 
    - Some other useful commands are:
      - To re-seed the database from scratch run: `pipenv run flask db recreate`
@@ -125,7 +126,8 @@ Queries can be made with the Postman Collection link ( https://www.getpostman.co
       createdb dwellingly_test
      ```
 3. Open up `.env` and uncomment the `DEV_DATABASE_URL` and `TEST_DATABASE_URL` env vars.
-4. Run `pipenv run flask db create`.
+4. Run `pipenv run flask db create`
+5. Run `pipenv run flask db seed`
 
 ### Note For Windows Users
 
