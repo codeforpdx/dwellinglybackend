@@ -5,4 +5,4 @@ ignore = E203,E501,W503
 exclude = __init__.py
 per-file-ignores =
     shelltools.py:F401
-    seed.py:F405
+    seed.py:F405,E712
