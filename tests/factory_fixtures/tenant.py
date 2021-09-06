@@ -1,14 +1,7 @@
 import pytest
 from models.tenant import TenantModel
 from schemas.tenant import TenantSchema
-
-
-def tenant_attrs(faker):
-    return {
-        "firstName": faker.first_name(),
-        "lastName": faker.last_name(),
-        "phone": faker.phone_number(),
-    }
+from tests.attributes import tenant_attrs
 
 
 @pytest.fixture
