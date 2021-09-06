@@ -1,13 +1,6 @@
 import pytest
 from models.contact_number import ContactNumberModel
-
-
-def contact_number_attrs(faker):
-    return {
-        "number": faker.phone_number(),
-        "numtype": faker.random_element(("home", "work", "mobile")),
-        "extension": faker.bothify(text="?###"),
-    }
+from tests.attributes import contact_number_attrs
 
 
 @pytest.fixture

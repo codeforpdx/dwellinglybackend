@@ -1,17 +1,7 @@
 import pytest
 from models.tickets import TicketModel
-from models.tickets import TicketStatus
 from schemas.ticket import TicketSchema
-
-
-def ticket_attrs(faker, issue=None):
-    return {
-        "issue": issue or faker.sentence(),
-        "urgency": faker.random_element(("Low", "Medium", "High")),
-        "status": faker.random_element(
-            [member.name for name, member in TicketStatus.__members__.items()]
-        ),
-    }
+from tests.attributes import ticket_attrs
 
 
 @pytest.fixture

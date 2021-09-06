@@ -21,13 +21,8 @@ from models.emergency_contact import EmergencyContactModel
 from models.contact_number import ContactNumberModel  # noqa: F401
 from models.lease import LeaseModel
 from schemas import *  # noqa: F403
-from tests.factory_fixtures.contact_number import contact_number_attrs
-from tests.factory_fixtures.emergency_contact import emergency_contact_attrs
-from tests.factory_fixtures.property import property_attrs
-from tests.factory_fixtures.tenant import tenant_attrs
-from tests.factory_fixtures.lease import lease_attrs
-from tests.factory_fixtures.ticket import ticket_attrs
-from tests.factory_fixtures.notes import note_attrs
+from tests.attributes import *  # noqa: F403
+
 
 MIN_HOUSED_TENANTS = 150
 MIN_TENANTS = 300

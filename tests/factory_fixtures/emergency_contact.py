@@ -1,13 +1,7 @@
 import pytest
 from models.emergency_contact import EmergencyContactModel
 from models.contact_number import ContactNumberModel
-
-
-def emergency_contact_attrs(faker):
-    return {
-        "name": faker.name().upper(),
-        "description": faker.sentence(nb_words=5),
-    }
+from tests.attributes import emergency_contact_attrs
 
 
 @pytest.fixture
