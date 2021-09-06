@@ -13,7 +13,7 @@ dbsetup = Blueprint("db", __name__)
 @dbsetup.cli.command("seed")
 def seed():
     """Seed the database with default data"""
-    Seed.data()
+    Seed().data()
 
 
 @dbsetup.cli.command("create")
@@ -38,7 +38,7 @@ def recreate():
     if click.confirm("Are you sure you want to lose all your data"):
         db.drop_all()
         db.create_all()
-        Seed.data()
+        Seed().data()
 
 
 if __name__ == "__main__":

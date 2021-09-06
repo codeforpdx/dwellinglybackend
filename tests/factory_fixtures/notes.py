@@ -3,10 +3,14 @@ from models.notes import NotesModel
 from schemas.notes import NotesSchema
 
 
+def note_attrs(faker, text=None):
+    return {"text": text or faker.paragraph()}
+
+
 @pytest.fixture
-def note_attributes():
+def note_attributes(faker):
     def _note_attributes(text, user, ticket):
-        return {"text": text, "user_id": user.id, "ticket_id": ticket.id}
+        return {**note_attrs(faker, text), "user_id": user.id, "ticket_id": ticket.id}
 
     yield _note_attributes
 
@@ -14,13 +18,11 @@ def note_attributes():
 @pytest.fixture
 def create_note(faker, note_attributes, create_admin_user, create_ticket):
     def _create_note(user=None, ticket=None, text=None):
-        text = text or faker.paragraph()
         user = user or create_admin_user()
         ticket = ticket or create_ticket()
 
         return NotesModel.create(
-            schema=NotesSchema,
-            payload={"text": text, "user_id": user.id, "ticket_id": ticket.id},
+            schema=NotesSchema, payload=note_attributes(text, user, ticket)
         )
 
     yield _create_note
