@@ -7,7 +7,6 @@ verify_ssl = true
 pytest-flask = "*"
 coverage = "*"
 pytest-cov = "*"
-faker = "*"
 flake8 = "*"
 freezegun = "*"
 pytest-watch = "*"
@@ -34,6 +33,7 @@ marshmallow-sqlalchemy = "*"
 alembic = "*"
 psycopg2 = "*"
 gunicorn = "*"
+faker = "*"
 
 [requires]
 python_version = "3.9.6"
