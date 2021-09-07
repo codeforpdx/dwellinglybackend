@@ -36,10 +36,13 @@ class Tenants(Resource):
 
         params = {}
         for param in valid_tenant_params:
-            params[param] = request.json.get(param, "")
+            if request.json.get(param):
+                params[param] = request.json.get(param)
 
-        params["leases"] = [{}]
+        if set(valid_lease_params) & set(list(request.json)):
+            params["leases"] = [{}]
         for param in valid_lease_params:
-            params["leases"][0][param] = request.json.get(param, "")
+            if request.json.get(param):
+                params["leases"][0][param] = request.json.get(param)
 
         return params
