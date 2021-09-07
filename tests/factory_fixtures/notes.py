@@ -1,10 +1,7 @@
 import pytest
 from models.notes import NotesModel
 from schemas.notes import NotesSchema
-
-
-def note_attrs(faker, text=None):
-    return {"text": text or faker.paragraph()}
+from tests.attributes import note_attrs
 
 
 @pytest.fixture

@@ -2,17 +2,7 @@ import pytest
 from models.lease import LeaseModel
 from schemas.lease import LeaseSchema
 from utils.time import Time
-
-
-def lease_attrs(faker, unitNum=None, dateTimeStart=None, dateTimeEnd=None):
-    return {
-        "unitNum": unitNum or faker.building_number(),
-        "dateTimeStart": Time.to_iso(dateTimeStart or faker.date_time_this_decade()),
-        "dateTimeEnd": Time.to_iso(
-            dateTimeEnd or faker.date_time_this_decade(before_now=False, after_now=True)
-        ),
-        "occupants": faker.random_number(digits=2),
-    }
+from tests.attributes import lease_attrs
 
 
 @pytest.fixture

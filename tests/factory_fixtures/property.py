@@ -1,18 +1,7 @@
 import pytest
 from models.property import PropertyModel
 from schemas.property import PropertySchema
-
-
-def property_attrs(faker, archived=False):
-    return {
-        "name": faker.unique.company(),
-        "address": faker.address(),
-        "city": faker.city(),
-        "num_units": faker.random_int(min=1),
-        "state": faker.state(),
-        "zipcode": faker.postcode(),
-        "archived": archived,
-    }
+from tests.attributes import property_attrs
 
 
 @pytest.fixture
