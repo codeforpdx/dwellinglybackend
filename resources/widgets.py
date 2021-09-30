@@ -55,7 +55,7 @@ class Widgets(Resource):
         return {
             "opentickets": {
                 "title": "Open Tickets",
-                "link": "/tickets",
+                "link": "/manage/tickets",
                 "stats": [
                     [
                         {
