@@ -18,6 +18,6 @@ class NotesModel(BaseModel):
             "ticket_id": self.ticket_id,
             "text": self.text,
             "user": self.user.full_name(),
-            "created_at": Time.to_iso(self.created_at),
-            "updated_at": Time.to_iso(self.updated_at),
+            "created_at": Time.format_date(self.created_at),
+            "updated_at": Time.format_date(self.updated_at),
         }
