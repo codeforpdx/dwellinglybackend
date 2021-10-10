@@ -556,11 +556,11 @@
         },
         "faker": {
             "hashes": [
-                "sha256:6714c153433086681b26e5c95ee314ee0fcd45ec05f2426097543dd4c70789a6",
-                "sha256:810859626d19e62a2a13aa4a08d59ada131f0522431eec163b09b6df147a25b9"
+                "sha256:2649789e3e0c354dde1b8257d2ba7ed663fc3201e41277581de65c17e8aab10a",
+                "sha256:7b116034973a9a977a34a8a380354028150edf69f6cfbe55c03a852dd0a4116b"
             ],
             "index": "pypi",
-            "version": "==8.12.1"
+            "version": "==8.14.0"
         },
         "filelock": {
             "hashes": [
@@ -747,11 +747,11 @@
         },
         "pre-commit": {
             "hashes": [
-                "sha256:7977a3103927932d4823178cbe4719ab55bb336f42a9f3bb2776cff99007a117",
-                "sha256:a22d12a02da4d8df314187dfe7a61bda6291d57992060522feed30c8cd658b68"
+                "sha256:3c25add78dbdfb6a28a651780d5c311ac40dd17f160eb3954a0c59da40a505a7",
+                "sha256:a4ed01000afcb484d9eb8d504272e642c4c4099bbad3a6b27e519bd6a3e928a6"
             ],
             "index": "pypi",
-            "version": "==2.14.1"
+            "version": "==2.15.0"
         },
         "py": {
             "hashes": [

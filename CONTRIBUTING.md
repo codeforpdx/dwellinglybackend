@@ -118,7 +118,7 @@ Queries can be made with the Postman Collection link ( https://www.getpostman.co
 
 ### PostgreSQL Setup
 
-1. Install [PostgreSQL](https://www.postgresql.org/download/).
+1. Install [PostgreSQL](https://www.postgresql.org/download/) version 14.
 2. Manually create the database.
    - From a linux or mac command line run the following:
      ```shell
