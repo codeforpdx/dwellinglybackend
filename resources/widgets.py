@@ -75,5 +75,5 @@ class Widgets(Resource):
                     },
                 },
             },
-            "managers": [projectManagers],
+            "managers": projectManagers,
         }, 200
