@@ -292,12 +292,7 @@ All endpoints are prefixed with `/api/`
             },
         },
     },
-    'managers':{
-        'title': 'New Property Managers',
-        'link': '#',
-        'isDate': True,
-        'stats': [projectManagers]
-    }
-        }
+    'managers': projectManagers
+}
 
 ```
