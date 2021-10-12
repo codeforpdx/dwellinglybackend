@@ -17,7 +17,7 @@ class Widgets(Resource):
             stat = "Today"
         elif date.date() == yesterday.date():
             stat = "Yesterday"
-        elif date.date() >= week.date() & date.date() < yesterday.date():
+        elif date.date() >= week.date() and date.date() < yesterday.date():
             stat = "This Week"
 
         return stat
@@ -27,14 +27,14 @@ class Widgets(Resource):
         property = PropertyModel.find_by_manager(userID)
         propertyName = "Not Assigned"
 
-        if property[0]:
+        if len(property):
             propertyName = property[0].name
 
         return propertyName
 
     @pm_level_required
     def get(self):
-        users = UserModel.find_recent_role("property-manager", 5)
+        users = UserModel.find_recent_role("PROPERTY_MANAGER", 5)
         projectManagers = []
 
         nullPropertyManager = {
