@@ -12,5 +12,5 @@ from models.lease import LeaseModel
 from models.property import PropertyModel
 from models.tenant import TenantModel
 
-from models.tickets import TicketModel, TicketStatus
+from models.tickets import TicketModel
 from models.notes import NotesModel

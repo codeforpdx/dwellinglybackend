@@ -4,7 +4,7 @@
 # without needing to import additional libraries that are not needed.
 # This mostly concerns libraries that would not be used in Production.
 from utils.time import Time
-from models.tickets import TicketStatus
+from models.tickets import TicketModel
 
 
 def contact_number_attrs(faker):
@@ -57,9 +57,7 @@ def ticket_attrs(faker, issue=None):
     return {
         "issue": issue or faker.sentence(),
         "urgency": faker.random_element(("Low", "Medium", "High")),
-        "status": faker.random_element(
-            [member.name for name, member in TicketStatus.__members__.items()]
-        ),
+        "status": faker.random_element(TicketModel.STATUSES),
     }
 
 
