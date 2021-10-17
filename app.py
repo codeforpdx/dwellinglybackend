@@ -1,3 +1,4 @@
+import os
 import logging
 from flask import Flask
 from flask_jwt_extended import JWTManager
@@ -55,8 +56,10 @@ def create_app(env):
     def format_unauthorized_message(message):
         return {app.config["JWT_ERROR_MESSAGE_KEY"]: message.capitalize()}, 401
 
-    logging.basicConfig()
-    logging.getLogger("sqlalchemy.engine").setLevel(logging.INFO)
+    if os.getenv("DB_LOGGING"):
+        logging.basicConfig()
+        logging.getLogger("sqlalchemy.engine").setLevel(logging.INFO)
+
     db.init_app(app)
     ma.init_app(app)
     return app
