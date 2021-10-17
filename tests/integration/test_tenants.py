@@ -2,6 +2,7 @@ import pytest
 from unittest.mock import patch
 from models.tenant import TenantModel
 from schemas import TenantSchema
+from tests.attributes import tenant_attrs
 
 
 @pytest.mark.usefixtures("client_class", "empty_test_db")
@@ -69,6 +70,22 @@ class TestTenantsPost:
         mock_create.assert_called_once_with(
             schema=TenantSchema, payload={**tenant_attrs, "leases": [{**lease_attrs}]}
         )
+
+        assert response.json == tenant.json()
+        assert response.status_code == 201
+
+    def test_minimal_valid_payload(self, faker, create_tenant, valid_header):
+        attrs = tenant_attrs(faker)
+        tenant = create_tenant()
+
+        with patch.object(TenantModel, "create", return_value=tenant) as mock_create:
+            response = self.client.post(
+                "/api/tenants",
+                json=attrs,
+                headers=valid_header,
+            )
+
+        mock_create.assert_called_once_with(schema=TenantSchema, payload=attrs)
 
         assert response.json == tenant.json()
         assert response.status_code == 201

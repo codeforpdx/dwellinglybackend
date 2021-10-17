@@ -89,6 +89,7 @@ NOTE: Default development database is SQLite3. (Optionally setup and use [Postgr
 7. Create and Seed the database
 
    - Run: `pipenv run flask db create`
+   - Run: `pipenv run flask db seed`
 
    - Some other useful commands are:
      - To re-seed the database from scratch run: `pipenv run flask db recreate`
@@ -117,7 +118,7 @@ Queries can be made with the Postman Collection link ( https://www.getpostman.co
 
 ### PostgreSQL Setup
 
-1. Install [PostgreSQL](https://www.postgresql.org/download/).
+1. Install [PostgreSQL](https://www.postgresql.org/download/) version 14.
 2. Manually create the database.
    - From a linux or mac command line run the following:
      ```shell
@@ -125,7 +126,56 @@ Queries can be made with the Postman Collection link ( https://www.getpostman.co
       createdb dwellingly_test
      ```
 3. Open up `.env` and uncomment the `DEV_DATABASE_URL` and `TEST_DATABASE_URL` env vars.
-4. Run `pipenv run flask db create`.
+4. Run `pipenv run flask db create`
+5. Run `pipenv run flask db seed`
+
+#### Additional PostgreSQL Steps
+
+If the above steps don't work and give you an error about either not being able to connect, or password/peer authentication failed, here are some things to try. Note that these solutions were found on Windows running WSL 2 (Ubuntu 18.04.6)
+
+1. Make sure the postgres service is running.
+
+   On Linux this can be done with `sudo service postgresql start`. You can stop the service with `sudo service postgresql stop`.
+
+2. If you get an invalid role when creating the databases
+
+   By default `createdb` uses the username of the current user, however that's probably not an account of the postgres server. Instead you should use the local postgres admin account. The easiest way to do that would be prefixing those commands with `sudo -u postgres`:
+
+   ```shell
+   sudo -u postgres createdb dwellingly_development
+   sudo -u postgres createdb dwellingly_test
+   ```
+
+3. No password supplied or password authentication failed for ...
+
+   This again has to do with getting the authentication to play nice
+
+   - First we'll add a couple of variables to `.env`
+
+      ```text
+      PGUSER=postgres
+      PGPASSWORD=dwellingly
+      ```
+
+      Note that `PGPASSWORD` can be anything you want. All that's important is that we make sure the password python uses is what's setup for the local postgres admin account. If you already know the password to the account, just use that and skip the next sub-step
+   - Configure password in psql
+      Now we want to configure the password. Note that we'll be setting the password to match the value given to `PGPASSWORD`. Run the following commands:
+
+      ```shell
+      # Open postgresql interactive terminal
+      sudo -u postgres psql
+
+      # Following commands are run within the psql terminal
+      \password postgres
+
+      ```
+
+      You'll encounter two prompts:
+      `Enter new password:`
+      `Enter it again:`
+      You'll now be back to the interactive terminal, use `\q` to close out.
+
+Everything should be golden now, and running the `pipenv` commands from above should work.
 
 ### Note For Windows Users
 
