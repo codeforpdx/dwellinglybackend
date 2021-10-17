@@ -6,17 +6,11 @@ class TestWidgets:
     def setup(self):
         self.password = "strongestpasswordever"
 
-    def test_get_widgets(self, create_admin_user):
-        user = create_admin_user(pw=self.password)
-        response = self.client.post(
-            "/api/login",
-            json={"email": user.email, "password": self.password},
-        )
-        header = {"Authorization": f"Bearer {response.json['access_token']}"}
-        widgetResponse = self.client.get("/api/widgets", headers=header)
+    def test_get_widgets(self, valid_header):
+        widget_response = self.client.get("/api/widgets", headers=valid_header)
 
-        assert widgetResponse.status_code == 200
-        widgetJson = widgetResponse.json
+        assert widget_response.status_code == 200
+        widgetJson = widget_response.json
         assert len(widgetJson["opentickets"]) == 2
         assert len(widgetJson["managers"]) == 0
 
