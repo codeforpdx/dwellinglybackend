@@ -66,6 +66,12 @@ class TestPropertyValidations:
 
         assert "name" in validation_errors
 
+    def test_property_name_cannot_be_blank(self):
+        validation_errors = PropertySchema().validate({"name": " "})
+
+        assert "name" in validation_errors
+        assert validation_errors["name"] == ["Property name cannot be blank"]
+
 
 @pytest.mark.usefixtures("empty_test_db")
 class TestPostLoadDeserialization:
