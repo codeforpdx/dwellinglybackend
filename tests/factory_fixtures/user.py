@@ -11,15 +11,18 @@ def user_attributes(faker):
     def _user_attributes(
         role=None, archived=False, firstName=None, lastName=None, pw=None
     ):
-        return {
+        attrs = {
             "email": faker.unique.email(),
             "password": pw if pw else faker.password(),
             "firstName": firstName if firstName else faker.first_name(),
             "lastName": lastName if lastName else faker.last_name(),
             "phone": faker.phone_number(),
-            "role": role,
             "archived": archived,
         }
+        if role:
+            return {**attrs, "role": role}
+        else:
+            return attrs
 
     yield _user_attributes
 
