@@ -22,3 +22,8 @@ class TicketSchema(ma.SQLAlchemyAutoSchema):
     def validate_author(self, value):
         if not UserModel.query.get(value):
             raise ValidationError(f"{value} is not a valid user ID")
+
+    @validates("status")
+    def validate_status(self, value):
+        if value not in TicketModel.STATUSES:
+            raise ValidationError(f"{value} is not a valid status")
