@@ -30,21 +30,15 @@ MAX_TENANTS = 500
 
 
 class Seed:
+    def minimal_data(self):
+        self.create_admin()
+
     def data(self):
+        print("Seeding the db... This may take a few minutes.")
         self.faker = Faker()
         self.rand = random.Random()
 
-        Admin.create(
-            schema=UserSchema,
-            payload={
-                "email": "user1@dwellingly.org",
-                "role": RoleEnum.ADMIN.value,
-                "firstName": "user1",
-                "lastName": "tester",
-                "password": "1234",
-                "phone": "555-555-5555",
-            },
-        )
+        self.create_admin()
 
         # Create some admins
         for _ in range(7):
@@ -238,6 +232,19 @@ class Seed:
         print(f"{contacts} Emergency Contacts created")
         print("\n")
         print("#####################################")
+
+    def create_admin(self):
+        Admin.create(
+            schema=UserSchema,
+            payload={
+                "email": "user1@dwellingly.org",
+                "role": RoleEnum.ADMIN.value,
+                "firstName": "user1",
+                "lastName": "tester",
+                "password": "1234",
+                "phone": "555-555-5555",
+            },
+        )
 
     def user_attributes(self, role=None, archived=False):
         attrs = {
