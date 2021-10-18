@@ -56,7 +56,7 @@ def create_app(env):
     def format_unauthorized_message(message):
         return {app.config["JWT_ERROR_MESSAGE_KEY"]: message.capitalize()}, 401
 
-    if os.getenv("DB_LOGGING"):
+    if os.getenv("DB_LOGGING") == "ON":
         logging.basicConfig()
         logging.getLogger("sqlalchemy.engine").setLevel(logging.INFO)
 
