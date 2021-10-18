@@ -132,7 +132,9 @@ class TestUser:
         payload = {"role": RoleEnum.ADMIN.value}
         self.client.patch(f"api/user/{id}", json=payload, headers=valid_header)
 
-        assert Admin.find(id).role == RoleEnum.ADMIN
+        user = Admin.find(id)
+        assert user.role == RoleEnum.ADMIN
+        assert user.type == "admin"
 
 
 @pytest.mark.usefixtures("client_class", "empty_test_db")

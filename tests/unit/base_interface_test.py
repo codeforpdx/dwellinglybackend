@@ -59,7 +59,9 @@ class BaseInterfaceTest:
         with patch.object(self.object, "validate", return_value={}) as mock_validate:
             response = self.object.update(schema=self.schema, payload={})
 
-        mock_validate.assert_called_with(self.schema, {}, context=None, partial=True)
+        mock_validate.assert_called_with(
+            self.schema, {}, context=self.object.validation_context(), partial=True
+        )
         mock_session.add.assert_called_with(self.object)
         mock_session.commit.assert_called()
 
