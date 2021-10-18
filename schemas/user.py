@@ -13,9 +13,7 @@ class UserSchema(ma.SQLAlchemyAutoSchema):
 
     @validates("email")
     def validate_uniqueness_of_email(self, value):
-        if self.context.get("email") == value:
-            return
-        elif UserModel.find_by_email(value):
+        if self.context.get("email") != value and UserModel.find_by_email(value):
             raise ValidationError(f"A user with email '{value}' already exists")
 
     def get_role_value(self, obj):

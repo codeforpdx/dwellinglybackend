@@ -27,13 +27,11 @@ class PropertySchema(ma.SQLAlchemyAutoSchema):
 
     @validates("name")
     def validates_uniqueness_of_name(self, value):
-        def _assigning_name():
-            if "name" in self.context and value == self.context["name"]:
-                return False
-            return True
-
-        if _assigning_name() and PropertyModel.find_by_name(value):
+        if self.context.get("name") != value and PropertyModel.find_by_name(value):
             raise ValidationError("A property with this name already exists")
+
+    @validates("name")
+    def validates_prescense_of_name(self, value):
         if blank(value):
             raise ValidationError("Property name cannot be blank")
 

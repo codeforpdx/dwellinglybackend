@@ -33,6 +33,9 @@ class PropertyModel(BaseModel):
         collection_class=NobiruList,
     )
 
+    def validation_context(self):
+        return {"name": self.name}
+
     def json(self, include_tenants=False, include_managers=True):
         property = {
             "id": self.id,

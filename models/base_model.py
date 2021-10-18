@@ -34,11 +34,10 @@ class BaseModel(db.Model):
 
         return obj
 
-    def update(self, schema, payload, context=None):
-        if not context:
-            context = self.validation_context()
-
-        attrs = self.validate(schema, payload, context=context, partial=True)
+    def update(self, schema, payload):
+        attrs = self.validate(
+            schema, payload, context=self.validation_context(), partial=True
+        )
 
         for k, v in attrs.items():
             setattr(self, k, v)

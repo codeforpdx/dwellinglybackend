@@ -93,9 +93,8 @@ class TestPostLoadDeserialization:
         pm_2 = create_property_manager()
         pm_3 = create_property_manager()
         payload = {"propertyManagerIDs": [pm_2.id, pm_3.id]}
-        context = {"name": property.name}
 
-        property.update(schema=PropertySchema, context=context, payload=payload)
+        property.update(schema=PropertySchema, payload=payload)
         db.session.rollback()
 
         assert property.managers == [pm_2, pm_3]

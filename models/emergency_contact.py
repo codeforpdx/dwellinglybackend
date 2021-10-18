@@ -19,6 +19,9 @@ class EmergencyContactModel(BaseModel):
         collection_class=NobiruList,
     )
 
+    def validation_context(self):
+        return {"name": self.name}
+
     def json(self):
         return {
             "id": self.id,
