@@ -114,14 +114,6 @@ class UserModel(BaseModel):
     def serialize(self):
         return {}
 
-    def widgetJson(self, propertyName, date):
-        return {
-            "id": self.id,
-            "stat": date,
-            "desc": "{} {}".format(self.firstName, self.lastName),
-            "subtext": propertyName,
-        }
-
     @classmethod
     def find_by_email(cls, email):
         return cls.query.filter_by(email=email).first()

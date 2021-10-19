@@ -267,35 +267,32 @@ All endpoints are prefixed with `/api/`
 | GET    | `/widgets/`        | Pull down Widget Info                               |
 
 ```javascript
-{ 'opentickets':{
-            'title': 'Open Tickets',
-            'stats': [[
-                {
-                    "stat": TicketModel.find_count_by_status("New"),
-                    "desc": 'New',
-                },
-                {
-                    "stat": TicketModel.find_count_by_update_status("New", 1440),
-                    "desc": "Unseen for > 24 hours",
-                }
-            ],
-            [
-                {
-                    "stat": TicketModel.find_count_by_status("In Progress"),
-                    "desc": 'In Progress'
-                },
-                {
-                    "stat": TicketModel.find_count_by_update_status("In Progress", 10080),
-                    "desc": 'In progress for > 1 week',
-                }
-            ]]
+{
+    'opentickets': {
+        "new": {
+            "allNew": {
+                "stat": TicketModel.find_count_by_status("New"),
+                "desc": "New",
+            },
+            "unseen24Hrs": {
+                "stat": TicketModel.find_count_by_update_status("New", 1440),
+                "desc": "Unseen for > 24 hours",
+            },
         },
-        'managers':{
-                'title': 'New Property Managers',
-                'link': '#',
-                'isDate': True,
-                'stats': [projectManagers]
-            }
-        }
+        "inProgress": {
+            "allInProgress": {
+                "stat": TicketModel.find_count_by_status("In Progress"),
+                "desc": "In Progress",
+            },
+            "inProgress1Week": {
+                "stat": TicketModel.find_count_by_update_status(
+                    "In Progress", 10080
+                ),
+                "desc": "In progress for > 1 week",
+            },
+        },
+    },
+    'managers': projectManagers
+}
 
 ```
