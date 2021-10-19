@@ -3,23 +3,18 @@ from nobiru.nobiru_list import NobiruList
 from datetime import datetime, timedelta
 from models.base_model import BaseModel
 from utils.time import Time
-import enum
-
-
-class TicketStatus(str, enum.Enum):
-    New = "New"
-    In_Progress = "In Progress"
-    Closed = "Closed"
 
 
 class TicketModel(BaseModel):
+    STATUSES = ("New", "In Progress", "Closed")
+
     __tablename__ = "tickets"
 
     id = db.Column(db.Integer, primary_key=True)
     issue = db.Column(db.String(144))
     tenant_id = db.Column(db.Integer, db.ForeignKey("tenants.id"), nullable=False)
     author_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
-    status = db.Column(db.Enum(TicketStatus), default=TicketStatus.New, nullable=False)
+    status = db.Column(db.String, default=STATUSES[0], nullable=False)
     urgency = db.Column(db.String(12))
 
     notes = db.relationship(
@@ -40,7 +35,7 @@ class TicketModel(BaseModel):
             "author_id": self.author_id,
             "tenant_id": self.tenant_id,
             "assigned_staff": self.tenant.staff.json(),
-            "sender": self.author.full_name(),
+            "author": self.author.full_name(),
             "status": self.status,
             "minsPastUpdate": minsPastUpdate,
             "urgency": self.urgency,

@@ -204,16 +204,27 @@ All endpoints are prefixed with `/api/`
     id: 1,
     issue: 'Property Damage',
     tenant: 'Renty McRenter',
-    senderID: 1,
-    tenantID: 2,
+    author_id: 1,
+    tenant_id: 2,
     assignedUserID: 4,
-    sender: "user1 tester",
-    assigned: "Mr. Sir",
+    author: "user1 tester",
     status: "new",
     urgency: "Low",
     created_at: "07-01-2020 21:29:29",
     updated_at: "07-08-2020 22:20:29",
     minsPastUpdate: 745,
+    assigned_staff: [{
+        archived: false,
+        created_at: "08/05/2021 02:52:30",
+        email: "janice@joinpdx.org",
+        firstName: "Janice",
+        id: 10,
+        lastActive: "08/05/2021 02:52:30",
+        lastName: "Joinstaff",
+        phone: "555-555-5555",
+        role: 3,
+        updated_at: "08/05/2021 02:52:30"
+    }],
     notes: [
         {
             id: 2,
@@ -256,35 +267,32 @@ All endpoints are prefixed with `/api/`
 | GET    | `/widgets/`        | Pull down Widget Info                               |
 
 ```javascript
-{ 'opentickets':{
-            'title': 'Open Tickets',
-            'stats': [[
-                {
-                    "stat": TicketModel.find_count_by_status("New"),
-                    "desc": 'New',
-                },
-                {
-                    "stat": TicketModel.find_count_by_update_status("New", 1440),
-                    "desc": "Unseen for > 24 hours",
-                }
-            ],
-            [
-                {
-                    "stat": TicketModel.find_count_by_status("In Progress"),
-                    "desc": 'In Progress'
-                },
-                {
-                    "stat": TicketModel.find_count_by_update_status("In Progress", 10080),
-                    "desc": 'In progress for > 1 week',
-                }
-            ]]
+{
+    'opentickets': {
+        "new": {
+            "allNew": {
+                "stat": TicketModel.find_count_by_status("New"),
+                "desc": "New",
+            },
+            "unseen24Hrs": {
+                "stat": TicketModel.find_count_by_update_status("New", 1440),
+                "desc": "Unseen for > 24 hours",
+            },
         },
-        'managers':{
-                'title': 'New Property Managers',
-                'link': '#',
-                'isDate': True,
-                'stats': [projectManagers]
-            }
-        }
+        "inProgress": {
+            "allInProgress": {
+                "stat": TicketModel.find_count_by_status("In Progress"),
+                "desc": "In Progress",
+            },
+            "inProgress1Week": {
+                "stat": TicketModel.find_count_by_update_status(
+                    "In Progress", 10080
+                ),
+                "desc": "In progress for > 1 week",
+            },
+        },
+    },
+    'managers': projectManagers
+}
 
 ```

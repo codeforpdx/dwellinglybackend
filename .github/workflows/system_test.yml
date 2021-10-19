@@ -1,4 +1,4 @@
-name: CI Tests
+name: System Test
 
 on:
   push:
@@ -8,7 +8,6 @@ on:
     branches:
       - development
 
-
 env:
   POSTGRES_HOST_AUTH_METHOD: trust
   PGUSER: postgres
@@ -16,9 +15,10 @@ env:
   SECRET_KEY: dwellingly
   TEST_DATABASE_URL: postgresql://localhost/dwellingly_test
   FLASK_ENV: testing
+  REACT_APP_PROXY: http://localhost:5000
 
 jobs:
-  pytest:
+  system_test:
 
     runs-on: ubuntu-latest
     services:
@@ -47,7 +47,28 @@ jobs:
       - name: Create db
         run: createdb dwellingly_test
 
-      - name: Test
+      - name: Seed db
         run: |
-          pipenv run pytest
-          pipenv run pre-commit run --all-file
+          pipenv run flask db create
+          pipenv run flask db minimal_seed
+
+      - name: Start Server
+        run: pipenv run flask run &
+      - name: Just wait a sec
+        run: sleep 5s
+
+      - uses: actions/checkout@v2
+        with:
+          repository: codeforpdx/dwellingly-app
+      - name: Bump max listeners
+        run: echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
+
+      - name: Run System tests
+        uses: cypress-io/github-action@v2
+        with:
+          build: npm run build
+          start: npm start
+          browser: chrome
+          headless: true
+          wait-on: 'http://localhost:3000/'
+          wait-on-timeout: 120

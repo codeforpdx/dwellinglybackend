@@ -1,3 +1,5 @@
+import pytest
+
 from tests.unit.base_interface_test import BaseInterfaceTest
 from models.tickets import TicketModel
 from schemas.ticket import TicketSchema
@@ -24,3 +26,10 @@ class TestBaseTicketModel(BaseInterfaceTest):
 
         validation_errors = TicketSchema().validate(invalid_author)
         assert invalid_author_validation_error == validation_errors["author_id"]
+
+
+@pytest.mark.usefixtures("empty_test_db")
+class TestFixtures:
+    def test_create_ticket(self, create_ticket):
+        ticket = create_ticket()
+        assert ticket

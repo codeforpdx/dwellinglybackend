@@ -4,6 +4,7 @@ from models.users.property_manager import PropertyManager
 from schemas.property_assignment import PropertyAssignSchema
 from marshmallow import fields, validates, ValidationError, post_load
 from utils.time import time_format
+from tests.helpers.matchers import blank
 
 
 class PropertySchema(ma.SQLAlchemyAutoSchema):
@@ -33,6 +34,8 @@ class PropertySchema(ma.SQLAlchemyAutoSchema):
 
         if _assigning_name() and PropertyModel.find_by_name(value):
             raise ValidationError("A property with this name already exists")
+        if blank(value):
+            raise ValidationError("Property name cannot be blank")
 
     @post_load
     def make_property_attributes(self, data, **kwargs):

@@ -1,3 +1,4 @@
+import os
 import logging
 from flask import Flask
 from flask_jwt_extended import JWTManager
@@ -48,15 +49,17 @@ def create_app(env):
     @app.jwt.token_in_blocklist_loader
     def check_if_token_in_blocklist(jwt_header, decrypted_token):
         jti = decrypted_token["jti"]
-        return RevokedTokensModel.is_jti_blacklisted(jti)
+        return RevokedTokensModel.is_jti_revoked(jti)
 
     # Format jwt "Missing authorization header" messages
     @app.jwt.unauthorized_loader
     def format_unauthorized_message(message):
         return {app.config["JWT_ERROR_MESSAGE_KEY"]: message.capitalize()}, 401
 
-    logging.basicConfig()
-    logging.getLogger("sqlalchemy.engine").setLevel(logging.INFO)
+    if os.getenv("DB_LOGGING") == "ON":
+        logging.basicConfig()
+        logging.getLogger("sqlalchemy.engine").setLevel(logging.INFO)
+
     db.init_app(app)
     ma.init_app(app)
     return app

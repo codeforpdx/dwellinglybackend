@@ -27,7 +27,7 @@ class Default(object):
 
 
 class Development(Default):
-    SQLALCHEMY_DATABASE_URI = os.environ.get(
+    SQLALCHEMY_DATABASE_URI = os.getenv(
         "DEV_DATABASE_URL"
     ) or "sqlite:///" + os.path.join(basedir, "data-dev.sqlite")
     JWT_ACCESS_TOKEN_EXPIRES = False
@@ -40,7 +40,7 @@ class Development(Default):
 
 class Testing(Default):
     TESTING = True
-    SQLALCHEMY_DATABASE_URI = os.environ.get("TEST_DATABASE_URL") or "sqlite://"
+    SQLALCHEMY_DATABASE_URI = os.getenv("TEST_DATABASE_URL") or "sqlite://"
     WORK_FACTOR = 4
     JWT_ACCESS_TOKEN_EXPIRES = False
     JWT_REFRESH_TOKEN_EXPIRES = False
@@ -48,10 +48,19 @@ class Testing(Default):
 
 
 class Production(Default):
-    SQLALCHEMY_DATABASE_URI = os.environ.get(
-        "DATABASE_URL"
-    ) or "sqlite:///" + os.path.join(basedir, "data.sqlite")
+    # Heroku hack to connect to postgres dialect since sqlalchemy does things differently. # noqa
+    # https://help.heroku.com/ZKNTJQSK/why-is-sqlalchemy-1-4-x-not-connecting-to-heroku-postgres # noqa
+    # https://github.com/sqlalchemy/sqlalchemy/discussions/5799
+    db_uri = os.getenv("DATABASE_URL") or ""
+    if db_uri.startswith("postgres://"):
+        db_uri = db_uri.replace("postgres://", "postgresql://", 1)
+    SQLALCHEMY_DATABASE_URI = db_uri
     CORS_ORIGINS = ["UPDATE THIS WITH FRONTEND ORIGINS"]
+    JWT_ACCESS_TOKEN_EXPIRES = 900
+    JWT_REFRESH_TOKEN_EXPIRES = 604800
+    MAIL_PORT = 2525
+    MAIL_USE_TLS = True
+    MAIL_USE_SSL = False
 
 
 app_environments = {

@@ -20,22 +20,23 @@ black = "*"
 
 [packages]
 Flask = "==2.0.1"
-Flask-JWT-Extended = "==4.2.1"
+Flask-JWT-Extended = "==4.3.0"
 Flask-RESTful = "==0.3.9"
 Flask-SQLAlchemy = "==2.5.1"
 Jinja2 = "==3.0.1"
 PyJWT = "==2.1.0"
 Werkzeug = "==2.0.1"
-Flask-Mailman = "==0.2.4"
+Flask-Mailman = "==0.3.0"
 Flask-Cors = "*"
-psycopg2-binary = "*"
 bcrypt = "==3.2.0"
 flask-marshmallow = "*"
 marshmallow-sqlalchemy = "*"
 alembic = "*"
+psycopg2 = "*"
+gunicorn = "*"
 
 [requires]
-python_version = "3.8"
+python_version = "3.9.6"
 
 [scripts]
 view_coverage = "coverage report -m"

@@ -17,7 +17,7 @@ class Widgets(Resource):
             stat = "Today"
         elif date.date() == yesterday.date():
             stat = "Yesterday"
-        elif date.date() >= week.date() & date.date() < yesterday.date():
+        elif date.date() >= week.date() and date.date() < yesterday.date():
             stat = "This Week"
 
         return stat
@@ -27,66 +27,53 @@ class Widgets(Resource):
         property = PropertyModel.find_by_manager(userID)
         propertyName = "Not Assigned"
 
-        if property[0]:
+        if len(property):
             propertyName = property[0].name
 
         return propertyName
 
     @pm_level_required
     def get(self):
-        users = UserModel.find_recent_role("property-manager", 5)
+        users = UserModel.find_recent_role("PROPERTY_MANAGER", 5)
         projectManagers = []
-
-        nullPropertyManager = {
-            "id": " ",
-            "stat": " ",
-            "desc": "No new users",
-            "subtext": " ",
-        }
 
         for user in users:
             date = self.dateStringConversion(user.created_at)
             propertyName = self.returnPropertyName(user.id)
-            projectManagers.append(user.widgetJson(propertyName, date))
-
-        if len(projectManagers) == 0:
-            projectManagers.append(nullPropertyManager)
+            projectManagers.append(
+                {
+                    "id": user.id,
+                    "firstName": user.firstName,
+                    "lastName": user.lastName,
+                    "date": date,
+                    "propertyName": propertyName,
+                }
+            )
 
         return {
             "opentickets": {
-                "title": "Open Tickets",
-                "link": "/tickets",
-                "stats": [
-                    [
-                        {
-                            "stat": TicketModel.find_count_by_status("New"),
-                            "desc": "New",
-                        },
-                        {
-                            "stat": TicketModel.find_count_by_update_status(
-                                "New", 1440
-                            ),
-                            "desc": "Unseen for > 24 hours",
-                        },
-                    ],
-                    [
-                        {
-                            "stat": TicketModel.find_count_by_status("In Progress"),
-                            "desc": "In Progress",
-                        },
-                        {
-                            "stat": TicketModel.find_count_by_update_status(
-                                "In Progress", 10080
-                            ),
-                            "desc": "In progress for > 1 week",
-                        },
-                    ],
-                ],
+                "new": {
+                    "allNew": {
+                        "stat": TicketModel.find_count_by_status("New"),
+                        "desc": "New",
+                    },
+                    "unseen24Hrs": {
+                        "stat": TicketModel.find_count_by_update_status("New", 1440),
+                        "desc": "Unseen for > 24 hours",
+                    },
+                },
+                "inProgress": {
+                    "allInProgress": {
+                        "stat": TicketModel.find_count_by_status("In Progress"),
+                        "desc": "In Progress",
+                    },
+                    "inProgress1Week": {
+                        "stat": TicketModel.find_count_by_update_status(
+                            "In Progress", 10080
+                        ),
+                        "desc": "In progress for > 1 week",
+                    },
+                },
             },
-            "managers": {
-                "title": "New Property Managers",
-                "link": "/manage/managers/",
-                "isDate": True,
-                "stats": [projectManagers],
-            },
+            "managers": projectManagers,
         }, 200
