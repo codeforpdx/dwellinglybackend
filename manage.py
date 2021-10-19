@@ -17,6 +17,13 @@ def seed():
     Seed().data()
 
 
+@dbsetup.cli.command("minimal_seed")
+def minimal_seed():
+    from data.seed import Seed
+
+    Seed().minimal_data()
+
+
 @dbsetup.cli.command("create")
 def create():
     """Creates database tables"""
