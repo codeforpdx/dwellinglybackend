@@ -24,8 +24,10 @@ class TestPropertyAuthorizations:
         test_property = create_property()
 
         """The server responds with a 401 error if a non-admin tries to archive"""
-        responseNoAdmin = self.client.post(
-            f"/api/properties/archive/{test_property.id}"
+
+        responseNoAdmin = self.client.put(
+            f"/api/properties/{test_property.id}",
+            json={"archived": not test_property.archived},
         )
         assert responseNoAdmin == 401
         assert responseNoAdmin.json == {"message": "Missing authorization header"}
