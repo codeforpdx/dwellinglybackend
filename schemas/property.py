@@ -31,7 +31,7 @@ class PropertySchema(ma.SQLAlchemyAutoSchema):
             raise ValidationError("A property with this name already exists")
 
     @validates("name")
-    def validates_prescense_of_name(self, value):
+    def validates_presence_of_name(self, value):
         if blank(value):
             raise ValidationError("Property name cannot be blank")
 
