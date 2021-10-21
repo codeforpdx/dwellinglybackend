@@ -1,4 +1,5 @@
 from flask import render_template
+from flask import current_app as app
 from flask_mailman import EmailMultiAlternatives
 
 
@@ -9,16 +10,27 @@ class Email:
     @staticmethod
     def send_reset_password_msg(user):
         token = user.reset_password_token()
+        FRONTEND_BASE_URL = app.config["FRONTEND_BASE_URL"]
         msg = EmailMultiAlternatives(
-            "Rest password for Dwellingly",
-            render_template("emails/reset_msg.html", user=user, token=token),
+            "Reset password for Dwellingly",
+            render_template(
+                "emails/reset_msg.html",
+                FRONTEND_BASE_URL=FRONTEND_BASE_URL,
+                user=user,
+                token=token,
+            ),
             Email.NO_REPLY,
             [user.email],
         )
         msg.content_subtype = "html"
 
         msg.attach_alternative(
-            render_template("emails/reset_msg.txt", user=user, token=token),
+            render_template(
+                "emails/reset_msg.txt",
+                FRONTEND_BASE_URL=FRONTEND_BASE_URL,
+                user=user,
+                token=token,
+            ),
             "text/plain",
         )
 
@@ -27,15 +39,26 @@ class Email:
     @staticmethod
     def send_user_invite_msg(user):
         token = user.reset_password_token()
+        FRONTEND_BASE_URL = app.config["FRONTEND_BASE_URL"]
         msg = EmailMultiAlternatives(
             "Create Your Dwellingly Account",
-            render_template("emails/invite_user_msg.html", user=user, token=token),
+            render_template(
+                "emails/invite_user_msg.html",
+                FRONTEND_BASE_URL=FRONTEND_BASE_URL,
+                user=user,
+                token=token,
+            ),
             Email.NO_REPLY,
             [user.email],
         )
         msg.content_subtype = "html"
         msg.attach_alternative(
-            render_template("emails/invite_user_msg.txt", user=user, token=token),
+            render_template(
+                "emails/invite_user_msg.txt",
+                FRONTEND_BASE_URL=FRONTEND_BASE_URL,
+                user=user,
+                token=token,
+            ),
             "text/plain",
         )
         msg.send()

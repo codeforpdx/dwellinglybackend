@@ -2,7 +2,7 @@ Hello {{ user.firstName }},
 
 To reset your password click on the following link:
 
-{{ url_for('resetpassword', token=token, _method='GET', _external=True) }}
+{{ FRONTEND_BASE_URL }}/changePassword?token={{ token }}
 
 If you have not requested a password reset simply ignore this message.
 
