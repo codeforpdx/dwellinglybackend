@@ -151,8 +151,10 @@ class TestPropertyArchivalMethods:
         test_property = create_property()
 
         """The archive property endpoint should return a 200 code when successful"""
-        responseSuccess = self.client.post(
-            f"/api/properties/archive/{test_property.id}", headers=valid_header
+        responseSuccess = self.client.put(
+            f"/api/properties/{test_property.id}",
+            headers=valid_header,
+            json={"archived": True},
         )
         assert responseSuccess.status_code == 200
         assert test_property.archived

@@ -10,7 +10,7 @@ from resources.user import (
 from resources.user_invite import UserInvite
 from resources.users.pending_users import UsersPending
 from resources.reset_password import ResetPassword
-from resources.property import Properties, Property, ArchiveProperty, ArchiveProperties
+from resources.property import Properties, Property, ArchiveProperties
 from resources.staff_tenants import StaffTenants
 from resources.tenants import Tenants, Tenant
 from resources.emergency_contacts import EmergencyContacts, EmergencyContact
@@ -28,7 +28,6 @@ class Routes:
         api.add_resource(Property, "properties/<int:id>")
         api.add_resource(Properties, "properties")
         api.add_resource(ArchiveProperties, "properties/archive")
-        api.add_resource(ArchiveProperty, "properties/archive/<int:id>")
         api.add_resource(User, "user/<int:id>")
         api.add_resource(UserInvite, "user/invite")
         api.add_resource(Users, "user")
