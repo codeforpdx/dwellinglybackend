@@ -12,6 +12,9 @@ class BaseModel(db.Model):
         db.DateTime, onupdate=datetime.utcnow, default=datetime.utcnow, nullable=False
     )
 
+    def validation_context(self):
+        return {}
+
     @classmethod
     def find(cls, id):
         return cls.query.get_or_404(id, f"{cls._name()} not found")
@@ -31,8 +34,10 @@ class BaseModel(db.Model):
 
         return obj
 
-    def update(self, schema, payload, context=None):
-        attrs = self.validate(schema, payload, context=context, partial=True)
+    def update(self, schema, payload):
+        attrs = self.validate(
+            schema, payload, context=self.validation_context(), partial=True
+        )
 
         for k, v in attrs.items():
             setattr(self, k, v)

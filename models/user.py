@@ -73,6 +73,9 @@ class UserModel(BaseModel):
             bcrypt.gensalt(current_app.config["WORK_FACTOR"]),
         )
 
+    def validation_context(self):
+        return {"email": self.email}
+
     def update_last_active(self):
         self.lastActive = datetime.utcnow()
         db.session.commit()

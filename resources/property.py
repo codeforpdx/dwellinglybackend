@@ -20,11 +20,7 @@ class Property(Resource):
     def put(self, id):
         property = PropertyModel.find(id)
 
-        return property.update(
-            schema=PropertySchema,
-            context={"name": property.name},
-            payload=request.json,
-        ).json()
+        return property.update(schema=PropertySchema, payload=request.json).json()
 
 
 class Properties(Resource):

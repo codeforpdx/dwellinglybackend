@@ -12,8 +12,10 @@ class EmergencyContactSchema(ma.SQLAlchemyAutoSchema):
     contact_numbers = fields.List(fields.Nested(ContactNumberSchema), required=True)
 
     @validates("name")
-    def validate_name(self, value):
-        if EmergencyContactModel.find_by_name(value):
+    def validates_uniqueness_of_name(self, value):
+        if self.context.get("name") != value and EmergencyContactModel.find_by_name(
+            value
+        ):
             raise ValidationError(f"{value} is already an emergency contact")
 
     @validates("contact_numbers")

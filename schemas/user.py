@@ -1,6 +1,7 @@
 from ma import ma
-from models.user import UserModel, RoleEnum
 from marshmallow import fields, validates, ValidationError
+
+from models.user import UserModel, RoleEnum
 
 
 class UserSchema(ma.SQLAlchemyAutoSchema):
@@ -12,7 +13,7 @@ class UserSchema(ma.SQLAlchemyAutoSchema):
 
     @validates("email")
     def validate_uniqueness_of_email(self, value):
-        if UserModel.find_by_email(value):
+        if self.context.get("email") != value and UserModel.find_by_email(value):
             raise ValidationError(f"A user with email '{value}' already exists")
 
     def get_role_value(self, obj):

@@ -46,7 +46,6 @@ class TestPropertyPut:
 
         mock_update.assert_called_once_with(
             schema=PropertySchema,
-            context={"name": property.name},
             payload={"num_units": 2},
         )
         assert response.status_code == 200
