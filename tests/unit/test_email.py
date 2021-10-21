@@ -31,3 +31,10 @@ class TestEmailTemplateRender:
                 link = "{}/changePassword?token={}".format(FRONTEND_BASE_URL, token)
 
                 assert link in email
+
+    def test_hyperlink_is_https(self):
+        app = create_app(os.getenv("FLASK_ENV"))
+
+        with app.app_context():
+            FRONTEND_BASE_URL = app.config["FRONTEND_BASE_URL"]
+            assert FRONTEND_BASE_URL.startswith("https://")
