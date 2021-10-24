@@ -7,7 +7,9 @@ from models.dashboard import Dashboard
 
 @pytest.mark.usefixtures("empty_test_db")
 class TestDashboard:
-    def test_json(self, valid_header, create_ticket, create_property_manager, create_property):
+    def test_json(
+        self, valid_header, create_ticket, create_property_manager, create_property
+    ):
         def _create_tickets(num, status, updated_at=None):
             updated_at = updated_at or TimeStamp.now()
             for _ in range(num):
@@ -33,21 +35,21 @@ class TestDashboard:
                     "firstName": pm.firstName,
                     "id": pm.id,
                     "lastName": pm.lastName,
-                    "propertyName": prop.name
+                    "propertyName": prop.name,
                 },
                 {
                     "date": "Yesterday",
                     "firstName": pm2.firstName,
                     "id": pm2.id,
                     "lastName": pm2.lastName,
-                    "propertyName": "Not Assigned"
+                    "propertyName": "Not Assigned",
                 },
                 {
                     "date": "This Week",
                     "firstName": pm3.firstName,
                     "id": pm3.id,
                     "lastName": pm3.lastName,
-                    "propertyName": prop2.name
+                    "propertyName": prop2.name,
                 },
             ],
             "opentickets": {

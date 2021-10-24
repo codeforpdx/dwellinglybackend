@@ -6,7 +6,14 @@ from tests.attributes import ticket_attrs
 
 @pytest.fixture
 def ticket_attributes(faker, create_tenant, create_join_staff):
-    def _ticket_attributes(issue=None, status=None, tenant=None, author=None, created_at=None, updated_at=None):
+    def _ticket_attributes(
+        issue=None,
+        status=None,
+        tenant=None,
+        author=None,
+        created_at=None,
+        updated_at=None,
+    ):
         attrs = {
             **ticket_attrs(faker, issue, status),
             "tenant_id": tenant.id if tenant else create_tenant().id,

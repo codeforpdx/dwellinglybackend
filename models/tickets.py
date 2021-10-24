@@ -2,7 +2,7 @@ import re
 
 from db import db
 from nobiru.nobiru_list import NobiruList
-from datetime import datetime, timedelta
+from datetime import datetime
 from models.base_model import BaseModel
 from utils.time import Time
 
@@ -10,17 +10,19 @@ from utils.time import Time
 class TicketModel(BaseModel):
     STATUSES = ("New", "In Progress", "Closed")
 
-    NEW         = STATUSES[0]
+    NEW = STATUSES[0]
     IN_PROGRESS = STATUSES[1]
-    CLOSED      = STATUSES[2]
+    CLOSED = STATUSES[2]
 
     for status in STATUSES:
         name = re.sub(r"\s", "_", status.lower())
-        exec(f"""
+        exec(
+            f"""
 @classmethod
 def {name}(cls):
     return cls.query.filter_by(status='{status}')
-        """)
+        """
+        )
 
     __tablename__ = "tickets"
 

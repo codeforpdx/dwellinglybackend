@@ -2,7 +2,6 @@ from datetime import datetime, timedelta
 
 from models.tickets import TicketModel
 from models.users.property_manager import PropertyManager
-from models.property import PropertyModel
 
 
 class Dashboard:
@@ -23,13 +22,14 @@ class Dashboard:
                         "stat": TicketModel.in_progress().count(),
                     },
                     "inProgress1Week": {
-                        "stat": TicketModel.in_progress().updated_within(days=7).count(),
+                        "stat": TicketModel.in_progress()
+                        .updated_within(days=7)
+                        .count(),
                     },
                 },
             },
             "managers": Dashboard.property_managers(),
         }
-
 
     @staticmethod
     def humanize_date(date):
@@ -57,7 +57,9 @@ class Dashboard:
                     "firstName": user.firstName,
                     "lastName": user.lastName,
                     "date": Dashboard.humanize_date(user.created_at.date()),
-                    "propertyName": user.properties[0].name if len(user.properties) > 0 else "Not Assigned"
+                    "propertyName": user.properties[0].name
+                    if len(user.properties) > 0
+                    else "Not Assigned",
                 }
             )
         return managers

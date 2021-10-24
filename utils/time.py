@@ -50,6 +50,7 @@ class Time:
     def _one_year():
         return datetime.today() + relativedelta(years=1)
 
+
 class TimeStamp:
     @staticmethod
     def now():
