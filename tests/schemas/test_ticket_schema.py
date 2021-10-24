@@ -1,6 +1,7 @@
 import pytest
 from schemas import TicketSchema
-from models.user import UserModel
+from models.tickets import TicketModel
+from tests.attributes import note_attrs
 
 
 @pytest.mark.usefixtures("empty_test_db")
@@ -27,15 +28,12 @@ class TestTicketValidations:
 
 
 @pytest.mark.usefixtures("empty_test_db")
-class TestTicketSerialization:
-    def test_ticket_serialization(
-        self, create_ticket, create_note, ticket_attributes, note_attributes
-    ):
-        ticket = create_ticket()
-        user = UserModel.query.filter_by(id=ticket.author_id).first()
-        create_note(user, ticket, "text")
+class TestPostLoadDeserialization:
+    def test_ticket_creation(self, faker, ticket_attributes):
+        note_attributes = note_attrs(faker)
+        attrs = {**ticket_attributes(), **note_attributes}
+        ticket = TicketModel.create(schema=TicketSchema, payload=attrs)
 
-        ticket_schema = TicketSchema()
-        ticket_json = ticket_schema.dump(ticket)
-
-        assert ticket_json["issue"] == ticket.issue
+        assert ticket
+        assert ticket.notes != []
+        assert ticket.notes[0].text == note_attributes["text"]
