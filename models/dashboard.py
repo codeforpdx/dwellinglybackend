@@ -1,7 +1,6 @@
-from datetime import datetime, timedelta
-
 from models.tickets import TicketModel
 from models.users.property_manager import PropertyManager
+from utils.time import Date
 
 
 class Dashboard:
@@ -33,15 +32,11 @@ class Dashboard:
 
     @staticmethod
     def humanize_date(date):
-        today = datetime.utcnow().date()
-        yesterday = today - timedelta(days=1)
-        one_week_ago = today - timedelta(days=7)
-
-        if date == today:
+        if date == Date.today():
             return "Today"
-        elif date == yesterday:
+        elif date == Date.days_ago(1):
             return "Yesterday"
-        elif date >= one_week_ago and date < yesterday:
+        elif date >= Date.weeks_ago(1):
             return "This Week"
 
         return date.strftime("%m/%d")
