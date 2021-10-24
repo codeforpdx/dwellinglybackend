@@ -52,5 +52,13 @@ class Time:
 
 class TimeStamp:
     @staticmethod
+    def now():
+        return datetime.utcnow().__str__()
+
+    @staticmethod
+    def days_ago(num):
+        return (datetime.utcnow() - relativedelta(days=num)).__str__()
+
+    @staticmethod
     def weeks_ago(num):
         return (datetime.utcnow() - relativedelta(weeks=num)).__str__()

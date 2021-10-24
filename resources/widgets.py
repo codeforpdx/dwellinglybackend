@@ -11,7 +11,7 @@ class Widgets(Resource):
         stat = date.strftime("%m/%d")
         today = datetime.utcnow()
         yesterday = today - timedelta(days=1)
-        week = today - timedelta(days=1)
+        week = today - timedelta(days=7)
 
         if date.date() == today.date():
             stat = "Today"

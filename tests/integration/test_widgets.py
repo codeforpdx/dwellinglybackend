@@ -5,25 +5,50 @@ from utils.time import TimeStamp
 
 @pytest.mark.usefixtures("client_class", "empty_test_db")
 class TestWidgets:
-    def test_get_widgets(self, valid_header, create_ticket):
-        def _create_tickets(num, status):
+    def test_get_widgets(self, valid_header, create_ticket, create_property_manager, create_property):
+        def _create_tickets(num, status, updated_at=None):
+            updated_at = updated_at or TimeStamp.now()
             for _ in range(num):
-                create_ticket(status=status)
-
-        def _create_tickets_more_than_week_old(num, status):
-            for _ in range(num):
-                create_ticket(status=status, updated_at=TimeStamp.weeks_ago(2))
+                create_ticket(status=status, updated_at=updated_at)
 
         _create_tickets(2, TicketModel.NEW)
+        _create_tickets(5, TicketModel.NEW, TimeStamp.weeks_ago(1))
         _create_tickets(3, TicketModel.IN_PROGRESS)
-        _create_tickets_more_than_week_old(5, TicketModel.NEW)
-        _create_tickets_more_than_week_old(7, TicketModel.IN_PROGRESS)
+        _create_tickets(7, TicketModel.IN_PROGRESS, TimeStamp.weeks_ago(2))
+
+        pm = create_property_manager()
+        pm2 = create_property_manager(created_at=TimeStamp.days_ago(1))
+        pm3 = create_property_manager(created_at=TimeStamp.days_ago(2))
+        prop = create_property(manager_ids=[pm.id])
+        prop2 = create_property(manager_ids=[pm.id, pm3.id])
 
         widget_response = self.client.get("/api/widgets", headers=valid_header)
 
         assert widget_response.status_code == 200
         assert widget_response.json == {
-            "managers": [],
+            "managers": [
+                {
+                    "date": "Today",
+                    "firstName": pm.firstName,
+                    "id": pm.id,
+                    "lastName": pm.lastName,
+                    "propertyName": prop.name
+                },
+                {
+                    "date": "Yesterday",
+                    "firstName": pm2.firstName,
+                    "id": pm2.id,
+                    "lastName": pm2.lastName,
+                    "propertyName": "Not Assigned"
+                },
+                {
+                    "date": "This Week",
+                    "firstName": pm3.firstName,
+                    "id": pm3.id,
+                    "lastName": pm3.lastName,
+                    "propertyName": prop2.name
+                },
+            ],
             "opentickets": {
                 "new": {
                     "allNew": {
