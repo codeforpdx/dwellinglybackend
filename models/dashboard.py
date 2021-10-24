@@ -15,7 +15,7 @@ class Dashboard:
                         "stat": TicketModel.new().count(),
                     },
                     "unseen24Hrs": {
-                        "stat": TicketModel.find_count_by_update_status(TicketModel.NEW, 1440),
+                        "stat": TicketModel.new().updated_within(days=1).count(),
                     },
                 },
                 "inProgress": {
@@ -23,9 +23,7 @@ class Dashboard:
                         "stat": TicketModel.in_progress().count(),
                     },
                     "inProgress1Week": {
-                        "stat": TicketModel.find_count_by_update_status(
-                            TicketModel.IN_PROGRESS, 10080
-                        ),
+                        "stat": TicketModel.in_progress().updated_within(days=7).count(),
                     },
                 },
             },

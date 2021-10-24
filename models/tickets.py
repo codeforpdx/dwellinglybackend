@@ -57,15 +57,3 @@ def {name}(cls):
             "created_at": Time.format_date(self.created_at),
             "updated_at": Time.format_date(self.updated_at),
         }
-
-    # Get tickets updated with the given time and with the given status
-    @classmethod
-    def find_count_by_update_status(cls, status, minutes):
-        # calculated in minutes: 1 day = 1440, 1 week = 10080
-        dateTime = datetime.utcnow() - timedelta(minutes=minutes)
-        return (
-            db.session.query(TicketModel)
-            .filter(TicketModel.updated_at >= dateTime)
-            .filter(TicketModel.status == status)
-            .count()
-        )
