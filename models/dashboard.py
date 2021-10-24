@@ -1,82 +1,69 @@
-
 from datetime import datetime, timedelta
 
 from models.tickets import TicketModel
-from models.user import UserModel
+from models.users.property_manager import PropertyManager
 from models.property import PropertyModel
 
 
 class Dashboard:
     @staticmethod
     def json():
-        users = UserModel.find_recent_role("PROPERTY_MANAGER", 5)
-        projectManagers = []
-
-        for user in users:
-            date = Dashboard.humanize_date(user.created_at)
-            propertyName = Dashboard.property_name(user.id)
-            projectManagers.append(
-                {
-                    "id": user.id,
-                    "firstName": user.firstName,
-                    "lastName": user.lastName,
-                    "date": date,
-                    "propertyName": propertyName,
-                }
-            )
-
         return {
             "opentickets": {
                 "new": {
                     "allNew": {
-                        "stat": TicketModel.find_count_by_status("New"),
-                        "desc": "New",
+                        "stat": TicketModel.find_count_by_status(TicketModel.NEW),
+                        "desc": TicketModel.NEW,
                     },
                     "unseen24Hrs": {
-                        "stat": TicketModel.find_count_by_update_status("New", 1440),
+                        "stat": TicketModel.find_count_by_update_status(TicketModel.NEW, 1440),
                         "desc": "Unseen for > 24 hours",
                     },
                 },
                 "inProgress": {
                     "allInProgress": {
-                        "stat": TicketModel.find_count_by_status("In Progress"),
-                        "desc": "In Progress",
+                        "stat": TicketModel.find_count_by_status(TicketModel.IN_PROGRESS),
+                        "desc": TicketModel.IN_PROGRESS,
                     },
                     "inProgress1Week": {
                         "stat": TicketModel.find_count_by_update_status(
-                            "In Progress", 10080
+                            TicketModel.IN_PROGRESS, 10080
                         ),
                         "desc": "In progress for > 1 week",
                     },
                 },
             },
-            "managers": projectManagers,
+            "managers": Dashboard.property_managers(),
         }
 
 
     @staticmethod
     def humanize_date(date):
-        stat = date.strftime("%m/%d")
-        today = datetime.utcnow()
+        today = datetime.utcnow().date()
         yesterday = today - timedelta(days=1)
-        week = today - timedelta(days=7)
+        one_week_ago = today - timedelta(days=7)
 
-        if date.date() == today.date():
-            stat = "Today"
-        elif date.date() == yesterday.date():
-            stat = "Yesterday"
-        elif date.date() >= week.date() and date.date() < yesterday.date():
-            stat = "This Week"
+        if date == today:
+            return "Today"
+        elif date == yesterday:
+            return "Yesterday"
+        elif date >= one_week_ago and date < yesterday:
+            return "This Week"
 
-        return stat
+        return date.strftime("%m/%d")
 
     @staticmethod
-    def property_name(user_id):
-        # returns the first property to keep things tidy, could add feature later
-        property = PropertyModel.find_by_manager(user_id)
-        propertyName = "Not Assigned"
+    def property_managers():
+        managers = []
 
-        if len(property):
-            propertyName = property[0].name
-
-        return propertyName
+        for user in PropertyManager.take(3):
+            managers.append(
+                {
+                    "id": user.id,
+                    "firstName": user.firstName,
+                    "lastName": user.lastName,
+                    "date": Dashboard.humanize_date(user.created_at.date()),
+                    "propertyName": user.properties[0].name if len(user.properties) > 0 else "Not Assigned"
+                }
+            )
+        return managers
