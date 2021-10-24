@@ -3,6 +3,7 @@ import pytest
 from tests.unit.base_interface_test import BaseInterfaceTest
 from models.tickets import TicketModel
 from schemas.ticket import TicketSchema
+from utils.time import TimeStamp
 
 
 class TestBaseTicketModel(BaseInterfaceTest):
@@ -33,3 +34,16 @@ class TestFixtures:
     def test_create_ticket(self, create_ticket):
         ticket = create_ticket()
         assert ticket
+
+        ticket = create_ticket(status=TicketModel.NEW)
+        assert ticket.status == "New"
+
+        ticket = create_ticket(status=TicketModel.IN_PROGRESS)
+        assert ticket.status == "In Progress"
+
+        ticket = create_ticket(status=TicketModel.CLOSED)
+        assert ticket.status == "Closed"
+
+        one_week_ago = TimeStamp.weeks_ago(1)
+        ticket = create_ticket(created_at=one_week_ago)
+        assert ticket.created_at.__str__() == one_week_ago
