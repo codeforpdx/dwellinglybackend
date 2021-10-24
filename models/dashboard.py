@@ -12,7 +12,7 @@ class Dashboard:
             "opentickets": {
                 "new": {
                     "allNew": {
-                        "stat": TicketModel.find_count_by_status(TicketModel.NEW),
+                        "stat": TicketModel.new().count(),
                     },
                     "unseen24Hrs": {
                         "stat": TicketModel.find_count_by_update_status(TicketModel.NEW, 1440),
@@ -20,7 +20,7 @@ class Dashboard:
                 },
                 "inProgress": {
                     "allInProgress": {
-                        "stat": TicketModel.find_count_by_status(TicketModel.IN_PROGRESS),
+                        "stat": TicketModel.in_progress().count(),
                     },
                     "inProgress1Week": {
                         "stat": TicketModel.find_count_by_update_status(

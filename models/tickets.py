@@ -1,3 +1,5 @@
+import re
+
 from db import db
 from nobiru.nobiru_list import NobiruList
 from datetime import datetime, timedelta
@@ -11,6 +13,14 @@ class TicketModel(BaseModel):
     NEW         = STATUSES[0]
     IN_PROGRESS = STATUSES[1]
     CLOSED      = STATUSES[2]
+
+    for status in STATUSES:
+        name = re.sub(r"\s", "_", status.lower())
+        exec(f"""
+@classmethod
+def {name}(cls):
+    return cls.query.filter_by(status='{status}')
+        """)
 
     __tablename__ = "tickets"
 
@@ -47,11 +57,6 @@ class TicketModel(BaseModel):
             "created_at": Time.format_date(self.created_at),
             "updated_at": Time.format_date(self.updated_at),
         }
-
-    # Get tickets with the given status
-    @classmethod
-    def find_count_by_status(cls, status):
-        return cls.query.filter_by(status=status).count()
 
     # Get tickets updated with the given time and with the given status
     @classmethod
