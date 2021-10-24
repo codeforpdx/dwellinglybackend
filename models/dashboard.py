@@ -13,23 +13,19 @@ class Dashboard:
                 "new": {
                     "allNew": {
                         "stat": TicketModel.find_count_by_status(TicketModel.NEW),
-                        "desc": TicketModel.NEW,
                     },
                     "unseen24Hrs": {
                         "stat": TicketModel.find_count_by_update_status(TicketModel.NEW, 1440),
-                        "desc": "Unseen for > 24 hours",
                     },
                 },
                 "inProgress": {
                     "allInProgress": {
                         "stat": TicketModel.find_count_by_status(TicketModel.IN_PROGRESS),
-                        "desc": TicketModel.IN_PROGRESS,
                     },
                     "inProgress1Week": {
                         "stat": TicketModel.find_count_by_update_status(
                             TicketModel.IN_PROGRESS, 10080
                         ),
-                        "desc": "In progress for > 1 week",
                     },
                 },
             },

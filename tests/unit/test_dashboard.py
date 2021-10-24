@@ -54,21 +54,17 @@ class TestDashboard:
                 "new": {
                     "allNew": {
                         "stat": 7,
-                        "desc": "New",
                     },
                     "unseen24Hrs": {
                         "stat": 2,
-                        "desc": "Unseen for > 24 hours",
                     },
                 },
                 "inProgress": {
                     "allInProgress": {
                         "stat": 10,
-                        "desc": "In Progress",
                     },
                     "inProgress1Week": {
                         "stat": 3,
-                        "desc": "In progress for > 1 week",
                     },
                 },
             },
