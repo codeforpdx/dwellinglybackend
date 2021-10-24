@@ -49,3 +49,8 @@ class Time:
     @staticmethod
     def _one_year():
         return datetime.today() + relativedelta(years=1)
+
+class TimeStamp:
+    @staticmethod
+    def weeks_ago(num):
+        return (datetime.utcnow() - relativedelta(weeks=num)).__str__()

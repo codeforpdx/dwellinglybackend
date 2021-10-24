@@ -53,11 +53,11 @@ def lease_attrs(faker, unitNum=None, dateTimeStart=None, dateTimeEnd=None):
     }
 
 
-def ticket_attrs(faker, issue=None):
+def ticket_attrs(faker, issue=None, status=None):
     return {
         "issue": issue or faker.sentence(),
         "urgency": faker.random_element(("Low", "Medium", "High")),
-        "status": faker.random_element(TicketModel.STATUSES),
+        "status": status or faker.random_element(TicketModel.STATUSES),
     }
 
 

@@ -8,13 +8,17 @@ from utils.time import Time
 class TicketModel(BaseModel):
     STATUSES = ("New", "In Progress", "Closed")
 
+    NEW         = STATUSES[0]
+    IN_PROGRESS = STATUSES[1]
+    CLOSED      = STATUSES[2]
+
     __tablename__ = "tickets"
 
     id = db.Column(db.Integer, primary_key=True)
     issue = db.Column(db.String(144))
     tenant_id = db.Column(db.Integer, db.ForeignKey("tenants.id"), nullable=False)
     author_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
-    status = db.Column(db.String, default=STATUSES[0], nullable=False)
+    status = db.Column(db.String, default=NEW, nullable=False)
     urgency = db.Column(db.String(12))
 
     notes = db.relationship(
