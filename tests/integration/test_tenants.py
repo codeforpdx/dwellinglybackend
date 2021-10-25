@@ -68,7 +68,7 @@ class TestTenantsPost:
             )
 
         mock_create.assert_called_once_with(
-            schema=TenantSchema, payload={**tenant_attrs, "leases": [{**lease_attrs}]}
+            schema=TenantSchema, payload={**tenant_attrs, "lease": {**lease_attrs}}
         )
 
         assert response.json == tenant.json()

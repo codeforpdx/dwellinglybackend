@@ -1,4 +1,3 @@
-from sqlalchemy.sql.functions import now
 from db import db
 from models.base_model import BaseModel
 from utils.time import Time
@@ -10,7 +9,9 @@ class LeaseModel(BaseModel):
 
     id = db.Column(db.Integer, primary_key=True)
     propertyID = db.Column(db.Integer, db.ForeignKey("properties.id"), nullable=False)
-    tenantID = db.Column(db.Integer, db.ForeignKey("tenants.id"), nullable=False)
+    tenantID = db.Column(
+        db.Integer, db.ForeignKey("tenants.id"), unique=True, nullable=False
+    )
     occupants = db.Column(db.Integer)
     dateTimeStart = db.Column(db.DateTime, nullable=False)
     dateTimeEnd = db.Column(db.DateTime, nullable=False)
@@ -30,8 +31,3 @@ class LeaseModel(BaseModel):
     def is_active(self):
         now = datetime.now()
         return now > self.dateTimeStart and now < self.dateTimeEnd
-
-    @classmethod
-    def active(cls):
-        time = now()
-        return (time > cls.dateTimeStart) & (time < cls.dateTimeEnd)

@@ -22,12 +22,11 @@ class TenantModel(BaseModel):
         collection_class=NobiruList,
     )
 
-    leases = db.relationship(
-        "LeaseModel",
+    lease = db.relationship(
+        LeaseModel,
         backref="tenant",
-        lazy="dynamic",
         cascade="all, delete-orphan",
-        collection_class=NobiruList,
+        uselist=False,
     )
 
     tickets = db.relationship(
@@ -35,15 +34,13 @@ class TenantModel(BaseModel):
     )
 
     def json(self):
-        first_active_lease = self.leases.filter(LeaseModel.active()).first()
-        active_lease_json = first_active_lease.json() if first_active_lease else ""
         return {
             "id": self.id,
             "firstName": self.firstName,
             "lastName": self.lastName,
             "fullName": "{} {}".format(self.firstName, self.lastName),
             "phone": self.phone,
-            "lease": active_lease_json,
+            "lease": self.lease.json() if self.lease else None,
             "staff": self.staff.json(),
             "created_at": Time.format_date(self.created_at),
             "updated_at": Time.format_date(self.updated_at),
