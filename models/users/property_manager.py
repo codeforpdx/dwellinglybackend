@@ -14,5 +14,8 @@ class PropertyManager(UserModel):
         viewonly=True,
     )
 
+    def has_pm_privs(self):
+        return True
+
     def serialize(self):
         return {"properties": self.properties.json(include_managers=False)}

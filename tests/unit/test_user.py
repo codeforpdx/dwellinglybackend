@@ -2,7 +2,7 @@ import pytest
 import jwt
 import time
 from unittest.mock import patch
-from models.user import UserModel, RoleEnum
+from models.user import UserModel
 from schemas.user import UserSchema
 from freezegun import freeze_time
 from tests.unit.base_interface_test import BaseInterfaceTest
@@ -73,7 +73,7 @@ class TestFixtures:
     def test_create_admin_user(self, create_admin_user):
         admin = create_admin_user()
         assert admin
-        assert admin.role == RoleEnum.ADMIN
+        assert admin.type == "admin"
 
         def test_multiple_admins_can_be_created():
             return create_admin_user()
@@ -83,7 +83,7 @@ class TestFixtures:
     def test_create_join_staff(self, create_join_staff):
         staff = create_join_staff()
         assert staff
-        assert staff.role == RoleEnum.STAFF
+        assert staff.type == "staff"
 
         def test_multiple_join_staff_can_be_created():
             return create_join_staff()
@@ -93,7 +93,7 @@ class TestFixtures:
     def test_create_property_manager(self, create_property_manager):
         pm = create_property_manager()
         assert pm
-        assert pm.role == RoleEnum.PROPERTY_MANAGER
+        assert pm.type == "property_manager"
 
         def test_multiple_pms_can_be_created():
             return create_property_manager()
@@ -102,7 +102,7 @@ class TestFixtures:
 
     def test_create_unauthorized_user(self, create_unauthorized_user):
         user = create_unauthorized_user()
-        assert user.role is None
+        assert user.type == "user"
 
         def test_multiple_users_can_be_created():
             return create_unauthorized_user()

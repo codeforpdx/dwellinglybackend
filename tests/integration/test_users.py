@@ -89,6 +89,19 @@ class TestUsersGet:
         )
         assert is_valid(unknown_user_response, 400)
 
+    def test_get_with_type(self, create_join_staff, valid_header):
+        staff = create_join_staff()
+        response = self.client.get("/api/user?type=staff", headers=valid_header)
+
+        assert response.status_code == 200
+        assert response.json == {"users": [staff.json()]}
+
+    def test_get_with_invalid_type(self, create_join_staff, valid_header):
+        response = self.client.get("/api/user?type=big_honcho", headers=valid_header)
+
+        assert response.status_code == 400
+        assert response.json == {"message": "Invalid role"}
+
 
 @pytest.mark.usefixtures("client_class", "empty_test_db")
 class TestArchiveUser:

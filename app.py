@@ -32,16 +32,27 @@ def create_app(env):
     # initialize Mail
     app.mail = Mail(app)
 
-    # check the user role in the JSON Web Token (JWT)
+    @app.jwt.user_identity_loader
+    def user_identity_lookup(user):
+        return user.id
+
+    @app.jwt.user_lookup_loader
+    def user_lookup_callback(_jwt_header, jwt_data):
+        user = UserModel.query.filter_by(
+            id=jwt_data["sub"], archived=False
+        ).one_or_none()
+        if user and user.type == "user":
+            return None
+        else:
+            return user
+
     @app.jwt.additional_claims_loader
-    def role_loader(identity):
-        user = UserModel.find(identity)
+    def role_loader(user):
         return {
             "email": user.email,
             "phone": user.phone,
             "firstName": user.firstName,
             "lastName": user.lastName,
-            "role": user.role.value,
         }
 
     # checking if the token's jti (jwt id) is in the set of revoked tokens

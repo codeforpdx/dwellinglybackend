@@ -1,6 +1,7 @@
 from ma import ma
 from models.property_assignment import PropertyAssignment
-from models.user import UserModel, RoleEnum
+from models.user import UserModel
+from models.users.property_manager import PropertyManager
 from models.property import PropertyModel
 from marshmallow import fields, validates, ValidationError
 
@@ -26,6 +27,5 @@ class PropertyAssignSchema(ma.SQLAlchemyAutoSchema):
 
     @validates("manager_id")
     def validate_role_property_manager(self, value):
-        user = UserModel.query.get(value)
-        if user.role != RoleEnum.PROPERTY_MANAGER:
+        if not PropertyManager.query.get(value):
             raise ValidationError("User is not a property manager")
