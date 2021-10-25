@@ -13,7 +13,7 @@ class TestTenantSerializer:
             "id": tenant.id,
             "lastName": tenant.lastName,
             "phone": tenant.phone,
-            "leases": [],
+            "lease": None,
             "created_at": Time.format_date(tenant.created_at),
             "updated_at": Time.format_date(tenant.updated_at),
             "archived": tenant.archived,
