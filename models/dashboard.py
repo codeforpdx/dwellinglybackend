@@ -27,11 +27,36 @@ class Dashboard:
                     },
                 },
             },
-            "managers": Dashboard.property_managers(),
+            "managers": [Dashboard._manager_json(m) for m in PropertyManager.take(3)],
+        }
+
+    # Below is what I would like to use instead of the above json^^^
+    @staticmethod
+    def proposed_json():
+        return {
+            "new_count": TicketModel.new().count(),
+            "recent_new_count": TicketModel.new().updated_within(days=1).count(),
+            "in_progress_count": TicketModel.in_progress().count(),
+            "recent_in_progress_count": TicketModel.in_progress()
+            .updated_within(days=7)
+            .count(),
+            "managers": [Dashboard._manager_json(m) for m in PropertyManager.take(3)],
         }
 
     @staticmethod
-    def humanize_date(date):
+    def _manager_json(manager):
+        return {
+            "id": manager.id,
+            "firstName": manager.firstName,
+            "lastName": manager.lastName,
+            "date": Dashboard._humanize_date(manager.created_at.date()),
+            "propertyName": manager.properties[0].name
+            if len(manager.properties) > 0
+            else "Not Assigned",
+        }
+
+    @staticmethod
+    def _humanize_date(date):
         if date == Date.today():
             return "Today"
         elif date == Date.days_ago(1):
@@ -40,21 +65,3 @@ class Dashboard:
             return "This Week"
 
         return date.strftime("%m/%d")
-
-    @staticmethod
-    def property_managers():
-        managers = []
-
-        for user in PropertyManager.take(3):
-            managers.append(
-                {
-                    "id": user.id,
-                    "firstName": user.firstName,
-                    "lastName": user.lastName,
-                    "date": Dashboard.humanize_date(user.created_at.date()),
-                    "propertyName": user.properties[0].name
-                    if len(user.properties) > 0
-                    else "Not Assigned",
-                }
-            )
-        return managers

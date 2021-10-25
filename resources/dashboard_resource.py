@@ -7,4 +7,4 @@ from models.dashboard import Dashboard
 class DashboardResource(Resource):
     @pm_level_required
     def get(self):
-        return Dashboard.json()
+        return Dashboard.proposed_json()
