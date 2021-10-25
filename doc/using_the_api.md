@@ -268,31 +268,32 @@ All endpoints are prefixed with `/api/`
 
 ```javascript
 {
-    'opentickets': {
+    "opentickets": {
         "new": {
             "allNew": {
-                "stat": TicketModel.find_count_by_status("New"),
-                "desc": "New",
+                "stat": 7,
             },
             "unseen24Hrs": {
-                "stat": TicketModel.find_count_by_update_status("New", 1440),
-                "desc": "Unseen for > 24 hours",
+                "stat": 2,
             },
         },
         "inProgress": {
             "allInProgress": {
-                "stat": TicketModel.find_count_by_status("In Progress"),
-                "desc": "In Progress",
+                "stat": 10,
             },
             "inProgress1Week": {
-                "stat": TicketModel.find_count_by_update_status(
-                    "In Progress", 10080
-                ),
-                "desc": "In progress for > 1 week",
+                "stat": 3,
             },
         },
     },
-    'managers': projectManagers
+    "managers": [
+        {
+            "date": "Today",
+            "firstName": "",
+            "id": 1,
+            "lastName": "Smith",
+            "propertyName": ""
+        },
+    ],
 }
-
 ```

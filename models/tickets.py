@@ -1,6 +1,8 @@
+import re
+
 from db import db
 from nobiru.nobiru_list import NobiruList
-from datetime import datetime, timedelta
+from datetime import datetime
 from models.base_model import BaseModel
 from utils.time import Time
 
@@ -8,13 +10,27 @@ from utils.time import Time
 class TicketModel(BaseModel):
     STATUSES = ("New", "In Progress", "Closed")
 
+    NEW = STATUSES[0]
+    IN_PROGRESS = STATUSES[1]
+    CLOSED = STATUSES[2]
+
+    for status in STATUSES:
+        name = re.sub(r"\s", "_", status.lower())
+        exec(
+            f"""
+@classmethod
+def {name}(cls):
+    return cls.query.filter_by(status='{status}')
+        """
+        )
+
     __tablename__ = "tickets"
 
     id = db.Column(db.Integer, primary_key=True)
     issue = db.Column(db.String(144))
     tenant_id = db.Column(db.Integer, db.ForeignKey("tenants.id"), nullable=False)
     author_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
-    status = db.Column(db.String, default=STATUSES[0], nullable=False)
+    status = db.Column(db.String, default=NEW, nullable=False)
     urgency = db.Column(db.String(12))
 
     notes = db.relationship(
@@ -43,20 +59,3 @@ class TicketModel(BaseModel):
             "created_at": Time.format_date(self.created_at),
             "updated_at": Time.format_date(self.updated_at),
         }
-
-    # Get tickets with the given status
-    @classmethod
-    def find_count_by_status(cls, status):
-        return cls.query.filter_by(status=status).count()
-
-    # Get tickets updated with the given time and with the given status
-    @classmethod
-    def find_count_by_update_status(cls, status, minutes):
-        # calculated in minutes: 1 day = 1440, 1 week = 10080
-        dateTime = datetime.utcnow() - timedelta(minutes=minutes)
-        return (
-            db.session.query(TicketModel)
-            .filter(TicketModel.updated_at >= dateTime)
-            .filter(TicketModel.status == status)
-            .count()
-        )

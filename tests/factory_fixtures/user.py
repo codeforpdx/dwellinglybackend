@@ -9,9 +9,14 @@ from models.users.property_manager import PropertyManager
 @pytest.fixture
 def user_attributes(faker):
     def _user_attributes(
-        role=None, archived=False, firstName=None, lastName=None, pw=None
+        role=None,
+        archived=False,
+        firstName=None,
+        lastName=None,
+        pw=None,
+        created_at=None,
     ):
-        return {
+        attrs = {
             "email": faker.unique.email(),
             "password": pw if pw else faker.password(),
             "firstName": firstName if firstName else faker.first_name(),
@@ -20,6 +25,10 @@ def user_attributes(faker):
             "role": role,
             "archived": archived,
         }
+        if created_at:
+            attrs["created_at"] = created_at
+
+        return attrs
 
     yield _user_attributes
 
@@ -53,8 +62,10 @@ def create_join_staff(user_attributes):
 
 @pytest.fixture
 def create_property_manager(user_attributes):
-    def _create_property_manager(pw=None):
-        pm = PropertyManager(**user_attributes(role=RoleEnum.PROPERTY_MANAGER, pw=pw))
+    def _create_property_manager(**kwargs):
+        pm = PropertyManager(
+            **user_attributes(role=RoleEnum.PROPERTY_MANAGER, **kwargs)
+        )
         pm.save_to_db()
         return pm
 

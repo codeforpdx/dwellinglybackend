@@ -13,3 +13,9 @@ class Staff(UserModel):
         collection_class=NobiruList,
         viewonly=True,
     )
+
+    def has_staff_privs(self):
+        return True
+
+    def has_pm_privs(self):
+        return True
