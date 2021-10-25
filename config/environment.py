@@ -49,9 +49,6 @@ class Testing(Default):
     JWT_REFRESH_TOKEN_EXPIRES = False
     CORS_ORIGINS = ["*"]
 
-    # Override default url for testing
-    FRONTEND_BASE_URL = "https://localhost:3000"
-
 
 class Production(Default):
     # Heroku hack to connect to postgres dialect since sqlalchemy does things differently. # noqa
