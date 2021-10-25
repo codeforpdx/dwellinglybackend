@@ -23,7 +23,7 @@ class Default(object):
     MAIL_DEFAULT_SENDER = os.environ.get("MAIL_DEFAULT_SENDER")
 
     # Default front end url
-    FRONTEND_BASE_URL = os.environ.get("FRONTEND_BASE_URL")
+    FRONTEND_BASE_URL = os.environ.get("FRONTEND_BASE_URL", "http://localhost:3000")
 
     # Configure JWT error message key
     JWT_ERROR_MESSAGE_KEY = "message"
@@ -48,9 +48,6 @@ class Testing(Default):
     JWT_ACCESS_TOKEN_EXPIRES = False
     JWT_REFRESH_TOKEN_EXPIRES = False
     CORS_ORIGINS = ["*"]
-
-    # Override default url for testing
-    FRONTEND_BASE_URL = "https://localhost:3000"
 
 
 class Production(Default):
