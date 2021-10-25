@@ -4,7 +4,7 @@ You have been invited to the Dwellingly Platform!
 
 To finish creating your account, please reset your password at the following link:
 
-{{ url_for('resetpassword', token=token, _method='GET', _external=True) }}
+{{ FRONTEND_BASE_URL }}/changePassword?token={{token}}
 
 Best,
 Team Dwellingly.
