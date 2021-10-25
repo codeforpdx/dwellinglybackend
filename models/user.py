@@ -39,7 +39,7 @@ class UserModel(BaseModel):
     __mapper_args__ = {"polymorphic_identity": "user", "polymorphic_on": "type"}
 
     id = db.Column(db.Integer, primary_key=True)
-    type = db.Column(db.String())
+    type = db.Column(db.String(), nullable=False)
     email = db.Column(db.String(100), unique=True, nullable=False)
     role = db.Column(db.Enum(RoleEnum), default=None)
     firstName = db.Column(db.String(100), nullable=False)
