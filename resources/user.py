@@ -36,6 +36,7 @@ class User(Resource):
             return {"message": "Not Authorized"}, 403
 
         if role:
+            user.role = RoleEnum(role)
             user.type = RoleEnum(role).name.lower()
 
         if user_type:
