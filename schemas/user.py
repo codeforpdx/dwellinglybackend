@@ -9,6 +9,7 @@ class UserSchema(ma.SQLAlchemyAutoSchema):
         model = UserModel
 
     role = fields.Method("get_role_value", deserialize="load_role_enum")
+    type = fields.Str(required=False)
     password = fields.Str(required=False)
 
     @validates("email")
