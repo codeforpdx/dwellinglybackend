@@ -148,14 +148,8 @@ class UserModel(BaseModel):
         return cls.query.filter_by(email=email).first()
 
     @classmethod
-    def find_recent_role(cls, role, days):
-        return (
-            db.session.query(UserModel)
-            .filter(UserModel.role == role)
-            .order_by(UserModel.created_at.desc())
-            .limit(3)
-            .all()
-        )
+    def take(cls, num):
+        return cls.query.order_by(cls.created_at.desc()).limit(num).all()
 
     @classmethod
     def find_by_role_and_name(cls, role, name):
