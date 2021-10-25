@@ -33,7 +33,7 @@ class RoleEnum(Enum):
         return role in role_values
 
 
-class UserTypes(Enum):
+class UserType(Enum):
     ADMIN = "admin"
     STAFF = "staff"
     PROPERTY_MANAGER = "property_manager"

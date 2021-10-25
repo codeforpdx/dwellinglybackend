@@ -2,7 +2,7 @@ from flask_restful import Resource
 from flask import request
 from schemas import UserRegisterSchema, UserSchema
 from utils.authorizations import admin_required, pm_level_required
-from models.user import UserModel, RoleEnum, UserTypes
+from models.user import UserModel, RoleEnum, UserType
 from flask_jwt_extended import (
     create_access_token,
     jwt_required,
@@ -26,7 +26,7 @@ class User(Resource):
     def patch(self, id):
         user = UserModel.find(id)
         role = request.json.get("role")
-        user_type = UserTypes.get(request.json.get("type"))
+        user_type = UserType.get(request.json.get("type"))
         password = request.json.get("new_password")
         role_change = role or user_type
 
@@ -111,7 +111,7 @@ class UserAccessRefresh(Resource):
 class Users(Resource):
     @admin_required
     def get(self):
-        user_type = UserTypes.get(request.args.get("type"))
+        user_type = UserType.get(request.args.get("type"))
         # TODO: This is temporary. Switching to type from role lookup.
         if RoleEnum.has_role(int(request.args.get("r", 99))):
             return {
