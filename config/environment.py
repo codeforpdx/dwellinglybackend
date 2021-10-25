@@ -22,6 +22,9 @@ class Default(object):
     MAIL_PASSWORD = os.environ.get("MAIL_PASSWORD")
     MAIL_DEFAULT_SENDER = os.environ.get("MAIL_DEFAULT_SENDER")
 
+    # Default front end url
+    FRONTEND_BASE_URL = os.environ.get("FRONTEND_BASE_URL", "http://localhost:3000")
+
     # Configure JWT error message key
     JWT_ERROR_MESSAGE_KEY = "message"
 

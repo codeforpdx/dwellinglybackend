@@ -6,3 +6,9 @@ class Admin(UserModel):
 
     def is_admin(self):
         return True
+
+    def has_staff_privs(self):
+        return True
+
+    def has_pm_privs(self):
+        return True

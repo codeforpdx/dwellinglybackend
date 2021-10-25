@@ -9,6 +9,7 @@ class UserSchema(ma.SQLAlchemyAutoSchema):
         model = UserModel
 
     role = fields.Method("get_role_value", deserialize="load_role_enum")
+    type = fields.Str(required=False)
     password = fields.Str(required=False)
 
     @validates("email")
@@ -32,3 +33,7 @@ class UserRegisterSchema(UserSchema):
     @validates("role")
     def user_cannot_register_a_role(self, _):
         raise ValidationError("Role is not allowed")
+
+    @validates("type")
+    def user_cannot_register_a_type(self, _):
+        raise ValidationError("Type is not allowed")

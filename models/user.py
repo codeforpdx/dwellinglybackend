@@ -33,13 +33,27 @@ class RoleEnum(Enum):
         return role in role_values
 
 
+class UserType(Enum):
+    ADMIN = "admin"
+    STAFF = "staff"
+    PROPERTY_MANAGER = "property_manager"
+
+    @classmethod
+    def get(cls, value, default=None):
+        return cls._values().get(value, default)
+
+    @classmethod
+    def _values(cls):
+        return {member.value: member.value for member in cls.__members__.values()}
+
+
 class UserModel(BaseModel):
     __tablename__ = "users"
 
     __mapper_args__ = {"polymorphic_identity": "user", "polymorphic_on": "type"}
 
     id = db.Column(db.Integer, primary_key=True)
-    type = db.Column(db.String())
+    type = db.Column(db.String(), nullable=False)
     email = db.Column(db.String(100), unique=True, nullable=False)
     role = db.Column(db.Enum(RoleEnum), default=None)
     firstName = db.Column(db.String(100), nullable=False)
@@ -117,6 +131,18 @@ class UserModel(BaseModel):
     def serialize(self):
         return {}
 
+    @staticmethod
+    def authenticate(user, password):
+        if user and (user.archived or user.type == "user" or user.role is None):
+            return {"message": "Invalid user"}, 403
+        elif user and user.check_pw(password):
+            access_token = create_access_token(identity=user, fresh=True)
+            refresh_token = create_refresh_token(user)
+            user.update_last_active()
+            return {"access_token": access_token, "refresh_token": refresh_token}, 200
+        else:
+            return {"message": "Invalid credentials"}, 401
+
     @classmethod
     def find_by_email(cls, email):
         return cls.query.filter_by(email=email).first()
@@ -143,11 +169,17 @@ class UserModel(BaseModel):
     def is_admin(self):
         return False
 
+    def has_staff_privs(self):
+        return False
+
+    def has_pm_privs(self):
+        return False
+
     def _make_token(self, refresh):
         if refresh:
             return {
-                "access_token": create_access_token(identity=self.id, fresh=True),
-                "refresh_token": create_refresh_token(self.id),
+                "access_token": create_access_token(identity=self, fresh=True),
+                "refresh_token": create_refresh_token(self),
             }
         else:
             return {}
