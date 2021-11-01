@@ -1,5 +1,6 @@
 from db import db
 from nobiru.nobiru_list import NobiruList
+from queries.tenant_query import TenantQuery
 from models.base_model import BaseModel
 from models.tickets import TicketModel
 from utils.time import Time
@@ -9,6 +10,8 @@ from models.staff_tenant_link import StaffTenantLink
 
 class TenantModel(BaseModel):
     __tablename__ = "tenants"
+
+    query_class = TenantQuery
 
     id = db.Column(db.Integer, primary_key=True)
     firstName = db.Column(db.String(100), nullable=False)
@@ -30,7 +33,11 @@ class TenantModel(BaseModel):
     )
 
     tickets = db.relationship(
-        TicketModel, backref="tenant", lazy=True, collection_class=NobiruList
+        TicketModel,
+        backref="tenant",
+        lazy=True,
+        collection_class=NobiruList,
+        cascade="all, delete-orphan",
     )
 
     def json(self):
