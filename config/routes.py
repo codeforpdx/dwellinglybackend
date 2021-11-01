@@ -19,6 +19,7 @@ from resources.notes import Notes, Note
 from resources.lease import Lease, Leases
 from resources.widgets import Widgets
 from resources.dashboard_resource import DashboardResource
+from tests.cypress.cypress_resource import CypressResource
 
 
 class Routes:
@@ -52,3 +53,4 @@ class Routes:
         api.add_resource(
             ResetPassword, "reset-password", "reset-password/<string:token>"
         )
+        api.add_resource(CypressResource, "tests/cypress")
