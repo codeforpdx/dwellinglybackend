@@ -6,16 +6,17 @@ from flask_jwt_extended import (
 import bcrypt
 import time
 import jwt
+from jwt import ExpiredSignatureError
 from enum import Enum
-from db import db
 from datetime import datetime
+
+from db import db
 from nobiru.nobiru_list import NobiruList
+from queries.user_query import UserQuery
 from models.tickets import TicketModel
 from models.base_model import BaseModel
 import models.notes
-from jwt import ExpiredSignatureError
 from utils.time import Time
-from sqlalchemy import and_
 
 
 class RoleEnum(Enum):
@@ -51,6 +52,8 @@ class UserModel(BaseModel):
     __tablename__ = "users"
 
     __mapper_args__ = {"polymorphic_identity": "user", "polymorphic_on": "type"}
+
+    query_class = UserQuery
 
     id = db.Column(db.Integer, primary_key=True)
     type = db.Column(db.String(), nullable=False)
@@ -158,10 +161,6 @@ class UserModel(BaseModel):
             (UserModel.role == role)
             & (UserModel.firstName.ilike(likeName) | UserModel.lastName.ilike(likeName))
         ).all()
-
-    @classmethod
-    def find_users_without_assigned_role(cls):
-        return cls.query.filter(and_(cls.role.is_(None), cls.archived.is_(False)))
 
     def full_name(self):
         return "{} {}".format(self.firstName, self.lastName)
