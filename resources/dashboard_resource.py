@@ -1,10 +1,10 @@
 from flask_restful import Resource
-from utils.authorizations import pm_level_required
+from utils.authorizations import admin_required
 
 from models.dashboard import Dashboard
 
 
 class DashboardResource(Resource):
-    @pm_level_required
+    @admin_required
     def get(self):
         return Dashboard.proposed_json()
