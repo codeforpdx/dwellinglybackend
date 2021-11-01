@@ -1,9 +1,10 @@
 from flask_restful import Resource
-from models.user import UserModel
+
 from utils.authorizations import admin_required
+from models.user import UserModel
 
 
 class UsersPending(Resource):
     @admin_required
     def get(self):
-        return {"users": UserModel.find_users_without_assigned_role().json()}
+        return {"users": UserModel.query.active().pending().json()}

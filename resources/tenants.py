@@ -19,6 +19,14 @@ class Tenant(Resource):
 class Tenants(Resource):
     @admin_required
     def get(self):
+        if request.args.get("unstaffed"):
+            return {
+                "tenants": TenantModel.query.active()
+                .unassigned_staff()
+                .order_by(TenantModel.updated_at.asc())
+                .json()
+            }
+
         return {"tenants": TenantModel.query.json()}
 
     @admin_required
