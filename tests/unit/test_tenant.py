@@ -17,14 +17,13 @@ class TestTenantModel:
     def test_json(self, create_tenant, create_lease):
         tenant = create_tenant()
         lease = create_lease(tenant=tenant)
-
         assert tenant.json() == {
             "id": tenant.id,
             "firstName": tenant.firstName,
             "lastName": tenant.lastName,
             "fullName": "{} {}".format(tenant.firstName, tenant.lastName),
             "phone": tenant.phone,
-            "staff": tenant.staff,
+            "staff": tenant.staff.json(),
             "lease": lease.json(),
             "created_at": Time.format_date(tenant.created_at),
             "updated_at": Time.format_date(tenant.updated_at),
@@ -36,3 +35,8 @@ class TestTenantModel:
 class TestTenantFactory:
     def test_create_tenant(self, create_tenant):
         assert create_tenant()
+
+    def test_create_tenant_with_staff(self, create_tenant, create_join_staff):
+        staff = [create_join_staff().id for _ in range(3)]
+        tenant = create_tenant(staff)
+        assert [join_staff.id for join_staff in tenant.staff] == staff
