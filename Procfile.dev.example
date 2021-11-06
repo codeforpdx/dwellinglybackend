@@ -1,0 +1,4 @@
+backend: export FLASK_ENV=development && pipenv run flask run -p 5000
+backend_testing: export FLASK_ENV=testing && pipenv run flask run -p 5010 --reload
+frontend: cd ../dwellingly-app && PORT=3000 npm run start
+frontend_testing: cd ../dwellingly-app && export REACT_APP_PROXY=http://localhost:5010 && npm run startTest

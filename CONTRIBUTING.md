@@ -98,7 +98,7 @@ NOTE: Default development database is SQLite3. (Optionally setup and use [Postgr
 
 8. Start the server using the flask environment (required every time the project is re-opened):
    - Run: `pipenv run flask run`
-   - Run and restart the server on changes: `pipenv run flask run --reload`
+   - Optional: Use overmind to start frontend and backend servers with `overmind run start`: See [Starting servers with Overmind](#Starting-servers-with-Overmind)
 9. Test the server and view coverage reports. Use of coverage reporting is recommended to indicate test suite completeness and to locate defunct code in the code base.
    - Run all the tests: `pipenv run pytest --cov .`
      - Run tests in a particular directory: `pipenv run pytest --cov [path to directory]`
@@ -176,6 +176,27 @@ If the above steps don't work and give you an error about either not being able 
       You'll now be back to the interactive terminal, use `\q` to close out.
 
 Everything should be golden now, and running the `pipenv` commands from above should work.
+
+### Starting servers with Overmind
+
+You can start both frontend and backend servers with one command if you have overmind installed.</br>
+Visit [https://github.com/DarthSim/overmind#installation](https://github.com/DarthSim/overmind#installation) for installation instructions.
+copy both `overmind.env.example` and `Procfile.dev.example` to configure overmind.
+
+Run: `cp .overmind.env.example .overmind.env && cp Procfile.dev.example Procfile.dev`
+In your `Procfile.env` file change the location of the frontend repo if its different than the default. The default assumes the frontend repo is located in the same directory as the backend repo.
+
+Then you can start all servers with `overmind start`.
+
+This will start two backend servers and two frontend servers. one dev server and one test server (for system testing) for each repo.
+
+For backend:
+ - The dev server is on port 5000
+ - The test server is on port 5010
+
+For Frontend:
+- The dev server is on port 3000
+- The test server is on port 3010
 
 ### Note For Windows Users
 
