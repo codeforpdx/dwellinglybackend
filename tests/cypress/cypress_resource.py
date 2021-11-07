@@ -2,12 +2,11 @@ from flask import current_app, request, abort
 from flask_restful import Resource
 
 from db import db
+from data.seed import Seed
 from models.user import RoleEnum
-from models.staff_tenant_link import StaffTenantLink
-from models.user import UserModel
 from models.users.staff import Staff
 from models.tenant import TenantModel
-from schemas.user import UserSchema, UserRegisterSchema
+from schemas.user import UserSchema
 from schemas.tenant import TenantSchema
 
 
@@ -20,6 +19,7 @@ def protected_env(func):
     return _decorator
 
 
+seed = Seed()
 not_found_message = {"message": "RequestNotFoundError: Request was not found"}
 
 
@@ -31,10 +31,7 @@ class CypressResource(Resource):
             return 200
 
         if request.args.get("create_pending_user"):
-            UserModel.create(
-                schema=UserRegisterSchema,
-                payload=request.json,
-            )
+            seed.create_pending_user(payload=request.json)
             return 200
 
         if request.args.get("create_staff_user"):
@@ -51,17 +48,21 @@ class CypressResource(Resource):
         return not_found_message, 421
 
     def _setup(self):
-        for st in StaffTenantLink.query.all():
-            self._del(st)
-        for u in UserModel.query.where(UserModel.email != "user1@dwellingly.org").all():
-            self._del(u)
-        for t in TenantModel.query.all():
-            self._del(t)
+        db.session.execute(
+            """
+do
+$$
+declare
+  l_stmt text;
+begin
+  select 'truncate ' || string_agg(format('%I.%I', schemaname, tablename), ',')
+    into l_stmt
+  from pg_tables
+  where schemaname in ('public');
 
-        self._commit()
-
-    def _del(self, obj):
-        db.session.delete(obj)
-
-    def _commit(self):
-        db.session.commit()
+  execute l_stmt;
+end;
+$$
+        """
+        )
+        seed.create_admin()
