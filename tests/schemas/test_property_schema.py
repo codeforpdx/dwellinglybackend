@@ -25,10 +25,6 @@ class TestPropertyValidations:
         assert "state" in validation_errors
         assert "zipcode" in validation_errors
 
-    def test_must_have_manager_assigned(self):
-        validation_error = PropertySchema().validate({"propertyManagerIDs": []})
-        assert "propertyManagerIDs" in validation_error
-
     def test_propertyManagerIDs_are_validated(self, create_join_staff):
         staff = create_join_staff()
         validation_error = PropertySchema().validate({"propertyManagerIDs": [staff.id]})

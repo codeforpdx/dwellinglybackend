@@ -17,9 +17,6 @@ class PropertySchema(ma.SQLAlchemyAutoSchema):
 
     @validates("propertyManagerIDs")
     def validates_property_manager_ids(self, value):
-        if len(value) < 1:
-            raise ValidationError("manager must be assigned")
-
         payload = [
             {"manager_id": value[manager_id]} for manager_id in range(len(value))
         ]
