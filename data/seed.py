@@ -56,14 +56,11 @@ class Seed:
 
         # Create some pending users
         for _ in range(5):
-            UserModel.create(schema=UserRegisterSchema, payload=self.user_attributes())
+            self.create_pending_user(payload=self.user_attributes())
 
         # Create some archived users that were never approved.
         for _ in range(3):
-            UserModel.create(
-                schema=UserRegisterSchema,
-                payload=self.user_attributes(archived=True),
-            )
+            self.create_pending_user(payload=self.user_attributes(archived=True))
 
         self.staff = [
             Staff.create(
@@ -278,3 +275,9 @@ class Seed:
     def property_manager_ids(self):
         managers = self.rand.sample(self.property_managers, self.rand.randint(1, 5))
         return [manager.id for manager in managers]
+
+    def create_pending_user(self, payload):
+        UserModel.create(
+            schema=UserRegisterSchema,
+            payload=payload,
+        )
