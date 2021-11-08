@@ -1,7 +1,3 @@
-import pytest
-
-
-@pytest.mark.usefixtures("empty_test_db")
 class TestPendingUsers:
     def test_users_pending(self, client, valid_header, create_unauthorized_user):
         pending_user = create_unauthorized_user()

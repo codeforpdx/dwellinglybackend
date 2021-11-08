@@ -2,7 +2,7 @@ import pytest
 from conftest import is_valid
 
 
-@pytest.mark.usefixtures("client_class", "empty_test_db")
+@pytest.mark.usefixtures("client_class")
 class TestTenantAuthorization:
     def setup(self):
         self.endpoint = "/api/tenants"

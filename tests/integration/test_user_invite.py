@@ -4,7 +4,7 @@ from unittest.mock import patch
 from resources.email import Email
 
 
-@pytest.mark.usefixtures("client_class", "empty_test_db")
+@pytest.mark.usefixtures("client_class")
 class TestUserInvite:
     def setup(self):
         self.endpoint = "/api/user/invite"

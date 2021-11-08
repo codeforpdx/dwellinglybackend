@@ -5,7 +5,7 @@ from schemas.ticket import TicketSchema
 from unittest.mock import patch
 
 
-@pytest.mark.usefixtures("client_class", "empty_test_db")
+@pytest.mark.usefixtures("client_class")
 class BaseConfig:
     endpoint = "/api/tickets"
 
@@ -122,7 +122,6 @@ class TestTicketsDELETE(BaseConfig):
         assert response.json == {"message": "Ticket IDs missing in request"}
 
 
-@pytest.mark.usefixtures("empty_test_db")
 class TestFixtures:
     def test_create_ticket(self, create_ticket):
         ticket = create_ticket()

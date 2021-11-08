@@ -1,8 +1,6 @@
-import pytest
 from schemas.emergency_contact import EmergencyContactSchema
 
 
-@pytest.mark.usefixtures("empty_test_db")
 class TestEmergencyContactValidations:
     def test_valid_payload(self, emergency_contact_attributes):
         valid_payload = emergency_contact_attributes

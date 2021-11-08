@@ -1,4 +1,3 @@
-import pytest
 from models.contact_number import ContactNumberModel
 from schemas.contact_number import ContactNumberSchema
 from tests.unit.base_interface_test import BaseInterfaceTest
@@ -12,7 +11,6 @@ class TestBaseContactNumberModel(BaseInterfaceTest):
         self.schema = ContactNumberSchema
 
 
-@pytest.mark.usefixtures("empty_test_db")
 class TestContactNumberModel:
     def test_contact_number_json_method(self, create_contact_number):
         contact_number = create_contact_number()
@@ -26,7 +24,6 @@ class TestContactNumberModel:
         }
 
 
-@pytest.mark.usefixtures("empty_test_db")
 class TestFixtures:
     def test_create_contact_number(self, create_contact_number):
         assert create_contact_number()

@@ -10,7 +10,7 @@ from models.user import RoleEnum
 from utils.time import time_format
 
 
-@pytest.mark.usefixtures("client_class", "empty_test_db")
+@pytest.mark.usefixtures("client_class")
 class TestUserLogin:
     def setup(self):
         self.password = "strongestpasswordever"
@@ -39,7 +39,7 @@ class TestUserLogin:
         assert responseRefreshToken.status_code == 200
 
 
-@pytest.mark.usefixtures("client_class", "empty_test_db")
+@pytest.mark.usefixtures("client_class")
 class TestUserGet:
     def test_get(self, create_user, valid_header):
         user = create_user()
@@ -51,7 +51,7 @@ class TestUserGet:
         assert response.json == user.json()
 
 
-@pytest.mark.usefixtures("client_class", "empty_test_db")
+@pytest.mark.usefixtures("client_class")
 class TestUserDelete:
     def test_delete(self, create_user, valid_header):
         user = create_user()
@@ -70,7 +70,7 @@ class TestUserDelete:
         assert is_valid(response, 400)
 
 
-@pytest.mark.usefixtures("client_class", "empty_test_db")
+@pytest.mark.usefixtures("client_class")
 class TestUsersGet:
     def test_get(self, create_admin_user, header):
         admin = create_admin_user()
@@ -103,7 +103,7 @@ class TestUsersGet:
         assert response.json == {"message": "Invalid role"}
 
 
-@pytest.mark.usefixtures("client_class", "empty_test_db")
+@pytest.mark.usefixtures("client_class")
 class TestArchiveUser:
     def test_archive_user(self, create_user, valid_header, header):
         """
@@ -138,7 +138,7 @@ class TestArchiveUser:
         assert response.json == {"message": "Cannot archive self"}
 
 
-@pytest.mark.usefixtures("client_class", "empty_test_db")
+@pytest.mark.usefixtures("client_class")
 class TestUser:
     def test_role_update(self, valid_header, create_unauthorized_user):
         id = create_unauthorized_user().id
@@ -150,7 +150,7 @@ class TestUser:
         assert user.type == "admin"
 
 
-@pytest.mark.usefixtures("client_class", "empty_test_db")
+@pytest.mark.usefixtures("client_class")
 class TestRegisterUser:
     def setup(self):
         self.endpoint = "/api/register"

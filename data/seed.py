@@ -9,6 +9,7 @@
 import random
 from faker import Faker
 
+from db import db
 from models.user import UserModel, RoleEnum
 from models.users.admin import Admin
 from models.users.staff import Staff
@@ -286,4 +287,23 @@ class Seed:
         return PropertyManager.create(
             schema=UserSchema,
             payload=payload,
+        )
+
+    def destroy_all(self):
+        db.session.execute(
+            """
+DO
+$$
+DECLARE
+    stmt text;
+BEGIN
+    SELECT 'TRUNCATE ' || string_agg(format('%I.%I', schemaname, tablename), ',')
+        INTO stmt
+    FROM pg_tables
+    WHERE schemaname in ('public');
+
+    EXECUTE stmt;
+END;
+$$
+            """
         )

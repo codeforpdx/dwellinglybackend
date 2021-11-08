@@ -1,7 +1,7 @@
 import pytest
 
 
-@pytest.mark.usefixtures("client_class", "empty_test_db")
+@pytest.mark.usefixtures("client_class")
 class TestPropertyAuthorizations:
     def test_post_property(self, property_attributes):
         property_attrs = property_attributes()

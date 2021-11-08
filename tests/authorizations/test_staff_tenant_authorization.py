@@ -1,7 +1,7 @@
 import pytest
 
 
-@pytest.mark.usefixtures("client_class", "empty_test_db")
+@pytest.mark.usefixtures("client_class")
 class TestStaffTenantAuthorizations:
     def setup(self):
         self.endpoint = "/api/staff-tenants"

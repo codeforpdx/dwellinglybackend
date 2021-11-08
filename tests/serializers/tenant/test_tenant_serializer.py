@@ -1,9 +1,7 @@
-import pytest
 from serializers.tenant import TenantSerializer
 from utils.time import Time
 
 
-@pytest.mark.usefixtures("empty_test_db")
 class TestTenantSerializer:
     def test_serializer(self, create_tenant):
         tenant = create_tenant()

@@ -2,8 +2,8 @@ import pytest
 import jwt
 from flask import current_app
 from app import create_app
-from db import db
 
+from data.seed import Seed
 from tests.factory_fixtures import *  # noqa: F401, F403
 
 
@@ -17,6 +17,11 @@ def app(monkeypatch):
     monkeypatch.setenv("FLASK_ENV", "testing")
     app = create_app("testing")
     return app
+
+
+@pytest.fixture(autouse=True)
+def app_context(app):
+    Seed().destroy_all()
 
 
 @pytest.fixture
@@ -67,12 +72,6 @@ def pm_header(header, create_property_manager):
         return header(pm or create_property_manager())
 
     yield _pm_header
-
-
-@pytest.fixture
-def empty_test_db(app):
-    db.drop_all()
-    db.create_all()
 
 
 # -------------     NON-FIXTURE FUNCTIONS     --------------------

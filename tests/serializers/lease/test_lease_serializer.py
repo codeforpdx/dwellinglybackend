@@ -1,11 +1,9 @@
-import pytest
 from serializers.lease import LeaseSerializer
 from serializers.tenant import TenantSerializer
 from serializers.property import PropertySerializer
 from utils.time import Time
 
 
-@pytest.mark.usefixtures("empty_test_db")
 class TestLeaseSerializer:
     def test_serializer(self, create_lease):
         lease = create_lease()
