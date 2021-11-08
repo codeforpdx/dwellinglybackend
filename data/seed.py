@@ -90,9 +90,8 @@ class Seed:
             tenant.save_to_db()
 
         self.property_managers = [
-            PropertyManager.create(
-                schema=UserSchema,
-                payload=self.user_attributes(role=RoleEnum.PROPERTY_MANAGER.value),
+            self.create_property_manager(
+                self.user_attributes(role=RoleEnum.PROPERTY_MANAGER.value)
             )
             for _ in range(self.rand.randint(70, 100))
         ]
@@ -279,5 +278,12 @@ class Seed:
     def create_pending_user(self, payload):
         UserModel.create(
             schema=UserRegisterSchema,
+            payload=payload,
+        )
+
+    def create_property_manager(self, payload):
+        payload["role"] = payload.get("role", RoleEnum.PROPERTY_MANAGER.value)
+        return PropertyManager.create(
+            schema=UserSchema,
             payload=payload,
         )
