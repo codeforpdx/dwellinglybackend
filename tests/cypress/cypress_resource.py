@@ -41,6 +41,10 @@ class CypressResource(Resource):
             )
             return 200
 
+        if request.args.get("create_property_manager"):
+            seed.create_property_manager(request.json)
+            return 200
+
         if request.args.get("create_tenant"):
             TenantModel.create(schema=TenantSchema, payload=(request.json))
             return 200
