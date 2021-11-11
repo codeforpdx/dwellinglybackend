@@ -37,9 +37,9 @@ class TestStaffTenant:
     def test_when_provided_no_staff_params(
         self, valid_header, create_tenant, create_join_staff
     ):
-        tenant_1 = create_tenant([])
-        tenant_2 = create_tenant([])
-        keep_tenant = create_tenant([])
+        tenant_1 = create_tenant()
+        tenant_2 = create_tenant()
+        keep_tenant = create_tenant()
         StaffTenantLink(
             tenant_id=tenant_1.id, staff_id=create_join_staff().id
         ).save_to_db()
@@ -72,7 +72,7 @@ class TestStaffTenant:
     def test_when_provided_staff_params(
         self, valid_header, create_tenant, create_join_staff
     ):
-        tenant = create_tenant([])
+        tenant = create_tenant()
         old_staff = create_join_staff()
         StaffTenantLink(tenant_id=tenant.id, staff_id=old_staff.id).save_to_db()
 
@@ -98,9 +98,9 @@ class TestStaffTenant:
         assert not assigned(tenant, old_staff)
 
     def test_bulk_update(self, valid_header, create_tenant, create_join_staff):
-        tenant_1 = create_tenant([])
-        tenant_2 = create_tenant([])
-        tenant_3 = create_tenant([])
+        tenant_1 = create_tenant()
+        tenant_2 = create_tenant()
+        tenant_3 = create_tenant()
         staff_1 = create_join_staff()
         staff_2 = create_join_staff()
         staff_3 = create_join_staff()
