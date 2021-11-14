@@ -25,7 +25,7 @@ def emergency_contact_attrs(faker):
 def property_attrs(faker, archived=False):
     return {
         "name": faker.unique.company(),
-        "address": faker.address(),
+        "address": faker.street_address(),
         "city": faker.city(),
         "num_units": faker.random_int(min=1),
         "state": faker.state(),
