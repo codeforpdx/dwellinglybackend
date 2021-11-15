@@ -18,10 +18,15 @@ def tenant_attributes(faker, create_join_staff):
 
 
 @pytest.fixture
-def create_tenant(tenant_attributes):
-    def _create_tenant():
+def create_tenant(tenant_attributes, create_join_staff):
+    def _create_tenant(staff=None):
+        if isinstance(staff, int):
+            staff = [create_join_staff().id for _ in range(staff)]
+        elif staff is None:
+            staff = []
+
         return TenantModel.create(
-            schema=TenantSchema, payload=tenant_attributes(staff=[])
+            schema=TenantSchema, payload=tenant_attributes(staff=staff)
         )
 
     yield _create_tenant
