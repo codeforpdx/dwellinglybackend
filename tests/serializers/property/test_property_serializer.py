@@ -1,9 +1,7 @@
-import pytest
 from serializers.property import PropertySerializer
 from utils.time import Time
 
 
-@pytest.mark.usefixtures("empty_test_db")
 class TestPropertySerializer:
     def test_serializer(self, create_property):
         property = create_property()

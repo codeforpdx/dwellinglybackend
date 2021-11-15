@@ -1,10 +1,8 @@
-import pytest
 from db import db
 from schemas import PropertySchema
 from models.property import PropertyModel
 
 
-@pytest.mark.usefixtures("empty_test_db")
 class TestPropertyValidations:
     def test_valid_payload(self, create_property_manager, property_attributes):
 
@@ -69,7 +67,6 @@ class TestPropertyValidations:
         assert validation_errors["name"] == ["Property name cannot be blank"]
 
 
-@pytest.mark.usefixtures("empty_test_db")
 class TestPostLoadDeserialization:
     def test_property_created_with_manager_ids(
         self, property_attributes, create_property_manager

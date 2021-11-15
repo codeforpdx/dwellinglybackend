@@ -6,7 +6,7 @@ from freezegun import freeze_time
 from utils.time import Time
 
 
-@pytest.mark.usefixtures("client_class", "empty_test_db")
+@pytest.mark.usefixtures("client_class")
 class TestResetPasswordPOST:
     def setup(self):
         self.endpoint = "/api/reset-password"
@@ -41,7 +41,7 @@ class TestResetPasswordPOST:
         assert is_valid(response, 400)
 
 
-@pytest.mark.usefixtures("client_class", "empty_test_db")
+@pytest.mark.usefixtures("client_class")
 class TestResetPasswordGET:
     def setup(self):
         self.endpoint = "/api/reset-password"

@@ -2,7 +2,7 @@ from conftest import is_valid
 import pytest
 
 
-@pytest.mark.usefixtures("client_class", "empty_test_db")
+@pytest.mark.usefixtures("client_class")
 class TestEmergenyContactsAuthorizations:
     def setup(self):
         self.endpoint = "/api/emergencycontacts"

@@ -45,7 +45,9 @@ jobs:
         run: pipenv run dev-install
 
       - name: Create db
-        run: createdb dwellingly_test
+        run: |
+          createdb dwellingly_test
+          pipenv run flask db create
 
       - name: Test
         run: |

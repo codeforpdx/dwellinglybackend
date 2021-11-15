@@ -1,11 +1,10 @@
-import pytest
 from unittest.mock import patch
 from flask_mailman import EmailMessage
+
 from resources.email import Email
 
 
-@pytest.mark.usefixtures("empty_test_db")
-class TesttEmail:
+class TestEmail:
     @patch.object(EmailMessage, "send")
     def test_reset_password_msg(self, send_mail_msg, create_user):
         with patch.object(EmailMessage, "__init__", return_value=None):

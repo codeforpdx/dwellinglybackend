@@ -1,4 +1,3 @@
-import pytest
 from tests.unit.base_interface_test import BaseInterfaceTest
 from models.tenant import TenantModel
 from schemas.tenant import TenantSchema
@@ -12,7 +11,6 @@ class TestBaseTenantModel(BaseInterfaceTest):
         self.schema = TenantSchema
 
 
-@pytest.mark.usefixtures("empty_test_db")
 class TestTenantModel:
     def test_json(self, create_tenant, create_lease):
         tenant = create_tenant()
@@ -31,7 +29,6 @@ class TestTenantModel:
         }
 
 
-@pytest.mark.usefixtures("empty_test_db")
 class TestTenantFactory:
     def test_create_tenant(self, create_tenant):
         assert create_tenant()

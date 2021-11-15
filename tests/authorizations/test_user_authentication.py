@@ -4,7 +4,7 @@ from models.user import RoleEnum
 from flask_jwt_extended import create_access_token, create_refresh_token
 
 
-@pytest.mark.usefixtures("client_class", "empty_test_db")
+@pytest.mark.usefixtures("client_class")
 class TestUserAuthorization:
     def test_user_auth(self, create_admin_user):
         password = "strongestpasswordever"
@@ -63,7 +63,7 @@ class TestUserAuthorization:
         assert is_valid(unauthorized_user_response, 401)
 
 
-@pytest.mark.usefixtures("client_class", "empty_test_db")
+@pytest.mark.usefixtures("client_class")
 class TestUserDeleteAuthorization:
     def test_admin_is_authorized(self, admin_header, create_user):
         response = self.client.delete(
@@ -84,7 +84,7 @@ class TestUserDeleteAuthorization:
         assert response.status_code == 401
 
 
-@pytest.mark.usefixtures("client_class", "empty_test_db")
+@pytest.mark.usefixtures("client_class")
 class TestUserPatchAuthorization:
     def test_auth_token_is_required(self):
         response = self.client.patch("api/user/5", json={})
@@ -127,7 +127,7 @@ class TestUserPatchAuthorization:
         assert response == 200
 
 
-@pytest.mark.usefixtures("client_class", "empty_test_db")
+@pytest.mark.usefixtures("client_class")
 class TestUserLogic:
     # TODO: This doesn't belong in auth tests
     def test_password(self, header, create_user, faker):

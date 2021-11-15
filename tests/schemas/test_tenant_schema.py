@@ -1,4 +1,3 @@
-import pytest
 from datetime import datetime
 from models.tenant import TenantModel
 from schemas import TenantSchema
@@ -6,7 +5,7 @@ from utils.time import Time
 
 
 class TestTenantValidations:
-    def test_valid_payload(self, empty_test_db, create_tenant):
+    def test_valid_payload(self, create_tenant):
         tenant = create_tenant()
 
         valid_payload = {
@@ -71,14 +70,13 @@ class TestTenantValidations:
 
         assert "updated_at" in validation_errors
 
-    def test_staffIDs_are_validated(self, empty_test_db, create_property_manager):
+    def test_staffIDs_are_validated(self, create_property_manager):
         pm = create_property_manager()
         validation_error = TenantSchema().validate({"staffIDs": [pm.id]})
 
         assert "staffIDs" in validation_error
 
 
-@pytest.mark.usefixtures("empty_test_db")
 class TestPostLoadDeserialization:
     def test_tenant_creation(
         self, tenant_attributes, create_property, create_join_staff

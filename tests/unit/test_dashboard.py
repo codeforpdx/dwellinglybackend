@@ -1,11 +1,8 @@
-import pytest
-
 from models.tickets import TicketModel
 from utils.time import TimeStamp
 from models.dashboard import Dashboard
 
 
-@pytest.mark.usefixtures("empty_test_db")
 class TestDashboard:
     def test_json(
         self, valid_header, create_ticket, create_property_manager, create_property

@@ -5,7 +5,7 @@ from schemas.property import PropertySchema
 from models.property import PropertyModel
 
 
-@pytest.mark.usefixtures("client_class", "empty_test_db")
+@pytest.mark.usefixtures("client_class")
 class TestPropertyGet:
     def test_get(self, valid_header, create_property):
         property = PropertyModel()
@@ -21,7 +21,7 @@ class TestPropertyGet:
         assert response.status_code == 200
 
 
-@pytest.mark.usefixtures("client_class", "empty_test_db")
+@pytest.mark.usefixtures("client_class")
 class TestPropertyDelete:
     def test_delete(self, valid_header, create_property):
         with patch.object(PropertyModel, "delete") as mock_delete:
@@ -32,16 +32,16 @@ class TestPropertyDelete:
         assert response.json == {"message": "Property deleted"}
 
 
-@pytest.mark.usefixtures("client_class", "empty_test_db")
+@pytest.mark.usefixtures("client_class")
 class TestPropertyPut:
     def test_put(self, valid_header, create_property):
-        property = create_property()
+        prop = create_property()
 
-        with patch.object(
-            PropertyModel, "update", return_value=property
-        ) as mock_update:
+        with patch.object(PropertyModel, "update", return_value=prop) as mock_update:
             response = self.client.put(
-                "/api/properties/1", json={"num_units": 2}, headers=valid_header
+                f"/api/properties/{prop.id}",
+                json={"num_units": 2},
+                headers=valid_header,
             )
 
         mock_update.assert_called_once_with(
@@ -49,10 +49,10 @@ class TestPropertyPut:
             payload={"num_units": 2},
         )
         assert response.status_code == 200
-        assert response.json == property.json()
+        assert response.json == prop.json()
 
 
-@pytest.mark.usefixtures("client_class", "empty_test_db")
+@pytest.mark.usefixtures("client_class")
 class TestPropertiesGet:
     def test_get(self, valid_header, create_property):
         property = create_property()
@@ -62,7 +62,7 @@ class TestPropertiesGet:
         assert response.status_code == 200
 
 
-@pytest.mark.usefixtures("client_class", "empty_test_db")
+@pytest.mark.usefixtures("client_class")
 class TestPropertiesPost:
     def test_post(self, valid_header, property_attributes):
         property_attrs = property_attributes()
@@ -86,7 +86,7 @@ class TestPropertiesPost:
         assert response.status_code == 201
 
 
-@pytest.mark.usefixtures("client_class", "empty_test_db")
+@pytest.mark.usefixtures("client_class")
 class TestPropertyArchivalMethods:
     def test_archive_properties(self, valid_header, create_property):
         firstProperty = create_property()

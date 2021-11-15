@@ -1,4 +1,3 @@
-import pytest
 from models.emergency_contact import EmergencyContactModel
 from schemas.emergency_contact import EmergencyContactSchema
 from tests.unit.base_interface_test import BaseInterfaceTest
@@ -12,7 +11,6 @@ class TestBaseEmergencyContactModel(BaseInterfaceTest):
         self.schema = EmergencyContactSchema
 
 
-@pytest.mark.usefixtures("empty_test_db")
 class TestEmergencyContactModel:
     def test_emergency_contact_json(self, create_emergency_contact):
         emergency_contact = create_emergency_contact()
@@ -28,7 +26,6 @@ class TestEmergencyContactModel:
         }
 
 
-@pytest.mark.usefixtures("empty_test_db")
 class TestFixtures:
     def test_create_emergency_contact(self, create_emergency_contact):
         assert create_emergency_contact()
