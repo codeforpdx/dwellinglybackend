@@ -1,24 +1,15 @@
 from ma import ma
+from marshmallow import validates, ValidationError
+
 from models.property_assignment import PropertyAssignment
-from models.user import UserModel
 from models.users.property_manager import PropertyManager
 from models.property import PropertyModel
-from marshmallow import fields, validates, ValidationError
 
 
-class PropertyAssignSchema(ma.SQLAlchemyAutoSchema):
+class PropertyAssignmentSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = PropertyAssignment
         include_fk = True
-        relations = True
-
-        propertyID = fields.Nested("PropertySchema")
-        managerID = fields.Nested("UserSchema", required=True)
-
-    @validates("manager_id")
-    def validate_is_valid_user(self, value):
-        if not UserModel.query.get(value):
-            raise ValidationError("not a valid user id")
 
     @validates("property_id")
     def validate_is_valid_property(self, value):

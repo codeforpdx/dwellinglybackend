@@ -11,7 +11,6 @@ class PropertyManager(UserModel):
         "PropertyModel",
         secondary=PropertyAssignment.tablename(),
         collection_class=NobiruList,
-        viewonly=True,
     )
 
     def has_pm_privs(self):
