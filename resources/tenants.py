@@ -32,25 +32,6 @@ class Tenants(Resource):
     @admin_required
     def post(self):
         return (
-            TenantModel.create(
-                schema=TenantSchema, payload=self._build_payload()
-            ).json(),
+            TenantModel.create(schema=TenantSchema, payload=request.json).json(),
             201,
         )
-
-    def _build_payload(self):
-        valid_tenant_params = ["firstName", "lastName", "phone", "staffIDs"]
-        valid_lease_params = ["dateTimeEnd", "dateTimeStart", "propertyID"]
-
-        params = {}
-        for param in valid_tenant_params:
-            if request.json.get(param):
-                params[param] = request.json.get(param)
-
-        if set(valid_lease_params) & set(list(request.json)):
-            params["lease"] = {}
-        for param in valid_lease_params:
-            if request.json.get(param):
-                params["lease"][param] = request.json.get(param)
-
-        return params
