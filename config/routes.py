@@ -17,7 +17,6 @@ from resources.emergency_contacts import EmergencyContacts, EmergencyContact
 from resources.tickets import Ticket, Tickets
 from resources.notes import Notes, Note
 from resources.lease import Lease, Leases
-from resources.widgets import Widgets
 from resources.dashboard_resource import DashboardResource
 from tests.cypress.cypress_resource import CypressResource
 
@@ -36,7 +35,6 @@ class Routes:
         api.add_resource(UsersPending, "users/pending")
         api.add_resource(ArchiveUser, "user/archive/<int:user_id>")
         api.add_resource(UserLogin, "login")
-        api.add_resource(Widgets, "widgets")
         api.add_resource(DashboardResource, "dashboard")
         api.add_resource(UserAccessRefresh, "refresh")
         api.add_resource(StaffTenants, "staff-tenants")
