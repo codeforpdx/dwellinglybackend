@@ -8,6 +8,7 @@ from resources.user import (
     Users,
 )
 from resources.user_invite import UserInvite
+from resources.user_invite import PropertyManagerInviteResource
 from resources.users.pending_users import UsersPending
 from resources.reset_password import ResetPassword
 from resources.property import Properties, Property, ArchiveProperties
@@ -25,12 +26,13 @@ class Routes:
     @staticmethod
     def routing(app):
         api = Api(app, prefix="/api/")
+        api.add_resource(UserInvite, "user/invite")
+        api.add_resource(PropertyManagerInviteResource, "user/invite/property_manager")
         api.add_resource(UserRegister, "register")
         api.add_resource(Property, "properties/<int:id>")
         api.add_resource(Properties, "properties")
         api.add_resource(ArchiveProperties, "properties/archive")
         api.add_resource(User, "user/<int:id>")
-        api.add_resource(UserInvite, "user/invite")
         api.add_resource(Users, "user")
         api.add_resource(UsersPending, "users/pending")
         api.add_resource(ArchiveUser, "user/archive/<int:user_id>")

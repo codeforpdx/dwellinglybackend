@@ -1,7 +1,9 @@
 from ma import ma
-from marshmallow import fields, validates, ValidationError
+from marshmallow import fields, validates, ValidationError, post_load
 
 from models.user import UserModel, RoleEnum
+from models.property import PropertyModel
+from schemas.property_assignment import PropertyAssignmentSchema
 
 
 class UserSchema(ma.SQLAlchemyAutoSchema):
@@ -37,3 +39,19 @@ class UserRegisterSchema(UserSchema):
     @validates("type")
     def user_cannot_register_a_type(self, _):
         raise ValidationError("Type is not allowed")
+
+
+class PropertyManagerSchema(UserSchema):
+    property_ids = fields.List(fields.Integer(), required=False)
+
+    @validates("property_ids")
+    def validate_property_ids(self, ids):
+        for id in ids:
+            PropertyAssignmentSchema().load({"property_id": id}, partial=True)
+
+    @post_load
+    def make_property_attributes(self, data, **kwargs):
+        if "property_ids" in data:
+            data["properties"] = [PropertyModel.find(id) for id in data["property_ids"]]
+            del data["property_ids"]
+        return data

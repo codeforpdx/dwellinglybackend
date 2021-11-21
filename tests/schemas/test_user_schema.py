@@ -1,4 +1,4 @@
-from schemas.user import UserSchema, UserRegisterSchema
+from schemas.user import UserSchema, UserRegisterSchema, PropertyManagerSchema
 from models.user import RoleEnum, UserType
 
 
@@ -86,3 +86,8 @@ class TestUserRegisterSchemaValidations:
         validation_errors = UserRegisterSchema().validate({})
 
         assert "password" in validation_errors
+
+
+class TestInheritedPropertyManagerSchemaValidations(UserSchemaValidations):
+    def setup(self):
+        self.schema = PropertyManagerSchema
