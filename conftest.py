@@ -3,6 +3,7 @@ import jwt
 from flask import current_app
 from app import create_app
 
+from db import db
 from data.seed import Seed
 from tests.factory_fixtures import *  # noqa: F401, F403
 
@@ -17,6 +18,14 @@ def app(monkeypatch):
     monkeypatch.setenv("FLASK_ENV", "testing")
     app = create_app("testing")
     return app
+
+
+@pytest.fixture(scope="session", autouse=True)
+def db_setup():
+    app = create_app("testing")
+    with app.app_context():
+        db.drop_all()
+        db.create_all()
 
 
 @pytest.fixture(autouse=True)
