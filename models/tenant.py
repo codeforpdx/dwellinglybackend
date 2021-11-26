@@ -22,6 +22,7 @@ class TenantModel(BaseModel):
     staff = db.relationship(
         "Staff",
         secondary=StaffTenantLink.tablename(),
+        back_populates="tenants",
         collection_class=NobiruList,
     )
 
@@ -40,16 +41,20 @@ class TenantModel(BaseModel):
         cascade="all, delete-orphan",
     )
 
-    def json(self):
-        return {
+    def json(self, include_staff=True):
+        tenant = {
             "id": self.id,
             "firstName": self.firstName,
             "lastName": self.lastName,
             "fullName": "{} {}".format(self.firstName, self.lastName),
             "phone": self.phone,
             "lease": self.lease.json() if self.lease else None,
-            "staff": self.staff.json(),
             "created_at": Time.format_date(self.created_at),
             "updated_at": Time.format_date(self.updated_at),
             "archived": self.archived,
         }
+
+        if include_staff:
+            tenant["staff"] = self.staff.json()
+
+        return tenant

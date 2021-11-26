@@ -19,3 +19,6 @@ class Staff(UserModel):
 
     def has_pm_privs(self):
         return True
+
+    def serialize(self):
+        return {"tenants": self.tenants.json(include_staff=False)}
