@@ -1,9 +1,8 @@
-import pytest
 from schemas import StaffTenantSchema
 
 
 class TestStaffTenantValidations:
-    def test_valid_payload(self, empty_test_db, create_tenant, create_join_staff):
+    def test_valid_payload(self, create_tenant, create_join_staff):
         valid_payload = {
             "staff": [create_join_staff().id, create_join_staff().id],
             "tenants": [create_tenant().id, create_tenant().id],
@@ -13,7 +12,7 @@ class TestStaffTenantValidations:
 
         assert no_validation_errors == StaffTenantSchema().validate(valid_payload)
 
-    def test_empty_tenant_payload_is_invalid(self, empty_test_db):
+    def test_empty_tenant_payload_is_invalid(self):
         invalid_payload = {"staff": [], "tenants": []}
 
         validation_errors = StaffTenantSchema().validate(invalid_payload)
@@ -23,7 +22,7 @@ class TestStaffTenantValidations:
 
         assert "staff" not in validation_errors
 
-    def test_required_params(self, empty_test_db):
+    def test_required_params(self):
         invalid_payload = {}
 
         validation_errors = StaffTenantSchema().validate(invalid_payload)
@@ -32,7 +31,6 @@ class TestStaffTenantValidations:
         assert "tenants" in validation_errors
 
 
-@pytest.mark.usefixtures("empty_test_db")
 class TestForeignKeyValidations:
     def test_tenant_must_exist(self):
         validation_errors = StaffTenantSchema().validate({"tenants": ["500"]})

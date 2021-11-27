@@ -1,4 +1,3 @@
-import pytest
 from tests.unit.base_interface_test import BaseInterfaceTest
 from models.user import UserModel
 from models.notes import NotesModel
@@ -13,7 +12,6 @@ class TestBaseNotesModel(BaseInterfaceTest):
         self.schema = NotesSchema
 
 
-@pytest.mark.usefixtures("empty_test_db")
 class TestNotesModel:
     def test_json(self, create_note, create_ticket):
         ticket = create_ticket()

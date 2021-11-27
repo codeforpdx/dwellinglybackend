@@ -1,73 +1,46 @@
-import pytest
-
-from models.tickets import TicketModel
-from utils.time import TimeStamp
 from models.dashboard import Dashboard
 
 
-@pytest.mark.usefixtures("empty_test_db")
 class TestDashboard:
-    def test_json(
-        self, valid_header, create_ticket, create_property_manager, create_property
-    ):
-        def _create_tickets(num, status, updated_at=None):
-            updated_at = updated_at or TimeStamp.now()
-            for _ in range(num):
-                create_ticket(status=status, updated_at=updated_at)
-
-        _create_tickets(2, TicketModel.NEW)
-        _create_tickets(5, TicketModel.NEW, TimeStamp.weeks_ago(1))
-        _create_tickets(3, TicketModel.IN_PROGRESS)
-        _create_tickets(7, TicketModel.IN_PROGRESS, TimeStamp.weeks_ago(2))
-
-        pm = create_property_manager()
-        pm2 = create_property_manager(created_at=TimeStamp.days_ago(1))
-        pm3 = create_property_manager(created_at=TimeStamp.days_ago(2))
-        prop = create_property(manager_ids=[pm.id])
-        prop2 = create_property(manager_ids=[pm.id, pm3.id])
-
+    def test_json(self, create_dashboard):
+        dashboard = create_dashboard()
         response = Dashboard.json()
 
         assert response == {
             "managers": [
                 {
                     "date": "Today",
-                    "firstName": pm.firstName,
-                    "id": pm.id,
-                    "lastName": pm.lastName,
-                    "propertyName": prop.name,
+                    "first_name": dashboard["pm"].firstName,
+                    "id": dashboard["pm"].id,
+                    "last_name": dashboard["pm"].lastName,
+                    "property_name": dashboard["prop"].name,
                 },
                 {
                     "date": "Yesterday",
-                    "firstName": pm2.firstName,
-                    "id": pm2.id,
-                    "lastName": pm2.lastName,
-                    "propertyName": "Not Assigned",
+                    "first_name": dashboard["pm2"].firstName,
+                    "id": dashboard["pm2"].id,
+                    "last_name": dashboard["pm2"].lastName,
+                    "property_name": "Not Assigned",
                 },
                 {
                     "date": "This Week",
-                    "firstName": pm3.firstName,
-                    "id": pm3.id,
-                    "lastName": pm3.lastName,
-                    "propertyName": prop2.name,
+                    "first_name": dashboard["pm3"].firstName,
+                    "id": dashboard["pm3"].id,
+                    "last_name": dashboard["pm3"].lastName,
+                    "property_name": dashboard["prop2"].name,
                 },
             ],
-            "opentickets": {
+            "pending_users": [dashboard["pending_user"].json()],
+            "staff": [dashboard["author"].json()],
+            "tenants": [dashboard["tenant"].json()],
+            "tickets": {
                 "new": {
-                    "allNew": {
-                        "stat": 7,
-                    },
-                    "unseen24Hrs": {
-                        "stat": 2,
-                    },
+                    "total_count": 7,
+                    "latent_count": 2,
                 },
-                "inProgress": {
-                    "allInProgress": {
-                        "stat": 10,
-                    },
-                    "inProgress1Week": {
-                        "stat": 3,
-                    },
+                "in_progress": {
+                    "total_count": 10,
+                    "latent_count": 3,
                 },
             },
         }

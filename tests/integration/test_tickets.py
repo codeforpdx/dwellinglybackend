@@ -5,7 +5,7 @@ from schemas.ticket import TicketSchema
 from unittest.mock import patch
 
 
-@pytest.mark.usefixtures("client_class", "empty_test_db")
+@pytest.mark.usefixtures("client_class")
 class BaseConfig:
     endpoint = "/api/tickets"
 
@@ -88,13 +88,16 @@ class TestTicketsPOST(BaseConfig):
 
 
 class TestTicketsDELETE(BaseConfig):
-    def test_delete_many(self, valid_header, create_ticket):
-        ticket_1 = create_ticket()
-        ticket_2 = create_ticket()
-        delete_ids = {"ids": [ticket_1.id, ticket_2.id]}
+    def test_delete_many(self, valid_header, create_note):
+        note_1 = create_note()
+        note_2 = create_note()
+        ticket_1 = note_1.ticket
+        ticket_2 = note_2.ticket
 
         response = self.client.delete(
-            self.endpoint, json=delete_ids, headers=valid_header
+            self.endpoint,
+            json={"ids": [ticket_1.id, ticket_2.id]},
+            headers=valid_header,
         )
         db.session.rollback()
 
@@ -122,7 +125,6 @@ class TestTicketsDELETE(BaseConfig):
         assert response.json == {"message": "Ticket IDs missing in request"}
 
 
-@pytest.mark.usefixtures("empty_test_db")
 class TestFixtures:
     def test_create_ticket(self, create_ticket):
         ticket = create_ticket()

@@ -1,7 +1,7 @@
-import pytest
 import jwt
 import time
 from unittest.mock import patch
+
 from models.user import UserModel
 from schemas.user import UserSchema
 from freezegun import freeze_time
@@ -15,7 +15,6 @@ class TestUserModel(BaseInterfaceTest):
         self.custom_404_msg = "User not found"
 
 
-@pytest.mark.usefixtures("empty_test_db")
 class TestResetPasswordToken:
     def test_reset_password_token(stubbed_encode, app, create_user):
         user = create_user()
@@ -32,12 +31,11 @@ class TestResetPasswordToken:
             )
 
 
-def test_full_name(empty_test_db, create_admin_user):
+def test_full_name(create_admin_user):
     admin = create_admin_user(firstName="first", lastName="last")
     assert admin.full_name() == "first last"
 
 
-@pytest.mark.usefixtures("empty_test_db")
 class TestFixtures:
     def test_create_admin_user(self, create_admin_user):
         admin = create_admin_user()

@@ -5,7 +5,7 @@ from schemas import TenantSchema
 from tests.attributes import tenant_attrs
 
 
-@pytest.mark.usefixtures("client_class", "empty_test_db")
+@pytest.mark.usefixtures("client_class")
 class TestTenantGet:
     def setup(self):
         self.endpoint = "/api/tenants"
@@ -18,7 +18,7 @@ class TestTenantGet:
         assert response.json == tenant.json()
 
 
-@pytest.mark.usefixtures("client_class", "empty_test_db")
+@pytest.mark.usefixtures("client_class")
 class TestTenantPut:
     def setup(self):
         self.endpoint = "/api/tenants"
@@ -39,7 +39,7 @@ class TestTenantPut:
         assert response.json == tenant.json()
 
 
-@pytest.mark.usefixtures("client_class", "empty_test_db")
+@pytest.mark.usefixtures("client_class")
 class TestTenantsGet:
     def test_get_all_tenants(self, valid_header, create_tenant):
         tenant = create_tenant()
@@ -51,7 +51,7 @@ class TestTenantsGet:
         assert response.json == {"tenants": [tenant.json(), tenant_two.json()]}
 
 
-@pytest.mark.usefixtures("client_class", "empty_test_db")
+@pytest.mark.usefixtures("client_class")
 class TestTenantsPost:
     def test_create(
         self, valid_header, tenant_attributes, lease_payload, create_tenant
@@ -59,17 +59,16 @@ class TestTenantsPost:
         tenant_attrs = tenant_attributes()
         lease_attrs = lease_payload()
         tenant = create_tenant()
+        payload = {**tenant_attrs, "lease": {**lease_attrs}}
 
         with patch.object(TenantModel, "create", return_value=tenant) as mock_create:
             response = self.client.post(
                 "/api/tenants",
-                json={**tenant_attrs, **lease_attrs},
+                json=payload,
                 headers=valid_header,
             )
 
-        mock_create.assert_called_once_with(
-            schema=TenantSchema, payload={**tenant_attrs, "lease": {**lease_attrs}}
-        )
+        mock_create.assert_called_once_with(schema=TenantSchema, payload=payload)
 
         assert response.json == tenant.json()
         assert response.status_code == 201

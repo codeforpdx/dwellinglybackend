@@ -14,7 +14,7 @@ def assigned(tenant, staff):
     )
 
 
-def test_assigned(empty_test_db, create_tenant, create_join_staff):
+def test_assigned(create_tenant, create_join_staff):
     tenant = create_tenant()
     staff = create_join_staff()
     StaffTenantLink(tenant_id=tenant.id, staff_id=staff.id).save_to_db()
@@ -32,7 +32,7 @@ def endpoint():
     return "/api/staff-tenants"
 
 
-@pytest.mark.usefixtures("client_class", "empty_test_db")
+@pytest.mark.usefixtures("client_class")
 class TestStaffTenant:
     def test_when_provided_no_staff_params(
         self, valid_header, create_tenant, create_join_staff

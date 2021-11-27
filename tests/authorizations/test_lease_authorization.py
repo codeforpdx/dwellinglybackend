@@ -2,7 +2,7 @@ from utils.time import Time
 import pytest
 
 
-@pytest.mark.usefixtures("client_class", "empty_test_db")
+@pytest.mark.usefixtures("client_class")
 class TestLeaseAuthorizations:
     def valid_payload(self, tenant, lease):
         return {"tenantID": tenant.id, **lease}

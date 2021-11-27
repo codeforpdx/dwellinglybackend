@@ -5,7 +5,7 @@ from serializers.lease import LeaseSerializer
 from unittest.mock import patch
 
 
-@pytest.mark.usefixtures("client_class", "empty_test_db")
+@pytest.mark.usefixtures("client_class")
 class TestLease:
     def setup(self):
         self.endpoint = "/api/lease"
@@ -59,9 +59,11 @@ class TestLease:
 
     def test_update_lease(self, valid_header, create_lease):
         lease = create_lease()
-        with patch.object(LeaseModel, "update", return_value=lease) as mock_update:
+        with patch.object(lease, "update", return_value=lease) as mock_update:
             response = self.client.put(
-                f"{self.endpoint}/1", json={"hello": "world"}, headers=valid_header
+                f"{self.endpoint}/{lease.id}",
+                json={"hello": "world"},
+                headers=valid_header,
             )
 
         mock_update.assert_called_once_with(

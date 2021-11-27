@@ -6,7 +6,6 @@ from marshmallow import ValidationError, EXCLUDE
 from werkzeug.exceptions import BadRequest
 
 
-@pytest.mark.usefixtures("empty_test_db")
 class BaseInterfaceTest:
     @patch.object(db, "session")
     def test_save_to_db(self, mock_session):

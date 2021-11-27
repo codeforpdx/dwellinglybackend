@@ -1,7 +1,6 @@
 from flask import current_app, request, abort
 from flask_restful import Resource
 
-from db import db
 from data.seed import Seed
 from models.user import RoleEnum
 from models.users.staff import Staff
@@ -52,21 +51,5 @@ class CypressResource(Resource):
         return not_found_message, 421
 
     def _setup(self):
-        db.session.execute(
-            """
-do
-$$
-declare
-  l_stmt text;
-begin
-  select 'truncate ' || string_agg(format('%I.%I', schemaname, tablename), ',')
-    into l_stmt
-  from pg_tables
-  where schemaname in ('public');
-
-  execute l_stmt;
-end;
-$$
-        """
-        )
+        seed.destroy_all()
         seed.create_admin()

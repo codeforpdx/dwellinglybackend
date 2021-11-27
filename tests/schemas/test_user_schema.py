@@ -1,4 +1,4 @@
-from schemas.user import UserSchema, UserRegisterSchema
+from schemas.user import UserSchema, UserRegisterSchema, PropertyManagerSchema
 from models.user import RoleEnum, UserType
 
 
@@ -13,7 +13,7 @@ def user_register_valid_payload(user):
 
 
 class UserSchemaValidations:
-    def test_unique_email(self, empty_test_db, create_join_staff):
+    def test_unique_email(self, create_join_staff):
         user = create_join_staff()
 
         payload = {"email": user.email}
@@ -41,7 +41,7 @@ class UserSchemaValidations:
         no_validation_error = user_schema.validate(payload)
         assert "role" not in no_validation_error
 
-    def test_role_enum_serialization(self, empty_test_db, create_join_staff):
+    def test_role_enum_serialization(self, create_join_staff):
         user = create_join_staff()
         user_schema = UserSchema()
         user_serialized = user_schema.dump(user)
@@ -59,7 +59,7 @@ class TestInheritedUserRegisterSchemaValidations(UserSchemaValidations):
 
 
 class TestUserRegisterSchemaValidations:
-    def test_user_register_valid_payload(self, empty_test_db, user_attributes):
+    def test_user_register_valid_payload(self, user_attributes):
         no_validation_errors = {}
 
         assert no_validation_errors == UserRegisterSchema().validate(
@@ -86,3 +86,8 @@ class TestUserRegisterSchemaValidations:
         validation_errors = UserRegisterSchema().validate({})
 
         assert "password" in validation_errors
+
+
+class TestInheritedPropertyManagerSchemaValidations(UserSchemaValidations):
+    def setup(self):
+        self.schema = PropertyManagerSchema

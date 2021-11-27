@@ -7,7 +7,7 @@ from schemas.emergency_contact import EmergencyContactSchema
 endpoint = "/api/emergencycontacts"
 
 
-@pytest.mark.usefixtures("client_class", "empty_test_db")
+@pytest.mark.usefixtures("client_class")
 class TestEmergencyContactGet:
     def test_get(self, valid_header, create_emergency_contact):
         contact = create_emergency_contact()
@@ -21,7 +21,7 @@ class TestEmergencyContactGet:
         assert response.json == contact.json()
 
 
-@pytest.mark.usefixtures("client_class", "empty_test_db")
+@pytest.mark.usefixtures("client_class")
 class TestEmergencyContactsDelete:
     def test_get(self, valid_header, create_emergency_contact):
         with patch.object(EmergencyContactModel, "delete") as mock_delete:
@@ -32,7 +32,7 @@ class TestEmergencyContactsDelete:
         assert response.json == {"message": "Emergency contact deleted"}
 
 
-@pytest.mark.usefixtures("client_class", "empty_test_db")
+@pytest.mark.usefixtures("client_class")
 class TestEmergencyContactsPost:
     def test_post(self, valid_header, create_emergency_contact):
         contact = create_emergency_contact()
@@ -50,7 +50,7 @@ class TestEmergencyContactsPost:
         assert response.json == contact.json()
 
 
-@pytest.mark.usefixtures("client_class", "empty_test_db")
+@pytest.mark.usefixtures("client_class")
 class TestEmergencyContactsGet:
     def test_get(self, valid_header, create_emergency_contact):
         contact = create_emergency_contact()
@@ -63,7 +63,7 @@ class TestEmergencyContactsGet:
 @pytest.mark.skip(
     reason="This is testing a successful update action on a non-existent id..."
 )
-def test_emergency_contacts_PUT(client, valid_header, empty_test_db):
+def test_emergency_contacts_PUT(client, valid_header):
     id = 1
     updatedInfo = {
         "name": "Greg",

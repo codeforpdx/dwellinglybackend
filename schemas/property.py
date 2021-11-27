@@ -1,7 +1,7 @@
 from ma import ma
 from models.property import PropertyModel
 from models.users.property_manager import PropertyManager
-from schemas.property_assignment import PropertyAssignSchema
+from schemas.property_assignment import PropertyAssignmentSchema
 from marshmallow import fields, validates, ValidationError, post_load
 from utils.time import time_format
 from tests.helpers.matchers import blank
@@ -20,7 +20,7 @@ class PropertySchema(ma.SQLAlchemyAutoSchema):
         payload = [
             {"manager_id": value[manager_id]} for manager_id in range(len(value))
         ]
-        PropertyAssignSchema().load(payload, partial=True, many=True)
+        PropertyAssignmentSchema().load(payload, partial=True, many=True)
 
     @validates("name")
     def validates_uniqueness_of_name(self, value):

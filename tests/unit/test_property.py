@@ -1,4 +1,3 @@
-import pytest
 from tests.unit.base_interface_test import BaseInterfaceTest
 from models.property import PropertyModel
 from schemas.property import PropertySchema
@@ -13,7 +12,6 @@ class TestBasePropertyModel(BaseInterfaceTest):
         self.schema = PropertySchema
 
 
-@pytest.mark.usefixtures("empty_test_db")
 class TestPropertyModel:
     def test_tenants(self, create_lease):
         lease = create_lease()

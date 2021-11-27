@@ -10,33 +10,6 @@ class Dashboard:
     @staticmethod
     def json():
         return {
-            "opentickets": {
-                "new": {
-                    "allNew": {
-                        "stat": TicketModel.new().count(),
-                    },
-                    "unseen24Hrs": {
-                        "stat": TicketModel.new().updated_within(days=1).count(),
-                    },
-                },
-                "inProgress": {
-                    "allInProgress": {
-                        "stat": TicketModel.in_progress().count(),
-                    },
-                    "inProgress1Week": {
-                        "stat": TicketModel.in_progress()
-                        .updated_within(days=7)
-                        .count(),
-                    },
-                },
-            },
-            "managers": [Dashboard._manager_json(m) for m in PropertyManager.take(3)],
-        }
-
-    # Below is what I would like to use instead of the above json^^^
-    @staticmethod
-    def proposed_json():
-        return {
             "tickets": {
                 "new": {
                     "total_count": TicketModel.new().count(),
@@ -49,7 +22,7 @@ class Dashboard:
                     .count(),
                 },
             },
-            "managers": [Dashboard.__manager_json(m) for m in PropertyManager.take(3)],
+            "managers": [Dashboard._manager_json(m) for m in PropertyManager.take(3)],
             "pending_users": UserModel.query.active().pending().json(),
             "staff": Staff.query.json(),
             "tenants": TenantModel.query.active()
@@ -60,18 +33,6 @@ class Dashboard:
 
     @staticmethod
     def _manager_json(manager):
-        return {
-            "id": manager.id,
-            "firstName": manager.firstName,
-            "lastName": manager.lastName,
-            "date": Dashboard._humanize_date(manager.created_at.date()),
-            "propertyName": manager.properties[0].name
-            if len(manager.properties) > 0
-            else "Not Assigned",
-        }
-
-    @staticmethod
-    def __manager_json(manager):
         return {
             "id": manager.id,
             "first_name": manager.firstName,

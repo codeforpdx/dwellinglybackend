@@ -3,7 +3,7 @@ from conftest import is_valid
 from unittest.mock import patch
 
 
-@pytest.mark.usefixtures("client_class", "empty_test_db")
+@pytest.mark.usefixtures("client_class")
 class TestCreate:
     def setup(self):
         self.endpoint = "/api/tickets"
@@ -31,7 +31,7 @@ class TestCreate:
         assert is_valid(response, 404)  # Bad Request- 'Invalid Ticket'
 
 
-@pytest.mark.usefixtures("client_class", "empty_test_db")
+@pytest.mark.usefixtures("client_class")
 class TestDelete:
     def setup(self):
         self.endpoint = "/api/tickets"
@@ -50,7 +50,7 @@ class TestDelete:
         assert response.json == {"message": "Note deleted"}
 
 
-@pytest.mark.usefixtures("client_class", "empty_test_db")
+@pytest.mark.usefixtures("client_class")
 class TestUpdate:
     def setup(self):
         self.endpoint = "/api/tickets"

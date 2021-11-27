@@ -1,8 +1,6 @@
-import pytest
 from schemas import TicketSchema
 
 
-@pytest.mark.usefixtures("empty_test_db")
 class TestTicketValidations:
     def test_valid_payload(self, create_tenant, create_admin_user):
         valid_payload = {
