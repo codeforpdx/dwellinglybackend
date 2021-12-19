@@ -4,6 +4,11 @@
 
 _Looking for the [Dwellingly App front end?](https://github.com/codeforpdx/dwellingly-app)_
 
+## Archived:
+
+Thank you to everyone who has put in time and effort in building the backend API for the JOIN (Dwellingly) application.
+This repo is being archived in preference to have the backend code and frontend code combined into one application/repository. Please go to https://github.com/codeforpdx/dwellingly-app for the dwellingly application.
+
 
 ## Description
 
